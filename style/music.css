@@ -1,0 +1,229 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  font-family: "Segoe UI", sans-serif;
+  color: white;
+  background: url("https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/music_bg.jpg?v=1746463585075")
+    no-repeat center center fixed;
+  background-size: cover;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1rem 0;
+  z-index: 1000;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #00ffff;
+}
+
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.login-btn a {
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  color: #00ffff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.login-btn a:hover {
+  background-color: #00ffff;
+  color: #000;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+#greeting {
+    color:rgb(121, 216, 216); 
+    margin-left: 70%;
+    font-weight: bold;
+}
+
+
+.container.music-section {
+  padding: 120px 20px 40px;
+  text-align: center;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+.music-playlist {
+  margin-top: 40px;
+  display: flex;
+
+  flex-wrap: wrap;
+
+  white-space: normal;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.music-playlist button {
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  background: transparent;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.music-playlist button:hover {
+  box-shadow: 0 0 10px #00ffff;
+  transform: scale(1.05);
+}
+
+.music-player {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Nút nhạc */
+.music-player button {
+  padding: 5px 10px;
+  font-size: 1.2rem;
+  background: transparent;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.music-player button:hover {
+  box-shadow: 0 0 10px #00ffff;
+  transform: scale(1.05);
+}
+
+/* Định dạng nút đang bật */
+button.active {
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+audio {
+  width: 80%;
+  max-width: 500px;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: transparent;
+  color: #aaa;
+  text-align: center;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  z-index: 1000;
+}
+
+footer .socials {
+  margin-bottom: 0.5rem;
+}
+
+footer .socials a {
+  margin: 0 10px;
+  color: #00ffff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Ẩn các nút khi chưa chọn playlist 
+.music-player div {
+  display: none;
+}
+*/
+/* Hiển thị các nút khi playlist được chọn */
+.music-player.show-buttons div {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#progressBar {
+  flex: 1;
+}
