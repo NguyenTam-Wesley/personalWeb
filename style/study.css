@@ -1,0 +1,206 @@
+/* Reset & layout */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  font-family: "Segoe UI", sans-serif;
+  color: white;
+  background-color: black;
+  background: url("https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/study_bg.jpg?v=1747398735599")
+    no-repeat center center fixed;
+  background-size: cover;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Header & Navigation */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1rem 0;
+  z-index: 1000;
+}
+
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #00ffff;
+}
+
+/* Login Button */
+.login-btn a {
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  color: #00ffff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.login-btn a:hover {
+  background-color: #00ffff;
+  color: #000;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+/* Greeting */
+#greeting {
+  color: rgb(121, 216, 216);
+  margin-left: 70%;
+  font-weight: bold;
+}
+
+/* Footer */
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: transparent;
+  color: #aaa;
+  text-align: center;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  z-index: 1000;
+}
+
+footer .socials {
+  margin-bottom: 0.5rem;
+}
+
+footer .socials a {
+  margin: 0 10px;
+  color: #00ffff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Main content */
+main {
+  padding: 120px 20px 100px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Subject List */
+#subjects {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+#subjects button {
+  padding: 12px 20px;
+  background-color: #1e1e2f;
+  color: #fff;
+  border: 2px solid #444;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#subjects button:hover {
+  background-color: #33334d;
+  transform: translateY(-2px);
+}
+
+/* Controls (Search, Filter, Sort) */
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+#controls input,
+#controls select {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #111;
+  color: #eee;
+}
+
+/* Documents */
+#documents {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  padding-bottom: 60px;
+}
+
+.document-item {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 15px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.document-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 12px #00ffff33;
+}
+
+.document-title {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.document-item a {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #00ffff;
+  color: #000;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.document-item a:hover {
+  background-color: #00cccc;
+}
+
+.hidden {
+  display: none !important;
+}
+
