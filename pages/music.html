@@ -12,74 +12,71 @@
   </head>
   <body>
     <header>
-        <div class="nav-wrapper">
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/pages/music.html">Music</a></li>
-                    <li><a href="/pages/study.html">Study</a></li>
-                </ul>
-            </nav>
-            <div id="greeting">  
-            </div>
-            <div class="login-btn">
-            <a href="/pages/login.html" id="loginLink">Login</a>
-            </div>
+      <div class="nav-wrapper">
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/pages/music.html">Music</a></li>
+            <li><a href="/pages/study.html">Study</a></li>
+          </ul>
+        </nav>
+        <div id="greeting"></div>
+        <div class="login-btn">
+          <a href="/pages/login.html" id="loginLink">Login</a>
         </div>
+      </div>
     </header>
 
     <div class="container music-section">
       <h1 class="page-title">🎵 Danh sách tất cả bài hát</h1>
-                <!-- Trình phát nhạc -->
-        <div class="music-player">
-          <div id="controlButtons">
-            <span class="tooltip">
-              <button id="playAllBtn">🎼</button>
-              <span class="tooltiptext">Phát tất cả</span>
-            </span>
-            <span class="tooltip">
-              <button id="prevBtn">⏮</button>
-              <span class="tooltiptext">Bài trước</span>
-            </span>
-            <span class="tooltip">
-              <button id="pauseResumeBtn">
-                ⏯
-              </button>
-              <span class="tooltiptext">Tạm dừng / Tiếp tục</span>
-            </span>
-            <span class="tooltip">
-              <button id="nextBtn">⏭</button>
-              <span class="tooltiptext">Bài kế tiếp</span>
-            </span>
-            <span class="tooltip">
-              <button id="shuffleBtn">🔀</button>
-              <span class="tooltiptext">Phát ngẫu nhiên</span>
-            </span>
-            <span class="tooltip">
-              <button id="repeatBtn">🔁</button>
-              <span class="tooltiptext">Lặp lại</span>
-            </span>
-          </div>
-          <p id="currentSongTitle" class="fade-in">Chưa phát bài nào</p>
-          <!-- Progress bar -->
-          <div class="progress-container">
-            <span id="currentTime">0:00</span>
-            <input type="range" id="progressBar" value="0" min="0" step="1" />
-            <span id="duration">0:00</span>
-          </div>
-          <audio id="musicPlayer" controls style="display: none"></audio>
+      <!-- Trình phát nhạc -->
+      <div class="music-player">
+        <div id="controlButtons">
+          <span class="tooltip">
+            <button id="playAllBtn">🎼</button>
+            <span class="tooltiptext">Phát tất cả</span>
+          </span>
+          <span class="tooltip">
+            <button id="prevBtn">⏮</button>
+            <span class="tooltiptext">Bài trước</span>
+          </span>
+          <span class="tooltip">
+            <button id="pauseResumeBtn">⏯</button>
+            <span class="tooltiptext">Tạm dừng / Tiếp tục</span>
+          </span>
+          <span class="tooltip">
+            <button id="nextBtn">⏭</button>
+            <span class="tooltiptext">Bài kế tiếp</span>
+          </span>
+          <span class="tooltip">
+            <button id="shuffleBtn">🔀</button>
+            <span class="tooltiptext">Phát ngẫu nhiên</span>
+          </span>
+          <span class="tooltip">
+            <button id="repeatBtn">🔁</button>
+            <span class="tooltiptext">Lặp lại</span>
+          </span>
         </div>
+        <p id="currentSongTitle" class="fade-in">Chưa phát bài nào</p>
+        <!-- Progress bar -->
+        <div class="progress-container">
+          <span id="currentTime">0:00</span>
+          <input type="range" id="progressBar" value="0" min="0" step="1" />
+          <span id="duration">0:00</span>
+        </div>
+        <audio id="musicPlayer" controls style="display: none"></audio>
+      </div>
       <div class="music-container">
         <div class="music-playlist">
           <!-- Nơi hiển thị danh sách playlist hoặc bài hát -->
           <div id="playlistContainer" class="fade-in"></div>
         </div>
-
-
       </div>
     </div>
 
     <footer>
+      <div>
+        <div></div>
       <div class="socials">
         <a href="https://github.com/NguyenTam-Wesley" target="_blank">GitHub</a>
         <a href="https://facebook.com/w.nctam" target="_blank">Facebook</a>
@@ -87,6 +84,21 @@
           >YouTube</a
         >
       </div>
+
+      <div class="volume-draw-container">
+        <canvas
+          id="volumeCanvas"
+          width="25"
+          height="25"
+          style="border: 2px solid black"
+        ></canvas>
+        <span class="tooltip">
+            <button id="eraserBtn">🧽</button>
+            <span class="tooltiptext">Vẽ/Xóa</span>
+          </span>
+      </div>
+      </div>
+
       <p>&copy;ntam</p>
     </footer>
 

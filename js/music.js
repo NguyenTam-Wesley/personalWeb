@@ -140,7 +140,94 @@ document.getElementById("shuffleBtn").addEventListener("click", () => {
 });
 
 
+// 🌟 Tính năng thanh tiến trình
+// Gán phần tử HTML vào biến
+const progressBar = document.getElementById("progressBar");
+const currentTimeDisplay = document.getElementById("currentTime");
+const durationDisplay = document.getElementById("duration");
 
-document.getElementById("repeatBtn").addEventListener("click", toggleRepeat);
+// Khi bài hát đang phát: cập nhật thanh tiến trình và thời gian
+musicPlayer.addEventListener("timeupdate", () => {
+  const current = Math.floor(musicPlayer.currentTime);
+  const total = Math.floor(musicPlayer.duration) || 0;
+
+  progressBar.max = total;
+  progressBar.value = current;
+
+  currentTimeDisplay.textContent = formatTime(current);
+  durationDisplay.textContent = formatTime(total);
+});
+
+// Cho phép người dùng kéo thanh để tua bài
+progressBar.addEventListener("input", () => {
+  musicPlayer.currentTime = progressBar.value;
+});
+
+// Hàm định dạng thời gian dạng mm:ss
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+
+// Am thanh
+const canvas = document.getElementById("volumeCanvas");
+const ctx = canvas.getContext("2d");
+const eraserBtn = document.getElementById("eraserBtn");
+let isDrawing = false;
+let erasing = false;
+
+// Sự kiện chuột để vẽ hoặc tẩy
+canvas.addEventListener("mousedown", () => isDrawing = true);
+canvas.addEventListener("mouseup", () => {
+  isDrawing = false;
+  updateVolume(); // Cập nhật âm lượng sau khi vẽ
+});
+canvas.addEventListener("mousemove", draw);
+
+eraserBtn.addEventListener("click", () => {
+  erasing = !erasing;
+  eraserBtn.textContent = erasing ? "✏️" : "🧽";
+});
+
+function draw(e) {
+  if (!isDrawing) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  if (erasing) {
+    ctx.globalCompositeOperation = "destination-out"; // Xóa nét vẽ
+  } else {
+    ctx.globalCompositeOperation = "source-over"; // Vẽ bình thường
+    ctx.fillStyle = "black";
+  }
+
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+
+// Tính phần đã tô để set âm lượng
+function updateVolume() {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  let filledPixels = 0;
+
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    const alpha = imageData.data[i + 3]; // kênh alpha (độ trong suốt)
+    if (alpha > 128) filledPixels++; // đếm những pixel không trong suốt
+  }
+
+  const totalPixels = canvas.width * canvas.height;
+  const fillPercentage = filledPixels / totalPixels;
+  const volume = Math.min(Math.max(fillPercentage, 0), 1);
+
+  musicPlayer.volume = volume;
+
+  console.log(`Âm lượng: ${(volume * 100).toFixed(1)}%`);
+}
+
 
 

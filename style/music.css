@@ -192,8 +192,21 @@ footer {
   z-index: 1000;
 }
 
+footer > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
 footer .socials {
   margin-bottom: 0.5rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
 }
 
 footer .socials a {
@@ -227,3 +240,28 @@ footer a:hover {
 #progressBar {
   flex: 1;
 }
+
+/* Am thanh */
+.volume-draw-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+}
+#volumeCanvas {
+  cursor: crosshair;
+}
+#eraserBtn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+#eraserBtn:hover {
+  transform: scale(1.2);
+  filter: brightness(1.5);
+}
+
+
