@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const eraserBtn = document.getElementById("eraserBtn");
 
   // State
+  let navigationStack = [];
   let currentPlaylist = [];
   let currentIndex = 0;
   let isRepeat = false;
@@ -33,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let isDrawing = false;
   let erasing = false;
 
-  // === Giao diện chính ===
   // === Giao diện chính ===
   async function loadMainMenu() {
     mainMenu.innerHTML = "";
@@ -59,8 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadCategory(type, displayTitle) {
+    navigationStack.push({ view: "main" }); // đang ở main menu → trước khi vào danh mục
     mainMenu.innerHTML = ""; // clear main menu to show sub-items
     const { data, error } = await supabase.from(type).select("id, name");
+
 
     if (error) {
       console.error(`Lỗi tải ${type}:`, error);
@@ -92,7 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+
+
   async function loadSongsByCategory(type, id, displayName) {
+    navigationStack.push({ view: "category", type, displayName }); // trước khi vào bài hát
     mainMenu.style.display = "none";
     playlistContainer.style.display = "block";
     backBtn.style.display = "inline-block";
@@ -113,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "id, song_name, url, artist:artist(name), genre:genre(name), region:region(name)"
       )
       .eq(filterColumn, id);
+
 
     if (error) {
       playlistContainer.innerHTML += `<p>Lỗi tải bài hát.</p>`;
@@ -232,8 +238,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   }
 
-  // ==== Back to Main Menu ====
+  // ==== Back ====
   backBtn.addEventListener("click", () => {
+    const lastView = navigationStack.pop();
+
+  if (!lastView) return;
+
+  if (lastView.view === "main") {
+    loadMainMenu(); // quay về menu chính
+  } else if (lastView.view === "category") {
+    loadCategory(lastView.type, lastView.displayTitle); // quay lại danh sách nghệ sĩ/thể loại...
+  }
+    /*
     musicPlayer.pause();
     musicPlayer.src = "";
     currentSongTitle.textContent = "";
@@ -243,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
     controlsContainer.style.display = "none";
     backBtn.style.display = "none";
     mainMenu.style.display = "flex";
+    */
   });
 
   // ==== Canvas Volume Draw ====
