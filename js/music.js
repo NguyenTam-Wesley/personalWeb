@@ -6,7 +6,6 @@ const SUPABASE_ANON_KEY =
 const supabase = createClient(supabaseUrl, SUPABASE_ANON_KEY);
 
 document.addEventListener("DOMContentLoaded", () => {
-  // DOM Elements
   const mainMenu = document.getElementById("mainMenu");
   const playlistContainer = document.getElementById("playlistContainer");
   const backBtn = document.getElementById("backBtn");
@@ -25,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas.getContext("2d");
   const eraserBtn = document.getElementById("eraserBtn");
 
-  // State
   let navigationStack = [];
   let currentPlaylist = [];
   let currentIndex = 0;
@@ -33,14 +31,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let isShuffle = false;
   let isDrawing = false;
   let erasing = false;
+  let controlsShownOnce = false;
 
-  // === Giao diện chính ===
   async function loadMainMenu() {
     mainMenu.innerHTML = "";
     mainMenu.style.display = "flex";
     playlistContainer.style.display = "none";
+
+    // Chỉ ẩn controls lần đầu tiên
+    if (!controlsShownOnce) {
+      controlsContainer.style.display = "none";
+    }
+
     backBtn.style.display = "none";
-    controlsContainer.style.display = "none";
 
     const categories = [
       { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
@@ -59,19 +62,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function loadCategory(type, displayTitle) {
-    navigationStack.push({ view: "main" }); // đang ở main menu → trước khi vào danh mục
-    mainMenu.innerHTML = ""; // clear main menu to show sub-items
+    mainMenu.style.display = "flex";
+    navigationStack.push({ view: "main" });
+    mainMenu.innerHTML = "";
     const { data, error } = await supabase.from(type).select("id, name");
 
-
-    if (error) {
-      console.error(`Lỗi tải ${type}:`, error);
-      mainMenu.innerHTML = `<p>Lỗi tải ${displayTitle}</p>`;
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      mainMenu.innerHTML = `<p>Không có dữ liệu cho ${displayTitle}</p>`;
+    if (error || !data || data.length === 0) {
+      mainMenu.innerHTML = `<p>Lỗi hoặc không có dữ liệu cho ${displayTitle}</p>`;
+      console.error(error);
       return;
     }
 
@@ -88,20 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     backBtn.style.display = "inline-block";
-    backBtn.onclick = () => {
-      mainMenu.innerHTML = "";
-      loadMainMenu();
-    };
   }
 
-
-
   async function loadSongsByCategory(type, id, displayName) {
-    navigationStack.push({ view: "category", type, displayName }); // trước khi vào bài hát
+    navigationStack.push({ view: "category", type, displayTitle: displayName });
     mainMenu.style.display = "none";
     playlistContainer.style.display = "block";
     backBtn.style.display = "inline-block";
-    controlsContainer.style.display = "block";
     playlistContainer.innerHTML = `<h3>${displayName} - Danh sách bài hát</h3>`;
 
     const columnMap = {
@@ -114,20 +105,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterColumn = columnMap[type];
     const { data, error } = await supabase
       .from("music_data")
-      .select(
-        "id, song_name, url, artist:artist(name), genre:genre(name), region:region(name)"
-      )
+      .select("id, song_name, url, artist:artist(name), genre:genre(name), region:region(name)")
       .eq(filterColumn, id);
 
-
-    if (error) {
-      playlistContainer.innerHTML += `<p>Lỗi tải bài hát.</p>`;
+    if (error || !data || data.length === 0) {
+      playlistContainer.innerHTML += `<p>Lỗi hoặc không có bài hát nào.</p>`;
       console.error(error);
-      return;
-    }
-
-    if (data.length === 0) {
-      playlistContainer.innerHTML += `<p>Không có bài hát nào.</p>`;
       return;
     }
 
@@ -145,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       playlistContainer.appendChild(btn);
     });
-
   }
 
   function playSong(index) {
@@ -156,9 +138,11 @@ document.addEventListener("DOMContentLoaded", () => {
     currentSongTitle.textContent = `${song.song_name} - ${artistName}`;
     musicPlayer.play().catch(console.error);
     pauseResumeBtn.textContent = "⏸";
+
+    controlsContainer.style.display = "block";
+    controlsShownOnce = true;
   }
 
-  // ==== Controls ====
   pauseResumeBtn.addEventListener("click", () => {
     if (musicPlayer.paused) {
       musicPlayer.play();
@@ -168,15 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
       pauseResumeBtn.textContent = "▶";
     }
   });
-
-  musicPlayer.addEventListener(
-    "play",
-    () => (pauseResumeBtn.textContent = "⏸")
-  );
-  musicPlayer.addEventListener(
-    "pause",
-    () => (pauseResumeBtn.textContent = "▶")
-  );
 
   musicPlayer.addEventListener("ended", () => {
     if (isRepeat) playSong(currentIndex);
@@ -217,7 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
     shuffleBtn.classList.toggle("active", isShuffle);
   }
 
-  // ==== Progress Bar ====
   musicPlayer.addEventListener("timeupdate", () => {
     const current = Math.floor(musicPlayer.currentTime);
     const total = Math.floor(musicPlayer.duration) || 0;
@@ -238,31 +212,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   }
 
-  // ==== Back ====
   backBtn.addEventListener("click", () => {
     const lastView = navigationStack.pop();
+    if (!lastView) return;
 
-  if (!lastView) return;
-
-  if (lastView.view === "main") {
-    loadMainMenu(); // quay về menu chính
-  } else if (lastView.view === "category") {
-    loadCategory(lastView.type, lastView.displayTitle); // quay lại danh sách nghệ sĩ/thể loại...
-  }
-    /*
-    musicPlayer.pause();
-    musicPlayer.src = "";
-    currentSongTitle.textContent = "";
-    currentPlaylist = [];
-    currentIndex = 0;
-    playlistContainer.style.display = "none";
-    controlsContainer.style.display = "none";
-    backBtn.style.display = "none";
-    mainMenu.style.display = "flex";
-    */
+    if (lastView.view === "main") {
+      loadMainMenu();
+    } else if (lastView.view === "category") {
+      loadCategory(lastView.type, lastView.displayTitle);
+    }
   });
 
-  // ==== Canvas Volume Draw ====
   canvas.addEventListener("mousedown", () => (isDrawing = true));
   canvas.addEventListener("mouseup", () => {
     isDrawing = false;
@@ -297,6 +257,5 @@ document.addEventListener("DOMContentLoaded", () => {
     musicPlayer.volume = Math.min(1, Math.max(0, volume));
   }
 
-  // === Load khi khởi động ===
   loadMainMenu();
 });
