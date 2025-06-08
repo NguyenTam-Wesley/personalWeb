@@ -25,6 +25,14 @@ header {
   z-index: 1000;
 }
 
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  gap: 10px;
+}
+
 nav ul {
   list-style: none;
   display: flex;
@@ -41,13 +49,6 @@ nav a {
 
 nav a:hover {
   color: #00ffff;
-}
-
-.nav-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
 }
 
 .login-btn a {
@@ -68,11 +69,9 @@ nav a:hover {
 }
 
 #greeting {
-    color:rgb(121, 216, 216); 
-    margin-left: 70%;
-    font-weight: bold;
+  color: rgb(121, 216, 216);
+  font-weight: bold;
 }
-
 
 .container.music-section {
   padding: 120px 20px 40px;
@@ -89,10 +88,6 @@ nav a:hover {
 .music-playlist {
   margin-top: 40px;
   display: flex;
-
-  flex-wrap: wrap;
-
-  white-space: normal;
   flex-direction: column;
   align-items: center;
   gap: 15px;
@@ -115,15 +110,85 @@ nav a:hover {
   transform: scale(1.05);
 }
 
-.music-player {
+/* NEW: Playlist name */
+#selectedPlaylistName {
+  font-size: 1.6rem;
+  color: #00ffff;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* NEW: Control buttons */
+#controlButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#controlButtons button {
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  font-weight: bold;
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#controlButtons button:hover {
+  background-color: #00ffff;
+  color: #000;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+/* NEW: Song list buttons */
+#songListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#songListContainer button {
+  padding: 6px 12px;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+#songListContainer button:hover {
+  border-color: #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+  transform: scale(1.05);
+}
+
+/* NEW: Player section hidden until playlist selected */
+#playerSection {
+  display: none;
+  flex-direction: column;
+  align-items: center;
   margin-top: 40px;
+}
+
+#playerSection.show {
+  display: flex;
+}
+
+.music-player {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 15px;
 }
 
-/* Nút nhạc */
 .music-player button {
   padding: 5px 10px;
   font-size: 1.2rem;
@@ -141,7 +206,6 @@ nav a:hover {
   transform: scale(1.05);
 }
 
-/* Định dạng nút đang bật */
 button.active {
   border: 2px solid #00ffff;
   box-shadow: 0 0 10px #00ffff;
@@ -152,7 +216,45 @@ audio {
   max-width: 500px;
 }
 
-/* Tooltip */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#progressBar {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.2);
+  accent-color: #00ffff;
+}
+
+.volume-draw-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+}
+
+#volumeCanvas {
+  cursor: crosshair;
+}
+
+#eraserBtn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+#eraserBtn:hover {
+  transform: scale(1.2);
+  filter: brightness(1.5);
+}
+
 .tooltip {
   position: relative;
   display: inline-block;
@@ -190,6 +292,7 @@ footer {
   padding: 0.8rem 1rem;
   font-size: 0.9rem;
   z-index: 1000;
+  height: 3rem;
 }
 
 footer > div {
@@ -198,13 +301,14 @@ footer > div {
   align-items: center;
   width: 100%;
   position: relative;
+  height: 100%;
 }
 
 footer .socials {
-  margin-bottom: 0.5rem;
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   gap: 12px;
 }
@@ -219,49 +323,24 @@ footer a:hover {
   text-decoration: underline;
 }
 
-/* Ẩn các nút khi chưa chọn playlist 
-.music-player div {
-  display: none;
-}
-*/
-/* Hiển thị các nút khi playlist được chọn */
-.music-player.show-buttons div {
-  display: flex;
-  gap: 5px;
-  justify-content: center;
-}
-.progress-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-}
+/* Responsive */
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 1.8rem;
+  }
 
-#progressBar {
-  flex: 1;
-}
+  nav ul {
+    gap: 1rem;
+  }
 
-/* Am thanh */
-.volume-draw-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-left: auto;
-}
-#volumeCanvas {
-  cursor: crosshair;
-}
-#eraserBtn {
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
+  .music-playlist button,
+  .music-player button,
+  #songListContainer button {
+    font-size: 1rem;
+    padding: 4px 8px;
+  }
 
-#eraserBtn:hover {
-  transform: scale(1.2);
-  filter: brightness(1.5);
+  audio {
+    width: 95%;
+  }
 }
-
-

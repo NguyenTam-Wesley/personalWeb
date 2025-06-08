@@ -1,233 +1,285 @@
-// File: js/music.js
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-const supabaseUrl = 'https://calwzopyjitbtahiafzw.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhbHd6b3B5aml0YnRhaGlhZnp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjgyOTAsImV4cCI6MjA2NDc0NDI5MH0.lFDePS6m0MpNXDcC43dJaqa1pHtCKHNRKoiDbnxTBBc';
+const supabaseUrl = "https://calwzopyjitbtahiafzw.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhbHd6b3B5aml0YnRhaGlhZnp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNjgyOTAsImV4cCI6MjA2NDc0NDI5MH0.lFDePS6m0MpNXDcC43dJaqa1pHtCKHNRKoiDbnxTBBc";
 const supabase = createClient(supabaseUrl, SUPABASE_ANON_KEY);
 
-const playlistContainer = document.getElementById("playlistContainer");
-const musicPlayer = document.getElementById("musicPlayer");
-const currentSongTitle = document.getElementById("currentSongTitle");
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM Elements
+  const mainMenu = document.getElementById("mainMenu");
+  const playlistContainer = document.getElementById("playlistContainer");
+  const backBtn = document.getElementById("backBtn");
+  const controlsContainer = document.getElementById("controlsContainer");
+  const musicPlayer = document.getElementById("musicPlayer");
+  const currentSongTitle = document.getElementById("currentSongTitle");
+  const pauseResumeBtn = document.getElementById("pauseResumeBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const repeatBtn = document.getElementById("repeatBtn");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const progressBar = document.getElementById("progressBar");
+  const currentTimeDisplay = document.getElementById("currentTime");
+  const durationDisplay = document.getElementById("duration");
+  const canvas = document.getElementById("volumeCanvas");
+  const ctx = canvas.getContext("2d");
+  const eraserBtn = document.getElementById("eraserBtn");
 
-async function loadPlaylists() {
-  const { data, error } = await supabase.from("music_data").select("id, song_name, genre, artist, url");
-  if (error) {
-    console.error("Lỗi tải nhạc:", error);
-    return;
+  // State
+  let currentPlaylist = [];
+  let currentIndex = 0;
+  let isRepeat = false;
+  let isShuffle = false;
+  let isDrawing = false;
+  let erasing = false;
+
+  // === Giao diện chính ===
+  // === Giao diện chính ===
+  async function loadMainMenu() {
+    mainMenu.innerHTML = "";
+    mainMenu.style.display = "flex";
+    playlistContainer.style.display = "none";
+    backBtn.style.display = "none";
+    controlsContainer.style.display = "none";
+
+    const categories = [
+      { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
+      { emoji: "🎧", label: "Thể loại", type: "genre" },
+      { emoji: "🌍", label: "Khu vực", type: "region" },
+      { emoji: "📂", label: "Playlist người dùng", type: "playlist" }
+    ];
+
+    categories.forEach(({ emoji, label, type }) => {
+      const btn = document.createElement("button");
+      btn.className = "main-category-button";
+      btn.textContent = `${emoji} ${label}`;
+      btn.addEventListener("click", () => loadCategory(type, `${emoji} ${label}`));
+      mainMenu.appendChild(btn);
+    });
   }
 
-  playlistContainer.innerHTML = "";
+  async function loadCategory(type, displayTitle) {
+    mainMenu.innerHTML = ""; // clear main menu to show sub-items
+    const { data, error } = await supabase.from(type).select("id, name");
 
-  data.forEach((song, index) => {
-  const button = document.createElement("button");
-  button.textContent = `${song.song_name}`;
-  button.className = "song-button";
-  button.addEventListener("click", () => {
-    currentPlaylist = data;         // Gán playlist hiện tại
-    currentIndex = index;           // Gán chỉ số hiện tại
-    playSong(index);                // Truyền index
-  });
-  playlistContainer.appendChild(button);
-});
-
-}
-
-function playSong(index) {
-  const song = currentPlaylist[index];
-  if (!song) return;
-  musicPlayer.src = song.url;
-  currentSongTitle.textContent = `${song.song_name} - ${song.artist}`;
-  musicPlayer.play().catch(e => console.error("Lỗi phát:", e));
-}
-
-
-loadPlaylists();
-// Tự động tải danh sách khi trang load
-// Xử lý nút, thanh tiến trình
-let currentPlaylist = [];
-let currentIndex = 0;
-let isShuffle = false;
-let isRepeat = false;
-
-function updateButtons() {
-  document.getElementById("repeatBtn").classList.toggle("active", isRepeat);
-  document.getElementById("shuffleBtn").classList.toggle("active", isShuffle);
-}
-
-// 3 nút control
-function playPrevSong() {
-  if (isShuffle) {
-    currentIndex = Math.floor(Math.random() * currentPlaylist.length);
-  } else {
-    currentIndex = (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
-  }
-  playSong(currentIndex);
-}
-
-function playNextSong() {
-  if (isShuffle) {
-    currentIndex = Math.floor(Math.random() * currentPlaylist.length);
-  } else {
-    currentIndex = (currentIndex + 1) % currentPlaylist.length;
-  }
-  playSong(currentIndex);
-}
-
-function playAllSongs() {
-  if (!currentPlaylist || currentPlaylist.length === 0) return;
-
-  currentIndex = 0;
-  playSong(currentIndex);
-
-  musicPlayer.onended = () => {
-    if (isRepeat) {
-      playSong(currentIndex);
-    } else {
-      if (isShuffle) {
-        currentIndex = Math.floor(Math.random() * currentPlaylist.length);
-      } else {
-        currentIndex = (currentIndex + 1) % currentPlaylist.length;
-      }
-
-      if (currentIndex === 0 && !isRepeat) {
-        musicPlayer.onended = null; // dừng lại khi hết
-      } else {
-        playSong(currentIndex);
-      }
+    if (error) {
+      console.error(`Lỗi tải ${type}:`, error);
+      mainMenu.innerHTML = `<p>Lỗi tải ${displayTitle}</p>`;
+      return;
     }
-  };
-}
-document.getElementById("prevBtn").addEventListener("click", playPrevSong);
-document.getElementById("nextBtn").addEventListener("click", playNextSong);
-document.getElementById("playAllBtn").addEventListener("click", playAllSongs);
 
+    if (!data || data.length === 0) {
+      mainMenu.innerHTML = `<p>Không có dữ liệu cho ${displayTitle}</p>`;
+      return;
+    }
 
+    const heading = document.createElement("h3");
+    heading.textContent = `${displayTitle} - Danh sách`;
+    mainMenu.appendChild(heading);
 
-// Nút páue và réumme
-const pauseResumeBtn = document.getElementById("pauseResumeBtn");
+    data.forEach((item) => {
+      const btn = document.createElement("button");
+      btn.className = "category-item";
+      btn.textContent = item.name;
+      btn.addEventListener("click", () => loadSongsByCategory(type, item.id, item.name));
+      mainMenu.appendChild(btn);
+    });
 
-pauseResumeBtn.addEventListener("click", () => {
-  if (musicPlayer.paused) {
-    musicPlayer.play();
+    backBtn.style.display = "inline-block";
+    backBtn.onclick = () => {
+      mainMenu.innerHTML = "";
+      loadMainMenu();
+    };
+  }
+
+  async function loadSongsByCategory(type, id, displayName) {
+    mainMenu.style.display = "none";
+    playlistContainer.style.display = "block";
+    backBtn.style.display = "inline-block";
+    controlsContainer.style.display = "block";
+    playlistContainer.innerHTML = `<h3>${displayName} - Danh sách bài hát</h3>`;
+
+    const columnMap = {
+      artist: "artist_id",
+      genre: "genre_id",
+      region: "region_id",
+      playlist: "playlist_id",
+    };
+
+    const filterColumn = columnMap[type];
+    const { data, error } = await supabase
+      .from("music_data")
+      .select(
+        "id, song_name, url, artist:artist(name), genre:genre(name), region:region(name)"
+      )
+      .eq(filterColumn, id);
+
+    if (error) {
+      playlistContainer.innerHTML += `<p>Lỗi tải bài hát.</p>`;
+      console.error(error);
+      return;
+    }
+
+    if (data.length === 0) {
+      playlistContainer.innerHTML += `<p>Không có bài hát nào.</p>`;
+      return;
+    }
+
+    currentPlaylist = data;
+    currentIndex = 0;
+
+    data.forEach((song, index) => {
+      const btn = document.createElement("button");
+      btn.className = "song-button";
+      const artistName = song.artist?.name || "Không rõ nghệ sĩ";
+      btn.textContent = `${song.song_name} - ${artistName}`;
+      btn.addEventListener("click", () => {
+        currentIndex = index;
+        playSong(currentIndex);
+      });
+      playlistContainer.appendChild(btn);
+    });
+
+  }
+
+  function playSong(index) {
+    const song = currentPlaylist[index];
+    if (!song) return;
+    musicPlayer.src = song.url;
+    const artistName = song.artist?.name || "Không rõ nghệ sĩ";
+    currentSongTitle.textContent = `${song.song_name} - ${artistName}`;
+    musicPlayer.play().catch(console.error);
     pauseResumeBtn.textContent = "⏸";
-  } else {
+  }
+
+  // ==== Controls ====
+  pauseResumeBtn.addEventListener("click", () => {
+    if (musicPlayer.paused) {
+      musicPlayer.play();
+      pauseResumeBtn.textContent = "⏸";
+    } else {
+      musicPlayer.pause();
+      pauseResumeBtn.textContent = "▶";
+    }
+  });
+
+  musicPlayer.addEventListener(
+    "play",
+    () => (pauseResumeBtn.textContent = "⏸")
+  );
+  musicPlayer.addEventListener(
+    "pause",
+    () => (pauseResumeBtn.textContent = "▶")
+  );
+
+  musicPlayer.addEventListener("ended", () => {
+    if (isRepeat) playSong(currentIndex);
+    else playNextSong();
+  });
+
+  prevBtn.addEventListener("click", playPrevSong);
+  nextBtn.addEventListener("click", playNextSong);
+  repeatBtn.addEventListener("click", () => {
+    isRepeat = !isRepeat;
+    isShuffle = false;
+    updateButtons();
+  });
+  shuffleBtn.addEventListener("click", () => {
+    isShuffle = !isShuffle;
+    isRepeat = false;
+    updateButtons();
+  });
+
+  function playNextSong() {
+    if (currentPlaylist.length === 0) return;
+    currentIndex = isShuffle
+      ? Math.floor(Math.random() * currentPlaylist.length)
+      : (currentIndex + 1) % currentPlaylist.length;
+    playSong(currentIndex);
+  }
+
+  function playPrevSong() {
+    if (currentPlaylist.length === 0) return;
+    currentIndex = isShuffle
+      ? Math.floor(Math.random() * currentPlaylist.length)
+      : (currentIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+    playSong(currentIndex);
+  }
+
+  function updateButtons() {
+    repeatBtn.classList.toggle("active", isRepeat);
+    shuffleBtn.classList.toggle("active", isShuffle);
+  }
+
+  // ==== Progress Bar ====
+  musicPlayer.addEventListener("timeupdate", () => {
+    const current = Math.floor(musicPlayer.currentTime);
+    const total = Math.floor(musicPlayer.duration) || 0;
+
+    progressBar.max = total;
+    progressBar.value = current;
+    currentTimeDisplay.textContent = formatTime(current);
+    durationDisplay.textContent = formatTime(total);
+  });
+
+  progressBar.addEventListener("input", () => {
+    musicPlayer.currentTime = progressBar.value;
+  });
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  }
+
+  // ==== Back to Main Menu ====
+  backBtn.addEventListener("click", () => {
     musicPlayer.pause();
-    pauseResumeBtn.textContent = "▶";
-  }
-});
+    musicPlayer.src = "";
+    currentSongTitle.textContent = "";
+    currentPlaylist = [];
+    currentIndex = 0;
+    playlistContainer.style.display = "none";
+    controlsContainer.style.display = "none";
+    backBtn.style.display = "none";
+    mainMenu.style.display = "flex";
+  });
 
-// Khi bài hát mới được phát từ đầu thì cập nhật nút
-musicPlayer.addEventListener("play", () => {
-  pauseResumeBtn.textContent = "⏸";
-});
-musicPlayer.addEventListener("pause", () => {
-  pauseResumeBtn.textContent = "▶";
-});
+  // ==== Canvas Volume Draw ====
+  canvas.addEventListener("mousedown", () => (isDrawing = true));
+  canvas.addEventListener("mouseup", () => {
+    isDrawing = false;
+    updateVolume();
+  });
+  canvas.addEventListener("mousemove", draw);
+  eraserBtn.addEventListener("click", () => {
+    erasing = !erasing;
+    eraserBtn.textContent = erasing ? "✏️" : "🧽";
+  });
 
-// Nút rêpat
-document.getElementById("repeatBtn").addEventListener("click", () => {
-  isRepeat = !isRepeat;
-  if (isRepeat) isShuffle = false;
-  updateButtons();
-});
+  function draw(e) {
+    if (!isDrawing) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-// Nút shuffleshuffle
-document.getElementById("shuffleBtn").addEventListener("click", () => {
-  isShuffle = !isShuffle;
-  if (isShuffle) isRepeat = false;
-  updateButtons();
-});
-
-
-// 🌟 Tính năng thanh tiến trình
-// Gán phần tử HTML vào biến
-const progressBar = document.getElementById("progressBar");
-const currentTimeDisplay = document.getElementById("currentTime");
-const durationDisplay = document.getElementById("duration");
-
-// Khi bài hát đang phát: cập nhật thanh tiến trình và thời gian
-musicPlayer.addEventListener("timeupdate", () => {
-  const current = Math.floor(musicPlayer.currentTime);
-  const total = Math.floor(musicPlayer.duration) || 0;
-
-  progressBar.max = total;
-  progressBar.value = current;
-
-  currentTimeDisplay.textContent = formatTime(current);
-  durationDisplay.textContent = formatTime(total);
-});
-
-// Cho phép người dùng kéo thanh để tua bài
-progressBar.addEventListener("input", () => {
-  musicPlayer.currentTime = progressBar.value;
-});
-
-// Hàm định dạng thời gian dạng mm:ss
-function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-}
-
-
-// Am thanh
-const canvas = document.getElementById("volumeCanvas");
-const ctx = canvas.getContext("2d");
-const eraserBtn = document.getElementById("eraserBtn");
-let isDrawing = false;
-let erasing = false;
-
-// Sự kiện chuột để vẽ hoặc tẩy
-canvas.addEventListener("mousedown", () => isDrawing = true);
-canvas.addEventListener("mouseup", () => {
-  isDrawing = false;
-  updateVolume(); // Cập nhật âm lượng sau khi vẽ
-});
-canvas.addEventListener("mousemove", draw);
-
-eraserBtn.addEventListener("click", () => {
-  erasing = !erasing;
-  eraserBtn.textContent = erasing ? "✏️" : "🧽";
-});
-
-function draw(e) {
-  if (!isDrawing) return;
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  if (erasing) {
-    ctx.globalCompositeOperation = "destination-out"; // Xóa nét vẽ
-  } else {
-    ctx.globalCompositeOperation = "source-over"; // Vẽ bình thường
+    ctx.globalCompositeOperation = erasing ? "destination-out" : "source-over";
     ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fill();
   }
 
-  ctx.beginPath();
-  ctx.arc(x, y, 5, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-
-// Tính phần đã tô để set âm lượng
-function updateVolume() {
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  let filledPixels = 0;
-
-  for (let i = 0; i < imageData.data.length; i += 4) {
-    const alpha = imageData.data[i + 3]; // kênh alpha (độ trong suốt)
-    if (alpha > 128) filledPixels++; // đếm những pixel không trong suốt
+  function updateVolume() {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let filledPixels = 0;
+    for (let i = 3; i < imageData.length; i += 4) {
+      if (imageData[i] > 0) filledPixels++;
+    }
+    const volume = (filledPixels / (canvas.width * canvas.height)) * 2;
+    musicPlayer.volume = Math.min(1, Math.max(0, volume));
   }
 
-  const totalPixels = canvas.width * canvas.height;
-  const fillPercentage = filledPixels / totalPixels;
-  const volume = Math.min(Math.max(fillPercentage, 0), 1);
-
-  musicPlayer.volume = volume;
-
-  console.log(`Âm lượng: ${(volume * 100).toFixed(1)}%`);
-}
-
-
-
+  // === Load khi khởi động ===
+  loadMainMenu();
+});

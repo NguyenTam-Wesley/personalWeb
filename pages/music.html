@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Music Playlist</title>
     <link rel="stylesheet" href="/style/music.css" />
     <link
@@ -11,95 +11,139 @@
     />
   </head>
   <body>
-    <header>
+    <header> <!-- ok -->
       <div class="nav-wrapper">
-        <nav>
+        <nav> <!-- okok -->
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/pages/music.html">Music</a></li>
+            <li><a href="/pages/music.html" class="active">Music</a></li>
             <li><a href="/pages/study.html">Study</a></li>
           </ul>
         </nav>
-        <div id="greeting"></div>
-        <div class="login-btn">
+        <div id="greeting"></div> <!-- chưa ok -->
+        <div class="login-btn"> <!-- okok -->
           <a href="/pages/login.html" id="loginLink">Login</a>
         </div>
       </div>
     </header>
 
-    <div class="container music-section">
+    <main class="container music-section"> <!-- chưa check -->
+      <button id="backBtn">⬅️ Quay lại</button> <!-- chưa ok -->
       <h1 class="page-title">🎵 Danh sách tất cả bài hát</h1>
+
       <!-- Trình phát nhạc -->
-      <div class="music-player">
-        <div id="controlButtons">
+      <section class="music-player" aria-label="Music Player Controls"> <!-- ok tất cả nút -->
+        <div id="controlsContainer" aria-label="Music Controls">
           <span class="tooltip">
-            <button id="playAllBtn">🎼</button>
+            <button id="playAllBtn" title="Phát tất cả">🎼</button>
             <span class="tooltiptext">Phát tất cả</span>
           </span>
           <span class="tooltip">
-            <button id="prevBtn">⏮</button>
+            <button id="prevBtn" title="Bài trước">⏮</button>
             <span class="tooltiptext">Bài trước</span>
           </span>
           <span class="tooltip">
-            <button id="pauseResumeBtn">⏯</button>
+            <button id="pauseResumeBtn" title="Tạm dừng / Tiếp tục">⏯</button>
             <span class="tooltiptext">Tạm dừng / Tiếp tục</span>
           </span>
           <span class="tooltip">
-            <button id="nextBtn">⏭</button>
+            <button id="nextBtn" title="Bài kế tiếp">⏭</button>
             <span class="tooltiptext">Bài kế tiếp</span>
           </span>
           <span class="tooltip">
-            <button id="shuffleBtn">🔀</button>
+            <button id="shuffleBtn" title="Phát ngẫu nhiên">🔀</button>
             <span class="tooltiptext">Phát ngẫu nhiên</span>
           </span>
           <span class="tooltip">
-            <button id="repeatBtn">🔁</button>
+            <button id="repeatBtn" title="Lặp lại">🔁</button>
             <span class="tooltiptext">Lặp lại</span>
           </span>
         </div>
-        <p id="currentSongTitle" class="fade-in">Chưa phát bài nào</p>
+
+        <!-- Trạng thái, thông tin -->
+        <p 
+          id="currentSongTitle"
+          class="fade-in"
+          aria-live="polite"
+          aria-atomic="true"
+        > 
+          Chưa phát bài nào
+        </p> <!-- ok -->
+
         <!-- Progress bar -->
-        <div class="progress-container">
+        <div class="progress-container"> <!-- ok nhưng chưa hoàn thiện ( vẫn xuất hiện khi load trang) -->
           <span id="currentTime">0:00</span>
-          <input type="range" id="progressBar" value="0" min="0" step="1" />
+          <input
+            type="range"
+            id="progressBar"
+            value="0"
+            min="0"
+            step="1"
+            aria-label="Progress Bar"
+          />
           <span id="duration">0:00</span>
         </div>
-        <audio id="musicPlayer" controls style="display: none"></audio>
-      </div>
-      <div class="music-container">
+
+        <audio
+          id="musicPlayer"
+          controls
+          style="display: none"
+          aria-label="Audio Player"
+        ></audio>
+      </section>
+
+      <!-- Danh sách playlist hoặc bài hát -->
+      <section class="music-container">
+        <div id="mainMenu"></div>
+        <!-- Thêm đây -->
         <div class="music-playlist">
-          <!-- Nơi hiển thị danh sách playlist hoặc bài hát -->
-          <div id="playlistContainer" class="fade-in"></div>
+          <div
+            id="playlistContainer"
+            class="fade-in"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
 
     <footer>
-      <div>
-        <div></div>
-      <div class="socials">
-        <a href="https://github.com/NguyenTam-Wesley" target="_blank">GitHub</a>
-        <a href="https://facebook.com/w.nctam" target="_blank">Facebook</a>
-        <a href="https://www.youtube.com/@wesley-shouyuett7" target="_blank"
+      <div class="socials"> <!-- chưa ok về vị trí -->
+        <a
+          href="https://github.com/NguyenTam-Wesley"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
+        >
+        <a
+          href="https://facebook.com/w.nctam"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Facebook</a
+        >
+        <a
+          href="https://www.youtube.com/@wesley-shouyuett7"
+          target="_blank"
+          rel="noopener noreferrer"
           >YouTube</a
         >
       </div>
 
-      <div class="volume-draw-container">
+      <div class="volume-draw-container" aria-label="Volume Control"> <!-- chưa ok về vị trí -->
         <canvas
           id="volumeCanvas"
           width="25"
           height="25"
           style="border: 2px solid black"
+          aria-label="Volume Drawing Canvas"
         ></canvas>
         <span class="tooltip">
-            <button id="eraserBtn">🧽</button>
-            <span class="tooltiptext">Vẽ/Xóa</span>
-          </span>
-      </div>
+          <button id="eraserBtn" title="Vẽ/Xóa">🧽</button>
+          <span class="tooltiptext">Vẽ/Xóa</span>
+        </span>
       </div>
 
-      <p>&copy;ntam</p>
+      <p>&copy; ntam</p>
     </footer>
 
     <script type="module" src="/script.js"></script>
