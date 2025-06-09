@@ -111,8 +111,10 @@ nav a:hover {
 }
 
 /* NEW: Playlist name */
-#selectedPlaylistName {
-  font-size: 1.6rem;
+
+#playlistContainer {
+  font-family: 'Edu NSW ACT Foundation', cursive;
+  font-size: 1.3rem;
   color: #00ffff;
   font-weight: bold;
   margin-bottom: 15px;
@@ -323,7 +325,40 @@ footer a:hover {
   text-decoration: underline;
 }
 
+/* NÚT BACK */
+#backBtn {
+  position: absolute;
+  top: 120px;
+  left: 20px;
+  padding: 8px 16px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #00ffff;
+  font-weight: bold;
+  border: 2px solid #00ffff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+
+#backBtn:hover {
+  background-color: #00ffff;
+  color: #000;
+  box-shadow: 0 0 10px #00ffff;
+}
+
 /* Responsive */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filter-group select {
+    width: 200px;
+  }
+}
+
 @media (max-width: 600px) {
   .page-title {
     font-size: 1.8rem;
@@ -343,4 +378,68 @@ footer a:hover {
   audio {
     width: 95%;
   }
+}
+
+/* Layout cho container chứa các nút danh mục */
+#mainMenu {
+  display: flex;
+  flex-direction: row;       /* Xếp theo hàng ngang */
+  flex-wrap: wrap;           /* Tự động xuống hàng khi đầy */
+  justify-content: flex-start; /* Căn trái */
+  align-items: flex-start;     /* Căn top theo chiều dọc */
+  gap: 16px;                   /* Khoảng cách giữa các item */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+
+/* Style cho các nút danh mục */
+.main-category-button {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 16px;
+  padding: 0px;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 200px;
+  text-align: center;
+  display: block;
+}
+
+/* Hiệu ứng hover */
+.main-category-button:hover {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.category-item {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 16px;
+  padding: 0px;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 200px;
+  text-align: center;
+  display: block;
+}
+
+/* Hiệu ứng hover */
+.category-item:hover {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.music-container {
+  display: flex;
+  flex-direction: column; /* xếp dọc */
+  gap: 0px; /* khoảng cách giữa các item */
+  padding: 10px;
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Music Playlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style/music.css" />
     <link
       rel="icon"
@@ -11,28 +12,28 @@
     />
   </head>
   <body>
-    <header> <!-- ok -->
+    <header>
       <div class="nav-wrapper">
-        <nav> <!-- okok -->
+        <nav>
           <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/pages/music.html" class="active">Music</a></li>
             <li><a href="/pages/study.html">Study</a></li>
           </ul>
         </nav>
-        <div id="greeting"></div> <!-- chưa ok -->
-        <div class="login-btn"> <!-- okok -->
+        <div id="greeting" aria-live="polite"></div>
+        <div class="login-btn">
           <a href="/pages/login.html" id="loginLink">Login</a>
         </div>
       </div>
     </header>
 
-    <main class="container music-section"> <!-- chưa check -->
-      <button id="backBtn">⬅️ Quay lại</button> <!-- chưa ok -->
-      <h1 class="page-title">🎵 Danh sách tất cả bài hát</h1>
+    <main class="container music-section">
+      <h1 class="page-title">🎵 Danh mục</h1>
+      <button id="backBtn">⬅️ Quay lại</button>
 
       <!-- Trình phát nhạc -->
-      <section class="music-player" aria-label="Music Player Controls"> <!-- ok tất cả nút -->
+      <section class="music-player" aria-label="Music Player Controls">
         <div id="controlsContainer" aria-label="Music Controls">
           <span class="tooltip">
             <button id="playAllBtn" title="Phát tất cả">🎼</button>
@@ -60,18 +61,16 @@
           </span>
         </div>
 
-        <!-- Trạng thái, thông tin -->
-        <p 
+        <p
           id="currentSongTitle"
           class="fade-in"
           aria-live="polite"
           aria-atomic="true"
-        > 
+        >
           Chưa phát bài nào
-        </p> <!-- ok -->
+        </p>
 
-        <!-- Progress bar -->
-        <div class="progress-container"> <!-- ok nhưng chưa hoàn thiện ( vẫn xuất hiện khi load trang) -->
+        <div class="progress-container">
           <span id="currentTime">0:00</span>
           <input
             type="range"
@@ -94,8 +93,8 @@
 
       <!-- Danh sách playlist hoặc bài hát -->
       <section class="music-container">
-        <div id="mainMenu"></div>
-        <!-- Thêm đây -->
+        <div id="mainMenu" aria-label="Menu lựa chọn"></div>
+
         <div class="music-playlist">
           <div
             id="playlistContainer"
@@ -108,39 +107,41 @@
     </main>
 
     <footer>
-      <div class="socials"> <!-- chưa ok về vị trí -->
-        <a
-          href="https://github.com/NguyenTam-Wesley"
-          target="_blank"
-          rel="noopener noreferrer"
-          >GitHub</a
-        >
-        <a
-          href="https://facebook.com/w.nctam"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Facebook</a
-        >
-        <a
-          href="https://www.youtube.com/@wesley-shouyuett7"
-          target="_blank"
-          rel="noopener noreferrer"
-          >YouTube</a
-        >
-      </div>
+      <div class="footer-content">
+        <div class="socials">
+          <a
+            href="https://github.com/NguyenTam-Wesley"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub</a
+          >
+          <a
+            href="https://facebook.com/w.nctam"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Facebook</a
+          >
+          <a
+            href="https://www.youtube.com/@wesley-shouyuett7"
+            target="_blank"
+            rel="noopener noreferrer"
+            >YouTube</a
+          >
+        </div>
 
-      <div class="volume-draw-container" aria-label="Volume Control"> <!-- chưa ok về vị trí -->
-        <canvas
-          id="volumeCanvas"
-          width="25"
-          height="25"
-          style="border: 2px solid black"
-          aria-label="Volume Drawing Canvas"
-        ></canvas>
-        <span class="tooltip">
-          <button id="eraserBtn" title="Vẽ/Xóa">🧽</button>
-          <span class="tooltiptext">Vẽ/Xóa</span>
-        </span>
+        <div class="volume-draw-container" aria-label="Volume Control">
+          <canvas
+            id="volumeCanvas"
+            width="25"
+            height="25"
+            style="border: 2px solid black"
+            aria-label="Volume Drawing Canvas"
+          ></canvas>
+          <span class="tooltip">
+            <button id="eraserBtn" title="Vẽ/Xóa">🧽</button>
+            <span class="tooltiptext">Vẽ/Xóa</span>
+          </span>
+        </div>
       </div>
 
       <p>&copy; ntam</p>
