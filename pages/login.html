@@ -4,20 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login</title>
+  <link rel="stylesheet" href="/style/header.css" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <h2>Login Page</h2>
-  <input type="text" id="username" placeholder="Username" />
-  <input type="password" id="password" placeholder="Password" />
-  <button id="loginBtn">Login</button>
+  <main class="auth-container">
+    <h2>Login Page</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Login</button>
 
+    <p>
+      Chưa có tài khoản?
+      <a href="/pages/signup.html">Đăng ký ngay</a>
+    </p>
+  </main>
 
-  <p>
-    Chưa có tài khoản?
-    <a href="/pages/signup.html">Đăng ký ngay</a>
-  </p>
-
-  <!-- CHÚ Ý: cần type="module" -->
+  <script type="module" src="/js/header.js"></script>
   <script type="module" src="../js/login.js"></script>
 </body>
 </html>

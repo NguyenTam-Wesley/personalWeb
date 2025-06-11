@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Music Playlist</title>
     <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style/header.css" />
     <link rel="stylesheet" href="/style/music.css" />
     <link
       rel="icon"
@@ -12,142 +13,51 @@
     />
   </head>
   <body>
-    <header>
-      <div class="nav-wrapper">
-        <nav>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/pages/music.html" class="active">Music</a></li>
-            <li><a href="/pages/study.html">Study</a></li>
-          </ul>
-        </nav>
-        <div id="greeting" aria-live="polite"></div>
-        <div class="login-btn">
-          <a href="/pages/login.html" id="loginLink">Login</a>
-        </div>
-      </div>
-    </header>
-
     <main class="container music-section">
       <h1 class="page-title">🎵 Danh mục</h1>
-      <button id="backBtn">⬅️ Quay lại</button>
-
-      <!-- Trình phát nhạc -->
-      <section class="music-player" aria-label="Music Player Controls">
-        <div id="controlsContainer" aria-label="Music Controls">
-          <span class="tooltip">
-            <button id="playAllBtn" title="Phát tất cả">🎼</button>
-            <span class="tooltiptext">Phát tất cả</span>
-          </span>
-          <span class="tooltip">
-            <button id="prevBtn" title="Bài trước">⏮</button>
-            <span class="tooltiptext">Bài trước</span>
-          </span>
-          <span class="tooltip">
-            <button id="pauseResumeBtn" title="Tạm dừng / Tiếp tục">⏯</button>
-            <span class="tooltiptext">Tạm dừng / Tiếp tục</span>
-          </span>
-          <span class="tooltip">
-            <button id="nextBtn" title="Bài kế tiếp">⏭</button>
-            <span class="tooltiptext">Bài kế tiếp</span>
-          </span>
-          <span class="tooltip">
-            <button id="shuffleBtn" title="Phát ngẫu nhiên">🔀</button>
-            <span class="tooltiptext">Phát ngẫu nhiên</span>
-          </span>
-          <span class="tooltip">
-            <button id="repeatBtn" title="Lặp lại">🔁</button>
-            <span class="tooltiptext">Lặp lại</span>
-          </span>
-        </div>
-
-        <p
-          id="currentSongTitle"
-          class="fade-in"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          Chưa phát bài nào
-        </p>
-
-        <div class="progress-container">
-          <span id="currentTime">0:00</span>
-          <input
-            type="range"
-            id="progressBar"
-            value="0"
-            min="0"
-            step="1"
-            aria-label="Progress Bar"
-          />
-          <span id="duration">0:00</span>
-        </div>
-
-        <audio
-          id="musicPlayer"
-          controls
-          style="display: none"
-          aria-label="Audio Player"
-        ></audio>
-      </section>
-
-      <!-- Danh sách playlist hoặc bài hát -->
-      <section class="music-container">
-        <div id="mainMenu" aria-label="Menu lựa chọn"></div>
-
-        <div class="music-playlist">
-          <div
-            id="playlistContainer"
-            class="fade-in"
-            aria-live="polite"
-            aria-atomic="true"
-          ></div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="footer-content">
-        <div class="socials">
-          <a
-            href="https://github.com/NguyenTam-Wesley"
-            target="_blank"
-            rel="noopener noreferrer"
-            >GitHub</a
-          >
-          <a
-            href="https://facebook.com/w.nctam"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Facebook</a
-          >
-          <a
-            href="https://www.youtube.com/@wesley-shouyuett7"
-            target="_blank"
-            rel="noopener noreferrer"
-            >YouTube</a
-          >
-        </div>
-
-        <div class="volume-draw-container" aria-label="Volume Control">
-          <canvas
-            id="volumeCanvas"
-            width="25"
-            height="25"
-            style="border: 2px solid black"
-            aria-label="Volume Drawing Canvas"
-          ></canvas>
-          <span class="tooltip">
-            <button id="eraserBtn" title="Vẽ/Xóa">🧽</button>
-            <span class="tooltiptext">Vẽ/Xóa</span>
-          </span>
+      <div class="top-bar">
+        <button id="backBtn">⬅️ Quay lại</button>
+        <div class="volume-control-bar">
+          <canvas id="volumeCanvas" width="100" height="20"></canvas>
+          <button id="eraserBtn">🧹</button>
         </div>
       </div>
+      <div id="controlsContainer" class="controls-container">
+        <div class="player-controls">
+          <div class="song-info">
+            <span id="currentSongTitle">Chưa chọn bài hát</span>
+          </div>
+          <div class="control-buttons">
+            <button id="prevBtn">⏮️</button>
+            <button id="pauseResumeBtn">▶️</button>
+            <button id="nextBtn">⏭️</button>
+            <button id="repeatBtn">🔁</button>
+            <button id="shuffleBtn">🔀</button>
+            <button id="addToPlaylistBtn" class="add-to-playlist-btn">➕</button>
+          </div>
+          <div class="progress-container">
+            <span id="currentTime">0:00</span>
+            <input type="range" id="progressBar" min="0" value="0" step="1" />
+            <span id="duration">0:00</span>
+          </div>
+        </div>
+      </div>
+      <div id="mainMenu"></div>
+      <div id="playlistContainer"></div>
+    </main>
 
-      <p>&copy; ntam</p>
+    <audio id="musicPlayer" style="display: none"></audio>
+
+    <footer>
+      <div class="socials">
+        <a href="https://github.com/NguyenTam-Wesley" target="_blank">GitHub</a>
+        <a href="https://facebook.com/w.nctam" target="_blank">Facebook</a>
+        <a href="https://www.youtube.com/@wesley-shouyuett7" target="_blank">YouTube</a>
+      </div>
+      <p>&copy;ntam</p>
     </footer>
 
-    <script type="module" src="/script.js"></script>
+    <script type="module" src="/js/header.js"></script>
     <script type="module" src="/js/music.js"></script>
   </body>
 </html>

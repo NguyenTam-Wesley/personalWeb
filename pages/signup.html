@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Sign Up</title>
+  <link rel="stylesheet" href="/style/header.css" />
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <h2>Sign Up</h2>
-  <input type="text" id="username" placeholder="Username" />
-  <input type="password" id="password" placeholder="Password" />
-  <button id="signupBtn">Sign Up</button>
+  <main class="auth-container">
+    <h2>Sign Up Page</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+    <button id="signupBtn">Sign Up</button>
 
+    <p>
+      Đã có tài khoản?
+      <a href="/pages/login.html">Đăng nhập ngay</a>
+    </p>
+  </main>
+
+  <script type="module" src="/js/header.js"></script>
   <script type="module" src="../js/signup.js"></script>
 </body>
 </html>

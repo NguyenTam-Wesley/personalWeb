@@ -1,8 +1,9 @@
 import { registerUser, getCurrentUser } from "./auth.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Nếu đã đăng nhập thì chuyển hướng luôn
-  if (getCurrentUser()) {
+  const user = await getCurrentUser();
+  if (user) {
     window.location.href = "/index.html";
     return;
   }
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       await registerUser(username, password);
       alert("Đăng ký thành công! Vui lòng đăng nhập.");
-      window.location.href = "/login.html";
+      window.location.href = "/pages/login.html";
     } catch (err) {
       alert("Lỗi đăng ký: " + err.message);
     }

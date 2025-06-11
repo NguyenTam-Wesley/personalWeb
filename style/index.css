@@ -11,7 +11,7 @@ html {
   font-family: "Segoe UI", sans-serif;
   color: white;
   background-color: black;
-  background: url("https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/study_bg.jpg?v=1747398735599")
+  background: url("https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/background.jpg?v=1747398735599")
     no-repeat center center fixed;
   background-size: cover;
   scroll-behavior: smooth;
@@ -23,16 +23,6 @@ main {
   padding: 120px 20px 100px;
   max-width: 1000px;
   margin: 0 auto;
-}
-
-main > h1 {
-  margin-top: 40px;
-  margin-bottom: 30px;
-  text-align: center;
-  font-size: 2.3rem;
-  font-weight: bold;
-  color: white;
-  letter-spacing: 1px;
 }
 
 /* Subject List */
@@ -152,5 +142,4 @@ footer a:hover {
 
 .hidden {
   display: none;
-}
-
+} 

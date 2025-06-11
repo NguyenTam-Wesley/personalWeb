@@ -1,9 +1,10 @@
 // js/login.js
 import { loginUser, getCurrentUser } from "./auth.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Nếu đã đăng nhập thì chuyển hướng luôn
-  if (getCurrentUser()) {
+  const user = await getCurrentUser();
+  if (user) {
     window.location.href = "/index.html";
     return;
   }

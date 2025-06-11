@@ -42,7 +42,8 @@ class MusicPlayer {
       currentTimeDisplay: document.getElementById("currentTime"),
       durationDisplay: document.getElementById("duration"),
       canvas: document.getElementById("volumeCanvas"),
-      eraserBtn: document.getElementById("eraserBtn")
+      eraserBtn: document.getElementById("eraserBtn"),
+      addToPlaylistBtn: document.getElementById("addToPlaylistBtn")
     };
 
     // Initialize canvas context
@@ -64,13 +65,10 @@ class MusicPlayer {
     );
     this.init();
 
-    // Thêm nút ➕ vào controls
-    this.addToPlaylistBtn = document.createElement("button");
-    this.addToPlaylistBtn.textContent = "➕";
-    this.addToPlaylistBtn.className = "add-to-playlist-btn";
-    this.addToPlaylistBtn.title = "Thêm bài đang phát vào playlist";
-    this.addToPlaylistBtn.addEventListener("click", () => this.showAddToPlaylistPopup());
-    this.elements.controlsContainer.appendChild(this.addToPlaylistBtn);
+    // Đảm bảo progressBar là input range
+    this.elements.progressBar.addEventListener("input", () => {
+      this.elements.musicPlayer.currentTime = this.elements.progressBar.value;
+    });
   }
 
   // Error handling
@@ -283,10 +281,13 @@ class MusicPlayer {
     this.elements.repeatBtn.addEventListener("click", () => this.toggleRepeat());
     this.elements.shuffleBtn.addEventListener("click", () => this.toggleShuffle());
 
-    // Progress bar
-    this.elements.progressBar.addEventListener("input", () => {
-      this.elements.musicPlayer.currentTime = this.elements.progressBar.value;
-    });
+    // Nút ➕ thêm vào playlist
+    if (this.elements.addToPlaylistBtn) {
+      this.elements.addToPlaylistBtn.addEventListener("click", () => {
+        console.log("Nút ➕ được click");
+        this.showAddToPlaylistPopup();
+      });
+    }
 
     // Volume control
     this.elements.canvas.addEventListener("mousedown", () => this.state.isDrawing = true);
@@ -422,10 +423,7 @@ class MusicPlayer {
 
         // Thêm nút tạo playlist mới
         const createPlaylistBtn = this.createButton("➕ Tạo playlist mới", "create-playlist-button", () => {
-          const playlistName = prompt("Nhập tên playlist:");
-          if (playlistName?.trim()) {
-            this.createPlaylist(playlistName.trim());
-          }
+          this.showCreatePlaylistPopup();
         });
         playlistSection.appendChild(createPlaylistBtn);
 
@@ -548,10 +546,8 @@ class MusicPlayer {
       }
 
       if (type === "playlist" && this.state.currentUserRole !== "guest") {
-        const addBtn = this.createButton("➕ Thêm bài hát vào playlist này", "add-song-button", () => {
-          this.showAddSongDialog(id, displayName);
-        });
-        this.elements.playlistContainer.appendChild(addBtn);
+        // XÓA nút '➕ Thêm bài hát vào playlist này' (KHÔNG tạo addBtn nữa)
+        // Không cho phép user thêm bài hát vào playlist bằng cách nhập url thủ công
       }
 
       this.state.currentPlaylist = data;
@@ -573,6 +569,14 @@ class MusicPlayer {
             await this.deleteSongFromPlaylist(song.id, id, displayName);
           });
           songContainer.appendChild(deleteBtn);
+        }
+
+        if (["artist", "genre", "region"].includes(type) && this.state.currentUserRole !== "guest") {
+          const addBtn = this.createButton("➕", "add-to-playlist-btn", (e) => {
+            e.stopPropagation();
+            this.showAddToPlaylistPopup(song.id);
+          });
+          songContainer.appendChild(addBtn);
         }
 
         songContainer.appendChild(btn);
@@ -668,10 +672,9 @@ class MusicPlayer {
 
     this.elements.pauseResumeBtn.textContent = "⏸";
 
-    if (!this.state.controlsShownOnce) {
-      this.elements.controlsContainer.style.display = "block";
-      this.state.controlsShownOnce = true;
-    }
+    // Luôn hiển thị controls khi phát bài hát
+    this.elements.controlsContainer.style.display = "block";
+    this.state.controlsShownOnce = true;
   }
 
   togglePlayPause() {
@@ -724,12 +727,13 @@ class MusicPlayer {
   updateProgress() {
     const current = Math.floor(this.elements.musicPlayer.currentTime);
     const total = Math.floor(this.elements.musicPlayer.duration) || 0;
-
     this.elements.progressBar.max = total;
     this.elements.progressBar.value = current;
-
     this.elements.currentTimeDisplay.textContent = this.formatTime(current);
     this.elements.durationDisplay.textContent = this.formatTime(total);
+    // Fill màu động cho progressBar
+    const percent = total > 0 ? (current / total) * 100 : 0;
+    this.elements.progressBar.style.setProperty('--progress', percent + '%');
   }
 
   formatTime(seconds) {
@@ -773,7 +777,8 @@ class MusicPlayer {
   }
 
   // Hiển thị popup custom để chọn thêm vào playlist
-  async showAddToPlaylistPopup() {
+  async showAddToPlaylistPopup(songId) {
+    console.log("showAddToPlaylistPopup called, currentUser:", this.state.currentUser);
     if (!this.state.currentUser) {
       this.showNotification("Vui lòng đăng nhập để sử dụng tính năng này", "warning");
       return;
@@ -806,7 +811,7 @@ class MusicPlayer {
       if (name && name.trim()) {
         const playlist = await this.createPlaylist(name.trim());
         if (playlist && playlist.id) {
-          await this.addSongToPlaylist(this.getCurrentSongId(), playlist.id);
+          await this.addSongToPlaylist(songId ?? this.getCurrentSongId(), playlist.id);
           this.showNotification("Đã thêm vào playlist mới!", "success");
           popup.remove();
         }
@@ -827,7 +832,7 @@ class MusicPlayer {
         const btn = document.createElement("button");
         btn.textContent = pl.name;
         btn.onclick = async () => {
-          await this.addSongToPlaylist(this.getCurrentSongId(), pl.id);
+          await this.addSongToPlaylist(songId ?? this.getCurrentSongId(), pl.id);
           this.showNotification("Đã thêm vào playlist!", "success");
           popup.remove();
         };
@@ -841,6 +846,43 @@ class MusicPlayer {
     const song = this.state.currentPlaylist[this.state.currentIndex];
     console.log("getCurrentSongId:", song);
     return song?.id;
+  }
+
+  async showCreatePlaylistPopup() {
+    // Xóa popup cũ nếu có
+    const oldPopup = document.getElementById("create-playlist-popup");
+    if (oldPopup) oldPopup.remove();
+
+    // Tạo popup
+    const popup = document.createElement("div");
+    popup.id = "create-playlist-popup";
+    popup.className = "custom-popup";
+    popup.innerHTML = `
+      <div class="popup-content">
+        <h3>Tạo playlist mới</h3>
+        <input id="newPlaylistName" type="text" placeholder="Nhập tên playlist..." style="width:90%;padding:8px;margin-bottom:12px;border-radius:6px;border:1px solid #00ffff;background:#111;color:#fff;" />
+        <div style="text-align:right;">
+          <button id="cancelCreatePlaylistBtn">Hủy</button>
+          <button id="confirmCreatePlaylistBtn" style="margin-left:8px;">Tạo</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(popup);
+
+    document.getElementById("cancelCreatePlaylistBtn").onclick = () => popup.remove();
+    document.getElementById("confirmCreatePlaylistBtn").onclick = async () => {
+      const name = document.getElementById("newPlaylistName").value.trim();
+      if (!name) {
+        this.showNotification("Vui lòng nhập tên playlist", "warning");
+        return;
+      }
+      const playlist = await this.createPlaylist(name);
+      if (playlist && playlist.id) {
+        this.showNotification("Tạo playlist thành công!", "success");
+        popup.remove();
+        await this.loadCategory("playlist", "Playlist của bạn");
+      }
+    };
   }
 }
 

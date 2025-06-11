@@ -14,65 +14,6 @@ body, html {
   color: white;
 }
 
-/* Header */
-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 1rem 0;
-  z-index: 1000;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-}
-
-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-nav a:hover {
-  color: #00ffff;
-}
-
-.nav-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-}
-
-.login-btn a {
-  padding: 8px 16px;
-  background-color: transparent;
-  border: 2px solid #00ffff;
-  border-radius: 6px;
-  color: #00ffff;
-  text-decoration: none;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.login-btn a:hover {
-  background-color: #00ffff;
-  color: #000;
-  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
-}
-
-#greeting {
-    color:rgb(121, 216, 216); 
-    margin-left: 70%;
-    font-weight: bold;
-}
-
-
 /* Hero Section */
 .hero {
   background-image: url('https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/index_bg.png?v=1746468137357');
@@ -181,12 +122,75 @@ nav a:hover {
   min-width: 180px;
 }
 
+/* Auth Pages */
+.auth-container {
+  max-width: 400px;
+  margin: 120px auto 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00ffff;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #00ffff;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.auth-container input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.auth-container button {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 2px solid #00ffff;
+  border-radius: 5px;
+  color: #00ffff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-container button:hover {
+  background: #00ffff;
+  color: #000;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.auth-container p {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.auth-container a {
+  color: #00ffff;
+  text-decoration: none;
+}
+
+.auth-container a:hover {
+  text-decoration: underline;
+}
+
 /* Footer */
 footer {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.6);
   color: #aaa;
   text-align: center;
   padding: 0.8rem 1rem;
