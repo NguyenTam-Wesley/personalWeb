@@ -1,27 +1,31 @@
 import { getCurrentUser, logoutUser } from './js/auth.js';
 
 // Hàm cập nhật nút login/logout
-function updateLoginStatus() {
+async function updateLoginStatus() {
   const loginLink = document.getElementById("loginLink");
   const greeting = document.getElementById("greeting");
-  const user = getCurrentUser();
+  const user = await getCurrentUser();
 
   if (user) {
     greeting.textContent = `Xin chào, ${user.username}`;
     loginLink.textContent = "Logout";
     loginLink.href = "#";
-    loginLink.addEventListener("click", (e) => {
+    loginLink.onclick = (e) => {
       e.preventDefault();
       logoutUser();
       location.reload();
-    });
+    };
   } else {
     greeting.textContent = "";
     loginLink.textContent = "Login";
     loginLink.href = "/pages/login.html";
-    loginLink.removeEventListener("click", () => {}); // Xóa event logout
+    loginLink.onclick = null;
   }
 }
 
-
-updateLoginStatus();
+// Đảm bảo gọi sau khi DOM đã sẵn sàng
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateLoginStatus);
+} else {
+  updateLoginStatus();
+}

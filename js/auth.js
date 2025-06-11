@@ -39,7 +39,15 @@ export function logoutUser() {
   localStorage.removeItem("userId");
 }
 
-export function getCurrentUser() {
+// Lấy user hiện tại (trả về Promise)
+export async function getCurrentUser() {
   const userId = localStorage.getItem("userId");
-  return userId || null;
+  if (!userId) return null;
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, username, role")
+    .eq("id", userId)
+    .single();
+  if (error || !data) return null;
+  return data;
 }
