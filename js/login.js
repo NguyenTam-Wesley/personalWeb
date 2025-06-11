@@ -1,7 +1,13 @@
 // js/login.js
-import { loginUser } from "../js/auth.js";
+import { loginUser, getCurrentUser } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Nếu đã đăng nhập thì chuyển hướng luôn
+  if (getCurrentUser()) {
+    window.location.href = "/index.html";
+    return;
+  }
+
   const btn = document.getElementById("loginBtn");
   if (!btn) {
     alert("Không tìm thấy nút login!");
@@ -18,9 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const user = await loginUser(username, password);
-      alert(`Đăng nhập thành công: ${user.username}`);
-      window.location.href = "/index.html"; // hoặc route chính
+      await loginUser(username, password);
+      alert("Đăng nhập thành công!");
+      window.location.href = "/index.html";
     } catch (err) {
       alert("Lỗi đăng nhập: " + err.message);
     }

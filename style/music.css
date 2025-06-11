@@ -443,3 +443,61 @@ footer a:hover {
   gap: 0px; /* khoảng cách giữa các item */
   padding: 10px;
 }
+
+/* --- Popup Thêm vào Playlist --- */
+#add-to-playlist-popup.custom-popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#add-to-playlist-popup .popup-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  animation: popup-fade-in 0.2s;
+  color: #222;
+}
+
+#add-to-playlist-popup h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+  color: #222;
+}
+
+#add-to-playlist-popup button {
+  margin: 6px 4px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  background: #007bff;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#add-to-playlist-popup button:hover {
+  background: #0056b3;
+}
+
+#add-to-playlist-popup #closePopupBtn {
+  background: #aaa;
+  color: #fff;
+}
+#add-to-playlist-popup #closePopupBtn:hover {
+  background: #555;
+}
+
+@keyframes popup-fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}

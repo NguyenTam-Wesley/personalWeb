@@ -19,7 +19,10 @@ class MusicPlayer {
       controlsShownOnce: false,
       navigationStack: [],
       isLoading: false,
-      error: null
+      error: null,
+      currentView: null,
+      currentPlaylistId: null,
+      currentPlaylistName: null
     };
 
     // DOM Elements
@@ -60,6 +63,14 @@ class MusicPlayer {
       this.loadMainMenu.bind(this)
     );
     this.init();
+
+    // Thêm nút ➕ vào controls
+    this.addToPlaylistBtn = document.createElement("button");
+    this.addToPlaylistBtn.textContent = "➕";
+    this.addToPlaylistBtn.className = "add-to-playlist-btn";
+    this.addToPlaylistBtn.title = "Thêm bài đang phát vào playlist";
+    this.addToPlaylistBtn.addEventListener("click", () => this.showAddToPlaylistPopup());
+    this.elements.controlsContainer.appendChild(this.addToPlaylistBtn);
   }
 
   // Error handling
@@ -177,26 +188,37 @@ class MusicPlayer {
 
   // Song management
   async addSongToPlaylist(songId, playlistId) {
+    console.log("addSongToPlaylist called with:", { songId, playlistId });
     try {
       // Check for duplicate
-      const { data: existing } = await this.supabase
+      const { data: existing, error } = await this.supabase
         .from("playlist_song")
-        .select()
-        .match({ playlist_id: playlistId, song_id: songId })
-        .single();
+        .select("*")
+        .eq("playlist_id", playlistId)
+        .eq("song_id", songId);
 
-      if (existing) {
+      if (error) throw error;
+
+      if (existing && existing.length > 0) {
         this.showNotification("Bài hát đã có trong playlist", "warning");
         return;
       }
 
-      const { error } = await this.supabase
+      console.log("Inserting into playlist_song:", { playlist_id: playlistId, song_id: songId });
+      const { error: insertError } = await this.supabase
         .from("playlist_song")
         .insert([{ playlist_id: playlistId, song_id: songId }]);
 
-      if (error) throw error;
+      if (insertError) throw insertError;
 
       this.showNotification("Đã thêm bài hát vào playlist", "success");
+      // Nếu đang xem đúng playlist này thì reload lại danh sách bài hát
+      if (
+        this.state.currentView === "playlistSongs" &&
+        this.state.currentPlaylistId === playlistId
+      ) {
+        this.loadSongsByCategory("playlist", playlistId, this.state.currentPlaylistName);
+      }
     } catch (error) {
       this.handleError(error, "Không thể thêm bài hát vào playlist");
     }
@@ -233,10 +255,20 @@ class MusicPlayer {
   // Initialize
   async init() {
     try {
+      // Luôn setup event listeners và navigation state trước
       await this.user.checkLoginStatus();
       this.loadNavigationState();
       this.setupEventListeners();
-      await this.loadMainMenu();
+
+      // Nếu có playlist đang xem trong localStorage, tự động load lại (chỉ 1 lần)
+      const lastPlaylist = localStorage.getItem("currentPlaylistView");
+      if (lastPlaylist) {
+        const { id, name } = JSON.parse(lastPlaylist);
+        await this.loadSongsByCategory("playlist", id, name);
+        localStorage.removeItem("currentPlaylistView");
+      } else {
+        await this.loadMainMenu();
+      }
     } catch (error) {
       this.handleError(error, "Lỗi khởi tạo ứng dụng");
     }
@@ -332,6 +364,9 @@ class MusicPlayer {
 
       this.elements.backBtn.style.display = "none";
 
+      // Xóa trạng thái playlist đang xem
+      localStorage.removeItem("currentPlaylistView");
+
       const categories = [
         { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
         { emoji: "🎧", label: "Thể loại", type: "genre" },
@@ -372,33 +407,12 @@ class MusicPlayer {
       if (type === "playlist") {
         // Kiểm tra đăng nhập
         if (!this.state.currentUser) {
-          const loginForm = document.createElement("div");
-          loginForm.className = "login-prompt";
-          loginForm.innerHTML = `
-            <p>Vui lòng đăng nhập để xem playlist của bạn</p>
-            <div class="login-form">
-              <input type="text" id="username" placeholder="Tên đăng nhập">
-              <input type="password" id="password" placeholder="Mật khẩu">
-              <button id="loginButton">Đăng nhập</button>
-            </div>
+          const loginPrompt = document.createElement("div");
+          loginPrompt.className = "login-prompt";
+          loginPrompt.innerHTML = `
+            <p>Vui lòng <a href='./login.html' style='color:#007bff;text-decoration:underline;'>đăng nhập</a> để xem playlist của bạn</p>
           `;
-          this.elements.mainMenu.appendChild(loginForm);
-
-          // Thêm event listener cho nút đăng nhập
-          document.getElementById('loginButton').addEventListener('click', async () => {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-              this.showNotification("Vui lòng nhập đầy đủ thông tin", "warning");
-              return;
-            }
-
-            const success = await this.user.login(username, password);
-            if (success) {
-              this.loadCategory("playlist", "Playlist của bạn");
-            }
-          });
+          this.elements.mainMenu.appendChild(loginPrompt);
           return;
         }
 
@@ -481,20 +495,52 @@ class MusicPlayer {
       this.state.navigationStack.push({ view: "category", type, displayTitle: displayName });
       this.saveNavigationState();
 
-      const columnMap = {
-        artist: "artist_id",
-        genre: "genre_id",
-        region: "region_id",
-        playlist: "playlist_id"
-      };
-      const filterColumn = columnMap[type];
+      // Nếu là playlist, lưu lại thông tin vào state và localStorage để reload khi cần
+      if (type === "playlist") {
+        this.state.currentView = "playlistSongs";
+        this.state.currentPlaylistId = id;
+        this.state.currentPlaylistName = displayName;
+        localStorage.setItem("currentPlaylistView", JSON.stringify({ id, name: displayName }));
+      }
 
-      const { data, error } = await this.supabase
-        .from("music_data")
-        .select("id, song_name, url, artist:artist(name), genre:genre(name), region:region(name)")
-        .eq(filterColumn, id);
+      let data = [];
+      let error = null;
+      if (type === "playlist") {
+        // Lấy danh sách song_id từ playlist_song
+        const { data: playlistSongs, error: psError } = await this.supabase
+          .from("playlist_song")
+          .select("song_id")
+          .eq("playlist_id", id);
+        if (psError) throw psError;
+        const songIds = (playlistSongs || []).map(ps => ps.song_id);
+        if (songIds.length > 0) {
+          const { data: songs, error: songError } = await this.supabase
+            .from("music_data")
+            .select("id, song_name, url, artist:artist(name), genre:genre(name), region:region(name)")
+            .in("id", songIds);
+          if (songError) throw songError;
+          data = songs;
+        } else {
+          data = [];
+        }
+      } else {
+        const columnMap = {
+          artist: "artist_id",
+          genre: "genre_id",
+          region: "region_id"
+        };
+        const filterColumn = columnMap[type];
+        if (!filterColumn) return;
+        const { data: songs, error: songError } = await this.supabase
+          .from("music_data")
+          .select("id, song_name, url, artist:artist(name), genre:genre(name), region:region(name)")
+          .eq(filterColumn, id);
+        if (songError) throw songError;
+        data = songs;
+      }
 
-      if (error) throw error;
+      // Log để xác nhận luôn lấy dữ liệu mới nhất từ Supabase
+      console.log(`[Supabase] Fetched songs for ${type} ${id}:`, data);
 
       if (!data || data.length === 0) {
         this.elements.playlistContainer.innerHTML += this.createMessage("Không có bài hát nào trong mục này.");
@@ -724,6 +770,77 @@ class MusicPlayer {
     this.ctx.beginPath();
     this.ctx.arc(x, y, 5, 0, 2 * Math.PI);
     this.ctx.fill();
+  }
+
+  // Hiển thị popup custom để chọn thêm vào playlist
+  async showAddToPlaylistPopup() {
+    if (!this.state.currentUser) {
+      this.showNotification("Vui lòng đăng nhập để sử dụng tính năng này", "warning");
+      return;
+    }
+    // Xóa popup cũ nếu có
+    const oldPopup = document.getElementById("add-to-playlist-popup");
+    if (oldPopup) oldPopup.remove();
+
+    // Tạo popup
+    const popup = document.createElement("div");
+    popup.id = "add-to-playlist-popup";
+    popup.className = "custom-popup";
+    popup.innerHTML = `
+      <div class="popup-content">
+        <h3>Thêm bài hát vào playlist</h3>
+        <button id="createNewPlaylistBtn">Tạo playlist mới</button>
+        <div style="margin: 10px 0;">Hoặc chọn playlist đã có:</div>
+        <div id="userPlaylistsList">Đang tải...</div>
+        <button id="closePopupBtn" style="margin-top:10px;">Đóng</button>
+      </div>
+    `;
+    document.body.appendChild(popup);
+
+    // Đóng popup
+    document.getElementById("closePopupBtn").onclick = () => popup.remove();
+
+    // Xử lý tạo playlist mới
+    document.getElementById("createNewPlaylistBtn").onclick = async () => {
+      const name = prompt("Nhập tên playlist mới:");
+      if (name && name.trim()) {
+        const playlist = await this.createPlaylist(name.trim());
+        if (playlist && playlist.id) {
+          await this.addSongToPlaylist(this.getCurrentSongId(), playlist.id);
+          this.showNotification("Đã thêm vào playlist mới!", "success");
+          popup.remove();
+        }
+      }
+    };
+
+    // Lấy danh sách playlist của user
+    const { data: playlists, error } = await this.supabase
+      .from("playlist")
+      .select("id, name")
+      .eq("user_id", this.state.currentUser.id);
+    const listDiv = document.getElementById("userPlaylistsList");
+    listDiv.innerHTML = "";
+    if (error || !playlists || playlists.length === 0) {
+      listDiv.innerHTML = "<i>Bạn chưa có playlist nào.</i>";
+    } else {
+      playlists.forEach(pl => {
+        const btn = document.createElement("button");
+        btn.textContent = pl.name;
+        btn.onclick = async () => {
+          await this.addSongToPlaylist(this.getCurrentSongId(), pl.id);
+          this.showNotification("Đã thêm vào playlist!", "success");
+          popup.remove();
+        };
+        listDiv.appendChild(btn);
+      });
+    }
+  }
+
+  // Lấy id bài hát đang phát
+  getCurrentSongId() {
+    const song = this.state.currentPlaylist[this.state.currentIndex];
+    console.log("getCurrentSongId:", song);
+    return song?.id;
   }
 }
 
