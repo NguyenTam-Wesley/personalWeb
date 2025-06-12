@@ -56,8 +56,8 @@ html {
 /* NEW: Playlist name */
 
 #playlistContainer {
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.3rem;
+  font-family: 'Birthstone', cursive;
+  font-size: 2rem;
   color: White;
   font-weight: bold;
   margin-bottom: 15px;
@@ -573,12 +573,12 @@ footer a:hover {
   margin: 8px 0;
   padding: 10px 16px;
   transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  min-height: 50px;
 }
-.song-container:hover {
-  box-shadow: 0 0 10px #00ffff88;
-  transform: translateY(-2px) scale(1.01);
-}
+
 .song-button {
+  font-family: 'Birthstone', cursive;
   flex: 1;
   background: none;
   border: none;
@@ -589,20 +589,49 @@ footer a:hover {
   font-weight: bold;
   padding: 0;
   transition: color 0.2s;
+  margin-right: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 .song-button:hover {
   color: #00ffff;
   text-decoration: underline;
 }
+
+.song-add-btn {
+  position: absolute;
+  right: 50px;
+  background: transparent;
+  border: none;
+  color: #00ffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all 0.2s;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.song-add-btn:hover {
+  color: #fff;
+  background: #00ffff;
+  box-shadow: 0 0 8px #00ffff;
+}
+
 .delete-song-button {
+  position: absolute;
+  right: 10px;
   background: transparent;
   border: none;
   color: #ff4444;
   font-size: 1.2rem;
   cursor: pointer;
-  margin-right: 8px;
   transition: color 0.2s;
+  z-index: 1;
 }
+
 .delete-song-button:hover {
   color: #fff;
   background: #ff4444;
@@ -623,9 +652,31 @@ footer a:hover {
   transition: all 0.2s;
   box-shadow: 0 0 0 #00ffff00;
 }
+
 .create-playlist-button:hover {
   background: #00ffff;
   color: #000;
   box-shadow: 0 0 12px #00ffff;
   border: 2px solid #00ffff;
+}
+
+@media (max-width: 480px) {
+  .song-container {
+    padding: 10px 12px;
+  }
+  
+  .song-button {
+    font-size: 1rem;
+    margin-right: 70px;
+  }
+  
+  .song-add-btn {
+    right: 40px;
+    font-size: 1.1rem;
+  }
+  
+  .delete-song-button {
+    right: 8px;
+    font-size: 1.1rem;
+  }
 }
