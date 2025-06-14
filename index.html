@@ -26,6 +26,12 @@
       <p>&copy;ntam</p>
     </footer>
 
-    <script type="module" src="/js/header.js"></script>
+    <script type="module">
+      import { components } from '/js/components.js';
+      import { initHomePage } from '/js/script.js';
+      
+      // Initialize page specific functionality
+      initHomePage();
+    </script>
   </body>
 </html>

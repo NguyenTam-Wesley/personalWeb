@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Music Playlist</title>
     <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style/header.css" />
+    <link rel="stylesheet" href="/style/components.css" />
     <link rel="stylesheet" href="/style/music.css" />
     <link
       rel="icon"
@@ -57,7 +57,12 @@
       <p>&copy;ntam</p>
     </footer>
 
-    <script type="module" src="/js/header.js"></script>
-    <script type="module" src="/js/music.js"></script>
+    <script type="module">
+      import { components } from '/js/components.js';
+      import { MusicPlayer } from '/js/music.js';
+      
+      // Initialize page specific functionality
+      new MusicPlayer();
+    </script>
   </body>
 </html>

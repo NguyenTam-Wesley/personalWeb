@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login</title>
-  <link rel="stylesheet" href="/style/header.css" />
+  <link rel="stylesheet" href="/style/components.css" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
@@ -20,7 +20,12 @@
     </p>
   </main>
 
-  <script type="module" src="/js/header.js"></script>
-  <script type="module" src="../js/login.js"></script>
+  <script type="module">
+    import { components } from '/js/components.js';
+    import { initLogin } from '/js/login.js';
+    
+    // Initialize page specific functionality
+    initLogin();
+  </script>
 </body>
 </html>

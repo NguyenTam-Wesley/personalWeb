@@ -1,7 +1,7 @@
 import { supabase } from "./supabase.js";
 import { User } from "./user.js";
 
-class MusicPlayer {
+export class MusicPlayer {
   constructor() {
     // Sử dụng supabase từ file supabase.js
     this.supabase = supabase;

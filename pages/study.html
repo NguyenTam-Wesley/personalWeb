@@ -8,43 +8,47 @@
       href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
       type="image/jpeg"
     />
-    <title>Study</title>
-    <link rel="stylesheet" href="/style/header.css" />
+    <title>Study Resources</title>
+    <link rel="stylesheet" href="/style/components.css" />
     <link rel="stylesheet" href="/style/study.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   </head>
 
   <body>
-    <main>
-      <h1>📚 Tài liệu học tập</h1>
-      <section id="subjects"></section>
+    <main class="study-container">
+      <section class="study-intro">
+        <h1>Academic Resources</h1>
+        <p class="subtitle">Access comprehensive study materials and documentation</p>
+      </section>
 
-      <div id="controls" hidden>
-        <input type="text" id="searchInput" placeholder="🔍 Tìm tài liệu..." />
+      <section id="subjects" class="subjects-grid"></section>
 
-        <select id="typeFilter">
-          <option value="">-- Lọc theo loại --</option>
-          <!-- Các option sẽ được JS tự động thêm -->
-        </select>
+      <div id="controls" class="controls-panel" hidden>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search resources..." />
+        </div>
 
-        <select id="sortSelect">
-          <option value="az">Tên A-Z</option>
-          <option value="za">Tên Z-A</option>
-        </select>
+        <div class="filters-container">
+          <select id="typeFilter" class="filter-select">
+            <option value="">Filter by type</option>
+          </select>
+
+          <select id="sortSelect" class="filter-select">
+            <option value="az">Name A-Z</option>
+            <option value="za">Name Z-A</option>
+          </select>
+        </div>
       </div>
 
-      <section id="documents" hidden></section>
+      <section id="documents" class="documents-grid" hidden></section>
     </main>
 
-    <footer>
-      <div class="socials">
-        <a href="https://github.com/NguyenTam-Wesley" target="_blank">GitHub</a>
-        <a href="https://facebook.com/w.nctam" target="_blank">Facebook</a>
-        <a href="https://www.youtube.com/@wesley-shouyuett7" target="_blank">YouTube</a>
-      </div>
-      <p>&copy;ntam</p>
-    </footer>
-
-    <script type="module" src="/js/header.js"></script>
-    <script type="module" src="/js/study.js"></script>
+    <script type="module">
+      import { components } from '/js/components.js';
+      import { StudyManager } from '/js/study.js';
+      
+      // Initialize page specific functionality
+      new StudyManager();
+    </script>
   </body>
 </html>

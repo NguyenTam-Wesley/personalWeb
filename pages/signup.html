@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Sign Up</title>
-  <link rel="stylesheet" href="/style/header.css" />
+  <link rel="stylesheet" href="/style/components.css" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
@@ -20,7 +20,12 @@
     </p>
   </main>
 
-  <script type="module" src="/js/header.js"></script>
-  <script type="module" src="../js/signup.js"></script>
+  <script type="module">
+    import { components } from '/js/components.js';
+    import { initSignup } from '/js/signup.js';
+    
+    // Initialize page specific functionality
+    initSignup();
+  </script>
 </body>
 </html>

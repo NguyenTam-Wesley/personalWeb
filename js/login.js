@@ -1,35 +1,27 @@
 // js/login.js
-import { loginUser, getCurrentUser } from "./auth.js";
+import { supabase } from "./supabase.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
-  // Nếu đã đăng nhập thì chuyển hướng luôn
-  const user = await getCurrentUser();
-  if (user) {
-    window.location.href = "/index.html";
-    return;
-  }
+export function initLogin() {
+  const loginBtn = document.getElementById("loginBtn");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
 
-  const btn = document.getElementById("loginBtn");
-  if (!btn) {
-    alert("Không tìm thấy nút login!");
-    return;
-  }
-
-  btn.addEventListener("click", async () => {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!username || !password) {
-      alert("Thiếu thông tin đăng nhập!");
-      return;
-    }
+  loginBtn.addEventListener("click", async () => {
+    const username = usernameInput.value;
+    const password = passwordInput.value;
 
     try {
-      await loginUser(username, password);
-      alert("Đăng nhập thành công!");
-      window.location.href = "/index.html";
-    } catch (err) {
-      alert("Lỗi đăng nhập: " + err.message);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: username,
+        password: password,
+      });
+
+      if (error) throw error;
+
+      // Redirect to home page after successful login
+      window.location.href = "/";
+    } catch (error) {
+      alert("Login failed: " + error.message);
     }
   });
-});
+}

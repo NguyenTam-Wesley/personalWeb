@@ -1,35 +1,33 @@
-import { registerUser, getCurrentUser } from "./auth.js";
+import { supabase } from "./supabase.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
-  // Nếu đã đăng nhập thì chuyển hướng luôn
-  const user = await getCurrentUser();
-  if (user) {
-    window.location.href = "/index.html";
-    return;
-  }
+export function initSignup() {
+  const signupBtn = document.getElementById("signupBtn");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
 
-  const btn = document.getElementById("signupBtn");
-  if (!btn) {
-    alert("Không tìm thấy nút đăng ký!");
-    return;
-  }
+  signupBtn.addEventListener("click", async () => {
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
 
-  btn.addEventListener("click", async () => {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const confirm = document.getElementById("confirmPassword")?.value.trim();
-
-    if (!username || !password || (confirm !== undefined && password !== confirm)) {
-      alert("Thiếu thông tin hoặc mật khẩu không khớp!");
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
       return;
     }
 
     try {
-      await registerUser(username, password);
-      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      const { data, error } = await supabase.auth.signUp({
+        email: username,
+        password: password,
+      });
+
+      if (error) throw error;
+
+      alert("Sign up successful! Please check your email for verification.");
       window.location.href = "/pages/login.html";
-    } catch (err) {
-      alert("Lỗi đăng ký: " + err.message);
+    } catch (error) {
+      alert("Sign up failed: " + error.message);
     }
   });
-});
+}
