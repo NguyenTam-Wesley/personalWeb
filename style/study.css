@@ -213,34 +213,6 @@ body {
   100% { opacity: 0.6; }
 }
 
-/* Footer */
-.study-footer {
-  text-align: center;
-  padding: 2rem;
-  margin-top: 4rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.study-footer .socials {
-  margin-bottom: 1rem;
-}
-
-.study-footer .socials a {
-  color: var(--light-text);
-  text-decoration: none;
-  margin: 0 1rem;
-  transition: color 0.2s ease;
-}
-
-.study-footer .socials a:hover {
-  color: var(--accent-color);
-}
-
-.study-footer p {
-  color: var(--light-text);
-  font-size: 0.9rem;
-  margin: 0;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

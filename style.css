@@ -185,33 +185,6 @@ body, html {
   text-decoration: underline;
 }
 
-/* Footer */
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  color: #aaa;
-  text-align: center;
-  padding: 0.8rem 1rem;
-  font-size: 0.9rem;
-  z-index: 1000;
-}
-
-footer .socials {
-  margin-bottom: 0.5rem;
-}
-
-footer .socials a {
-  margin: 0 10px;
-  color: #00ffff;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
 /* Animations */
 @keyframes fadeIn {
   from {
