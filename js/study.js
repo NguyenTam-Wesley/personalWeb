@@ -168,8 +168,8 @@ export class StudyManager {
 
     filtered.sort((a, b) => {
       return sortOrder === 'az'
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title);
+        ? a.title.localeCompare(b.title, undefined, {numeric: true})
+        : b.title.localeCompare(a.title, undefined, {numeric: true});
     });
 
     this.documentsContainer.innerHTML = '';

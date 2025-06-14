@@ -1,5 +1,5 @@
 // js/login.js
-import { supabase } from "./supabase.js";
+import { loginUser } from "./auth.js";
 
 export function initLogin() {
   const loginBtn = document.getElementById("loginBtn");
@@ -11,15 +11,9 @@ export function initLogin() {
     const password = passwordInput.value;
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: username,
-        password: password,
-      });
-
-      if (error) throw error;
-
-      // Redirect to home page after successful login
-      window.location.href = "/";
+      const user = await loginUser(username, password);
+      alert("Đăng nhập thành công, xin chào " + user.username);
+      window.location.href = "/"; // hoặc chuyển hướng khác tùy logic
     } catch (error) {
       alert("Login failed: " + error.message);
     }

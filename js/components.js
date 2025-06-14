@@ -12,7 +12,8 @@ class Components {
       navLinks: [
         { name: 'Home', url: '/' },
         { name: 'Music', url: '/pages/music.html' },
-        { name: 'Study', url: '/pages/study.html' }
+        { name: 'Study', url: '/pages/study.html' },
+        { name: 'Games', url: '/pages/games.html' }
       ]
     };
 
