@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="../style/components.css" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <main class="auth-container">
+    <h2>Sign Up Page</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+    <button id="signupBtn">Sign Up</button>
+
+    <p>
+      Đã có tài khoản?
+      <a href="login.html">Đăng nhập ngay</a>
+    </p>
+  </main>
+
+  <script type="module">
+    import components from '../../src/components/components.js';
+    import { SignupManager } from '../../src/modules/signup.js';
+    
+    // Initialize components
+    components.init();
+    
+    // Initialize page specific functionality
+    new SignupManager();
+  </script>
+</body>
+</html>

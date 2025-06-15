@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant - Game Details</title>
+    <link rel="stylesheet" href="../../style/components.css" />
+    <link rel="stylesheet" href="../../style/games.css" />
+    <link rel="stylesheet" href="../../style/game-detail.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="game-detail-container">
+        <div class="game-hero" style="background-image: url('https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/valorant_bg.png?v=1746445533452')">
+            <div class="game-hero-content">
+                <h1>Valorant</h1>
+                <p class="game-subtitle">Tactical Shooter 5v5</p>
+            </div>
+        </div>
+
+        <div class="game-content">
+            <section class="game-overview">
+                <h2>Tổng quan</h2>
+                <p>Valorant là một game bắn súng chiến thuật 5v5 được phát triển bởi Riot Games. Trong game, người chơi sẽ đóng vai các Agent với những khả năng đặc biệt, kết hợp với kỹ năng bắn súng chính xác để giành chiến thắng.</p>
+            </section>
+
+            <section class="game-features">
+                <h2>Đặc điểm nổi bật</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Agents</h3>
+                        <p>Mỗi Agent có bộ kỹ năng độc đáo, từ tấn công, phòng thủ đến hỗ trợ.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Vũ khí</h3>
+                        <p>Hệ thống vũ khí đa dạng với độ chính xác cao và cơ chế spray pattern.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Chiến thuật</h3>
+                        <p>Kết hợp giữa kỹ năng cá nhân và phối hợp đồng đội.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-crosshair">
+                <h2>Crosshair Code</h2>
+                <div class="crosshair-container">
+                    <div class="crosshair-section">
+                        <h3>Crosshair của tôi</h3>
+                        <div class="crosshair-code">
+                            <code>0;P;c;5;u;000000FF;h;0;f;0;0l;4;0o;2;0a;1;0f;0;1b;0</code>
+                            <button class="copy-button" onclick="copyCrosshair(this)">Copy</button>
+                        </div>
+                        <p class="crosshair-note">Crosshair này phù hợp cho việc aim chính xác và dễ nhìn.</p>
+                        <a href="crosshair.html" class="view-more-link">Xem thêm crosshair code →</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-modes">
+                <h2>Chế độ chơi</h2>
+                <div class="modes-grid">
+                    <div class="mode-card">
+                        <h3>Competitive</h3>
+                        <p>Chế độ xếp hạng với hệ thống rank từ Iron đến Radiant.</p>
+                    </div>
+                    <div class="mode-card">
+                        <h3>Unrated</h3>
+                        <p>Chế độ không xếp hạng, phù hợp để luyện tập và thử nghiệm.</p>
+                    </div>
+                    <div class="mode-card">
+                        <h3>Spike Rush</h3>
+                        <p>Chế độ nhanh với các power-up ngẫu nhiên.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-maps">
+                <h2>Bản đồ</h2>
+                <div class="maps-grid">
+                    <div class="map-card">
+                        <img src="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/valorant_ascent.jpg?v=1746445533452" alt="Ascent">
+                        <h3>Ascent</h3>
+                    </div>
+                    <div class="map-card">
+                        <img src="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/valorant_bind.jpg?v=1746445533452" alt="Bind">
+                        <h3>Bind</h3>
+                    </div>
+                    <div class="map-card">
+                        <img src="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/valorant_haven.jpg?v=1746445533452" alt="Haven">
+                        <h3>Haven</h3>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import components from '../../../src/components/components.js';
+        import { GameDetailManager } from '../../../src/modules/game-detail.js';
+        
+        // Initialize components
+        components.init();
+        
+        // Initialize page specific functionality
+        new GameDetailManager('valorant');
+    </script>
+
+    <script>
+    function copyCrosshair(button) {
+        const code = button.previousElementSibling.textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.classList.add('copied');
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 2000);
+        });
+    }
+    </script>
+</body>
+</html> 

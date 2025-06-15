@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Music Playlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style/components.css" />
+    <link rel="stylesheet" href="../style/music.css" />
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+    />
+  </head>
+  <body>
+    <main class="container music-section">
+      <h1 class="page-title">🎵 Danh mục</h1>
+      <div class="top-bar">
+        <button id="backBtn">⬅️ Quay lại</button>
+        <div class="volume-control-bar">
+          <canvas id="volumeCanvas" width="100" height="20"></canvas>
+          <button id="eraserBtn">🧹</button>
+        </div>
+      </div>
+      <div id="controlsContainer" class="controls-container">
+        <div class="player-controls">
+          <div class="song-info">
+            <span id="currentSongTitle">Chưa chọn bài hát</span>
+          </div>
+          <div class="control-buttons">
+            <button id="prevBtn">⏮️</button>
+            <button id="pauseResumeBtn">▶️</button>
+            <button id="nextBtn">⏭️</button>
+            <button id="repeatBtn">🔁</button>
+            <button id="shuffleBtn">🔀</button>
+            <button id="addToPlaylistBtn" class="add-to-playlist-btn">➕</button>
+          </div>
+          <div class="progress-container">
+            <span id="currentTime">0:00</span>
+            <input type="range" id="progressBar" min="0" value="0" step="1" />
+            <span id="duration">0:00</span>
+          </div>
+        </div>
+      </div>
+      <div id="mainMenu"></div>
+      <div id="playlistContainer"></div>
+    </main>
+
+    <audio id="musicPlayer" style="display: none"></audio>
+
+    <script type="module">
+      import components from '../../src/components/components.js';
+      import { MusicPlayer } from '../../src/modules/music.js';
+      
+      // Initialize components
+      components.init();
+      
+      // Initialize page specific functionality
+      new MusicPlayer();
+    </script>
+  </body>
+</html>

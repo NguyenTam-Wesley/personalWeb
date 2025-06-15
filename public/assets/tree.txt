@@ -1,0 +1,28 @@
+// Cấu trúc thư mục sau khi hoàn thiện
+
+ntam-web/
+│
+├── 📁 public/                  # Tài nguyên tĩnh (static): HTML, CSS, JS, hình ảnh
+│   ├── index.html             # Trang chính
+│   ├── style.css              # Giao diện
+│   └── script.js              # Script client
+│
+├── 📁 src/                     # Mã nguồn backend
+│   ├── server.js              # File chính khởi động server (hoặc app.js)
+│   ├── 📁 routes/             # Router Express cho từng nhóm route (nếu có)
+│   │   └── index.js
+│   ├── 📁 controllers/        # (Tùy chọn) Logic xử lý tách khỏi router
+│   └── 📁 utils/              # (Tùy chọn) Hàm tiện ích chung
+│
+├── 📁 config/                 # (Tùy chọn) Cấu hình (như db, env, logger)
+│   └── config.js
+│
+├── 📁 tests/                  # (Tùy chọn) Unit test hoặc test tự động
+│   └── example.test.js
+│
+├── .env                       # Biến môi trường (PORT, API_KEY, v.v.)
+├── .gitignore
+├── README.md
+├── package.json
+├── package-lock.json
+└── render.yaml                # File cấu hình Render

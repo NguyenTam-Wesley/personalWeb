@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games - NTAM</title>
+    <link rel="stylesheet" href="../style/components.css" />
+    <link rel="stylesheet" href="../style/games.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+    />
+</head>
+<body>
+    <div class="games-container">
+        <section class="games-intro">
+            <h1>Games</h1>
+            <p>Khám phá thế giới game đa dạng và thú vị</p>
+        </section>
+
+        <div class="games-grid">
+            <!-- Games will be rendered here by GamesManager -->
+        </div>
+    </div>
+
+    <script type="module">
+        import components from '../../src/components/components.js';
+        import { GamesManager } from '../../src/modules/games.js';
+        
+        // Initialize components
+        components.init();
+        
+        // Initialize games manager
+        const gamesManager = new GamesManager();
+        gamesManager.init();
+    </script>
+</body>
+</html> 

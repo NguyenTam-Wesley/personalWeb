@@ -1,0 +1,344 @@
+/* Game Detail Page Styles */
+.game-detail-container {
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+/* Hero Section */
+.game-hero {
+    position: relative;
+    height: 60vh;
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+}
+
+.game-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+    z-index: 1;
+}
+
+.game-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.game-hero h1 {
+    font-size: 4rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.game-subtitle {
+    font-size: 1.5rem;
+    margin: 10px 0 0;
+    opacity: 0.9;
+}
+
+/* Content Sections */
+.game-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.game-content section {
+    margin-bottom: 60px;
+}
+
+.game-content h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+/* Overview Section */
+.game-overview p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.feature-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-card h3 {
+    color: #333;
+    margin: 0 0 15px;
+    font-size: 1.3rem;
+}
+
+.feature-card p {
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Modes Grid */
+.modes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.mode-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mode-card h3 {
+    color: #333;
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+}
+
+.mode-card p {
+    color: #666;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Characters Grid */
+.characters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.character-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+}
+
+.character-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.character-card h3 {
+    margin: 15px 0 5px;
+    padding: 0 20px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.character-card p {
+    margin: 0 0 15px;
+    padding: 0 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Maps Grid */
+.maps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.map-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.map-card:hover {
+    transform: translateY(-5px);
+}
+
+.map-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.map-card h3 {
+    margin: 15px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+/* Crosshair Section */
+.game-crosshair {
+    margin-bottom: 60px;
+}
+
+.crosshair-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.crosshair-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.crosshair-section h3 {
+    color: #333;
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.crosshair-code {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Consolas', monospace;
+}
+
+.crosshair-code code {
+    flex: 1;
+    color: #333;
+    font-size: 1rem;
+    word-break: break-all;
+}
+
+.copy-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.copy-button:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.copy-button.copied {
+    background: #2196F3;
+}
+
+.crosshair-note {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.view-more-link {
+    display: inline-block;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.view-more-link:hover {
+    color: #0056b3;
+    transform: translateX(5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .game-hero {
+        height: 50vh;
+    }
+
+    .game-hero h1 {
+        font-size: 3rem;
+    }
+
+    .game-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .game-content {
+        padding: 30px 15px;
+    }
+
+    .features-grid,
+    .modes-grid,
+    .characters-grid,
+    .maps-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .crosshair-container {
+        padding: 20px;
+    }
+
+    .crosshair-code {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .copy-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .game-subtitle {
+        font-size: 1rem;
+    }
+
+    .game-content h2 {
+        font-size: 1.8rem;
+    }
+} 

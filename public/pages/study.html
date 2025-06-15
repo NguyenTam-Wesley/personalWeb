@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+      type="image/jpeg"
+    />
+    <title>Study Resources</title>
+    <link rel="stylesheet" href="../style/components.css" />
+    <link rel="stylesheet" href="../style/study.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <main class="study-container">
+      <section class="study-intro">
+        <h1>Tài liệu học tập</h1>
+        <p class="subtitle">Đây là tài liệu do tôi sưu tầm lại của các thầy cô thông qua quá trình học tập tại trường Đại học Khoa học Tự nhiên - ĐHQG-HCM. Cũng có những tài liệu do tôi sưu tầm thêm bên ngoài trong quá trình tự học. Mong các bạn có thể tìm được thứ mình cần ở đây trong quá trình học tập. Chúc các bạn học tốt, học giỏi và đừng rớt môn nhen</p>
+      </section>
+
+      <section id="subjects" class="subjects-grid"></section>
+
+      <div id="controls" class="controls-panel" hidden>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search resources..." />
+        </div>
+
+        <div class="filters-container">
+          <select id="typeFilter" class="filter-select">
+            <option value="">Filter by type</option>
+          </select>
+
+          <select id="sortSelect" class="filter-select">
+            <option value="az">Name A-Z</option>
+            <option value="za">Name Z-A</option>
+          </select>
+        </div>
+      </div>
+
+      <section id="documents" class="documents-grid" hidden></section>
+    </main>
+
+    <script type="module">
+      import components from '../../src/components/components.js';
+      import { StudyManager } from '../../src/modules/study.js';
+      
+      // Initialize components
+      components.init();
+      
+      // Initialize page specific functionality
+      new StudyManager();
+    </script>
+  </body>
+</html>

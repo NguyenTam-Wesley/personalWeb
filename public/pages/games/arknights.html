@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arknights - Game Details</title>
+    <link rel="stylesheet" href="../../style/components.css" />
+    <link rel="stylesheet" href="../../style/games.css" />
+    <link rel="stylesheet" href="../../style/game-detail.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="game-detail-container">
+        <div class="game-hero" style="background-image: url('https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/arknight_theme.jpg?v=1749924526037')">
+            <div class="game-hero-content">
+                <h1>Arknights</h1>
+                <p class="game-subtitle">Tower Defense Strategy RPG</p>
+            </div>
+        </div>
+
+        <div class="game-content">
+            <section class="game-overview">
+                <h2>Tổng quan</h2>
+                <p>Arknights là một game tower defense kết hợp với RPG, được phát triển bởi Hypergryph. Trong game, người chơi sẽ điều khiển các Operator để bảo vệ Rhodes Island khỏi thảm họa Originium và các mối đe dọa khác.</p>
+            </section>
+
+            <section class="game-features">
+                <h2>Đặc điểm nổi bật</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Operators</h3>
+                        <p>Hơn 200 Operator với các kỹ năng và vai trò độc đáo.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Chiến thuật</h3>
+                        <p>Hệ thống chiến đấu sâu sắc với nhiều cách tiếp cận khác nhau.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Cốt truyện</h3>
+                        <p>Câu chuyện phức tạp về thế giới Terra và những người sống trong đó.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-modes">
+                <h2>Chế độ chơi</h2>
+                <div class="modes-grid">
+                    <div class="mode-card">
+                        <h3>Main Story</h3>
+                        <p>Theo dõi câu chuyện chính của Rhodes Island.</p>
+                    </div>
+                    <div class="mode-card">
+                        <h3>Event Stages</h3>
+                        <p>Các sự kiện đặc biệt với phần thưởng độc quyền.</p>
+                    </div>
+                    <div class="mode-card">
+                        <h3>Integrated Strategies</h3>
+                        <p>Chế độ roguelike với các thử thách ngẫu nhiên.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-characters">
+                <h2>Nhân vật tiêu biểu</h2>
+                <div class="characters-grid">
+                    <div class="character-card">
+                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/arknights_amiya.jpg?v=1749924526037" alt="Amiya">
+                        <h3>Amiya</h3>
+                        <p>Lãnh đạo Rhodes Island</p>
+                    </div>
+                    <div class="character-card">
+                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/arknights_silverash.jpg?v=1749924526037" alt="SilverAsh">
+                        <h3>SilverAsh</h3>
+                        <p>Chiến binh mạnh mẽ</p>
+                    </div>
+                    <div class="character-card">
+                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/arknights_exusiai.jpg?v=1749924526037" alt="Exusiai">
+                        <h3>Exusiai</h3>
+                        <p>Xạ thủ tinh nhuệ</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import components from '../../../src/components/components.js';
+        import { GameDetailManager } from '../../../src/modules/game-detail.js';
+        
+        // Initialize components
+        components.init();
+        
+        // Initialize page specific functionality
+        new GameDetailManager('arknights');
+    </script>
+</body>
+</html> 
