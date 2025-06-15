@@ -29,28 +29,33 @@ export class Components {
     this.currentPath = window.location.pathname;
     this.isInPages = this.currentPath.includes('/pages/');
     this.isInGames = this.currentPath.includes('/games/');
+    this.isInValorant = this.currentPath.includes('/valorant/');
     this.isInCrosshair = this.currentPath.includes('/crosshair.html');
 
     // Tạo navLinks dựa trên vị trí hiện tại
     this.config.navLinks = [
       { 
         name: 'Home', 
-        url: this.isInGames ? '../../index.html' : 
+        url: this.isInValorant ? '../../../index.html' :
+             this.isInGames ? '../../index.html' : 
              this.isInPages ? '../index.html' : 'index.html'
       },
       { 
         name: 'Music', 
-        url: this.isInGames ? '../music.html' : 
+        url: this.isInValorant ? '../../music.html' :
+             this.isInGames ? '../music.html' : 
              this.isInPages ? 'music.html' : 'pages/music.html'
       },
       { 
         name: 'Study', 
-        url: this.isInGames ? '../study.html' : 
+        url: this.isInValorant ? '../../study.html' :
+             this.isInGames ? '../study.html' : 
              this.isInPages ? 'study.html' : 'pages/study.html'
       },
       { 
         name: 'Games', 
-        url: this.isInGames ? '../games.html' : 
+        url: this.isInValorant ? '../../games.html' :
+             this.isInGames ? '../games.html' : 
              this.isInPages ? 'games.html' : 'pages/games.html'
       }
     ];
@@ -82,7 +87,8 @@ export class Components {
   setupHeader() {
     this.header.innerHTML = `
       <nav>
-        <a href="${this.isInGames ? '../../index.html' : 
+        <a href="${this.isInValorant ? '../../../index.html' :
+                  this.isInGames ? '../../index.html' : 
                   this.isInPages ? '../index.html' : 
                   'index.html'}" class="nav-logo">
           NTAM
@@ -106,7 +112,8 @@ export class Components {
             </div>
           ` : `
             <div class="auth-buttons">
-              <a href="${this.isInGames ? '../login.html' : 
+              <a href="${this.isInValorant ? '../../login.html' :
+                        this.isInGames ? '../login.html' : 
                         this.isInPages ? 'login.html' : 
                         'pages/login.html'}" class="auth-button login-button">Login</a>
             </div>
@@ -173,7 +180,8 @@ export class Components {
         </div>
       ` : `
         <div class="auth-buttons">
-          <a href="${this.isInGames ? '../login.html' : 
+          <a href="${this.isInValorant ? '../../login.html' :
+                    this.isInGames ? '../login.html' : 
                     this.isInPages ? 'login.html' : 
                     'pages/login.html'}" class="auth-button login-button">Login</a>
         </div>
@@ -189,18 +197,26 @@ export class Components {
     const currentPage = currentPath.split('/').pop() || 'index.html';
     
     links.forEach(link => {
-      const linkHref = link.getAttribute('href');
-      const linkPage = linkHref.split('/').pop();
-      
-      // So sánh tên file thay vì toàn bộ path
-      if (linkPage === currentPage || 
-          (currentPage === '' && linkPage === 'index.html') ||
-          (currentPath.endsWith('/') && linkPage === 'index.html') ||
-          (this.isInCrosshair && linkPage === 'games.html')) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
+        const linkHref = link.getAttribute('href');
+        const linkPage = linkHref.split('/').pop();
+        
+        // Chỉ highlight link Games khi ở trang crosshair
+        if (this.isInCrosshair) {
+            if (linkPage === 'games.html') {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        } else {
+            // Logic highlight bình thường cho các trang khác
+            if (linkPage === currentPage || 
+                (currentPage === '' && linkPage === 'index.html') ||
+                (currentPath.endsWith('/') && linkPage === 'index.html')) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        }
     });
   }
 

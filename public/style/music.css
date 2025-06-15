@@ -223,29 +223,48 @@ audio {
 
 .control-buttons {
   display: flex;
-  gap: var(--spacing-md);
   justify-content: center;
   margin: 0 0 var(--spacing-sm) 0;
 }
 
-.control-buttons button, .add-to-playlist-btn {
+.control-buttons button {
   padding: var(--spacing-xs) var(--spacing-sm);
   background: transparent;
   border: 2px solid var(--border-light);
-  border-radius: var(--border-radius-sm);
+  border-radius: 0;
   color: var(--accent-primary);
   font-weight: bold;
   font-size: 1.1rem;
   cursor: pointer;
-  margin: 0 var(--spacing-xs);
   transition: all var(--transition-normal);
+  margin: 0;
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.control-buttons button:hover, .add-to-playlist-btn:hover {
+.control-buttons button:first-child {
+  border-top-left-radius: var(--border-radius-sm);
+  border-bottom-left-radius: var(--border-radius-sm);
+}
+
+.control-buttons button:last-child {
+  border-top-right-radius: var(--border-radius-sm);
+  border-bottom-right-radius: var(--border-radius-sm);
+}
+
+.control-buttons button:not(:first-child) {
+  border-left: none;
+}
+
+.control-buttons button:hover {
   background: var(--accent-primary);
   color: var(--text-dark);
   border-color: var(--accent-primary);
   box-shadow: var(--shadow-glow);
+  z-index: 1;
 }
 
 .control-buttons button.active {
@@ -253,8 +272,33 @@ audio {
   color: var(--text-dark);
   border-color: var(--accent-primary);
   box-shadow: var(--shadow-glow);
+  z-index: 1;
+}
+
+.control-buttons .add-to-playlist-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: transparent;
+  border: 2px solid var(--border-light);
+  border-radius: 0;
+  color: var(--accent-primary);
   font-weight: bold;
-  z-index: 2;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  margin: 0;
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-buttons .add-to-playlist-btn:hover {
+  background: var(--accent-primary);
+  color: var(--text-dark);
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-glow);
+  z-index: 1;
 }
 
 .progress-container {
@@ -606,12 +650,12 @@ footer a:hover {
   text-decoration: underline;
 }
 
-.song-add-btn {
+.song-container .add-to-playlist-btn {
   position: absolute;
   right: 50px;
   background: transparent;
   border: none;
-  color: #00ffff;
+  color: var(--accent-primary);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 4px 8px;
@@ -620,10 +664,10 @@ footer a:hover {
   z-index: 1;
 }
 
-.song-add-btn:hover {
+.song-container .add-to-playlist-btn:hover {
   color: #fff;
-  background: #00ffff;
-  box-shadow: 0 0 8px #00ffff;
+  background: var(--accent-primary);
+  box-shadow: 0 0 8px var(--accent-primary);
 }
 
 .delete-song-button {
@@ -676,7 +720,7 @@ footer a:hover {
     margin-right: 70px;
   }
   
-  .song-add-btn {
+  .song-container .add-to-playlist-btn {
     right: 40px;
     font-size: 1.1rem;
   }

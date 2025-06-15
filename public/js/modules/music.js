@@ -3,6 +3,7 @@ import { User } from "../supabase/user.js";
 
 export class MusicPlayer {
   constructor() {
+    console.trace("MusicPlayer constructor called");
     // Sử dụng supabase từ file supabase.js
     this.supabase = supabase;
     
@@ -69,6 +70,15 @@ export class MusicPlayer {
     this.elements.progressBar.addEventListener("input", () => {
       this.elements.musicPlayer.currentTime = this.elements.progressBar.value;
     });
+
+    // Add log for play/pause events
+    const audio = this.elements.musicPlayer;
+    audio.onplay = () => {
+      console.log("audio.onplay triggered");
+    };
+    audio.onpause = () => {
+      console.log("audio.onpause triggered");
+    };
   }
 
   // Error handling
@@ -274,8 +284,12 @@ export class MusicPlayer {
 
   // Event listeners setup
   setupEventListeners() {
+    console.log("setupEventListeners called");
     // Playback controls
-    this.elements.pauseResumeBtn.addEventListener("click", () => this.togglePlayPause());
+    this.elements.pauseResumeBtn.addEventListener("click", () => {
+      console.log("Pause/Resume button clicked");
+      this.togglePlayPause();
+    });
     this.elements.prevBtn.addEventListener("click", () => this.playPrevSong());
     this.elements.nextBtn.addEventListener("click", () => this.playNextSong());
     this.elements.repeatBtn.addEventListener("click", () => this.toggleRepeat());
@@ -659,6 +673,7 @@ export class MusicPlayer {
 
   // Playback Methods
   playSong(index) {
+    console.log("playSong called", index);
     const song = this.state.currentPlaylist[index];
     if (!song) return;
 
@@ -666,7 +681,9 @@ export class MusicPlayer {
     const artistName = song.artist?.name || "Không rõ nghệ sĩ";
     this.elements.currentSongTitle.textContent = `${song.song_name} - ${artistName}`;
 
-    this.elements.musicPlayer.play().catch(error => {
+    this.elements.musicPlayer.play().then(() => {
+      console.log("play() trong playSong thành công");
+    }).catch(error => {
       this.handleError(error, "Không thể phát bài hát này");
     });
 
@@ -678,12 +695,19 @@ export class MusicPlayer {
   }
 
   togglePlayPause() {
-    if (this.elements.musicPlayer.paused) {
-      this.elements.musicPlayer.play();
+    const audio = this.elements.musicPlayer;
+    console.log("Audio paused:", audio.paused, "currentTime:", audio.currentTime, "src:", audio.src);
+    if (audio.paused) {
+      audio.play().then(() => {
+        console.log("Gọi play() thành công");
+      }).catch(e => {
+        console.error("Lỗi khi play:", e);
+      });
       this.elements.pauseResumeBtn.textContent = "⏸";
     } else {
-      this.elements.musicPlayer.pause();
+      audio.pause();
       this.elements.pauseResumeBtn.textContent = "▶";
+      console.log("Gọi pause()");
     }
   }
 
@@ -886,7 +910,7 @@ export class MusicPlayer {
   }
 }
 
-// Initialize the application
-document.addEventListener("DOMContentLoaded", () => {
-  const app = new MusicPlayer();
-});
+// XÓA hoặc comment đoạn này:
+// document.addEventListener("DOMContentLoaded", () => {
+//   const app = new MusicPlayer();
+// });

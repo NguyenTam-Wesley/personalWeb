@@ -28,7 +28,6 @@ body {
   text-align: center;
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-lg);
-  background: var(--header-bg);
   box-shadow: var(--shadow-md);
 }
 
