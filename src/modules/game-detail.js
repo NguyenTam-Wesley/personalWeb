@@ -69,6 +69,7 @@ export class GameDetailManager {
     handleMapClick(card) {
         const mapName = card.querySelector('h3').textContent;
         console.log(`Map clicked: ${mapName}`);
-        // Add map-specific interactions here
+        // Chuyển hướng sang trang map tương ứng
+        window.location.href = `/pages/games/valorant/map/${mapName.toLowerCase()}.html`;
     }
 } 

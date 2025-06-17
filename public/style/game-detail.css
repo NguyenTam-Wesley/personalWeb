@@ -177,34 +177,64 @@
 
 /* Maps Grid */
 .maps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 16px;
 }
 
+/* Map Card Style: chỉ còn ảnh, không border, không nền */
 .map-card {
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: none;
+    position: relative;
 }
 
-.map-card:hover {
-    transform: translateY(-5px);
+.map-card:hover img {
+    transform: scale(1.06);
+    box-shadow: 0 4px 24px rgba(0,255,247,0.18);
 }
 
 .map-card img {
-    width: 100%;
-    height: 200px;
+    width: 120px;
+    height: 80px;
     object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.18);
+    background: #222;
+    transition: transform 0.18s, box-shadow 0.18s;
 }
 
-.map-card h3 {
-    margin: 15px;
-    color: #333;
-    font-size: 1.2rem;
+.map-name {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: none;
+    color: #fff;
+    padding: 0;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s;
+    z-index: 2;
+    box-shadow: none;
+}
+
+.map-card:hover .map-name {
+    opacity: 1;
 }
 
 /* Crosshair Section */
@@ -340,5 +370,16 @@
 
     .game-content h2 {
         font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .maps-grid {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .map-card img {
+        width: 100%;
+        height: auto;
     }
 } 

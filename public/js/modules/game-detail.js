@@ -67,8 +67,8 @@ export class GameDetailManager {
     }
 
     handleMapClick(card) {
-        const mapName = card.querySelector('h3').textContent;
+        const mapName = card.dataset.map;
         console.log(`Map clicked: ${mapName}`);
-        // Add map-specific interactions here
+        window.location.href = `/pages/games/valorant/map/${mapName.toLowerCase()}.html`;
     }
 } 
