@@ -13,8 +13,8 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 24px;
-  color: #00fff7;
-  text-shadow: 0 0 16px #00fff7, 0 0 32px #00fff744;
+  color: white;
+  text-shadow: 0 0 16px black, 0 0 32px #00fff744;
 }
 
 .map-image {
