@@ -57,6 +57,12 @@ export class Components {
         url: this.isInValorant ? '../../games.html' :
              this.isInGames ? '../games.html' : 
              this.isInPages ? 'games.html' : 'pages/games.html'
+      },
+      { 
+        name: 'Blog', 
+        url: this.isInValorant ? '../../blog.html' :
+             this.isInGames ? '../blog.html' : 
+             this.isInPages ? 'blog.html' : 'pages/blog.html'
       }
     ];
 
@@ -106,7 +112,6 @@ export class Components {
               <span class="user-name">${this.userName}</span>
               <div class="user-dropdown">
                 <a href="#" class="dropdown-item" id="profileLink">Profile</a>
-                <a href="#" class="dropdown-item" id="settingsLink">Settings</a>
                 <a href="#" class="dropdown-item" id="logoutLink">Logout</a>
               </div>
             </div>
@@ -151,14 +156,16 @@ export class Components {
 
       const profileLink = document.getElementById('profileLink');
       if (profileLink) {
-        profileLink.href = this.isInGames ? '../profile.html' : 
+        profileLink.href = this.isInValorant ? '../../profile.html' :
+                          this.isInGames ? '../profile.html' : 
                           this.isInPages ? 'profile.html' : 
                           'pages/profile.html';
       }
 
       const settingsLink = document.getElementById('settingsLink');
       if (settingsLink) {
-        settingsLink.href = this.isInGames ? '../settings.html' : 
+        settingsLink.href = this.isInValorant ? '../../settings.html' : 
+                           this.isInGames ? '../settings.html' : 
                            this.isInPages ? 'settings.html' : 
                            'pages/settings.html';
       }
@@ -174,7 +181,6 @@ export class Components {
           <span class="user-name">${this.userName}</span>
           <div class="user-dropdown">
             <a href="#" class="dropdown-item" id="profileLink">Profile</a>
-            <a href="#" class="dropdown-item" id="settingsLink">Settings</a>
             <a href="#" class="dropdown-item" id="logoutLink">Logout</a>
           </div>
         </div>

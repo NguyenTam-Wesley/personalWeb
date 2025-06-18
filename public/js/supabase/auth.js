@@ -22,12 +22,27 @@ export async function registerUser(username, password) {
 export async function loginUser(username, password) {
   const { data, error } = await supabase
     .from("users")
-    .select("id, username, role")
+    .select("id, username, role, login_count")
     .eq("username", username)
     .eq("password", password)
     .single();
 
   if (error || !data) throw new Error("Sai thông tin đăng nhập");
+
+  // Tăng login_count
+  try {
+    const currentLoginCount = data.login_count || 0;
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ login_count: currentLoginCount + 1 })
+      .eq("id", data.id);
+    
+    if (updateError) {
+      console.warn("Không thể cập nhật login_count:", updateError);
+    }
+  } catch (updateError) {
+    console.warn("Không thể cập nhật login_count:", updateError);
+  }
 
   localStorage.setItem("userId", data.id);
   return data;
@@ -45,7 +60,7 @@ export async function getCurrentUser() {
 
   const { data, error } = await supabase
     .from("users")
-    .select("id, username, role")
+    .select("id, username, role, email, full_name, bio, login_count, created_at, updated_at")
     .eq("id", userId)
     .single();
 

@@ -29,16 +29,24 @@
   --border-light: rgba(255, 255, 255, 0.1);
   --border-dark: rgba(0, 0, 0, 0.1);
   
-  /* Z-index layers */
+  /* Z-index */
   --z-header: 1000;
   --z-footer: 1000;
   --z-modal: 2000;
-  --z-tooltip: 1500;
   
   /* Transitions */
-  --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 10px var(--accent-primary);
+  
+  /* Border radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
   
   /* Breakpoints */
   --breakpoint-sm: 480px;
@@ -52,15 +60,4 @@
   --spacing-md: 1.5rem;
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
-  
-  /* Border radius */
-  --border-radius-sm: 4px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  
-  /* Shadows */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 10px var(--accent-primary);
 } 

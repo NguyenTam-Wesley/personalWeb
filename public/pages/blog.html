@@ -1,0 +1,123 @@
+<!-- pages/blog.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blog - NTAM</title>
+  <link rel="stylesheet" href="../style/components.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../style/blog.css" />
+  <link
+      rel="icon"
+      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+    />
+</head>
+<body>
+  <main class="blog-container">
+    <div class="blog-header">
+      <h1>Blog</h1>
+      <p>Chia sẻ kiến thức và trải nghiệm</p>
+      <div class="blog-controls">
+        <button id="createPostBtn" class="btn-primary admin-only" style="display: none;">
+          <span class="icon">✏️</span>
+          Viết bài mới
+        </button>
+      </div>
+    </div>
+
+    <div class="blog-content">
+      <div class="blog-filters">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm bài viết..." />
+          <span class="search-icon">🔍</span>
+        </div>
+        <div class="filter-options">
+          <select id="categoryFilter">
+            <option value="">Tất cả danh mục</option>
+            <option value="technology">Công nghệ</option>
+            <option value="gaming">Gaming</option>
+            <option value="music">Âm nhạc</option>
+            <option value="study">Học tập</option>
+            <option value="life">Cuộc sống</option>
+          </select>
+          <select id="sortFilter">
+            <option value="newest">Mới nhất</option>
+            <option value="oldest">Cũ nhất</option>
+            <option value="popular">Phổ biến</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="blog-posts" id="blogPosts">
+        <!-- Posts will be loaded here -->
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Đang tải bài viết...</p>
+        </div>
+      </div>
+
+      <div class="blog-pagination" id="pagination" style="display: none;">
+        <button class="pagination-btn" id="prevPage">← Trước</button>
+        <div class="page-numbers" id="pageNumbers"></div>
+        <button class="pagination-btn" id="nextPage">Sau →</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Create Post Modal -->
+  <div id="createPostModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Viết bài mới</h2>
+        <button class="close-btn" id="closeCreateModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="createPostForm">
+          <div class="form-group">
+            <label for="postTitle">Tiêu đề bài viết *</label>
+            <input type="text" id="postTitle" required placeholder="Nhập tiêu đề bài viết" />
+          </div>
+          <div class="form-group">
+            <label for="postCategory">Danh mục *</label>
+            <select id="postCategory" required>
+              <option value="">Chọn danh mục</option>
+              <option value="technology">Công nghệ</option>
+              <option value="gaming">Gaming</option>
+              <option value="music">Âm nhạc</option>
+              <option value="study">Học tập</option>
+              <option value="life">Cuộc sống</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="postSummary">Tóm tắt</label>
+            <textarea id="postSummary" rows="3" placeholder="Tóm tắt ngắn gọn về bài viết..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="postContent">Nội dung bài viết *</label>
+            <textarea id="postContent" rows="15" required placeholder="Viết nội dung bài viết của bạn..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="postTags">Tags (phân cách bằng dấu phẩy)</label>
+            <input type="text" id="postTags" placeholder="tag1, tag2, tag3" />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="cancelCreate">Hủy</button>
+            <button type="submit" class="btn-primary">Đăng bài</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import components from '../js/components/components.js';
+    import { BlogManager } from '../js/modules/blog.js';
+    
+    // Initialize components
+    components.init();
+    
+    // Initialize page specific functionality
+    new BlogManager();
+  </script>
+</body>
+</html> 

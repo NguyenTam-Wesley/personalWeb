@@ -9,7 +9,6 @@ header {
   width: 100%;
   height: var(--header-height);
   background: var(--header-bg);
-  backdrop-filter: blur(10px);
   z-index: var(--z-header);
   transition: transform var(--transition-normal);
   border-bottom: 1px solid var(--border-light);
@@ -94,7 +93,7 @@ nav {
 /* Auth buttons */
 .auth-buttons {
   display: flex;
-  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .auth-button {
@@ -107,25 +106,24 @@ nav {
 }
 
 .login-button {
-  color: var(--text-primary);
+  color: var(--text-dark);
   background: var(--accent-primary);
-  border-color: var(--accent-primary);
 }
 
 .login-button:hover {
-  background: var(--accent-secondary);
-  color: var(--text-dark);
+  background: var(--accent-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-glow);
 }
 
 .signup-button {
-  color: var(--text-dark);
-  background: var(--accent-primary);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
 }
 
 .signup-button:hover {
-  background: var(--accent-secondary);
+  background: var(--accent-primary);
+  color: var(--text-dark);
   transform: translateY(-1px);
   box-shadow: var(--shadow-glow);
 }
@@ -197,6 +195,7 @@ nav {
 footer {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
   height: var(--footer-height);
   background: var(--footer-bg);
@@ -218,7 +217,7 @@ footer .socials {
 
 footer .socials a {
   margin: 0 var(--spacing-sm);
-  color: var(--accent-color);
+  color: var(--accent-primary);
   text-decoration: none;
   transition: color var(--transition-normal);
 }
@@ -228,54 +227,36 @@ footer .socials a:hover {
   text-decoration: underline;
 }
 
-/* Common Container Styles */
-.container {
-  min-height: 100vh;
-  padding: var(--container-padding-top) var(--spacing-lg) var(--container-padding-bottom);
-  width: 100%;
-  max-width: var(--breakpoint-xl);
-  margin: 0 auto;
-}
-
-/* Responsive Design */
+/* Media Queries */
 @media (max-width: var(--breakpoint-md)) {
-  .nav-wrapper {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
+  nav {
+    padding: 0 var(--spacing-md);
   }
 
-  nav ul {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-sm);
+  .nav-links {
+    display: none;
   }
 
-  #greeting {
-    margin: var(--spacing-xs) 0;
+  .nav-logo {
+    font-size: 1.25rem;
   }
 
   footer .socials {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  }
-  
-  .container {
-    padding: var(--container-padding-top) var(--spacing-sm) var(--container-padding-bottom);
+    gap: var(--spacing-sm);
   }
 }
 
 @media (max-width: var(--breakpoint-sm)) {
-  .nav-wrapper {
+  nav {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
+  }
+
+  footer .socials a {
     padding: var(--spacing-xs);
-  }
-  
-  nav ul {
-    gap: var(--spacing-xs);
-  }
-  
-  .container {
-    padding: var(--container-padding-top) var(--spacing-xs) var(--container-padding-bottom);
+    font-size: 0.9rem;
   }
 } 

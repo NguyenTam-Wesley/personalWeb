@@ -1,0 +1,115 @@
+<!-- pages/profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile - Loading...</title>
+  <link rel="stylesheet" href="../style/components.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../style/profile.css" />
+  <link
+      rel="icon"
+      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+    />
+</head>
+<body>
+  <main class="profile-container">
+    <div class="profile-header">
+      <h1>Profile</h1>
+      <p>Quản lý thông tin tài khoản của bạn</p>
+    </div>
+
+    <div class="profile-content">
+      <div class="profile-section">
+        <h2>Thông tin cá nhân</h2>
+        <div class="profile-form">
+          <div class="form-group">
+            <label for="username">Tên đăng nhập</label>
+            <input type="text" id="username" readonly />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Nhập email của bạn" />
+          </div>
+          <div class="form-group">
+            <label for="fullName">Họ và tên</label>
+            <input type="text" id="fullName" placeholder="Nhập họ và tên" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Giới thiệu</label>
+            <textarea id="bio" placeholder="Viết gì đó về bản thân..." rows="3"></textarea>
+          </div>
+          <button id="saveProfileBtn" class="btn-primary">Lưu thông tin</button>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h2>Đổi mật khẩu</h2>
+        <div class="profile-form">
+          <div class="form-group">
+            <label for="currentPassword">Mật khẩu hiện tại</label>
+            <input type="password" id="currentPassword" placeholder="Nhập mật khẩu hiện tại" />
+          </div>
+          <div class="form-group">
+            <label for="newPassword">Mật khẩu mới</label>
+            <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới" />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+            <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu mới" />
+          </div>
+          <button id="changePasswordBtn" class="btn-secondary">Đổi mật khẩu</button>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h2>Thống kê</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="loginCount">0</div>
+            <div class="stat-label">Lần đăng nhập</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="joinDate">-</div>
+            <div class="stat-label">Ngày tham gia</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="userRole">User</div>
+            <div class="stat-label">Vai trò</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import components from '../js/components/components.js';
+    import { ProfileManager } from '../js/modules/profile.js';
+    import { getCurrentUser } from '../js/supabase/auth.js';
+    
+    // Initialize components
+    components.init();
+    
+    // Update page title with username
+    async function updatePageTitle() {
+      try {
+        const user = await getCurrentUser();
+        if (user && user.username) {
+          document.title = `Profile - ${user.username}`;
+        } else {
+          document.title = 'Profile - NTAM';
+        }
+      } catch (error) {
+        console.warn('Không thể cập nhật title:', error);
+        document.title = 'Profile - NTAM';
+      }
+    }
+    
+    // Update title when page loads
+    updatePageTitle();
+    
+    // Initialize page specific functionality
+    new ProfileManager();
+  </script>
+</body>
+</html> 

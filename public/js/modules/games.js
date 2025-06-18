@@ -24,6 +24,14 @@ export class GamesManager {
                 image: 'https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/hsr_card.png?v=1749924888888',
                 detailUrl: './games/hsr.html',
                 description: 'Honkai: Star Rail là một game nhập vai phiêu lưu không gian được phát triển bởi HoYoverse.'
+            },
+            ww: {
+                id: 'ww',
+                name: 'Wuthering Waves',
+                subtitle: 'Open World Action RPG',
+                image: 'https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/wuthering-waves.jpg?v=1750260140246',
+                detailUrl: './games/ww.html',
+                description: 'Wuthering Waves là một game nhập vai hành động thế giới mở được phát triển bởi KURO Game.'
             }
         };
     }
@@ -38,13 +46,12 @@ export class GamesManager {
         if (!gamesGrid) return;
 
         gamesGrid.innerHTML = Object.values(this.games).map(game => `
-            <div class="game-card" data-game="${game.id}">
+            <a href="${game.detailUrl}" class="game-card" data-game="${game.id}">
                 <img src="${game.image}" alt="${game.name}">
                 <div class="game-info">
-                    <h2>${game.name}</h2>
-                    <a href="${game.detailUrl}" class="game-link">Khám phá</a>
+                    <span>${game.name}</span>
                 </div>
-            </div>
+            </a>
         `).join('');
     }
 

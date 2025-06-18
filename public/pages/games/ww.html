@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wuthering Waves - Game Details</title>
+    <link rel="stylesheet" href="../../style/components.css" />
+    <link rel="stylesheet" href="../../style/games.css" />
+    <link rel="stylesheet" href="../../style/game-detail.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="game-detail-container">
+        <div class="game-hero" style="background-image: url('https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/wuthering-waves.jpg?v=1750260140246')">
+            <div class="game-hero-content">
+                <h1>Wuthering Waves</h1>
+                <p class="game-subtitle">Open World Action RPG</p>
+            </div>
+        </div>
+
+        <div class="game-content">
+            <section class="game-overview">
+                <h2>Tổng quan</h2>
+                <p>Wuthering Waves là một game nhập vai hành động thế giới mở được phát triển bởi KURO Game. Người chơi sẽ khám phá một thế giới hậu tận thế độc đáo, với hệ thống chiến đấu đầy thử thách và cốt truyện sâu sắc.</p>
+            </section>
+
+            <section class="game-features">
+                <h2>Đặc điểm nổi bật</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Chiến đấu hành động</h3>
+                        <p>Hệ thống chiến đấu mượt mà với các combo và kỹ năng đa dạng.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Thế giới mở</h3>
+                        <p>Khám phá thế giới rộng lớn với nhiều bí ẩn và thử thách.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Cốt truyện</h3>
+                        <p>Câu chuyện hấp dẫn trong bối cảnh hậu tận thế độc đáo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-modes">
+                <h2>Chế độ chơi</h2>
+                <div class="modes-grid">
+                    <div class="mode-card">
+                        <h3>Story Mode</h3>
+                        <p>Trải nghiệm cốt truyện chính với các nhiệm vụ đa dạng.</p>
+                    </div>
+                    <div class="mode-card">
+                        <h3>World Exploration</h3>
+                        <p>Khám phá thế giới rộng lớn và giải đố môi trường.</p>
+                    </div>
+                    <div class="mode-card">
+                        <h3>Challenge Mode</h3>
+                        <p>Thử thách bản thân với các nhiệm vụ khó và boss mạnh.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="game-characters">
+                <h2>Nhân vật tiêu biểu</h2>
+                <div class="characters-grid">
+                    <div class="character-card">
+                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/ww_char1.jpg?v=1749924888888" alt="Rover">
+                        <h3>Rover</h3>
+                        <p>Main Character</p>
+                    </div>
+                    <div class="character-card">
+                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/ww_char2.jpg?v=1749924888888" alt="Chenxing">
+                        <h3>Shorekeeper</h3>
+                        <p>Support Character</p>
+                    </div>
+                    <div class="character-card">
+                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/ww_char3.jpg?v=1749924888888" alt="Marian">
+                        <h3>Catherya</h3>
+                        <p>Combat Expert</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import components from '../../js/components/components.js';
+        import { GameDetailManager } from '../../js/modules/game-detail.js';
+        
+        // Initialize components
+        components.init();
+        
+        // Initialize page specific functionality
+        new GameDetailManager('ww');
+    </script>
+</body>
+</html> 
