@@ -631,4 +631,11 @@
     padding: var(--spacing-sm) var(--spacing-lg);
     font-size: 0.9rem;
   }
+}
+
+#createPostForm select,
+#createPostForm select option {
+  background: var(--dark-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1.5px solid var(--accent-primary);
 } 
