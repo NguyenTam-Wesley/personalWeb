@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../../style/components.css" />
+    <link rel="stylesheet" href="../../style/style.css" />
+    <link rel="stylesheet" href="../../style/admin.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+    <style>
+      .admin-dashboard {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 40px 20px;
+        background: var(--card-bg, #fff);
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      }
+      .admin-dashboard h1 {
+        text-align: center;
+        margin-bottom: 32px;
+        color: var(--text-dark, #222);
+      }
+      .admin-modules {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 32px;
+      }
+      .admin-module-card {
+        background: var(--primary-bg, #f8f9fa);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 32px 20px;
+        text-align: center;
+        transition: box-shadow 0.2s, transform 0.2s;
+        cursor: pointer;
+        border: 1px solid var(--border-light, #e0e0e0);
+      }
+      .admin-module-card:hover {
+        box-shadow: 0 6px 24px rgba(52,152,219,0.10);
+        transform: translateY(-4px) scale(1.03);
+        border-color: var(--accent-primary, #4CAF50);
+      }
+      .admin-module-card .icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        color: var(--accent-primary, #4CAF50);
+      }
+      .admin-module-card h2 {
+        margin: 0 0 8px 0;
+        font-size: 1.2rem;
+        color: var(--text-dark, #222);
+      }
+      .admin-module-card p {
+        color: var(--text-light, #666);
+        font-size: 0.98rem;
+        margin: 0;
+      }
+      @media (max-width: 600px) {
+        .admin-dashboard {
+          padding: 20px 5px;
+        }
+        .admin-modules {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+</head>
+<body>
+  <div class="admin-dashboard">
+    <h1>Admin Dashboard</h1>
+    <div class="admin-modules">
+      <a class="admin-module-card" href="crosshair-manager.html">
+        <div class="icon">🎯</div>
+        <h2>Quản lý Crosshair</h2>
+        <p>Thêm, sửa, xóa các mã tâm ngắm Valorant</p>
+      </a>
+      <a class="admin-module-card" href="#" onclick="alert('Chức năng sắp ra mắt!')">
+        <div class="icon">🎵</div>
+        <h2>Quản lý Music</h2>
+        <p>Quản lý nhạc, playlist, nghệ sĩ</p>
+      </a>
+      <a class="admin-module-card" href="#" onclick="alert('Chức năng sắp ra mắt!')">
+        <div class="icon">📚</div>
+        <h2>Quản lý Study</h2>
+        <p>Quản lý tài liệu, bài học, chủ đề học tập</p>
+      </a>
+      <a class="admin-module-card" href="#" onclick="alert('Chức năng sắp ra mắt!')">
+        <div class="icon">🕹️</div>
+        <h2>Quản lý Game</h2>
+        <p>Quản lý thông tin game, hướng dẫn, tips</p>
+      </a>
+      <a class="admin-module-card" href="#" onclick="alert('Chức năng sắp ra mắt!')">
+        <div class="icon">📝</div>
+        <h2>Quản lý Blog</h2>
+        <p>Quản lý bài viết, danh mục, tags</p>
+      </a>
+    </div>
+  </div>
+  <script type="module">
+    import components from '../../js/components/components.js';
+    components.init();
+  </script>
+</body>
+</html> 

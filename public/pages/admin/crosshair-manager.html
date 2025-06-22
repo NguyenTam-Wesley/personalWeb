@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crosshair Manager - Admin</title>
+    <link rel="stylesheet" href="../../style/components.css" />
+    <link rel="stylesheet" href="../../style/style.css" />
+    <link rel="stylesheet" href="../../style/admin.css" />
+    <link rel="stylesheet" href="../../style/crosshair-manager.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+    />
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Crosshair Manager</h1>
+            <p>Quản lý danh sách crosshair</p>
+        </div>
+
+        <div class="admin-content">
+            <div class="admin-filters">
+                <div class="search-box">
+                    <input type="text" id="adminSearch" placeholder="Tìm kiếm crosshair..." />
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-options">
+                    <select id="adminCategoryFilter">
+                        <option value="">Tất cả danh mục</option>
+                        <option value="pro">Pro Players</option>
+                        <option value="streamer">Streamers</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <select id="adminStatusFilter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="true">Đang hiển thị</option>
+                        <option value="false">Đã ẩn</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-table-header">
+                <button id="addCrosshairBtn" class="btn-primary">
+                    <span class="icon">➕</span>
+                    Thêm Crosshair Mới
+                </button>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>Player</th>
+                            <th>Team</th>
+                            <th>Danh mục</th>
+                            <th>Độ khó</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crosshairTableBody">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="admin-pagination" id="adminPagination" style="display: none;">
+                <button class="pagination-btn" id="adminPrevPage">← Trước</button>
+                <div class="page-numbers" id="adminPageNumbers"></div>
+                <button class="pagination-btn" id="adminNextPage">Sau →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Crosshair Modal (Popup) -->
+    <div id="crosshairModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Thêm Crosshair Mới</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="crosshairForm">
+                    <input type="hidden" id="crosshairId" />
+                    <div class="form-group">
+                        <label for="crosshairName">Tên crosshair *</label>
+                        <input type="text" id="crosshairName" required placeholder="Nhập tên crosshair" />
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairDescription">Mô tả</label>
+                        <textarea id="crosshairDescription" rows="3" placeholder="Mô tả về crosshair này..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairCode">Code *</label>
+                        <input type="text" id="crosshairCode" required placeholder="Nhập code crosshair" />
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairPlayer">Tên player</label>
+                        <input type="text" id="crosshairPlayer" placeholder="Tên player sử dụng" />
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairTeam">Tên team</label>
+                        <input type="text" id="crosshairTeam" placeholder="Tên team của player" />
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairCategory">Danh mục *</label>
+                        <select id="crosshairCategory" required>
+                            <option value="">Chọn danh mục</option>
+                            <option value="pro">Pro Players</option>
+                            <option value="streamer">Streamers</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairDifficulty">Độ khó</label>
+                        <select id="crosshairDifficulty">
+                            <option value="easy">Dễ</option>
+                            <option value="medium" selected>Trung bình</option>
+                            <option value="hard">Khó</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairColor">Màu</label>
+                        <input type="text" id="crosshairColor" placeholder="Màu của crosshair" />
+                    </div>
+                    <div class="form-group">
+                        <label for="crosshairStyle">Style</label>
+                        <input type="text" id="crosshairStyle" placeholder="Style: dot, cross, circle..." />
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="crosshairActive" checked />
+                            <span class="checkmark"></span>
+                            Hiển thị crosshair này
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelBtn">Hủy</button>
+                        <button type="submit" class="btn-primary" id="saveBtn">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Xác nhận xóa</h2>
+                <button class="close-btn" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa crosshair "<span id="deleteCrosshairName"></span>"?</p>
+                <p class="warning">Hành động này không thể hoàn tác!</p>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelDelete">Hủy</button>
+                    <button type="button" class="btn-danger" id="confirmDelete">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import components from '../../js/components/components.js';
+        import { CrosshairAdminManager } from '../../js/modules/crosshair-admin.js';
+        
+        // Initialize components
+        components.init();
+        
+        // Initialize admin manager
+        new CrosshairAdminManager();
+    </script>
+</body>
+</html> 

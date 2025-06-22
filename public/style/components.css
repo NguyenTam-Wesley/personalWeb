@@ -207,7 +207,7 @@ footer {
   transition: transform var(--transition-normal);
 }
 
-footer.hide {
+footer.hidden {
   transform: translateY(100%);
 }
 

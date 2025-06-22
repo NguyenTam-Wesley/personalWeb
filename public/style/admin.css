@@ -1,0 +1,404 @@
+            .admin-table th,
+            .admin-table td {
+                padding: var(--spacing-md);
+                text-align: left;
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .admin-table th {
+                background: var(--secondary-bg);
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+            .admin-table tr:hover {
+                background: var(--overlay-bg);
+            }
+
+            .crosshair-info-cell {
+                display: flex;
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+
+            .crosshair-info-cell strong {
+                color: var(--text-dark);
+            }
+
+            .crosshair-info-cell small {
+                color: var(--text-light);
+                font-size: 0.875rem;
+            }
+
+            /* Giữ lại các style bảng, table, button, ... */
+
+            /* ==== Crosshair Modal/Form Styles ==== */
+            .modal {
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                overflow: auto;
+                background: rgba(0,0,0,0.45);
+                display: none;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal.show {
+                display: flex;
+            }
+            .modal-content {
+                background: #fff;
+                border-radius: 16px;
+                box-shadow: 0 8px 32px rgba(52,152,219,0.12), 0 1.5px 8px rgba(0,0,0,0.04);
+                max-width: 480px;
+                width: 95%;
+                margin: auto;
+                animation: fadeInModal 0.25s;
+                display: flex;
+                flex-direction: column;
+            }
+            .modal-header {
+                background: var(--accent-primary, #4CAF50);
+                color: #fff;
+                padding: 20px 28px 12px 28px;
+                border-radius: 16px 16px 0 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .modal-header h2 {
+                margin: 0;
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+            .close-btn {
+                color: #fff;
+                background: none;
+                border: none;
+                font-size: 1.7rem;
+                cursor: pointer;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+            }
+            .close-btn:hover {
+                background: rgba(255,255,255,0.12);
+            }
+            .modal-body {
+                padding: 24px 28px 28px 28px;
+                background: #fff;
+            }
+            .form-group {
+                margin-bottom: 16px;
+            }
+            .form-group label {
+                color: #222;
+                font-weight: 500;
+                margin-bottom: 6px;
+                display: block;
+            }
+            input[type="text"],
+            textarea,
+            select {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1.5px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 1rem;
+                margin-bottom: 4px;
+                background: #f8f9fa;
+                transition: border-color 0.2s;
+            }
+            input[type="text"]:focus,
+            textarea:focus,
+            select:focus {
+                border-color: var(--accent-primary, #4CAF50);
+                outline: none;
+                background: #fff;
+            }
+            select {
+                appearance: none;
+                background: #f8f9fa url('data:image/svg+xml;utf8,<svg fill="%234CAF50" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px 18px;
+                font-weight: 500;
+            }
+            textarea {
+                min-height: 60px;
+                resize: vertical;
+            }
+            .form-actions {
+                display: flex;
+                gap: 16px;
+                justify-content: flex-end;
+                margin-top: 18px;
+                padding-top: 12px;
+                border-top: 1px solid #f0f0f0;
+            }
+            .btn-primary {
+                background: var(--accent-primary, #4CAF50);
+                color: #fff;
+                font-weight: 600;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 28px;
+                font-size: 1rem;
+                transition: background 0.2s, transform 0.2s;
+            }
+            .btn-primary:hover {
+                background: #388e3c;
+                transform: translateY(-2px);
+            }
+            .btn-secondary {
+                background: #e0e0e0;
+                color: #333;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 22px;
+                font-size: 1rem;
+                font-weight: 500;
+                transition: background 0.2s, transform 0.2s;
+            }
+            .btn-secondary:hover {
+                background: #bdbdbd;
+                transform: translateY(-2px);
+            }
+            .checkbox-label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                margin-top: 8px;
+            }
+            .checkbox-label input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin: 0;
+            }
+            .checkmark {
+                width: 18px;
+                height: 18px;
+                border-radius: 4px;
+                background: #e0e0e0;
+                display: inline-block;
+                position: relative;
+            }
+            .checkbox-label input[type="checkbox"]:checked + .checkmark {
+                background: var(--accent-primary, #4CAF50);
+            }
+            .checkbox-label .checkmark::after {
+                content: "";
+                position: absolute;
+                display: none;
+            }
+            .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+                display: block;
+                left: 6px;
+                top: 2px;
+                width: 4px;
+                height: 9px;
+                border: solid #fff;
+                border-width: 0 2.5px 2.5px 0;
+                transform: rotate(45deg);
+            }
+            @media (max-width: 600px) {
+                .modal-content {
+                    padding: 0 4px;
+                }
+                .modal-header {
+                    padding: 12px 8px 8px 8px;
+                }
+                .modal-body {
+                    padding: 12px 8px 16px 8px;
+                }
+            }
+
+            .modern-modal {
+                background: #fff;
+                border-radius: 18px;
+                box-shadow: 0 8px 32px rgba(52,152,219,0.12), 0 1.5px 8px rgba(0,0,0,0.04);
+                padding: 0;
+                max-width: 480px;
+                width: 95%;
+                margin: 5% auto;
+                overflow: hidden;
+                animation: fadeInModal 0.25s;
+            }
+            @keyframes fadeInModal {
+                from { opacity: 0; transform: translateY(40px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .modern-modal .modal-header {
+                background: var(--accent-primary, #4CAF50);
+                color: #fff;
+                padding: 24px 32px 16px 32px;
+                border-radius: 18px 18px 0 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .modern-modal .modal-header h2 {
+                margin: 0;
+                font-size: 1.3rem;
+                font-weight: 600;
+            }
+
+            .modern-modal .close-btn {
+                color: #fff;
+                background: none;
+                border: none;
+                font-size: 1.7rem;
+                cursor: pointer;
+                transition: background 0.2s;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .modern-modal .close-btn:hover {
+                background: rgba(255,255,255,0.12);
+            }
+
+            .modern-modal .modal-body {
+                padding: 28px 32px 32px 32px;
+                background: #fff;
+            }
+
+            .modern-modal .form-group label,
+            .modern-modal .form-row label {
+                color: #222;
+                font-weight: 500;
+                margin-bottom: 6px;
+                display: block;
+            }
+
+            .modern-modal input[type="text"],
+            .modern-modal textarea,
+            .modern-modal select {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1.5px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 1rem;
+                margin-bottom: 10px;
+                background: #f8f9fa;
+                transition: border-color 0.2s;
+            }
+            .modern-modal input[type="text"]:focus,
+            .modern-modal textarea:focus,
+            .modern-modal select:focus {
+                border-color: var(--accent-primary, #4CAF50);
+                outline: none;
+                background: #fff;
+            }
+
+            .modern-modal select {
+                appearance: none;
+                background: #f8f9fa url('data:image/svg+xml;utf8,<svg fill="%234CAF50" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px 18px;
+                font-weight: 500;
+            }
+
+            .modern-modal textarea {
+                min-height: 60px;
+                resize: vertical;
+            }
+
+            .modern-modal .form-row {
+                display: flex;
+                gap: 18px;
+            }
+            @media (max-width: 600px) {
+                .modern-modal .modal-body {
+                    padding: 16px 8px 20px 8px;
+                }
+                .modern-modal .modal-header {
+                    padding: 16px 8px 10px 8px;
+                }
+                .modern-modal .form-row {
+                    flex-direction: column;
+                    gap: 0;
+                }
+            }
+
+            .modern-modal .form-actions {
+                display: flex;
+                gap: 16px;
+                justify-content: flex-end;
+                margin-top: 18px;
+                padding-top: 12px;
+                border-top: 1px solid #f0f0f0;
+            }
+
+            .modern-modal .btn-primary {
+                background: var(--accent-primary, #4CAF50);
+                color: #fff;
+                font-weight: 600;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 28px;
+                font-size: 1rem;
+                transition: background 0.2s, transform 0.2s;
+            }
+            .modern-modal .btn-primary:hover {
+                background: #388e3c;
+                transform: translateY(-2px);
+            }
+
+            .modern-modal .btn-secondary {
+                background: #e0e0e0;
+                color: #333;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 22px;
+                font-size: 1rem;
+                font-weight: 500;
+                transition: background 0.2s, transform 0.2s;
+            }
+            .modern-modal .btn-secondary:hover {
+                background: #bdbdbd;
+                transform: translateY(-2px);
+            }
+
+            .modern-modal .checkbox-label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                margin-top: 8px;
+            }
+            .modern-modal .checkbox-label input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin: 0;
+            }
+            .modern-modal .checkmark {
+                width: 18px;
+                height: 18px;
+                border: 2px solid #bdbdbd;
+                border-radius: 3px;
+                position: relative;
+                transition: all 0.2s;
+            }
+            .modern-modal .checkbox-label input[type="checkbox"]:checked + .checkmark {
+                background: var(--accent-primary, #4CAF50);
+                border-color: var(--accent-primary, #4CAF50);
+            }
+            .modern-modal .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+                content: '✓';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: white;
+                font-size: 12px;
+                font-weight: bold;
+            } 

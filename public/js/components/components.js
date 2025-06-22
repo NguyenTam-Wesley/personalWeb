@@ -31,6 +31,7 @@ export class Components {
     this.isInGames = this.currentPath.includes('/games/');
     this.isInValorant = this.currentPath.includes('/valorant/');
     this.isInCrosshair = this.currentPath.includes('/crosshair.html');
+    this.isInAdmin = this.currentPath.includes('/admin/');
 
     // Tạo navLinks dựa trên vị trí hiện tại
     this.config.navLinks = [
@@ -38,30 +39,35 @@ export class Components {
         name: 'Home', 
         url: this.isInValorant ? '../../../index.html' :
              this.isInGames ? '../../index.html' : 
+             this.isInAdmin ? '../../index.html' :
              this.isInPages ? '../index.html' : 'index.html'
       },
       { 
         name: 'Music', 
         url: this.isInValorant ? '../../music.html' :
              this.isInGames ? '../music.html' : 
+             this.isInAdmin ? '../music.html' :
              this.isInPages ? 'music.html' : 'pages/music.html'
       },
       { 
         name: 'Study', 
         url: this.isInValorant ? '../../study.html' :
              this.isInGames ? '../study.html' : 
+             this.isInAdmin ? '../study.html' :
              this.isInPages ? 'study.html' : 'pages/study.html'
       },
       { 
         name: 'Games', 
         url: this.isInValorant ? '../../games.html' :
              this.isInGames ? '../games.html' : 
+             this.isInAdmin ? '../games.html' :
              this.isInPages ? 'games.html' : 'pages/games.html'
       },
       { 
         name: 'Blog', 
         url: this.isInValorant ? '../../blog.html' :
              this.isInGames ? '../blog.html' : 
+             this.isInAdmin ? '../blog.html' :
              this.isInPages ? 'blog.html' : 'pages/blog.html'
       }
     ];
@@ -95,6 +101,7 @@ export class Components {
       <nav>
         <a href="${this.isInValorant ? '../../../index.html' :
                   this.isInGames ? '../../index.html' : 
+                  this.isInAdmin ? '../../index.html' :
                   this.isInPages ? '../index.html' : 
                   'index.html'}" class="nav-logo">
           NTAM
@@ -112,6 +119,9 @@ export class Components {
               <span class="user-name">${this.userName}</span>
               <div class="user-dropdown">
                 <a href="#" class="dropdown-item" id="profileLink">Profile</a>
+                ${this.userRole === 'admin' ? `
+                  <a href="/pages/admin/admin.html" class="dropdown-item" id="adminLink">Admin</a>
+                ` : ''}
                 <a href="#" class="dropdown-item" id="logoutLink">Logout</a>
               </div>
             </div>
@@ -119,6 +129,7 @@ export class Components {
             <div class="auth-buttons">
               <a href="${this.isInValorant ? '../../login.html' :
                         this.isInGames ? '../login.html' : 
+                        this.isInAdmin ? '../login.html' :
                         this.isInPages ? 'login.html' : 
                         'pages/login.html'}" class="auth-button login-button">Login</a>
             </div>
@@ -137,6 +148,7 @@ export class Components {
     const wasLoggedIn = this.isLoggedIn;
     this.isLoggedIn = !!user;
     this.userName = user?.username || '';
+    this.userRole = user?.role || '';
 
     // Chỉ cập nhật lại header nếu trạng thái đăng nhập thay đổi
     if (wasLoggedIn !== this.isLoggedIn) {
@@ -158,6 +170,7 @@ export class Components {
       if (profileLink) {
         profileLink.href = this.isInValorant ? '../../profile.html' :
                           this.isInGames ? '../profile.html' : 
+                          this.isInAdmin ? '../profile.html' :
                           this.isInPages ? 'profile.html' : 
                           'pages/profile.html';
       }
@@ -166,6 +179,7 @@ export class Components {
       if (settingsLink) {
         settingsLink.href = this.isInValorant ? '../../settings.html' : 
                            this.isInGames ? '../settings.html' : 
+                           this.isInAdmin ? '../settings.html' : 
                            this.isInPages ? 'settings.html' : 
                            'pages/settings.html';
       }
@@ -181,6 +195,9 @@ export class Components {
           <span class="user-name">${this.userName}</span>
           <div class="user-dropdown">
             <a href="#" class="dropdown-item" id="profileLink">Profile</a>
+            ${this.userRole === 'admin' ? `
+              <a href="/pages/admin/admin.html" class="dropdown-item" id="adminLink">Admin</a>
+            ` : ''}
             <a href="#" class="dropdown-item" id="logoutLink">Logout</a>
           </div>
         </div>
@@ -188,6 +205,7 @@ export class Components {
         <div class="auth-buttons">
           <a href="${this.isInValorant ? '../../login.html' :
                     this.isInGames ? '../login.html' : 
+                    this.isInAdmin ? '../login.html' :
                     this.isInPages ? 'login.html' : 
                     'pages/login.html'}" class="auth-button login-button">Login</a>
         </div>
@@ -288,6 +306,34 @@ export class Components {
   }
 
   // Utility Methods
+  getRelativePath(targetPath) {
+    // Helper function để tạo đường dẫn tương đối chính xác
+    const currentDepth = this.currentPath.split('/').filter(Boolean).length;
+    const targetDepth = targetPath.split('/').filter(Boolean).length;
+    
+    // Nếu đang ở admin, đi ra ngoài 2 cấp để về pages
+    if (this.isInAdmin) {
+      if (targetPath.startsWith('pages/')) {
+        return '../' + targetPath;
+      } else if (targetPath === 'index.html') {
+        return '../../index.html';
+      } else {
+        return '../' + targetPath;
+      }
+    }
+    
+    // Logic cũ cho các trường hợp khác
+    if (this.isInValorant) {
+      return '../../' + targetPath;
+    } else if (this.isInGames) {
+      return '../' + targetPath;
+    } else if (this.isInPages) {
+      return targetPath;
+    } else {
+      return 'pages/' + targetPath;
+    }
+  }
+
   static create() {
     return new Components();
   }

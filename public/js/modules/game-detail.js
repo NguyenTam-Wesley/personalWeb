@@ -4,6 +4,44 @@ export class GameDetailManager {
         this.init();
     }
 
+
+    async copyCode(button) {
+        try {
+            const codeElement = button.closest('.crosshair-code')?.querySelector('code');
+            const tooltip = button.querySelector('.tooltip');
+    
+            const code = codeElement?.textContent.trim();
+            if (!code) throw new Error('Không tìm thấy mã crosshair');
+    
+            await navigator.clipboard.writeText(code);
+    
+            // Thông báo thành công
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.style.backgroundColor = '#28a745';
+    
+            // Tooltip (nếu có)
+            if (tooltip) {
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 2000);
+            }
+    
+            this.showNotification?.('Crosshair code đã được copy!', 'success');
+    
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '';
+            }, 2000);
+        } catch (error) {
+            console.error('Lỗi khi copy code:', error);
+            this.showNotification?.('Không thể copy code. Vui lòng thử lại!', 'error');
+        }
+    }
+    
+
+
     init() {
         // Add event listeners for interactive elements
         this.setupEventListeners();
@@ -46,9 +84,16 @@ export class GameDetailManager {
     }
 
     initializeValorantFeatures() {
-        // Add Valorant-specific features
-        console.log('Initializing Valorant features');
-    }
+    console.log('Initializing Valorant features');
+
+    const copyButtons = document.querySelectorAll('.copy-button');
+    copyButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            this.copyCode(button);
+        });        
+    });
+}
+
 
     initializeArknightsFeatures() {
         // Add Arknights-specific features

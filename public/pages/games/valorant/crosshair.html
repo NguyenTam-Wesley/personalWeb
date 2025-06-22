@@ -21,53 +21,17 @@
         </section>
 
         <div class="crosshair-grid">
-            <!-- Crosshair của TenZ -->
-            <div class="crosshair-card">
-                <div class="crosshair-info">
-                    <h3>TenZ Crosshair</h3>
-                    <p class="crosshair-description">Crosshair của TenZ - Pro Player Sentinels</p>
-                </div>
-                <div class="crosshair-code">
-                    <code>0;P;c;5;u;000000FF;h;0;f;0;0l;4;0o;2;0a;1;0f;0;1b;0</code>
-                    <button class="copy-button">Copy</button>
-                </div>
+            <!-- Crosshairs will be loaded here by CrosshairManager -->
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Đang tải crosshairs...</p>
             </div>
+        </div>
 
-            <!-- Crosshair của ScreaM -->
-            <div class="crosshair-card">
-                <div class="crosshair-info">
-                    <h3>ScreaM Crosshair</h3>
-                    <p class="crosshair-description">Crosshair của ScreaM - Pro Player Team Liquid</p>
-                </div>
-                <div class="crosshair-code">
-                    <code>0;P;c;1;u;FF0000FF;h;0;m;1;0l;3;0o;0;0a;1;0f;0;1b;0</code>
-                    <button class="copy-button">Copy</button>
-                </div>
-            </div>
-
-            <!-- Crosshair của Shroud -->
-            <div class="crosshair-card">
-                <div class="crosshair-info">
-                    <h3>Shroud Crosshair</h3>
-                    <p class="crosshair-description">Crosshair của Shroud - Streamer & Pro Player</p>
-                </div>
-                <div class="crosshair-code">
-                    <code>0;P;c;5;u;FFFFFF;h;0;f;0;0l;4;0o;2;0a;1;0f;0;1b;0</code>
-                    <button class="copy-button">Copy</button>
-                </div>
-            </div>
-
-            <!-- Crosshair của Hiko -->
-            <div class="crosshair-card">
-                <div class="crosshair-info">
-                    <h3>Hiko Crosshair</h3>
-                    <p class="crosshair-description">Crosshair của Hiko - Pro Player 100 Thieves</p>
-                </div>
-                <div class="crosshair-code">
-                    <code>0;P;c;5;u;00FF00FF;h;0;f;0;0l;4;0o;2;0a;1;0f;0;1b;0</code>
-                    <button class="copy-button">Copy</button>
-                </div>
-            </div>
+        <div class="crosshair-pagination" id="pagination" style="display: none;">
+            <button class="pagination-btn" id="prevPage">← Trước</button>
+            <div class="page-numbers" id="pageNumbers"></div>
+            <button class="pagination-btn" id="nextPage">Sau →</button>
         </div>
 
         <section class="crosshair-guide">
@@ -85,6 +49,9 @@
     <script type="module">
         import components from '../../../js/components/components.js';
         import { CrosshairManager } from '../../../js/modules/crosshair.js';
+        
+        // Initialize components
+        components.init();
         
         // Initialize crosshair manager
         CrosshairManager.init();

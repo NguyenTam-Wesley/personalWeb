@@ -22,6 +22,65 @@
     margin: 0 auto;
 }
 
+/* Crosshair Filters */
+.crosshair-filters {
+    margin: 30px 0;
+    padding: 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.crosshair-filters .search-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.crosshair-filters .search-box input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.crosshair-filters .search-box input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.crosshair-filters .search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.crosshair-filters .filter-options {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.crosshair-filters select {
+    padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    min-width: 150px;
+}
+
+.crosshair-filters select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
 .crosshair-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -56,6 +115,40 @@
     font-size: 0.95rem;
     margin: 0 0 15px;
     line-height: 1.5;
+}
+
+/* Crosshair Badges */
+.crosshair-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+}
+
+.category-badge {
+    background-color: #4CAF50;
+}
+
+.difficulty-badge {
+    color: white;
+}
+
+/* Crosshair Meta */
+.crosshair-meta {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    font-size: 0.875rem;
+    color: #666;
+    flex-wrap: wrap;
 }
 
 .crosshair-code {
@@ -96,6 +189,113 @@
     background: #2196F3;
 }
 
+/* Loading and Error States */
+.loading-spinner {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4CAF50;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.error-message button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.no-crosshairs {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+/* Pagination */
+.crosshair-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.pagination-btn {
+    padding: 10px 20px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    color: #333;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 5px;
+}
+
+.page-number {
+    padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    color: #333;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.page-number:hover {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.page-number.active {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
 .crosshair-guide {
     background: white;
     border-radius: 12px;
@@ -133,6 +333,19 @@
         font-size: 2rem;
     }
 
+    .crosshair-filters {
+        padding: 20px;
+    }
+
+    .crosshair-filters .filter-options {
+        flex-direction: column;
+    }
+
+    .crosshair-filters select {
+        min-width: auto;
+        width: 100%;
+    }
+
     .crosshair-grid {
         grid-template-columns: 1fr;
     }
@@ -144,5 +357,22 @@
 
     .copy-button {
         width: 100%;
+    }
+
+    .crosshair-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .crosshair-pagination {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .page-numbers {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
     }
 } 
