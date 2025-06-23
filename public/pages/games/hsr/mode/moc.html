@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory of Chaos (MoC) - Honkai: Star Rail</title>
+    <link rel="stylesheet" href="../../../../style/components.css" />
+    <link rel="stylesheet" href="../../../../style/games.css" />
+    <link rel="stylesheet" href="../../../../style/game-detail.css" />
+    <link rel="stylesheet" href="../../../../style/hsr-mode.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="game-detail-container hsr-mode-container">
+        <div class="game-hero" style="background-image: url('https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/hsr_card.png?v=1749924888888')">
+            <div class="game-hero-content">
+                <h1>Hồi ức hỗn độn (Memory of Chaos - MoC)</h1>
+                <p class="game-subtitle">Endgame Content in Honkai: Star Rail</p>
+            </div>
+        </div>
+
+        <div class="game-content">
+            <section class="game-overview">
+                <h2>Tổng quan</h2>
+                <p>Là nữa sau của sảnh đường lãng quên, có chu kì làm mới mỗi 40 ngày.</p>
+            </section>
+
+            <section class="mode-mechanics">
+                <h2>Cơ chế</h2>
+                <p>Mỗi kì MoC sẽ có một hiệu ứng đặc biệt có lợi cho một số loại nhân vật hoặc lối chơi nhất định. Người chơi cần xây dựng 2 đội hình để vượt qua 12 tầng, với độ khó tăng dần.</p>
+            </section>
+
+            <section class="recommended-teams">
+                <h2>Đội hình đề cử</h2>
+                <div class="teams-grid">
+                    <div class="team-card">
+                        <h3>Team DoT</h3>
+                        <p>Kafka, Black Swan, Ruan Mei, Huohuo</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>Team FUA</h3>
+                        <p>Dr. Ratio, Topaz, Aventurine, Robin</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>Team Hypercarry</h3>
+                        <p>Acheron, Pela, Silver Wolf, Gallagher</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import components from '../../../../js/components/components.js';
+        import { HsrModeManager } from '../../../../js/modules/hsr-mode.js';
+        
+        // Initialize components
+        components.init();
+
+        // Initialize page specific functionality
+        new HsrModeManager().init();
+    </script>
+</body>
+</html> 

@@ -365,8 +365,8 @@ export class MusicPlayer {
     return icons[type] || icons.info;
   }
 
-  // Main Menu
-  async loadMainMenu() {
+  // Main Menu với phân trang
+  async loadMainMenu(page = 1, pageSize = 8) {
     try {
       this.showLoading();
       this.elements.mainMenu.innerHTML = "";
@@ -389,14 +389,40 @@ export class MusicPlayer {
         { emoji: "📂", label: "Playlist người dùng", type: "playlist" }
       ];
 
+      // Phân trang
+      const totalPages = Math.ceil(categories.length / pageSize);
+      const startIdx = (page - 1) * pageSize;
+      const endIdx = startIdx + pageSize;
+      const pageCategories = categories.slice(startIdx, endIdx);
+
       const fragment = document.createDocumentFragment();
-      categories.forEach(({ emoji, label, type }) => {
+      pageCategories.forEach(({ emoji, label, type }) => {
         const btn = this.createButton(`${emoji} ${label}`, "main-category-button", () => {
           this.loadCategory(type, `${emoji} ${label}`);
         });
         fragment.appendChild(btn);
       });
       this.elements.mainMenu.appendChild(fragment);
+
+      // Nút phân trang nếu cần
+      if (totalPages > 1) {
+        const pagination = document.createElement("div");
+        pagination.style.display = "flex";
+        pagination.style.justifyContent = "center";
+        pagination.style.width = "100%";
+        pagination.style.gap = "10px";
+        pagination.style.marginTop = "10px";
+
+        if (page > 1) {
+          const prevBtn = this.createButton("← Trang trước", "main-category-button", () => this.loadMainMenu(page - 1, pageSize));
+          pagination.appendChild(prevBtn);
+        }
+        if (page < totalPages) {
+          const nextBtn = this.createButton("Trang sau →", "main-category-button", () => this.loadMainMenu(page + 1, pageSize));
+          pagination.appendChild(nextBtn);
+        }
+        this.elements.mainMenu.appendChild(pagination);
+      }
 
       this.state.navigationStack = [];
       this.saveNavigationState();
@@ -408,7 +434,7 @@ export class MusicPlayer {
   }
 
   // Category Loading
-  async loadCategory(type, displayTitle) {
+  async loadCategory(type, displayTitle, page = 1, pageSize = 50) {
     try {
       this.showLoading();
       this.elements.mainMenu.innerHTML = "";
@@ -458,12 +484,38 @@ export class MusicPlayer {
           noPlaylistMsg.textContent = "Bạn chưa có playlist nào.";
           playlistList.appendChild(noPlaylistMsg);
         } else {
-          data.forEach(item => {
+          // Phân trang cho playlist
+          const totalPages = Math.ceil(data.length / pageSize);
+          const startIdx = (page - 1) * pageSize;
+          const endIdx = startIdx + pageSize;
+          const pageData = data.slice(startIdx, endIdx);
+
+          pageData.forEach(item => {
             const btn = this.createButton(item.name, "category-item", () => {
               this.loadSongsByCategory("playlist", item.id, item.name);
             });
             playlistList.appendChild(btn);
           });
+
+          // Nút phân trang nếu cần
+          if (totalPages > 1) {
+            const pagination = document.createElement("div");
+            pagination.style.display = "flex";
+            pagination.style.justifyContent = "center";
+            pagination.style.width = "100%";
+            pagination.style.gap = "10px";
+            pagination.style.marginTop = "10px";
+
+            if (page > 1) {
+              const prevBtn = this.createButton("← Trang trước", "main-category-button", () => this.loadCategory(type, displayTitle, page - 1, pageSize));
+              pagination.appendChild(prevBtn);
+            }
+            if (page < totalPages) {
+              const nextBtn = this.createButton("Trang sau →", "main-category-button", () => this.loadCategory(type, displayTitle, page + 1, pageSize));
+              pagination.appendChild(nextBtn);
+            }
+            playlistList.appendChild(pagination);
+          }
         }
 
         playlistSection.appendChild(playlistList);
@@ -479,14 +531,40 @@ export class MusicPlayer {
         return;
       }
 
+      // Phân trang cho category-item
+      const totalPages = Math.ceil(data.length / pageSize);
+      const startIdx = (page - 1) * pageSize;
+      const endIdx = startIdx + pageSize;
+      const pageData = data.slice(startIdx, endIdx);
+
       const fragment = document.createDocumentFragment();
-      data.forEach(item => {
+      pageData.forEach(item => {
         const btn = this.createButton(item.name, "category-item", () => {
           this.loadSongsByCategory(type, item.id, item.name);
         });
         fragment.appendChild(btn);
       });
       this.elements.mainMenu.appendChild(fragment);
+
+      // Nút phân trang nếu cần
+      if (totalPages > 1) {
+        const pagination = document.createElement("div");
+        pagination.style.display = "flex";
+        pagination.style.justifyContent = "center";
+        pagination.style.width = "100%";
+        pagination.style.gap = "10px";
+        pagination.style.marginTop = "10px";
+
+        if (page > 1) {
+          const prevBtn = this.createButton("← Trang trước", "main-category-button", () => this.loadCategory(type, displayTitle, page - 1, pageSize));
+          pagination.appendChild(prevBtn);
+        }
+        if (page < totalPages) {
+          const nextBtn = this.createButton("Trang sau →", "main-category-button", () => this.loadCategory(type, displayTitle, page + 1, pageSize));
+          pagination.appendChild(nextBtn);
+        }
+        this.elements.mainMenu.appendChild(pagination);
+      }
     } catch (error) {
       this.handleError(error, `Lỗi tải dữ liệu ${displayTitle}`);
     } finally {
@@ -831,15 +909,8 @@ export class MusicPlayer {
 
     // Xử lý tạo playlist mới
     document.getElementById("createNewPlaylistBtn").onclick = async () => {
-      const name = prompt("Nhập tên playlist mới:");
-      if (name && name.trim()) {
-        const playlist = await this.createPlaylist(name.trim());
-        if (playlist && playlist.id) {
-          await this.addSongToPlaylist(songId ?? this.getCurrentSongId(), playlist.id);
-          this.showNotification("Đã thêm vào playlist mới!", "success");
-          popup.remove();
-        }
-      }
+      this.showCreatePlaylistPopup(songId ?? this.getCurrentSongId());
+      popup.remove();
     };
 
     // Lấy danh sách playlist của user
@@ -872,7 +943,7 @@ export class MusicPlayer {
     return song?.id;
   }
 
-  async showCreatePlaylistPopup() {
+  async showCreatePlaylistPopup(songId = null) {
     // Xóa popup cũ nếu có
     const oldPopup = document.getElementById("create-playlist-popup");
     if (oldPopup) oldPopup.remove();
@@ -902,7 +973,12 @@ export class MusicPlayer {
       }
       const playlist = await this.createPlaylist(name);
       if (playlist && playlist.id) {
-        this.showNotification("Tạo playlist thành công!", "success");
+        if (songId) {
+          await this.addSongToPlaylist(songId, playlist.id);
+          this.showNotification("Đã tạo playlist và thêm bài hát thành công!", "success");
+        } else {
+          this.showNotification("Tạo playlist thành công!", "success");
+        }
         popup.remove();
         await this.loadCategory("playlist", "Playlist của bạn");
       }

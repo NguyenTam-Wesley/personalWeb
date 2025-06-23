@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apocalyptic Shadow (AS) - Honkai: Star Rail</title>
+    <link rel="stylesheet" href="../../../../style/components.css" />
+    <link rel="stylesheet" href="../../../../style/games.css" />
+    <link rel="stylesheet" href="../../../../style/game-detail.css" />
+    <link rel="stylesheet" href="../../../../style/hsr-mode.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="game-detail-container hsr-mode-container">
+        <div class="game-hero" style="background-image: url('https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/hsr_card.png?v=1749924888888')">
+            <div class="game-hero-content">
+                <h1>Ảo ảnh tận thế (Apocalyptic Shadow - AS)</h1>
+                <p class="game-subtitle">Endgame Content in Honkai: Star Rail</p>
+            </div>
+        </div>
+
+        <div class="game-content">
+            <section class="game-overview">
+                <h2>Tổng quan</h2>
+                <p>Xoay quanh việc phá được điểm yếu của boss bằng các cơ chế riêng, phù hợp với các đội hình phá sức bền mạnh như các team break và các team có main DPS thuộc vận mệnh săn bắn.</p>
+            </section>
+
+            <section class="mode-mechanics">
+                <h2>Cơ chế đặc biệt</h2>
+                <p>Mỗi con boss trong Ảo ảnh tận thế sẽ có một cơ chế phá vỡ điểm yếu đặc biệt. Người chơi cần tận dụng cơ chế này để gây sát thương lớn và kết thúc trận đấu nhanh chóng.</p>
+            </section>
+
+            <section class="recommended-teams">
+                <h2>Đội hình đề cử</h2>
+                <div class="teams-grid">
+                    <div class="team-card">
+                        <h3>Team Super Break</h3>
+                        <p>Boothill, Nhà Khai Phá (Hòa hợp), Ruan Mei, Gallagher</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>Team Săn Bắn</h3>
+                        <p>Seele, Bronya, Tingyun, Fu Xuan</p>
+                    </div>
+                    <div class="team-card">
+                        <h3>Team Phá vỡ</h3>
+                        <p>Xueyi, Ruan Mei, Pela, Lynx</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import components from '../../../../js/components/components.js';
+        import { HsrModeManager } from '../../../../js/modules/hsr-mode.js';
+        
+        // Initialize components
+        components.init();
+
+        // Initialize page specific functionality
+        new HsrModeManager().init();
+    </script>
+</body>
+</html> 
