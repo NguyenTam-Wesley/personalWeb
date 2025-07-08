@@ -19,7 +19,11 @@ app.use(
       imgSrc: ["'self'", "https://cdn.glitch.global", "data:"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
       connectSrc: ["'self'", "https://calwzopyjitbtahiafzw.supabase.co"],
-      mediaSrc: ["'self'", "https://cdn.glitch.global"],
+      mediaSrc: [
+        "'self'",
+        "https://cdn.glitch.global",
+        "https://archive.org"
+      ],
       // Thêm các domain khác nếu cần
     },
   })
