@@ -22,7 +22,14 @@ app.use(
       mediaSrc: [
         "'self'",
         "https://cdn.glitch.global",
-        "https://archive.org"
+        "https://archive.org",
+        "https://ia600900.us.archive.org",
+        "https://ia802500.us.archive.org",
+        "https://ia802600.us.archive.org",
+        "https://ia802700.us.archive.org",
+        "https://ia802800.us.archive.org",
+        "https://ia802900.us.archive.org",
+        "https://ia803000.us.archive.org",
       ],
       // Thêm các domain khác nếu cần
     },
