@@ -402,3 +402,8 @@
                 font-size: 12px;
                 font-weight: bold;
             } 
+
+.admin-container {
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+} 

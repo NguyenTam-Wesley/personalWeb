@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý tiểu thuyết</title>
+  <link rel="stylesheet" href="../../style/components.css">
+  <link rel="stylesheet" href="../../style/style.css">
+  <link rel="stylesheet" href="../../style/admin.css">
+  <link rel="stylesheet" href="../../style/novel.css">
+</head>
+<body>
+  <div class="admin-container">
+    <h1>Quản lý tiểu thuyết</h1>
+    <form id="novel-form" class="admin-form">
+      <div class="form-group">
+        <label for="novel-title">Tiêu đề *</label>
+        <input type="text" id="novel-title" required placeholder="Nhập tiêu đề tiểu thuyết">
+      </div>
+      <div class="form-group">
+        <label for="novel-author">Tác giả *</label>
+        <select id="novel-author" required></select>
+        <button type="button" id="add-author-btn">+ Thêm tác giả mới</button>
+      </div>
+      <div class="form-group">
+        <label for="novel-status">Trạng thái *</label>
+        <select id="novel-status" required>
+          <option value="ongoing">Đang ra</option>
+          <option value="completed">Hoàn thành</option>
+          <option value="paused">Tạm dừng</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="novel-summary">Tóm tắt</label>
+        <textarea id="novel-summary" rows="4" placeholder="Tóm tắt nội dung tiểu thuyết..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="novel-genres">Thể loại</label>
+        <select id="novel-genres" multiple></select>
+      </div>
+      <button type="submit" class="btn-primary">Thêm tiểu thuyết</button>
+      <div id="novel-message" class="form-message"></div>
+    </form>
+    <hr style="margin:2.5rem 0;">
+    <h2>Danh sách tiểu thuyết</h2>
+    <div id="novel-list-container">
+      <table class="admin-table" id="novel-list-table">
+        <thead>
+          <tr>
+            <th>Tiêu đề</th>
+            <th>Tác giả</th>
+            <th>Trạng thái</th>
+            <th>Thể loại</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="novel-list-body">
+          <!-- Danh sách tiểu thuyết sẽ được render ở đây -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script type="module">
+    import components from '../../js/components/components.js';
+    components.init();
+  </script>
+  <script type="module" src="../../js/modules/novel-manager.js"></script>
+</body>
+</html> 

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý quyển</title>
+  <link rel="stylesheet" href="../../style/components.css">
+  <link rel="stylesheet" href="../../style/style.css">
+  <link rel="stylesheet" href="../../style/admin.css">
+  <link rel="stylesheet" href="../../style/novel.css">
+</head>
+<body>
+  <div class="admin-container">
+    <button id="back-btn" class="btn-secondary">← Quay lại danh sách tiểu thuyết</button>
+    <h1 id="novel-title">Quản lý quyển</h1>
+    <form id="volume-form" class="admin-form">
+      <div class="form-group">
+        <label for="volume-title">Tiêu đề quyển *</label>
+        <input type="text" id="volume-title" required placeholder="Nhập tiêu đề quyển">
+      </div>
+      <div class="form-group">
+        <label for="volume-order">Thứ tự</label>
+        <input type="number" id="volume-order" min="1" value="1">
+      </div>
+      <button type="submit" class="btn-primary">Lưu quyển</button>
+      <div id="volume-message" class="form-message"></div>
+    </form>
+    <hr style="margin:2.5rem 0;">
+    <h2>Danh sách quyển</h2>
+    <div id="volume-list-container">
+      <table class="admin-table" id="volume-list-table">
+        <thead>
+          <tr>
+            <th>Tiêu đề</th>
+            <th>Thứ tự</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="volume-list-body">
+          <!-- Danh sách quyển sẽ được render ở đây -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script type="module">
+    import components from '../../js/components/components.js';
+    components.init();
+  </script>
+  <script type="module" src="../../js/modules/volume-manager.js"></script>
+</body>
+</html> 

@@ -35,41 +35,12 @@ export class Components {
 
     // Tạo navLinks dựa trên vị trí hiện tại
     this.config.navLinks = [
-      { 
-        name: 'Home', 
-        url: this.isInValorant ? '../../../index.html' :
-             this.isInGames ? '../../index.html' : 
-             this.isInAdmin ? '../../index.html' :
-             this.isInPages ? '../index.html' : 'index.html'
-      },
-      { 
-        name: 'Music', 
-        url: this.isInValorant ? '../../music.html' :
-             this.isInGames ? '../music.html' : 
-             this.isInAdmin ? '../music.html' :
-             this.isInPages ? 'music.html' : 'pages/music.html'
-      },
-      { 
-        name: 'Study', 
-        url: this.isInValorant ? '../../study.html' :
-             this.isInGames ? '../study.html' : 
-             this.isInAdmin ? '../study.html' :
-             this.isInPages ? 'study.html' : 'pages/study.html'
-      },
-      { 
-        name: 'Games', 
-        url: this.isInValorant ? '../../games.html' :
-             this.isInGames ? '../games.html' : 
-             this.isInAdmin ? '../games.html' :
-             this.isInPages ? 'games.html' : 'pages/games.html'
-      },
-      { 
-        name: 'Blog', 
-        url: this.isInValorant ? '../../blog.html' :
-             this.isInGames ? '../blog.html' : 
-             this.isInAdmin ? '../blog.html' :
-             this.isInPages ? 'blog.html' : 'pages/blog.html'
-      }
+      { name: 'Home', url: '/index.html' },
+      { name: 'Music', url: '/pages/music.html' },
+      { name: 'Study', url: '/pages/study.html' },
+      { name: 'Games', url: '/pages/games.html' },
+      { name: 'Blog', url: '/pages/blog.html' },
+      { name: 'Novel', url: '/pages/novel.html' }
     ];
 
     // Initialize components

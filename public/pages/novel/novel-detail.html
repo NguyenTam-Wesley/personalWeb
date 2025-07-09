@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết tiểu thuyết</title>
+  <link rel="stylesheet" href="../../style/components.css">
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="../../style/novel.css">
+</head>
+<body>
+  <div class="novel-detail-container">
+    <section class="novel-detail-intro">
+      <h1 id="novel-title">Tiểu thuyết</h1>
+      <div id="novel-meta"></div>
+      <div id="novel-summary"></div>
+    </section>
+    <main>
+      <section id="volume-list"></section>
+      <section id="chapter-list"></section>
+    </main>
+  </div>
+  <script type="module">
+    import components from '../../js/components/components.js';
+    components.init();
+  </script>
+  <script type="module" src="../../js/modules/novel-detail.js"></script>
+</body>
+</html> 

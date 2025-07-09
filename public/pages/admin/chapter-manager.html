@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý chương</title>
+  <link rel="stylesheet" href="../../style/components.css">
+  <link rel="stylesheet" href="../../style/style.css">
+  <link rel="stylesheet" href="../../style/admin.css">
+  <link rel="stylesheet" href="../../style/novel.css">
+</head>
+<body>
+  <div class="admin-container">
+    <button id="back-btn" class="btn-secondary">← Quay lại danh sách quyển</button>
+    <h1 id="volume-title">Quản lý chương</h1>
+    <form id="chapter-form" class="admin-form">
+      <div class="form-group">
+        <label for="chapter-title">Tiêu đề chương *</label>
+        <input type="text" id="chapter-title" required placeholder="Nhập tiêu đề chương">
+      </div>
+      <div class="form-group">
+        <label for="chapter-order">Thứ tự</label>
+        <input type="number" id="chapter-order" min="1" value="1">
+      </div>
+      <div class="form-group">
+        <label for="chapter-content">Nội dung chương *</label>
+        <textarea id="chapter-content" rows="8" required placeholder="Nhập nội dung chương..."></textarea>
+      </div>
+      <button type="submit" class="btn-primary">Lưu chương</button>
+      <div id="chapter-message" class="form-message"></div>
+    </form>
+    <hr style="margin:2.5rem 0;">
+    <h2>Danh sách chương</h2>
+    <div id="chapter-list-container">
+      <table class="admin-table" id="chapter-list-table">
+        <thead>
+          <tr>
+            <th>Tiêu đề</th>
+            <th>Thứ tự</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="chapter-list-body">
+          <!-- Danh sách chương sẽ được render ở đây -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script type="module">
+    import components from '../../js/components/components.js';
+    components.init();
+  </script>
+  <script type="module" src="../../js/modules/chapter-manager.js"></script>
+</body>
+</html> 

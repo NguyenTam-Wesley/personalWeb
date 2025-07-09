@@ -1,0 +1,231 @@
+/* Style cơ bản cho trang novel */
+.novel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.novel-item {
+  border: 1.5px solid #c9c9d6;
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  background: #fff;
+  box-shadow: 0 2px 8px 0 rgba(120, 80, 255, 0.04);
+  transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
+}
+.novel-item:hover {
+  background: #f1f0fa;
+  border-color: #7a4fff;
+  box-shadow: 0 4px 16px 0 rgba(120, 80, 255, 0.10);
+}
+.novel-item h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  color: #22223b;
+}
+.novel-item p {
+  margin: 0.2rem 0;
+  color: #4a4e69;
+  font-size: 1.05rem;
+}
+#novel-info {
+  margin-bottom: 1.5rem;
+}
+#volume-list, #chapter-list {
+  margin-bottom: 1rem;
+}
+#novel-actions {
+  margin-top: 2rem;
+}
+button#favorite-btn {
+  background: #ffb347;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+button#favorite-btn:hover {
+  background: #ffa500;
+}
+.novel-container {
+  max-width: 700px;
+  margin: 3.5rem auto 3rem auto;
+  padding: 2.2rem 1.5rem;
+  padding-top: 4.5rem;
+  background: #9ca3af;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px 0 rgba(120, 80, 255, 0.06);
+}
+
+.novel-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.novel-intro h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #22223b;
+}
+
+.novel-intro p {
+  color: #4a4e69;
+  font-size: 1.1rem;
+}
+
+.novel-detail-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  padding-top: 4.5rem;
+}
+
+.novel-detail-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.novel-detail-intro h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+#novel-meta {
+  margin-bottom: 1rem;
+  color: #888;
+  font-size: 1.05rem;
+}
+
+#novel-summary {
+  color: #444;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+} 
+
+/* Hiệu ứng cho danh sách quyển và chương trong novel details */
+.volumes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #d1d5db;
+  border-radius: 10px;
+  padding: 1.2rem 0.5rem;
+}
+
+.volume-item {
+  background: #9ca3af;
+  border: 1px solid #6b7280;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s, background 0.2s;
+  position: relative;
+  color: #222;
+}
+.volume-item:hover {
+  background: #6b7280;
+  color: #fff;
+  box-shadow: 0 2px 12px 0 rgba(120, 80, 255, 0.08);
+}
+
+.volume-item::after {
+  content: '\25BC';
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transition: transform 0.2s;
+  color: #888;
+  font-size: 1.1em;
+}
+.volume-item.open::after {
+  transform: translateY(-50%) rotate(0deg);
+}
+
+.chapter-list {
+  margin-top: 0.5rem;
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid #e0e0e0;
+  animation: fadeIn 0.3s;
+}
+
+.chapter-list div {
+  margin: 0.3rem 0;
+}
+
+.chapter-list a {
+  color: #111;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s, text-decoration 0.2s;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.chapter-list a:hover {
+  color: #fff;
+  background: none;
+  text-decoration: underline;
+}
+
+.chapter-container {
+  background: #f4ecd8;
+  color: #5b4636;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2.5rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px 0 rgba(90, 70, 54, 0.07);
+  padding-top: 4.5rem;
+}
+
+#chapter-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #5b4636;
+}
+
+#chapter-content {
+  color: #5b4636;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+}
+
+.chapter-nav {
+  display: flex;
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+.chapter-nav-top {
+  justify-content: flex-start;
+  margin-bottom: 1.2rem;
+}
+.chapter-nav-bottom {
+  justify-content: flex-end;
+  margin-top: 2.2rem;
+}
+#prev-chapter, #next-chapter {
+  background: #e5e7eb;
+  color: #5b4636;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+#prev-chapter:hover, #next-chapter:hover {
+  background: #d1d5db;
+  color: #222;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+} 

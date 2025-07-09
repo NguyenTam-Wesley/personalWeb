@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đọc chương</title>
+  <link rel="stylesheet" href="../../style/components.css">
+  <link rel="stylesheet" href="../../style.css">
+  <link rel="stylesheet" href="../../style/novel.css">
+  <style>
+    body {
+      background: #f4ecd8;
+    }
+  </style>
+</head>
+<body>
+  <div class="chapter-container">
+    <div class="chapter-nav chapter-nav-top">
+      <button id="prev-chapter" style="display:none">← Chương trước</button>
+    </div>
+    <h1 id="chapter-title"></h1>
+    <div id="chapter-content"></div>
+    <div class="chapter-nav chapter-nav-bottom">
+      <button id="next-chapter" style="display:none">Chương sau →</button>
+    </div>
+  </div>
+  <script type="module">
+    import components from '../../js/components/components.js';
+    components.init();
+  </script>
+  <script type="module" src="../../js/modules/chapter.js"></script>
+</body>
+</html> 
