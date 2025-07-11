@@ -50,15 +50,19 @@ export class Components {
   }
 
   init() {
-    // Nếu đã khởi tạo rồi thì không làm gì cả
-    if (this.initialized) {
-      return;
-    }
+    if (this.initialized) return;
     this.initialized = true;
 
+    console.log('✅ init started');
+
     this.initHeader();
+    console.log('✅ header initialized');
+
     this.initFooter();
+    console.log('✅ footer initialized');
+
     this.setupScrollHandlers();
+    console.log('✅ scroll handler attached');
   }
 
   // Header Methods
@@ -115,7 +119,13 @@ export class Components {
   }
 
   async updateLoginStatus() {
-    const user = await getCurrentUser();
+    let user;
+    try {
+      user = await getCurrentUser();
+    } catch (err) {
+      console.error('Lỗi khi lấy thông tin user:', err);
+      user = null;
+    }
     const wasLoggedIn = this.isLoggedIn;
     this.isLoggedIn = !!user;
     this.userName = user?.username || '';
@@ -244,26 +254,36 @@ export class Components {
       const currentScroll = window.pageYOffset;
       const scrollingDown = currentScroll > lastScroll;
       const pastThreshold = currentScroll > scrollThreshold;
+      const scrollDiff = Math.abs(currentScroll - lastScroll);
 
-      // Chỉ cập nhật nếu scroll đủ lớn
-      if (Math.abs(currentScroll - lastScroll) > 5) {
+      console.log('[Scroll DEBUG]', {
+        currentScroll,
+        lastScroll,
+        scrollingDown,
+        pastThreshold,
+        scrollDiff
+      });
+
+      if (scrollDiff > 5) {
         if (scrollingDown && pastThreshold) {
-          this.header.classList.add('hidden');
-          this.footer.classList.add('hidden');
+          console.log('🟥 Cuộn xuống → THÊM hidden');
+          this.header?.classList.add('hidden');
+          this.footer?.classList.add('hidden');
         } else {
-          this.header.classList.remove('hidden');
-          this.footer.classList.remove('hidden');
+          console.log('🟩 Cuộn lên → GỠ hidden');
+          this.header?.classList.remove('hidden');
+          this.footer?.classList.remove('hidden');
         }
         lastScroll = currentScroll;
       }
     };
 
     // Thêm debounce cho scroll event
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', function () {
       if (scrollTimeout) {
         window.cancelAnimationFrame(scrollTimeout);
       }
-      scrollTimeout = window.requestAnimationFrame(handleScroll);
+      scrollTimeout = window.requestAnimationFrame(() => handleScroll.call(this));
     });
   }
 
