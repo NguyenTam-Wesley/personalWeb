@@ -1,6 +1,7 @@
 // blog.js
-import { supabase } from '../supabase/supabase.js';
+import { Components } from '../components/components.js';
 import { getCurrentUser } from '../supabase/auth.js';
+import { supabase } from '../supabase/supabase.js';
 
 export class BlogManager {
   constructor() {
@@ -13,17 +14,22 @@ export class BlogManager {
       category: '',
       sort: 'newest'
     };
+    this.components = null; // Added this line
     this.init();
   }
 
   async init() {
     // Kiểm tra user hiện tại
     this.currentUser = await getCurrentUser();
-    
+
+    // Khởi tạo components
+    this.components = Components.create();
+    this.components.init();
+
     // Setup UI
     this.setupEventListeners();
     this.checkAdminPermissions();
-    
+
     // Load posts
     await this.loadPosts();
   }
@@ -421,3 +427,6 @@ export class BlogManager {
     };
   }
 } 
+
+// Khởi tạo BlogManager khi file được import
+new BlogManager(); 

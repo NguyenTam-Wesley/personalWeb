@@ -279,11 +279,11 @@ export class Components {
     };
 
     // Thêm debounce cho scroll event
-    window.addEventListener('scroll', function () {
+    window.addEventListener('scroll', () => {
       if (scrollTimeout) {
         window.cancelAnimationFrame(scrollTimeout);
       }
-      scrollTimeout = window.requestAnimationFrame(() => handleScroll.call(this));
+      scrollTimeout = window.requestAnimationFrame(handleScroll);
     });
   }
 

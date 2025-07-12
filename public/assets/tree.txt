@@ -1,4 +1,4 @@
-// Cấu trúc thư mục sau khi hoàn thiện
+// Cấu trúc thư mục phát thảo
 
 ntam-web/
 │

@@ -9,14 +9,13 @@ body, html {
   height: 100%;
   font-family: 'Segoe UI', sans-serif;
   scroll-behavior: smooth;
-  overflow: auto; /* Ngăn cuộn */
   background: #0f0f0f;
   color: white;
 }
 
 /* Hero Section */
 .hero {
-  background-image: url('https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/index_bg.png?v=1746468137357');
+  background-image: url('./assets/index_bg.png');
   height: 100vh;
   background-size: cover;
   background-attachment: fixed;

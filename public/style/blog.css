@@ -6,6 +6,7 @@ body {
   font-family: 'Inter', sans-serif;
   background: url('https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/study_bg.jpg?v=1747398735599') no-repeat center center fixed;
   background-size: cover;
+  background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
   margin: 0;

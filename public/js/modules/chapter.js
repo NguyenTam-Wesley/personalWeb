@@ -2,7 +2,7 @@ import { supabase } from '../supabase/supabase.js';
 
 class ChapterPage {
   constructor() {
-    document.addEventListener('DOMContentLoaded', () => this.init());
+    this.init(); // Gọi thẳng luôn
   }
 
   async init() {
