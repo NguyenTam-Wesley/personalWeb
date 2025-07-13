@@ -1,0 +1,130 @@
+/* CSS riêng cho trang lý thuyết HSR (speed) */
+:root {
+    --theory-primary: #4e7cff;
+    --theory-bg: #23272f;
+    --theory-card: #fff;
+    --theory-card-shadow: 0 2px 12px rgba(78,124,255,0.08);
+    --theory-title: #2a356d;
+    --theory-subtitle: #5a6fa7;
+}
+
+body {
+    background: var(--theory-bg);
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+.theory-hero {
+    background: linear-gradient(120deg, #4e7cff 60%, #a3bfff 100%);
+    color: #fff;
+    padding: 48px 0 32px 0;
+    text-align: center;
+}
+
+.theory-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5em;
+    color: #111;
+    letter-spacing: 1px;
+}
+
+.theory-hero .theory-subtitle {
+    font-size: 1.3rem;
+    color: #111;
+    margin-bottom: 0;
+}
+
+.theory-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 16px;
+}
+
+.theory-section {
+    margin-bottom: 48px;
+}
+
+.theory-section h2 {
+    color: var(--theory-title);
+    font-size: 2rem;
+    margin-bottom: 18px;
+    border-left: 4px solid var(--theory-primary);
+    padding-left: 12px;
+}
+
+.theory-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 18px;
+}
+
+.theory-card {
+    background: var(--theory-card);
+    border-radius: 12px;
+    box-shadow: var(--theory-card-shadow);
+    padding: 24px 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.theory-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 6px 24px rgba(78,124,255,0.13);
+}
+
+.theory-card h3 {
+    color: var(--theory-title);
+    margin-bottom: 10px;
+    font-size: 1.15rem;
+}
+
+.theory-card p {
+    color: var(--theory-subtitle);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.theory-table-wrapper {
+    overflow-x: auto;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+.theory-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #23272f;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(78,124,255,0.08);
+}
+.theory-table th, .theory-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #333a4a;
+    text-align: left;
+}
+.theory-table th {
+    background: #2a2f3a;
+    color: #7ecfff;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+.theory-table tr:last-child td {
+    border-bottom: none;
+}
+.theory-green {
+    color: #6ee07a;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .theory-hero h1 {
+        font-size: 2rem;
+    }
+    .theory-content {
+        padding: 16px 4px;
+    }
+    .theory-section h2 {
+        font-size: 1.3rem;
+    }
+} 

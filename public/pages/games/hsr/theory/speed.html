@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSR - Lý thuyết Tốc độ</title>
+    <link rel="stylesheet" href="/style/components.css" />
+    <link rel="stylesheet" href="/style/games.css" />
+    <link rel="stylesheet" href="/style/theory_hsr.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="theory-hero" style="background-image: url('https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/hsr_card.png?v=1749924888888')">
+        <div>
+            <h1>HSR: Lý thuyết Tốc độ</h1>
+            <p class="theory-subtitle">Cơ chế tốc độ, thứ tự hành động và tối ưu hóa lượt</p>
+        </div>
+    </div>
+    <div class="theory-content">
+        <section class="theory-section">
+            <h2>Tổng quan về tốc độ trong HSR</h2>
+            <p><b>Tốc độ (SPD)</b> của một nhân vật hoặc kẻ địch sẽ quyết định giá trị hành động cơ bản (AV - Action Value) theo công thức:</p>
+            <div class="theory-math">AV<sub>Base</sub> = 10000 / SPD</div>
+            <p>Giá trị hành động càng thấp thì nhân vật/kẻ địch càng được ưu tiên thực hiện lượt đi sớm hơn.<br>
+            <i>Lưu ý:</i> Giá trị hành động của kẻ địch phụ thuộc vào loại quái và cấp độ.</p>
+            <p><b>Có hai loại buff/debuff ảnh hưởng đến tốc độ:</b></p>
+            <ol>
+                <li>
+                    <b>Thay đổi chỉ số tốc độ (SPD):</b><br>
+                    Khi tốc độ thay đổi từ SPD₁ sang SPD₂, giá trị hành động cơ bản mới sẽ là:
+                    <div class="theory-math">AV<sub>Base2</sub> = AV<sub>Base1</sub> × (SPD₁ / SPD₂) = AV<sub>Base1</sub> × (1 - ΔSPD₁→₂ / (SPD₁ + ΔSPD₁→₂))</div>
+                    <p>Trong đó, SPD₂ = SPD₁ + ΔSPD₁→₂. Nếu có nhiều buff/debuff tốc độ cộng dồn, chúng sẽ tác động theo kiểu nhân liên tiếp (multiplicative stacking):</p>
+                    <div class="theory-math">AV<sub>Base cuối</sub> = AV<sub>Base1</sub> × (SPD₁ / SPD₂) × (SPD₂ / SPD₃) ... = AV<sub>Base1</sub> × (1 - ΔSPD₁→ₖ / (SPD₁ + ΔSPD₁→ₖ))</div>
+                </li>
+                <li>
+                    <b>Buff/delay hành động (Action Forward/Delay):</b><br>
+                    Buff hoặc debuff đẩy/lùi lượt (theo %) sẽ làm giảm giá trị hành động hiện tại dựa trên giá trị hành động cơ bản:
+                    <div class="theory-math">AV₂ = AV₁ - AV<sub>Base</sub> × (Action Forward - Action Delay)</div>
+                    <p>Nhiều buff/debuff loại này sẽ cộng dồn theo kiểu cộng (additive stacking), tương tự như cộng dồn chỉ số sát thương.</p>
+                </li>
+            </ol>
+            <p><b>Khi bắt đầu lượt mới (hoặc bắt đầu trận), giá trị hành động của nhân vật/kẻ địch sẽ được reset về giá trị cơ bản, có xét các buff/debuff:</b></p>
+            <div class="theory-math">AV<sub>new</sub> = AV<sub>Base(start)</sub> = AV<sub>Base(raw)</sub> × SPD<sub>raw</sub> / SPD × (1 - Action Forward + Action Delay)</div>
+            <p>Trong đó, SPD<sub>raw</sub> là tốc độ gốc chưa có buff/debuff. Đây là giá trị khởi đầu cho tất cả mọi người, và sẽ giảm dần mỗi khi đến lượt của ai đó.</p>
+            <p><b>Lưu ý quan trọng:</b><br>
+            - Buff/debuff tốc độ sẽ thay đổi giá trị hành động cơ bản của mục tiêu (và cả tốc độ hành động của họ), trong khi buff/delay hành động chỉ tác động lên giá trị hành động hiện tại.<br>
+            - Khi có nhiều buff/debuff, các giá trị này sẽ cộng dồn theo công thức ở trên.</p>
+            <p><b>Công thức tổng quát khi có cả buff tốc độ và buff/delay hành động:</b></p>
+            <div class="theory-math">AV<sub>new</sub> = AV<sub>old</sub> × (SPD<sub>old</sub> / SPD<sub>new</sub>) - AV<sub>Base new</sub> × (Action Forward - Action Delay)</div>
+            <ul>
+                <li>Nếu chỉ có buff tốc độ: <span class="theory-math">AV<sub>new</sub> = AV<sub>old</sub> × (SPD<sub>old</sub> / SPD<sub>new</sub>)</span></li>
+                <li>Nếu chỉ có buff/delay hành động: <span class="theory-math">AV<sub>new</sub> = AV<sub>old</sub> - AV<sub>Base new</sub> × (Action Forward - Action Delay)</span></li>
+            </ul>
+            <p><b>Khi bắt đầu lượt của một nhân vật/kẻ địch, giá trị hành động của tất cả sẽ giảm đi một lượng bằng giá trị hành động của người đến lượt:</b></p>
+            <div class="theory-math">AV<sub>new</sub> = AV<sub>old</sub> - AV<sub>i old</sub> &nbsp;&nbsp;&nbsp; ∀k ∈ {1, ..., n}</div>
+            <p>Sau đó, nhân vật/kẻ địch đến lượt sẽ được reset lại giá trị hành động như công thức ở trên.</p>
+        </section>
+        <section class="theory-section">
+            <h2>Các yếu tố ảnh hưởng đến tốc độ</h2>
+            <ul>
+                <li><b>Thay đổi chỉ số SPD (buff/debuff tốc độ):</b> Khi chỉ số SPD của nhân vật hoặc kẻ địch thay đổi (do trang bị, kỹ năng, hiệu ứng...), giá trị hành động cơ bản (AV) sẽ thay đổi theo công thức tỉ lệ nghịch với SPD. Nhiều buff/debuff tốc độ sẽ cộng dồn theo kiểu nhân liên tiếp (multiplicative stacking).</li>
+                <li><b>Buff/delay hành động (Action Forward/Delay):</b> Các hiệu ứng đẩy/lùi lượt (theo %) sẽ làm thay đổi giá trị hành động hiện tại, giúp nhân vật đi sớm hơn hoặc muộn hơn trong lượt kế tiếp. Nhiều hiệu ứng loại này sẽ cộng dồn theo kiểu cộng (additive stacking).</li>
+            </ul>
+        </section>
+        <section class="theory-section">
+            <h2>Cơ chế tính lượt đi</h2>
+            <ul>
+                <li><b>Giá trị hành động (AV - Action Value):</b> Mỗi nhân vật/kẻ địch có một giá trị AV, càng thấp thì càng được ưu tiên đi trước. AV được tính dựa trên chỉ số SPD và các buff/debuff hiện có.</li>
+                <li><b>Reset AV khi đến lượt:</b> Khi đến lượt của một nhân vật/kẻ địch, AV của tất cả sẽ giảm đi một lượng bằng AV của người đến lượt. Sau đó, AV của người vừa đi sẽ được reset lại dựa trên SPD và các buff/debuff tại thời điểm đó.</li>
+            </ul>
+            <h3 style="margin-top:32px;">Bảng Speed Turning</h3>
+            <div class="theory-table-wrapper">
+                <table class="theory-table">
+                    <thead>
+                        <tr>
+                            <th>Tốc Độ</th>
+                            <th>Điểm Dừng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>114,3</td>
+                            <td>4 hành động trong 3 chu kỳ đầu</td>
+                        </tr>
+                        <tr>
+                            <td>120</td>
+                            <td>
+                                3 hành động trong 2 chu kỳ đầu<br>
+                                <span class="theory-green">Trạm Phong Ấn Không Gian<br>Xianzhou Không Có Tuổi<br>Vonwacq Hoạt Bát</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>133,4</td>
+                            <td>2 hành động trong 2 chu kỳ đầu</td>
+                        </tr>
+                        <tr>
+                            <td>135</td>
+                            <td><span class="theory-green">Glamoth, Chiến Tuyến Không Trung (mốc đầu)</span></td>
+                        </tr>
+                        <tr>
+                            <td>142,9</td>
+                            <td>5 hành động trong 3 chu kỳ đầu</td>
+                        </tr>
+                        <tr>
+                            <td>145</td>
+                            <td><span class="theory-green">Talia - Vương Quốc Trộm Cướp</span></td>
+                        </tr>
+                        <tr>
+                            <td>160</td>
+                            <td>
+                                4 hành động trong 2 chu kỳ đầu<br>
+                                <span class="theory-green">Glamoth, Chiến Tuyến Không Trung (mốc hai)</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>171,5</td>
+                            <td>6 hành động trong 3 chu kỳ đầu</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="theory-section">
+            <h2>Mẹo tối ưu tốc độ</h2>
+            <ul>
+                <li><b>Chọn Relic tăng SPD:</b> Ưu tiên trang bị relic, planar ornament hoặc substat tăng SPD cho các nhân vật hỗ trợ hoặc cần đi trước.</li>
+                <li><b>Sử dụng kỹ năng tăng tốc:</b> Tận dụng các kỹ năng tăng tốc cho team như của Asta, Bronya, hoặc các hiệu ứng buff khác.</li>
+                <li><b>Kiểm soát debuff giảm tốc:</b> Chủ động hóa giải hoặc tránh các debuff giảm tốc từ kẻ địch để duy trì nhịp trận đấu.</li>
+            </ul>
+        </section>
+    </div>
+    <script type="module">
+        import components from '/js/components/components.js';
+        import theoryHSR from '/js/modules/theory_hsr.js';
+        components.init();
+        theoryHSR.init();
+    </script>
+</body>
+</html> 
