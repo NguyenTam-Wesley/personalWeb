@@ -16,19 +16,33 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
+
       imgSrc: ["'self'", "https://cdn.glitch.global", "data:"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-      connectSrc: ["'self'", "https://calwzopyjitbtahiafzw.supabase.co"],
+
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://cdn.jsdelivr.net"
+      ],
+
+      connectSrc: [
+        "'self'",
+        "https://cdn.jsdelivr.net",
+        "https://calwzopyjitbtahiafzw.supabase.co"
+      ],
+
       mediaSrc: [
         "'self'",
         "https://cdn.glitch.global",
         "https://archive.org",
         "https://*.archive.org",
       ],
-      // Thêm các domain khác nếu cần
+
+      workerSrc: ["'self'", "blob:"]
     },
   })
 );
+
 
 // Serve các file tĩnh từ thư mục public
 app.use(express.static(publicPath));

@@ -54,7 +54,7 @@ npm start
 ### Endpoints
 
 - `GET /`: Trang chủ
-- `GET /pages/*`: Các trang tĩnh
+- `GET /public/pages/*`: Các trang tĩnh
 
 ## Development
 

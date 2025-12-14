@@ -8,6 +8,9 @@ export class Components {
     }
     Components.instance = this;
 
+    this.isLoggedIn = false;
+    this.userName = '';
+    this.userRole = '';
     // Configuration
     this.config = {
       socialLinks: [
@@ -18,10 +21,10 @@ export class Components {
       // Định nghĩa các route cơ bản
       routes: {
         home: 'index.html',
-        music: 'pages/music.html',
-        study: 'pages/study.html',
-        games: 'pages/games.html',
-        login: 'pages/login.html'
+        music: '/public/pages/music.html',
+        study: '/public/pages/study.html',
+        games: '/public/pages/games.html',
+        login: '/public/pages/login.html'
       }
     };
 
@@ -35,12 +38,12 @@ export class Components {
 
     // Tạo navLinks dựa trên vị trí hiện tại
     this.config.navLinks = [
-      { name: 'Home', url: '/index.html' },
-      { name: 'Music', url: '/pages/music.html' },
-      { name: 'Study', url: '/pages/study.html' },
-      { name: 'Games', url: '/pages/games.html' },
-      { name: 'Blog', url: '/pages/blog.html' },
-      { name: 'Novel', url: '/pages/novel.html' }
+      { name: 'Home', url: '/public/index.html' },
+      { name: 'Music', url: '/public/pages/music.html' },
+      { name: 'Study', url: '/public/pages/study.html' },
+      { name: 'Games', url: '/public/pages/games.html' },
+      { name: 'Blog', url: '/public/pages/blog.html' },
+      { name: 'Novel', url: '/public/pages/novel.html' }
     ];
 
     // Initialize components
@@ -79,7 +82,7 @@ export class Components {
                   this.isInAdmin ? '../../index.html' :
                   this.isInPages ? '../index.html' : 
                   'index.html'}" class="nav-logo">
-          NTAM
+          ntam
         </a>
         
         <div class="nav-links">
@@ -89,6 +92,7 @@ export class Components {
         </div>
 
         <div class="nav-controls">
+        
           ${this.isLoggedIn ? `
             <div class="user-menu">
               <span class="user-name">${this.userName}</span>
@@ -177,7 +181,7 @@ export class Components {
           <div class="user-dropdown">
             <a href="#" class="dropdown-item" id="profileLink">Profile</a>
             ${this.userRole === 'admin' ? `
-              <a href="/pages/admin/admin.html" class="dropdown-item" id="adminLink">Admin</a>
+              <a href="/public/pages/admin/admin.html" class="dropdown-item" id="adminLink">Admin</a>
             ` : ''}
             <a href="#" class="dropdown-item" id="logoutLink">Logout</a>
           </div>
