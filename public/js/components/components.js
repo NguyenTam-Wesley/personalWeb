@@ -20,11 +20,11 @@ export class Components {
       ],
       // Định nghĩa các route cơ bản
       routes: {
-        home: 'index.html',
-        music: '../pages/music.html',
-        study: '../pages/study.html',
-        games: '../pages/games.html',
-        login: '../pages/login.html'
+        home: '/',
+        music: '/pages/music.html',
+        study: '/pages/study.html',
+        games: '/pages/games.html',
+        login: '/pages/login.html'
       }
     };
 
@@ -38,13 +38,13 @@ export class Components {
 
     // Tạo navLinks dựa trên vị trí hiện tại
     this.config.navLinks = [
-      { name: 'Home', url: '/public/index.html' },
-      { name: 'Music', url: '/public/pages/music.html' },
-      { name: 'Study', url: '/public/pages/study.html' },
-      { name: 'Games', url: '/public/pages/games.html' },
-      { name: 'Blog', url: '/public/pages/blog.html' },
-      { name: 'Novel', url: '/public/pages/novel.html' }
-    ];
+      { name: 'Home', url: '/' },
+      { name: 'Music', url: '/pages/music.html' },
+      { name: 'Study', url: '/pages/study.html' },
+      { name: 'Games', url: '/pages/games.html' },
+      { name: 'Blog', url: '/pages/blog.html' },
+      { name: 'Novel', url: '/pages/novel.html' }
+    ];    
 
     // Initialize components
     this.header = null;
