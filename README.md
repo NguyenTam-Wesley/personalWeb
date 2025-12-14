@@ -1,6 +1,4 @@
-# NTAM Web
-
-Dự án website cá nhân sử dụng Express.js và Supabase.
+##Dự án website cá nhân sử dụng Express.js và Supabase.
 
 ## Yêu cầu hệ thống
 

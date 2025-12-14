@@ -21,10 +21,10 @@ export class Components {
       // Định nghĩa các route cơ bản
       routes: {
         home: 'index.html',
-        music: '/public/pages/music.html',
-        study: '/public/pages/study.html',
-        games: '/public/pages/games.html',
-        login: '/public/pages/login.html'
+        music: '../pages/music.html',
+        study: '../pages/study.html',
+        games: '../pages/games.html',
+        login: '../pages/login.html'
       }
     };
 
