@@ -52,11 +52,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(publicPath, "index.html"));
 });
 
-// Route cho các trang khác
-app.get("/pages/*", (req, res) => {
-  res.sendFile(path.join(publicPath, req.path));
-});
-
 app.listen(port, () => {
   console.log(`Server đang chạy ở http://localhost:${port}`);
 });
