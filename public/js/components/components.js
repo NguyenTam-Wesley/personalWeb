@@ -23,7 +23,8 @@ export class Components {
         { name: 'Study', url: route('pages.study') },
         { name: 'Games', url: route('pages.games') },
         { name: 'Blog', url: route('pages.blog') },
-        { name: 'Novel', url: route('pages.novel') }
+        { name: 'Novel', url: route('pages.novel') },
+        { name: 'TV', url: route('pages.tv') },
       ]
     };
 

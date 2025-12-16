@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TV Show</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style/components.css" />
+    <link rel="stylesheet" href="../style/tv.css" />
+
+    <link
+      rel="icon"
+      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+    />
+  </head>
+
+  <body>
+    <main class="container tv-section">
+
+      <!-- TITLE -->
+      <h1 class="page-title">📺 TV Show</h1>
+
+      <!-- TOP BAR -->
+      <div class="top-bar">
+        <button id="backBtn">⬅️ Quay lại</button>
+
+        <!-- FILTER -->
+        <div class="filter-bar">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 Tìm theo tên phim..."
+          />
+
+          <select id="seriesFilter">
+            <option value="">-- Bộ phim --</option>
+          </select>
+
+          <select id="genreFilter">
+            <option value="">-- Thể loại --</option>
+          </select>
+
+          <select id="regionFilter">
+            <option value="">-- Quốc gia --</option>
+          </select>
+        </div>
+      </div>
+      <nav class="tv-breadcrumb" id="tvBreadcrumb">
+        <span class="crumb active">TV</span>
+      </nav>
+      <!-- PLAYER -->
+      <div class="tv-player-container">
+        <video
+          id="videoPlayer"
+          controls
+          preload="metadata"
+        ></video>
+
+        <div class="video-info">
+          <span id="currentVideoTitle">Chưa chọn video</span>
+        </div>
+      </div>
+
+      <!-- LIST -->
+      <div id="tvList" class="tv-list"></div>
+
+    </main>
+
+    <script type="module" src="../js/modules/tv.js" defer>
+      import components from '../js/components/components.js';
+
+      // Init shared components (header, nav, backBtn, ...)
+      components.init();
+
+      // Init TV page
+      new TVShow();
+    </script>
+  </body>
+</html>
