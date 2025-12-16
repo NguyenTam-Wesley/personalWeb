@@ -11,7 +11,7 @@ html {
   height: 100%;
   font-family: "Segoe UI", sans-serif;
   color: var(--text-primary);
-  background: url("https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/tv_bg.jpg")
+  background: rgba(0, 0, 0, 0.5)
     no-repeat center center fixed;
   background-size: cover;
   scroll-behavior: smooth;
