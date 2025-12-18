@@ -1,5 +1,6 @@
 import { supabase } from "../supabase/supabase.js";
 import { User } from "../supabase/user.js";
+import components from '../components/components.js';
 
 class TVShow {
   constructor() {
@@ -247,5 +248,6 @@ class TVShow {
 ======================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+  components.init();
   new TVShow();
 });

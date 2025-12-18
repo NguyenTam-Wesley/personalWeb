@@ -17,7 +17,12 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
 
-      imgSrc: ["'self'", "https://cdn.glitch.global", "data:"],
+      imgSrc: [
+        "'self'",
+        "https://cdn.glitch.global",
+        "https://calwzopyjitbtahiafzw.supabase.co",
+        "data:"
+      ],      
 
       scriptSrc: [
         "'self'",
