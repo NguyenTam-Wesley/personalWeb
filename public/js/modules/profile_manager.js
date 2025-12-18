@@ -240,3 +240,5 @@ export class ProfileManager {
     window.location.href = loginPath;
   }
 }
+
+// Have to be exported for entry point

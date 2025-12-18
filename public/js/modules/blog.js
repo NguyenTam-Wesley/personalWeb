@@ -320,5 +320,4 @@ export class BlogManager {
   }
 }
 
-// auto init
-new BlogManager();
+// Have to be exported for entry point

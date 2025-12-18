@@ -1,13 +1,8 @@
-/**
- * Blog Detail Module
- * Handles the display and interaction of individual blog posts
- */
-
 import components from '../components/components.js';
 import { getCurrentUser } from '../supabase/auth.js';
 import { supabase } from '../supabase/supabase.js';
 
-class BlogDetail {
+export class BlogDetailManager {
   constructor() {
     this.currentPost = null;
     this.currentUser = null;
@@ -256,5 +251,4 @@ class BlogDetail {
   }
 }
 
-// auto init
-new BlogDetail();
+// Have to be exported for entry point

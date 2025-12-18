@@ -222,6 +222,4 @@ export class StudyManager {
   }
 }
 
-// Initialize the study manager
-components.init();
-new StudyManager();
+// Have to be exported for entry point

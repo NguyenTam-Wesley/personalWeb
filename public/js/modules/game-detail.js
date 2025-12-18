@@ -117,3 +117,5 @@ export class GameDetailManager {
         window.location.href = `/pages/games/valorant/map/${mapName.toLowerCase()}.html`;
     }
 } 
+
+// Have to be exported for entry point

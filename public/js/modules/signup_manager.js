@@ -48,3 +48,5 @@ export class SignupManager {
     }
   }
 }
+
+// Have to be exported for entry point

@@ -34,6 +34,7 @@ export class GamesManager {
                 description: 'Wuthering Waves là một game nhập vai hành động thế giới mở được phát triển bởi KURO Game.'
             }
         };
+        this.init()
     }
 
     init() {
@@ -81,5 +82,4 @@ export class GamesManager {
     }
 }
 
-// Initialize the games manager
-const gamesManager = new GamesManager(); 
+// Have to be exported for entry point

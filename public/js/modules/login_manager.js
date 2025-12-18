@@ -35,3 +35,5 @@ export class LoginManager {
     }
   }
 }
+
+// Have to be exported for entry point

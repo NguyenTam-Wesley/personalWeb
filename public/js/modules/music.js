@@ -986,7 +986,4 @@ export class MusicPlayer {
   }
 }
 
-// XÓA hoặc comment đoạn này:
-// document.addEventListener("DOMContentLoaded", () => {
-//   const app = new MusicPlayer();
-// });
+// Have to be exported for entry point

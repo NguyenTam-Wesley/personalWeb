@@ -2,7 +2,7 @@ import { supabase } from "../supabase/supabase.js";
 import { User } from "../supabase/user.js";
 import components from '../components/components.js';
 
-class TVShow {
+export class TVShow {
   constructor() {
     /* ===== PLAYER ===== */
     this.videoPlayer = document.getElementById("videoPlayer");
@@ -243,6 +243,4 @@ class TVShow {
   }
 }
 
-
-components.init();
-new TVShow();
+// Have to be exported for entry point
