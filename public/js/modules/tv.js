@@ -243,11 +243,6 @@ class TVShow {
   }
 }
 
-/* =======================
-   INIT
-======================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  components.init();
-  new TVShow();
-});
+components.init();
+new TVShow();

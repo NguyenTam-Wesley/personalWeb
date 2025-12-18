@@ -1,5 +1,6 @@
 import { supabase } from "../supabase/supabase.js";
 import { getCurrentUser } from "../supabase/auth.js";
+import components from '../components/components.js';
 
 export class StudyManager {
   constructor() {
@@ -222,4 +223,5 @@ export class StudyManager {
 }
 
 // Initialize the study manager
-const studyManager = new StudyManager();
+components.init();
+new StudyManager();
