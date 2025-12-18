@@ -11,9 +11,6 @@ html {
   height: 100%;
   font-family: "Segoe UI", sans-serif;
   color: var(--text-primary);
-  background: rgba(0, 0, 0, 0.5)
-    no-repeat center center fixed;
-  background-size: cover;
   scroll-behavior: smooth;
 }
 
@@ -25,7 +22,7 @@ html {
   padding: var(--container-padding-top) var(--spacing-lg) var(--container-padding-bottom);
   text-align: center;
   min-height: 100vh;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.8);
 }
 
 .page-title {
@@ -130,22 +127,19 @@ html {
 ======================= */
 
 .tv-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-  padding-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .tv-card {
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid #00ffff33;
-  border-radius: 10px;
-  padding: 14px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-align: left;
-  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+  width: auto;
+
+  white-space: nowrap;
 }
 
 .tv-card:hover {
