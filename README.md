@@ -1,4 +1,4 @@
-##Dự án website cá nhân sử dụng Express.js và Supabase.
+## Dự án website cá nhân sử dụng Express.js và Supabase.
 
 ## Yêu cầu hệ thống
 
@@ -52,7 +52,7 @@ npm start
 ### Endpoints
 
 - `GET /`: Trang chủ
-- `GET /public/pages/*`: Các trang tĩnh
+- `GET /pages/*`: Các trang tĩnh
 
 ## Development
 

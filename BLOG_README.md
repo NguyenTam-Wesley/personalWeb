@@ -13,8 +13,8 @@ Trang Blog cho phép admin viết và đăng bài viết, người dùng có th�
 ### 2. Cho người dùng
 - **Xem bài viết**: Danh sách bài viết với pagination
 - **Tìm kiếm**: Tìm kiếm theo từ khóa
-- **Lọc theo danh mục**: Công nghệ, Gaming, Âm nhạc, Học tập, Cuộc sống
-- **Sắp xếp**: Mới nhất, Cũ nhất, Phổ biến
+- **Lọc theo danh mục**
+- **Sắp xếp**
 
 ### 3. Tính năng chung
 - **Responsive design**: Hoạt động tốt trên mọi thiết bị
@@ -91,12 +91,6 @@ CREATE TABLE blog_posts (
 - Click "Đăng bài"
 
 ## Danh mục bài viết
-
-- **Công nghệ**: Chia sẻ về lập trình, công nghệ mới
-- **Gaming**: Review game, tips và tricks
-- **Âm nhạc**: Chia sẻ về âm nhạc yêu thích
-- **Học tập**: Kinh nghiệm học tập và phát triển bản thân
-- **Cuộc sống**: Những câu chuyện thú vị trong cuộc sống
 
 ## Bảo mật
 
