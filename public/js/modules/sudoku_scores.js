@@ -1,138 +1,194 @@
-// sudoku-scores.js - Quản lý thành tích Sudoku với Supabase
+// 🎯 Sudoku Scores Module - Quản lý thành tích Sudoku
+// ✅ Lưu best time cho mỗi độ khó
+// ✅ Hiển thị best time theo độ khó
+// ✅ Dropdown thành tích tất cả độ khó
+
+import { supabase } from '../supabase/supabase.js';
+import { getCurrentUser } from '../supabase/auth.js';
 
 export class SudokuScores {
-    constructor(supabase) {
-        this.supabase = supabase;
+    constructor() {
+        // Cache để tránh query quá nhiều
+        this.cache = new Map();
+        this.cacheTimeout = 5 * 60 * 1000; // 5 phút
     }
 
-    // Lưu thành tích mới (chỉ nếu tốt hơn thành tích cũ)
-    async saveScore(userId, difficulty, timeInSeconds, score = 0) {
+    // Kiểm tra user đã đăng nhập chưa
+    async isLoggedIn() {
+        const user = await getCurrentUser();
+        return !!user;
+    }
+
+    // Lấy thông tin user hiện tại
+    async getCurrentUser() {
+        return await getCurrentUser();
+    }
+
+    // Lưu thành tích mới (chỉ khi tốt hơn best_time hiện tại)
+    async saveScore(difficulty, timeInSeconds) {
+        if (!(await this.isLoggedIn())) {
+            console.log('User not logged in');
+            return false;
+        }
+
+        const user = await this.getCurrentUser();
+        if (!user) return false;
+
         try {
-            // Kiểm tra thành tích hiện tại - dùng limit(1) production-safe
-            const { data, error: fetchError } = await this.supabase
-                .from('sudoku_scores')
-                .select('best_time, best_score')
-                .eq('user_id', userId)
-                .eq('difficulty', difficulty)
-                .limit(1); // ✅ Production-safe, không bao giờ throw error
+            // Kiểm tra best_time hiện tại
+            const currentBest = await this.getBestScore(difficulty);
 
-            if (fetchError) throw fetchError;
-
-            const currentScore = data?.[0] || null;
-
-            // Nếu chưa có thành tích hoặc thời gian tốt hơn (hoặc score cao hơn nếu có)
-            const shouldUpdate = !currentScore ||
-                timeInSeconds < currentScore.best_time ||
-                (score > 0 && score > currentScore.best_score);
-
-            if (shouldUpdate) {
-                const { data, error } = await this.supabase
+            // Chỉ lưu nếu thời gian mới tốt hơn (nhỏ hơn) hoặc chưa có record
+            if (currentBest === null || timeInSeconds < currentBest) {
+                const { data, error } = await supabase
                     .from('sudoku_scores')
                     .upsert({
-                        user_id: userId,
+                        user_id: user.id,
                         difficulty: difficulty,
                         best_time: timeInSeconds,
-                        best_score: Math.max(score, currentScore?.best_score || 0),
                         completed_at: new Date().toISOString()
-                    }, {
-                        onConflict: 'user_id,difficulty'
                     });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error saving score:', error);
+                    return false;
+                }
 
-                return {
-                    success: true,
-                    isNewRecord: !currentScore,
-                    improved: currentScore ? currentScore.best_time - timeInSeconds : 0
-                };
+                // Clear cache cho difficulty này
+                this.cache.delete(`best_${difficulty}`);
+                this.cache.delete('all_scores');
+
+                return true;
             }
 
-            return { success: true, isNewRecord: false, improved: 0 };
+            return false; // Không cải thiện được thành tích
         } catch (error) {
-            console.error('Error saving Sudoku score:', error);
-            return { success: false, error: error.message };
+            console.error('Error in saveScore:', error);
+            return false;
         }
     }
 
-    // Lấy thành tích của user theo độ khó
-    // ✅ Dùng limit(1) để tránh hoàn toàn lỗi PGRST116
-    async getScore(userId, difficulty) {
+    // Lấy best time cho một độ khó cụ thể
+    async getBestScore(difficulty) {
+        if (!(await this.isLoggedIn())) {
+            return null;
+        }
+
+        const cacheKey = `best_${difficulty}`;
+
+        // Kiểm tra cache
+        if (this.cache.has(cacheKey)) {
+            const cached = this.cache.get(cacheKey);
+            if (Date.now() - cached.timestamp < this.cacheTimeout) {
+                return cached.data;
+            }
+        }
+
         try {
-            const { data, error } = await this.supabase
+            const user = await this.getCurrentUser();
+            if (!user) return null;
+
+            const { data, error } = await supabase
                 .from('sudoku_scores')
-                .select('best_time, best_score, completed_at')
-                .eq('user_id', userId)
+                .select('best_time')
+                .eq('user_id', user.id)
                 .eq('difficulty', difficulty)
-                .limit(1); // ✅ Production-safe, không bao giờ throw PGRST116
+                .single();
 
-            if (error) throw error;
+            if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+                console.error('Error getting best score:', error);
+                return null;
+            }
 
-            return data.length ? data[0] : null; // ✅ 0 record → null, không error
+            const bestTime = data ? data.best_time : null;
+
+            // Cache kết quả
+            this.cache.set(cacheKey, {
+                data: bestTime,
+                timestamp: Date.now()
+            });
+
+            return bestTime;
         } catch (error) {
-            console.error('Error getting Sudoku score:', error);
+            console.error('Error in getBestScore:', error);
             return null;
         }
     }
 
-    // Lấy tất cả thành tích của user
-    async getAllScores(userId) {
+    // Lấy tất cả best times cho tất cả difficulties
+    async getAllScores() {
+        if (!(await this.isLoggedIn())) {
+            return {};
+        }
+
+        // Kiểm tra cache
+        if (this.cache.has('all_scores')) {
+            const cached = this.cache.get('all_scores');
+            if (Date.now() - cached.timestamp < this.cacheTimeout) {
+                return cached.data;
+            }
+        }
+
         try {
-            const { data, error } = await this.supabase
+            const user = await this.getCurrentUser();
+            if (!user) return {};
+
+            const { data, error } = await supabase
                 .from('sudoku_scores')
-                .select('difficulty, best_time, best_score, completed_at')
-                .eq('user_id', userId)
-                .order('difficulty');
+                .select('difficulty, best_time')
+                .eq('user_id', user.id);
 
-            if (error) throw error;
+            if (error) {
+                console.error('Error getting all scores:', error);
+                return {};
+            }
 
-            return data || [];
+            // Convert thành object {easy: time, medium: time, ...}
+            const scores = {};
+            data.forEach(record => {
+                scores[record.difficulty] = record.best_time;
+            });
+
+            // Cache kết quả
+            this.cache.set('all_scores', {
+                data: scores,
+                timestamp: Date.now()
+            });
+
+            return scores;
         } catch (error) {
-            console.error('Error getting all Sudoku scores:', error);
-            return [];
+            console.error('Error in getAllScores:', error);
+            return {};
         }
     }
 
-    // Format thời gian thành MM:SS
+    // Format thời gian từ giây thành mm:ss
     formatTime(seconds) {
+        if (seconds === null || seconds === undefined) {
+            return '--:--';
+        }
+
         const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
         const secs = String(seconds % 60).padStart(2, '0');
         return `${mins}:${secs}`;
     }
 
-    // Tính thống kê
-    calculateStats(scores) {
-        const stats = {
-            totalGames: scores.length,
-            bestTime: null,
-            worstTime: null,
-            averageTime: 0,
-            favoriteDifficulty: null
-        };
+    // Clear cache (có thể gọi khi user đăng xuất)
+    clearCache() {
+        this.cache.clear();
+    }
 
-        if (scores.length === 0) return stats;
+    // Debug: log tất cả scores (cho development)
+    async debugLogAllScores() {
+        if (!(await this.isLoggedIn())) {
+            console.log('User not logged in');
+            return;
+        }
 
-        let totalTime = 0;
-        const difficultyCount = {};
-
-        scores.forEach(score => {
-            totalTime += score.best_time;
-
-            if (!stats.bestTime || score.best_time < stats.bestTime) {
-                stats.bestTime = score.best_time;
-            }
-            if (!stats.worstTime || score.best_time > stats.worstTime) {
-                stats.worstTime = score.best_time;
-            }
-
-            difficultyCount[score.difficulty] = (difficultyCount[score.difficulty] || 0) + 1;
-        });
-
-        stats.averageTime = Math.round(totalTime / scores.length);
-
-        // Tìm độ khó yêu thích (chơi nhiều nhất)
-        stats.favoriteDifficulty = Object.entries(difficultyCount)
-            .sort(([,a], [,b]) => b - a)[0][0];
-
-        return stats;
+        const scores = await this.getAllScores();
+        console.log('All Sudoku Scores:', scores);
     }
 }
+
+// Export instance default để sử dụng trong entry
+export const sudokuScores = new SudokuScores();

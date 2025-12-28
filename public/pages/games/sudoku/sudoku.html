@@ -15,7 +15,6 @@
       <h1>Sudoku</h1>
       <div class="sudoku-info">
         <div id="timer" class="sudoku-timer">⏱ 00:00</div>
-        <div id="best-time-display" class="best-time-display" style="display: none;">🏆 Best: --:--</div>
         <div class="difficulty-selector">
           <label for="difficulty">Độ khó:</label>
           <select id="difficulty" class="difficulty-select">
@@ -25,9 +24,7 @@
             <option value="very_hard">VERY HARD (55-60 ô)</option>
             <option value="expert">EXPERT (60-64 ô)</option>
           </select>
-        </div>
-        <div id="achievements-container" class="achievements-container">
-          <!-- Dropdown thành tích sẽ được thêm bằng JS -->
+          <div id="best-time-display" class="best-time-display">Best: --:--</div>
         </div>
       </div>
       <p>Điền các số từ 1-9 vào lưới 9x9 | Sử dụng phím mũi tên để di chuyển</p>
@@ -38,6 +35,17 @@
       <button id="resetBtn" class="btn-secondary">Chơi lại</button>
       <button id="hintBtn" class="btn-secondary">Gợi ý</button>
       <button id="newGameBtn" class="btn-secondary">Ván mới</button>
+      <div class="achievements-container">
+        <button id="achievementsBtn" class="btn-secondary achievements-btn">🏆 Thành tích</button>
+        <div id="achievementsDropdown" class="achievements-dropdown" style="display: none;">
+          <div class="achievements-content">
+            <h4>Thành tích của bạn</h4>
+            <div id="achievements-list" class="achievements-list">
+              <!-- Achievements will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
       <div id="loadingIndicator" class="loading-indicator" style="display: none;">
         <div class="loading-spinner"></div>
         <span>Đang tạo đề...</span>

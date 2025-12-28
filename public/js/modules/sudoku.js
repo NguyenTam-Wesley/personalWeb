@@ -1,11 +1,7 @@
-// 🎯 Sudoku Game - Kiến trúc Production-Grade
-// ✅ Web Worker cho thuật toán nặng
-// ✅ Auth State Management chuyên nghiệp
-// ✅ Supabase integration với RLS
-// ✅ Dependency injection pattern
-
-// Import Supabase v1 và SudokuScores
-import { SudokuScores } from './sudoku_scores.js';
+// 🎯 Sudoku Game - Tối ưu hóa kiến trúc với Web Worker
+// ✅ Thuật toán sinh Sudoku chạy nền, không block UI
+// ✅ Hỗ trợ tất cả level từ EZ đến EXPERT mượt mà
+// ✅ Loading indicator cho trải nghiệm tốt
 
 // Difficulty constants
 const DIFFICULTY = {
@@ -25,9 +21,8 @@ const DIFFICULTY_SETTINGS = {
 };
 
 export class SudokuGame {
-    constructor({ supabase, user, difficulty = DIFFICULTY.MEDIUM }) {
-        this.supabase = supabase;
-        this.currentUser = user;
+    constructor(sudokuScoresInstance, difficulty = DIFFICULTY.MEDIUM) {
+        this.sudokuScores = sudokuScoresInstance;
         this.difficulty = difficulty;
 
         // Khởi tạo rỗng - sẽ được tạo trong Web Worker sau
@@ -39,26 +34,13 @@ export class SudokuGame {
         this.newGameBtn = document.getElementById("newGameBtn");
         this.difficultySelect = document.getElementById("difficulty");
         this.loadingIndicator = document.getElementById("loadingIndicator");
+        this.bestTimeDisplay = document.getElementById("best-time-display");
+        this.achievementsBtn = document.getElementById("achievementsBtn");
+        this.achievementsDropdown = document.getElementById("achievementsDropdown");
+        this.achievementsList = document.getElementById("achievements-list");
 
         // Web Worker cho việc sinh Sudoku
         this.worker = null;
-
-        // Supabase scores management
-        this.scoresManager = new SudokuScores(this.supabase);
-        this.currentBestTime = null;
-        this.currentBestTimeDisplay = document.getElementById("best-time-display");
-
-        // Khởi tạo achievements dropdown
-        const achievementsContainer = document.getElementById("achievements-container");
-        if (achievementsContainer) {
-            achievementsContainer.appendChild(this.createAchievementsDropdown());
-        }
-
-        // Setup achievements button event
-        const achievementsBtn = document.getElementById("achievements-btn");
-        if (achievementsBtn) {
-            achievementsBtn.addEventListener('click', () => this.showAchievementsModal());
-        }
 
         // Timer variables
         this.timer = null;
@@ -74,12 +56,12 @@ export class SudokuGame {
         this.init();
     }
 
-    async init() {
+    init() {
         // Khởi tạo UI và events
         this.setupEventListeners();
 
-        // Load thành tích cho độ khó hiện tại
-        await this.loadScoreForDifficulty();
+        // Hiển thị best time ban đầu
+        this.updateBestTimeDisplay();
 
         // Sinh Sudoku đầu tiên qua Web Worker
         this.newGame();
@@ -395,7 +377,7 @@ export class SudokuGame {
     }
 
     setupEventListeners() {
-        this.checkBtn.addEventListener('click', () => this.checkSolution());
+        this.checkBtn.addEventListener('click', async () => await this.checkSolution());
         this.resetBtn.addEventListener('click', () => this.reset());
         this.hintBtn.addEventListener('click', () => this.giveHint());
         if (this.newGameBtn) {
@@ -404,12 +386,29 @@ export class SudokuGame {
 
         // Difficulty selector
         if (this.difficultySelect) {
-            this.difficultySelect.addEventListener('change', async (e) => {
+            this.difficultySelect.addEventListener('change', (e) => {
                 this.difficulty = e.target.value;
-                await this.loadScoreForDifficulty(); // Load thành tích mới
+                this.updateBestTimeDisplay();
                 this.newGame();
             });
         }
+
+        // Achievements dropdown
+        if (this.achievementsBtn) {
+            this.achievementsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleAchievements();
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (this.achievementsDropdown &&
+                !this.achievementsDropdown.contains(e.target) &&
+                !this.achievementsBtn.contains(e.target)) {
+                this.achievementsDropdown.style.display = 'none';
+            }
+        });
 
         // Tạm dừng timer khi rời tab
         document.addEventListener("visibilitychange", () => {
@@ -428,7 +427,7 @@ export class SudokuGame {
         });
     }
 
-    checkSolution() {
+    async checkSolution() {
         const inputs = this.grid.querySelectorAll('input:not(.given)');
         let complete = true;
         let correct = true;
@@ -449,7 +448,7 @@ export class SudokuGame {
             }
         });
 
-        setTimeout(() => {
+        setTimeout(async () => {
             // Clear visual feedback
             inputs.forEach(input => {
                 input.classList.remove('empty', 'wrong', 'correct');
@@ -465,10 +464,19 @@ export class SudokuGame {
                 const secs = String(this.seconds % 60).padStart(2, '0');
                 const difficultyName = DIFFICULTY_SETTINGS[this.difficulty].name;
 
-                // Lưu thành tích vào Supabase
-                this.saveScore(this.seconds);
-
-                alert(`🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!`);
+                // Lưu best time nếu user đã đăng nhập
+                if (await this.sudokuScores.isLoggedIn()) {
+                    const saved = await this.sudokuScores.saveScore(this.difficulty, this.seconds);
+                    if (saved) {
+                        // Cập nhật best time display
+                        await this.updateBestTimeDisplay();
+                        alert(`🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!\n🎯 Thành tích mới được lưu!`);
+                    } else {
+                        alert(`🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!`);
+                    }
+                } else {
+                    alert(`🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!\n💡 Đăng nhập để lưu thành tích!`);
+                }
             }
         }, 500);
     }
@@ -505,14 +513,6 @@ export class SudokuGame {
         }, 2000);
     }
 
-    newGame(difficulty = "medium") {
-        // Tạo đề mới
-        this.solution = this.generateFullBoard();
-        this.puzzle = this.generatePuzzle(this.solution, difficulty);
-
-        // Reset UI
-        this.createGrid();
-    }
 
     // 🎯 Thuật toán sinh Sudoku đã được chuyển sang Web Worker
     // 📁 /js/workers/sudoku.worker.js
@@ -599,147 +599,64 @@ export class SudokuGame {
         };
     }
 
-    // Lưu thành tích khi hoàn thành game
-    async saveScore(timeInSeconds) {
-        if (!this.currentUser) {
-            console.info('Guest mode → skip saving score');
-            return;
-        }
-
-        console.log('[SAVE SCORE]', {
-            userId: this.currentUser.id,
-            difficulty: this.difficulty,
-            timeInSeconds
-        });
-
-        const result = await this.scoresManager.saveScore(this.currentUser.id, this.difficulty, timeInSeconds);
-
-        if (result.success) {
-            if (result.isNewRecord) {
-                console.log(`🎉 New personal best for ${this.difficulty}: ${this.scoresManager.formatTime(timeInSeconds)}`);
-            } else if (result.improved > 0) {
-                console.log(`🚀 Improved personal best for ${this.difficulty} by ${result.improved}s!`);
+    // Cập nhật hiển thị best time cho độ khó hiện tại
+    async updateBestTimeDisplay() {
+        if (!this.bestTimeDisplay || !(await this.sudokuScores.isLoggedIn())) {
+            if (this.bestTimeDisplay) {
+                this.bestTimeDisplay.textContent = 'Best: --:--';
             }
-            // Cập nhật hiển thị thành tích
-            this.updateBestTimeDisplay();
-        }
-    }
-
-    // Tải và hiển thị thành tích cho độ khó hiện tại
-    async loadScoreForDifficulty() {
-        if (!this.currentUser) return;
-
-        const score = await this.scoresManager.getScore(this.currentUser.id, this.difficulty);
-        this.currentBestTime = score;
-
-        this.updateBestTimeDisplay();
-    }
-
-    // Cập nhật hiển thị thành tích
-    updateBestTimeDisplay() {
-        if (!this.currentBestTimeDisplay) return;
-
-        if (this.currentBestTime) {
-            const timeStr = this.scoresManager.formatTime(this.currentBestTime.best_time);
-            const dateStr = new Date(this.currentBestTime.completed_at).toLocaleDateString('vi-VN');
-            this.currentBestTimeDisplay.innerHTML = `🏆 Best: ${timeStr}<br><small style="opacity: 0.7; font-size: 0.8em;">${dateStr}</small>`;
-            this.currentBestTimeDisplay.style.display = 'block';
-        } else {
-            this.currentBestTimeDisplay.textContent = '🏆 No record yet';
-            this.currentBestTimeDisplay.style.display = 'block';
-        }
-    }
-
-    // Tạo dropdown thành tích
-    createAchievementsDropdown() {
-        const container = document.createElement('div');
-        container.className = 'achievements-container';
-
-        const button = document.createElement('button');
-        button.className = 'achievements-btn btn-secondary';
-        button.innerHTML = '🏆 Thành tích';
-        button.id = 'achievements-btn';
-
-        // Event listener sẽ được setup trong init
-        container.appendChild(button);
-        return container;
-    }
-
-    // Hiển thị modal thành tích
-    async showAchievementsModal() {
-        if (!this.currentUser) {
-            alert('Vui lòng đăng nhập để xem thành tích!');
             return;
         }
 
-        const scores = await this.scoresManager.getAllScores(this.currentUser.id);
-        const stats = this.scoresManager.calculateStats(scores);
+        const bestTime = await this.sudokuScores.getBestScore(this.difficulty);
+        this.bestTimeDisplay.textContent = `Best: ${this.sudokuScores.formatTime(bestTime)}`;
+    }
 
-        let content = '<div style="text-align: center; padding: 20px; color: white;">';
-        content += '<h3>🏆 Thành tích Sudoku của bạn</h3>';
+    // Toggle achievements dropdown
+    toggleAchievements() {
+        if (!this.achievementsDropdown) return;
 
-        if (scores.length === 0) {
-            content += '<p>Bạn chưa hoàn thành game nào!</p>';
+        const isVisible = this.achievementsDropdown.style.display !== 'none';
+
+        if (isVisible) {
+            this.achievementsDropdown.style.display = 'none';
         } else {
-            content += '<div style="margin: 20px 0;">';
-            content += `<p><strong>Games completed:</strong> ${stats.totalGames}</p>`;
-            content += `<p><strong>Best time:</strong> ${this.scoresManager.formatTime(stats.bestTime)}</p>`;
-            content += `<p><strong>Average time:</strong> ${this.scoresManager.formatTime(stats.averageTime)}</p>`;
-            content += `<p><strong>Favorite difficulty:</strong> ${stats.favoriteDifficulty.toUpperCase()}</p>`;
-            content += '</div>';
-
-            content += '<h4>Chi tiết theo độ khó:</h4>';
-            content += '<div style="display: grid; gap: 10px; margin-top: 15px;">';
-
-            const difficulties = ['easy', 'medium', 'hard', 'very_hard', 'expert'];
-            difficulties.forEach(diff => {
-                const score = scores.find(s => s.difficulty === diff);
-                const diffName = DIFFICULTY_SETTINGS[diff]?.name || diff.toUpperCase();
-                const timeStr = score ? this.scoresManager.formatTime(score.best_time) : '--:--';
-                const dateStr = score ? new Date(score.completed_at).toLocaleDateString('vi-VN') : '';
-
-                content += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;">`;
-                content += `<span>${diffName}</span>`;
-                content += `<div style="text-align: right;">`;
-                content += `<div>${timeStr}</div>`;
-                if (dateStr) content += `<div style="font-size: 0.8em; opacity: 0.7;">${dateStr}</div>`;
-                content += `</div>`;
-                content += '</div>';
-            });
-
-            content += '</div>';
-        }
-
-        content += '<button id="close-achievements-modal" style="margin-top: 20px; padding: 10px 20px; background: #4a5568; color: white; border: none; border-radius: 6px; cursor: pointer;">Đóng</button>';
-        content += '</div>';
-
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: flex; align-items: center;
-            justify-content: center; z-index: 10000; font-family: 'Inter', sans-serif;
-        `;
-        modal.innerHTML = content;
-
-        document.body.appendChild(modal);
-
-        // Setup close button event listener
-        const closeBtn = modal.querySelector('#close-achievements-modal');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => modal.remove());
+            this.showAchievements();
         }
     }
 
-    // Update user state (gọi từ auth state manager)
-    updateUser(user) {
-        const wasLoggedIn = !!this.currentUser;
-        const nowLoggedIn = !!user;
+    // Hiển thị achievements dropdown
+    async showAchievements() {
+        if (!this.achievementsDropdown || !this.achievementsList) return;
 
-        this.currentUser = user;
-
-        // Reload scores khi login/logout
-        if (wasLoggedIn !== nowLoggedIn) {
-            this.loadScoreForDifficulty();
+        if (!(await this.sudokuScores.isLoggedIn())) {
+            this.achievementsList.innerHTML = '<div style="text-align: center; color: var(--text-light);">Vui lòng đăng nhập để xem thành tích</div>';
+            this.achievementsDropdown.style.display = 'block';
+            return;
         }
+
+        const scores = await this.sudokuScores.getAllScores();
+
+        const difficultyNames = {
+            easy: 'EZ',
+            medium: 'MED',
+            hard: 'HARD',
+            very_hard: 'VERY HARD',
+            expert: 'EXPERT'
+        };
+
+        const difficulties = ['easy', 'medium', 'hard', 'very_hard', 'expert'];
+
+        this.achievementsList.innerHTML = difficulties.map(diff => {
+            const time = scores[diff];
+            return `
+                <div class="achievement-item">
+                    <span class="achievement-difficulty">${difficultyNames[diff]}</span>
+                    <span class="achievement-time">${time ? this.sudokuScores.formatTime(time) : '<span class="achievement-no-score">Chưa chơi</span>'}</span>
+                </div>
+            `;
+        }).join('');
+
+        this.achievementsDropdown.style.display = 'block';
     }
 }
