@@ -1,4 +1,4 @@
-class NovelDetailPage {
+export class NovelDetailPage {
   constructor() {
     this.urlParams = new URLSearchParams(window.location.search);
     this.novelId = this.urlParams.get('id');
@@ -81,7 +81,3 @@ class NovelDetailPage {
     }
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  new NovelDetailPage();
-}); 

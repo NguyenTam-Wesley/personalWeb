@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/supabase.js';
 
-class ChapterPage {
+export class ChapterPage {
   constructor() {
     this.init(); // Gọi thẳng luôn
   }
@@ -53,5 +53,3 @@ class ChapterPage {
     }
   }
 }
-
-new ChapterPage(); 

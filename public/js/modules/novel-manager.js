@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/supabase.js';
 
-class NovelManager {
+export class NovelManager {
   constructor() {
     this.authorSelect = document.getElementById('novel-author');
     this.genreSelect = document.getElementById('novel-genres');
@@ -162,7 +162,3 @@ class NovelManager {
     }
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  new NovelManager();
-}); 

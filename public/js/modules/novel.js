@@ -1,4 +1,4 @@
-class NovelListPage {
+export class NovelListPage {
   constructor() {
     this.listContainer = document.getElementById('novel-list');
     this.loadNovels();
@@ -37,7 +37,3 @@ class NovelListPage {
     `).join('');
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  new NovelListPage();
-}); 

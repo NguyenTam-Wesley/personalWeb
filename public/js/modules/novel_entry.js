@@ -1,7 +1,7 @@
 import components from '../components/components.js';
-import { GamesManager } from './games.js';
+import { NovelListPage } from './novel.js';
 
 // Initialize components
 components.init();
 // Initialize page specific functionality
-new GamesManager();
+new NovelListPage();

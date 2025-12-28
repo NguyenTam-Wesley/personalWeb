@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/supabase.js';
 
-class ChapterManager {
+export class ChapterManager {
   constructor() {
     this.urlParams = new URLSearchParams(window.location.search);
     this.volumeId = this.urlParams.get('volume_id');
@@ -106,7 +106,3 @@ class ChapterManager {
     await this.loadChapters();
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  new ChapterManager();
-}); 

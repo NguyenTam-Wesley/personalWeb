@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/supabase.js';
 
-class VolumeManager {
+export class VolumeManager {
   constructor() {
     this.urlParams = new URLSearchParams(window.location.search);
     this.novelId = this.urlParams.get('novel_id');
@@ -103,7 +103,3 @@ class VolumeManager {
     await this.loadVolumes();
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  new VolumeManager();
-}); 

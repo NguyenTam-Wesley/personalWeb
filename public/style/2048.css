@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #faf8ef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .game-container {
+    background: #bbada0;
+    padding: 10px;
+    border-radius: 6px;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    grid-template-rows: repeat(4, 80px);
+    gap: 10px;
+  }
+  
+  .cell {
+    width: 80px;
+    height: 80px;
+    background: #cdc1b4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 4px;
+    color: #776e65;
+  }
+  
+  /* màu theo giá trị */
+  .cell[data-value="2"] { background: #eee4da; }
+  .cell[data-value="4"] { background: #ede0c8; }
+  .cell[data-value="8"] { background: #f2b179; color: #f9f6f2; }
+  .cell[data-value="16"] { background: #f59563; color: #f9f6f2; }
+  .cell[data-value="32"] { background: #f67c5f; color: #f9f6f2; }
+  .cell[data-value="64"] { background: #f65e3b; color: #f9f6f2; }
+  .cell[data-value="128"] { background: #edcf72; color: #f9f6f2; }
+  .cell[data-value="256"] { background: #edcc61; color: #f9f6f2; }
+  .cell[data-value="512"] { background: #edc850; color: #f9f6f2; }
+  .cell[data-value="1024"] { background: #edc53f; color: #f9f6f2; }
+  .cell[data-value="2048"] { background: #edc22e; color: #f9f6f2; }  
