@@ -1,4 +1,4 @@
-import components from '../../components/components.js';
+import components from '../components/components.js';
 import { NovelDetailPage } from './novel-detail.js';
 
 // Initialize components

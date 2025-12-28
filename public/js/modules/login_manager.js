@@ -18,20 +18,45 @@ export class LoginManager {
   }
 
   async handleLogin() {
-    const username = this.usernameInput.value.trim();
-    const password = this.passwordInput.value;
-
-    if (!username || !password) {
-      alert("Vui lòng nhập đầy đủ username và password");
-      return;
-    }
-
     try {
-      const user = await loginUser(username, password);
-      alert("Đăng nhập thành công, xin chào " + user.username);
-      window.location.href = "../index.html";
-    } catch (error) {
-      alert("Đăng nhập thất bại: " + error.message);
+      if (!this.usernameInput || !this.passwordInput) {
+        console.error('Login input fields not found');
+        return;
+      }
+
+      const username = this.usernameInput.value.trim();
+      const password = this.passwordInput.value;
+
+      if (!username || !password) {
+        alert("Vui lòng nhập đầy đủ username và password");
+        return;
+      }
+
+      // Disable button during login
+      let originalText = 'Login';
+      if (this.loginBtn) {
+        this.loginBtn.disabled = true;
+        originalText = this.loginBtn.textContent;
+        this.loginBtn.textContent = 'Đang đăng nhập...';
+      }
+
+      try {
+        const user = await loginUser(username, password);
+        alert("Đăng nhập thành công, xin chào " + user.username);
+        window.location.href = "../index.html";
+      } catch (error) {
+        console.error('Login error:', error);
+        alert("Đăng nhập thất bại: " + (error.message || "Đã xảy ra lỗi không mong muốn"));
+      } finally {
+        // Re-enable button
+        if (this.loginBtn) {
+          this.loginBtn.disabled = false;
+          this.loginBtn.textContent = originalText;
+        }
+      }
+    } catch (err) {
+      console.error('Unexpected error in handleLogin:', err);
+      alert("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.");
     }
   }
 }

@@ -1,4 +1,4 @@
-import components from '../../components/components.js';
+import components from '../components/components.js';
 import { NovelManager } from './novel-manager.js';
 
 // Initialize components

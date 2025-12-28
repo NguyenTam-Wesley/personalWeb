@@ -38,39 +38,71 @@ export class GamesManager {
     }
 
     init() {
-        this.renderGames();
-        this.setupEventListeners();
+        try {
+            this.renderGames();
+            this.setupEventListeners();
+        } catch (err) {
+            console.error('Error initializing GamesManager:', err);
+        }
     }
 
     renderGames() {
-        const gamesGrid = document.querySelector('.games-grid');
-        if (!gamesGrid) return;
+        try {
+            const gamesGrid = document.querySelector('.games-grid');
+            if (!gamesGrid) {
+                console.error('Games grid element not found');
+                return;
+            }
 
-        gamesGrid.innerHTML = Object.values(this.games).map(game => `
-            <a href="${game.detailUrl}" class="game-card" data-game="${game.id}">
-                <img src="${game.image}" alt="${game.name}">
-                <div class="game-info">
-                    <span>${game.name}</span>
-                </div>
-            </a>
-        `).join('');
+            gamesGrid.innerHTML = Object.values(this.games).map(game => `
+                <a href="${this.escapeHtml(game.detailUrl)}" class="game-card" data-game="${this.escapeHtml(game.id)}">
+                    <img src="${this.escapeHtml(game.image)}" alt="${this.escapeHtml(game.name)}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E';">
+                    <div class="game-info">
+                        <span>${this.escapeHtml(game.name)}</span>
+                    </div>
+                </a>
+            `).join('');
+        } catch (err) {
+            console.error('Error rendering games:', err);
+            const gamesGrid = document.querySelector('.games-grid');
+            if (gamesGrid) {
+                gamesGrid.innerHTML = '<div style="color: red; padding: 20px;">❌ Lỗi khi tải danh sách game</div>';
+            }
+        }
     }
 
     setupEventListeners() {
-        const gamesGrid = document.querySelector('.games-grid');
-        if (!gamesGrid) return;
-
-        gamesGrid.addEventListener('click', (e) => {
-            const gameCard = e.target.closest('.game-card');
-            if (!gameCard) return;
-
-            const gameId = gameCard.dataset.game;
-            const game = this.games[gameId];
-            if (game) {
-                // Có thể thêm xử lý trước khi chuyển trang ở đây
-                console.log(`Navigating to ${game.name}...`);
+        try {
+            const gamesGrid = document.querySelector('.games-grid');
+            if (!gamesGrid) {
+                console.warn('Games grid element not found for event listeners');
+                return;
             }
-        });
+
+            gamesGrid.addEventListener('click', (e) => {
+                try {
+                    const gameCard = e.target.closest('.game-card');
+                    if (!gameCard) return;
+
+                    const gameId = gameCard.dataset.game;
+                    const game = this.games[gameId];
+                    if (game) {
+                        // Có thể thêm xử lý trước khi chuyển trang ở đây
+                        console.log(`Navigating to ${game.name}...`);
+                    }
+                } catch (err) {
+                    console.error('Error handling game card click:', err);
+                }
+            });
+        } catch (err) {
+            console.error('Error setting up event listeners:', err);
+        }
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     getGame(gameId) {

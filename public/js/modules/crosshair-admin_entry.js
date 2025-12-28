@@ -1,4 +1,4 @@
-import components from '../../components/components.js';
+import components from '../components/components.js';
 import { CrosshairAdminManager } from './crosshair-admin.js';
 
 // Initialize components

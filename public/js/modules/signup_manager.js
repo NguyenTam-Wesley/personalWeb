@@ -25,6 +25,11 @@ export class SignupManager {
 
   async handleSignup() {
     try {
+      if (!this.usernameInput || !this.passwordInput || !this.confirmPasswordInput) {
+        console.error('Signup input fields not found');
+        return;
+      }
+
       const username = this.usernameInput.value.trim();
       const password = this.passwordInput.value;
       const confirmPassword = this.confirmPasswordInput.value;
@@ -34,17 +39,46 @@ export class SignupManager {
         return;
       }
 
+      if (username.length < 3) {
+        alert("Username phải có ít nhất 3 ký tự");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("Mật khẩu phải có ít nhất 6 ký tự");
+        return;
+      }
+
       if (password !== confirmPassword) {
         alert("Mật khẩu không khớp!");
         return;
       }
 
-      await registerUser(username, password);
+      // Disable button during signup
+      let originalText = 'Sign Up';
+      if (this.signupBtn) {
+        this.signupBtn.disabled = true;
+        originalText = this.signupBtn.textContent;
+        this.signupBtn.textContent = 'Đang đăng ký...';
+      }
 
-      alert("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
-      window.location.href = "../pages/login.html";
-    } catch (error) {
-      alert(error.message || "Đăng ký thất bại");
+      try {
+        await registerUser(username, password);
+        alert("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
+        window.location.href = "../pages/login.html";
+      } catch (error) {
+        console.error('Signup error:', error);
+        alert(error.message || "Đăng ký thất bại. Vui lòng thử lại.");
+      } finally {
+        // Re-enable button
+        if (this.signupBtn) {
+          this.signupBtn.disabled = false;
+          this.signupBtn.textContent = originalText;
+        }
+      }
+    } catch (err) {
+      console.error('Unexpected error in handleSignup:', err);
+      alert("Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.");
     }
   }
 }
