@@ -3,16 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <title>2048 Game</title>
+  <link rel="stylesheet" href="../../../style/components.css" />
   <link rel="stylesheet" href="../../../style/style.css" />
-    <link rel="stylesheet" href="../../../style/2048.css" />
+  <link rel="stylesheet" href="../../../style/2048.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
 </head>
 <body>
-
   <div class="game-container">
-    <div class="grid" id="grid"></div>
+    <div class="game-header">
+      <div class="game-title-section">
+        <h1>2048</h1>
+        <div id="score" class="game-score">Điểm: 0</div>
+      </div>
+      <p>Sử dụng các phím mũi tên để di chuyển | Nhấn R để chơi lại</p>
+      <div class="game-controls">
+        <button id="resetBtn" class="btn-secondary">Chơi lại</button>
+      </div>
+    </div>
+
+    <div class="game-grid">
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="game-instructions">
+      <h3>Hướng dẫn:</h3>
+      <ul>
+        <li>Kết hợp các ô có cùng số để tạo ra số lớn hơn</li>
+        <li>Mục tiêu: Tạo ra ô 2048</li>
+        <li>Nhấn R hoặc nút "Chơi lại" để bắt đầu lại</li>
+      </ul>
+    </div>
   </div>
 
-  <!-- ENTRY POINT -->
   <script type="module" src="../../../js/modules/2048_entry.js"></script>
 </body>
 </html>

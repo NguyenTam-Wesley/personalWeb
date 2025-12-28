@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Sudoku Game</title>
+  <link rel="stylesheet" href="../../../style/components.css" />
+  <link rel="stylesheet" href="../../../style/style.css" />
+  <link rel="stylesheet" href="../../../style/sudoku.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet>
+  <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+  <div class="sudoku-container">
+    <div class="sudoku-header">
+      <h1>Sudoku</h1>
+      <div class="sudoku-info">
+        <div id="timer" class="sudoku-timer">⏱ 00:00</div>
+        <div id="best-time-display" class="best-time-display" style="display: none;">🏆 Best: --:--</div>
+        <div class="difficulty-selector">
+          <label for="difficulty">Độ khó:</label>
+          <select id="difficulty" class="difficulty-select">
+            <option value="easy">EZ (35-40 ô)</option>
+            <option value="medium" selected>MED (45-50 ô)</option>
+            <option value="hard">HARD (50-55 ô)</option>
+            <option value="very_hard">VERY HARD (55-60 ô)</option>
+            <option value="expert">EXPERT (60-64 ô)</option>
+          </select>
+        </div>
+        <div id="achievements-container" class="achievements-container">
+          <!-- Dropdown thành tích sẽ được thêm bằng JS -->
+        </div>
+      </div>
+      <p>Điền các số từ 1-9 vào lưới 9x9 | Sử dụng phím mũi tên để di chuyển</p>
+    </div>
+
+    <div class="sudoku-controls">
+      <button id="checkBtn" class="btn-secondary">Kiểm tra</button>
+      <button id="resetBtn" class="btn-secondary">Chơi lại</button>
+      <button id="hintBtn" class="btn-secondary">Gợi ý</button>
+      <button id="newGameBtn" class="btn-secondary">Ván mới</button>
+      <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+        <div class="loading-spinner"></div>
+        <span>Đang tạo đề...</span>
+      </div>
+    </div>
+
+    <div id="sudoku-grid" class="sudoku-grid"></div>
+
+    <div class="sudoku-instructions">
+      <h3>Hướng dẫn:</h3>
+      <ul>
+      <li>Điền các số từ 1-9 vào lưới 9x9</li>
+      <li>Mỗi hàng, cột và ô 3x3 không được trùng số</li>
+      <li>Sử dụng phím mũi tên để di chuyển qua tất cả ô</li>
+      <li>Gõ số trực tiếp để thay thế số cũ ngay lập tức</li>
+      <li>Focus vào ô có số đúng để xem highlight thông minh</li>
+      <li>Nhấn nút "Gợi ý" để được hỗ trợ</li>
+      <li>Nhấn "Ván mới" để tạo đề bài ngẫu nhiên</li>
+      <li>Nhấn "Kiểm tra" để xem kết quả</li>
+      <li><strong>Lưu ý:</strong> Tắt IME (gõ tiếng Việt) để nhập số mượt mà nhất</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module" src="../../../js/modules/sudoku_entry.js"></script>
+</body>
+</html>

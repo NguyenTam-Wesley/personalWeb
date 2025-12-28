@@ -6,3 +6,18 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 // Tạo kết nối Supabase client
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Auth state manager - chờ auth ready rồi mới callback
+export function onAuthReady(callback) {
+    // Check current user first
+    const currentUser = supabase.auth.user();
+    if (currentUser) {
+        callback(currentUser);
+        return;
+    }
+
+    // Listen for auth state changes
+    supabase.auth.onAuthStateChange((_event, session) => {
+        callback(session?.user || null);
+    });
+}

@@ -1,6 +1,22 @@
 export class GamesManager {
     constructor() {
         this.games = {
+            '2048': {
+                id: '2048',
+                name: '2048',
+                subtitle: 'Number Puzzle Game',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMjAiIGZpbGw9IiMwMGZGRkYiLz4KPHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj4yMDQ4PC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjE4MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U3RyYXRlZ3kgUG96emxlPC90ZXh0Pgo8L3N2Zz4K',
+                detailUrl: './games/2048/2048.html',
+                description: '2048 là một game ghép số vui nhộn, kết hợp các ô có cùng số để tạo ra ô có giá trị cao hơn.'
+            },
+            sudoku: {
+                id: 'sudoku',
+                name: 'Sudoku',
+                subtitle: 'Logic Number Puzzle',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMjAiIGZpbGw9IiNGRjZCMkIiLz4KPHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iIzMzMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U3Vkb2t1PC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjE4MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Mb2dpYyBQdXp6bGU8L3RleHQ+Cjwvc3ZnPgo=',
+                detailUrl: './games/sudoku/sudoku.html',
+                description: 'Sudoku là một trò chơi logic điền số vui nhộn, điền các số từ 1-9 vào lưới 9x9 theo quy tắc.'
+            },
             valorant: {
                 id: 'valorant',
                 name: 'Valorant',
