@@ -9,6 +9,13 @@ export class Game2048 {
       this.isAnimating = false;
       this.previousBoard = []; // Store previous board state for animation
       this.tileElements = []; // Store tile DOM elements
+
+      // Touch event properties
+      this.touchStartX = null;
+      this.touchStartY = null;
+      this.touchEndX = null;
+      this.touchEndY = null;
+      this.minSwipeDistance = 50; // Minimum distance for swipe detection
     }
   
     init() {
@@ -76,6 +83,84 @@ export class Game2048 {
       };
 
       document.addEventListener("keydown", this.handleKeyPress);
+
+      // Touch event listeners for mobile swipe support
+      this.grid.addEventListener("touchstart", this.handleTouchStart.bind(this), { passive: false });
+      this.grid.addEventListener("touchmove", this.handleTouchMove.bind(this), { passive: false });
+      this.grid.addEventListener("touchend", this.handleTouchEnd.bind(this), { passive: false });
+    }
+
+    // Touch event handlers for mobile swipe support
+    handleTouchStart(e) {
+      this.touchStartX = e.touches[0].clientX;
+      this.touchStartY = e.touches[0].clientY;
+    }
+
+    handleTouchMove(e) {
+      // Prevent scrolling while swiping on the game grid
+      e.preventDefault();
+    }
+
+    handleTouchEnd(e) {
+      if (this.gameOver || this.isAnimating) return;
+
+      this.touchEndX = e.changedTouches[0].clientX;
+      this.touchEndY = e.changedTouches[0].clientY;
+
+      this.handleSwipe();
+    }
+
+    handleSwipe() {
+      if (!this.touchStartX || !this.touchStartY || !this.touchEndX || !this.touchEndY) return;
+
+      const deltaX = this.touchEndX - this.touchStartX;
+      const deltaY = this.touchEndY - this.touchStartY;
+      const absDeltaX = Math.abs(deltaX);
+      const absDeltaY = Math.abs(deltaY);
+
+      // Check if swipe distance is sufficient
+      if (Math.max(absDeltaX, absDeltaY) < this.minSwipeDistance) return;
+
+      // Determine swipe direction
+      let direction = null;
+
+      if (absDeltaX > absDeltaY) {
+        // Horizontal swipe
+        direction = deltaX > 0 ? "right" : "left";
+      } else {
+        // Vertical swipe
+        direction = deltaY > 0 ? "down" : "up";
+      }
+
+      // Store previous board state and trigger move
+      this.previousBoard = this.board.map(row => [...row]);
+      let moved = false;
+
+      switch (direction) {
+        case "left":
+          moved = this.moveLeft();
+          break;
+        case "right":
+          moved = this.moveRight();
+          break;
+        case "up":
+          moved = this.moveUp();
+          break;
+        case "down":
+          moved = this.moveDown();
+          break;
+      }
+
+      if (moved) {
+        this.isAnimating = true;
+        this.animateMove(direction);
+      }
+
+      // Reset touch coordinates
+      this.touchStartX = null;
+      this.touchStartY = null;
+      this.touchEndX = null;
+      this.touchEndY = null;
     }
 
     reset() {
@@ -435,6 +520,13 @@ export class Game2048 {
     destroy() {
       if (this.handleKeyPress) {
         document.removeEventListener("keydown", this.handleKeyPress);
+      }
+
+      // Remove touch event listeners
+      if (this.grid) {
+        this.grid.removeEventListener("touchstart", this.handleTouchStart);
+        this.grid.removeEventListener("touchmove", this.handleTouchMove);
+        this.grid.removeEventListener("touchend", this.handleTouchEnd);
       }
     }
   }

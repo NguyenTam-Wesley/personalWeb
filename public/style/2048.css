@@ -10,6 +10,12 @@ body {
     min-height: 100vh;
     padding-top: calc(var(--header-height, 4rem) + 2rem);
     padding-bottom: calc(var(--footer-height, 3.5rem) + 2rem);
+    /* Prevent text selection and touch callouts on mobile */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .game-container {
@@ -17,6 +23,80 @@ body {
   margin: 0 auto;
   padding: 20px;
   text-align: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .game-container {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .grid {
+    width: 100%;
+    max-width: 350px;
+    height: 350px;
+  }
+
+  .cell {
+    min-height: 70px;
+    font-size: 32px;
+  }
+
+  .tile-128, .tile-256, .tile-512 {
+    font-size: 28px;
+  }
+
+  .tile-1024, .tile-2048 {
+    font-size: 24px;
+  }
+
+  .game-title-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .game-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .game-score {
+    font-size: 1.5rem;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-container {
+    padding: 10px;
+  }
+
+  .grid {
+    max-width: 300px;
+    height: 300px;
+  }
+
+  .cell {
+    min-height: 60px;
+    font-size: 28px;
+  }
+
+  .tile-128, .tile-256, .tile-512 {
+    font-size: 24px;
+  }
+
+  .tile-1024, .tile-2048 {
+    font-size: 20px;
+  }
+
+  .game-header h1 {
+    font-size: 2rem;
+  }
+
+  .game-score {
+    font-size: 1.2rem;
+    padding: 6px 12px;
+  }
 }
 
 .game-title-section {
@@ -69,6 +149,9 @@ body {
   width: 400px;
   height: 400px;
   margin: 0 auto;
+  /* Prevent zoom on double tap and improve touch handling */
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cell {
@@ -84,6 +167,13 @@ body {
   position: relative;
   overflow: hidden;
   text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+  /* Improve touch interaction */
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.cell:active {
+  transform: scale(0.98);
 }
 
 /* Animation cho việc trượt từng tile */
@@ -206,6 +296,21 @@ body {
   margin-bottom: 8px;
   color: var(--text-light);
   line-height: 1.4;
+}
+
+/* Mobile-specific instructions */
+@media (max-width: 768px) {
+  .game-instructions {
+    padding: 15px;
+  }
+
+  .game-instructions h3 {
+    font-size: 1.1rem;
+  }
+
+  .game-instructions li {
+    font-size: 0.9rem;
+  }
 }
 
 .btn-secondary {
