@@ -54,15 +54,37 @@
 
     <div id="sudoku-grid" class="sudoku-grid"></div>
 
+    <!-- Number input buttons for mobile -->
+    <div id="number-buttons" class="number-buttons">
+      <div class="number-buttons-grid">
+        <button class="number-btn" data-number="1">1</button>
+        <button class="number-btn" data-number="2">2</button>
+        <button class="number-btn" data-number="3">3</button>
+        <button class="number-btn" data-number="4">4</button>
+        <button class="number-btn" data-number="5">5</button>
+        <button class="number-btn" data-number="6">6</button>
+        <button class="number-btn" data-number="7">7</button>
+        <button class="number-btn" data-number="8">8</button>
+        <button class="number-btn" data-number="9">9</button>
+        <button id="deleteBtn" class="number-btn delete-btn" data-number="delete">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12H3"></path>
+            <path d="M19 6l-6 6-6-6"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <div class="sudoku-instructions">
       <h3>Hướng dẫn:</h3>
       <ul>
       <li>Điền các số từ 1-9 vào lưới 9x9</li>
       <li>Mỗi hàng, cột và ô 3x3 không được trùng số</li>
       <li>Sử dụng phím mũi tên để di chuyển qua tất cả ô</li>
-      <li>Gõ số trực tiếp để thay thế số cũ ngay lập tức</li>
+      <li><strong>Desktop:</strong> Gõ số trực tiếp để thay thế số cũ ngay lập tức</li>
+      <li><strong>Mobile:</strong> Sử dụng hàng nút số bên dưới để nhập</li>
       <li>Focus vào ô có số đúng để xem highlight thông minh</li>
-      <li>Nhấn nút "Gợi ý" để được hỗ trợ</li>
+      <li>Nhấn nút "Gợi ý" để được hỗ trợ (tăng thời gian penalty)</li>
       <li>Nhấn "Ván mới" để tạo đề bài ngẫu nhiên</li>
       <li>Nhấn "Kiểm tra" để xem kết quả</li>
       <li><strong>Lưu ý:</strong> Tắt IME (gõ tiếng Việt) để nhập số mượt mà nhất</li>

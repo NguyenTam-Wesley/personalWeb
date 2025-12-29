@@ -48,6 +48,10 @@ export class SudokuGame {
         this.achievementsDropdown = document.getElementById("achievementsDropdown");
         this.achievementsList = document.getElementById("achievements-list");
 
+        // Number input buttons for mobile
+        this.numberButtons = document.getElementById("number-buttons");
+        this.deleteBtn = document.getElementById("deleteBtn");
+
         // Web Worker cho việc sinh Sudoku
         this.worker = null;
 
@@ -108,6 +112,10 @@ export class SudokuGame {
                     input.classList.add('given');
                 } else {
                     input.classList.add('user-input');
+                    // Set readonly on mobile to prevent virtual keyboard
+                    if (this.isMobileDevice()) {
+                        input.readOnly = true;
+                    }
                 }
 
                 // Event listeners cho tất cả ô (bao gồm given để có thể di chuyển)
@@ -434,6 +442,17 @@ export class SudokuGame {
                 this.clearHighlights();
             }
         });
+
+        // Number button event listeners for mobile
+        if (this.numberButtons) {
+            const numberBtns = this.numberButtons.querySelectorAll('.number-btn');
+            numberBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.handleNumberButtonClick(btn.dataset.number);
+                });
+            });
+        }
     }
 
     async checkSolution() {
@@ -646,6 +665,45 @@ export class SudokuGame {
         }
     }
 
+    // Handle number button clicks for mobile input
+    handleNumberButtonClick(number) {
+        // Find currently focused cell
+        const focusedCell = this.grid.querySelector('input:focus');
+
+        if (!focusedCell) {
+            // If no cell is focused, focus on first empty cell
+            const emptyCells = Array.from(this.grid.querySelectorAll('input:not(.given)'))
+                .filter(input => !input.value);
+            if (emptyCells.length > 0) {
+                emptyCells[0].focus();
+                return; // Let user click again to input number
+            }
+            return;
+        }
+
+        // Don't allow input on given cells
+        if (focusedCell.readOnly) {
+            return;
+        }
+
+        if (number === 'delete') {
+            // Delete current value
+            focusedCell.value = '';
+            this.clearConflicts();
+            this.clearHighlights();
+        } else {
+            // Input number
+            const numValue = number;
+
+            // Validate input (1-9 only, though buttons should only provide valid numbers)
+            if (/^[1-9]$/.test(numValue)) {
+                focusedCell.value = numValue;
+                this.checkConflicts(focusedCell);
+                this.highlightCorrectFocus(focusedCell);
+            }
+        }
+    }
+
     // Hiển thị achievements dropdown
     async showAchievements() {
         if (!this.achievementsDropdown || !this.achievementsList) return;
@@ -679,5 +737,13 @@ export class SudokuGame {
         }).join('');
 
         this.achievementsDropdown.style.display = 'block';
+    }
+
+    // Detect if device is mobile/touch device
+    isMobileDevice() {
+        return (('ontouchstart' in window) ||
+                (navigator.maxTouchPoints > 0) ||
+                (navigator.msMaxTouchPoints > 0)) &&
+               window.innerWidth <= 768;
     }
 }

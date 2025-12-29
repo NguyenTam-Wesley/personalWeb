@@ -425,4 +425,102 @@ body {
     line-height: 1.4;
     font-size: clamp(0.85rem, 2.2vw, 1rem);
 }
+
+/* Number Input Buttons for Mobile */
+.number-buttons {
+    display: none; /* Hidden by default - only show on mobile */
+    margin: 1rem auto;
+    width: min(90vw, 450px);
+}
+
+.number-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin: 0 auto;
+}
+
+.number-btn {
+    aspect-ratio: 1;
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-dark);
+    border-radius: 8px;
+    color: var(--text-dark);
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.number-btn:hover {
+    background: var(--border-dark);
+    transform: translateY(-1px);
+}
+
+.number-btn:active {
+    transform: translateY(0);
+    background: var(--accent-primary);
+    color: white;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
+
+.delete-btn:hover {
+    background: #fca5a5;
+}
+
+.delete-btn:active {
+    background: #dc2626;
+    color: white;
+}
+
+/* Mobile Responsive - Show number buttons on touch devices */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+    .number-buttons {
+        display: block;
+    }
+
+    /* Disable keyboard input on mobile - force readonly */
+    .sudoku-cell:not(.given) {
+        pointer-events: none; /* Prevent focus via touch */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .sudoku-cell.given {
+        pointer-events: auto; /* Allow navigation on given cells */
+    }
+
+    /* Allow programmatic focus for navigation */
+    .sudoku-cell:focus {
+        pointer-events: auto;
+    }
+}
+
+/* Also show on small screens regardless of touch capability */
+@media (max-width: 480px) {
+    .number-buttons {
+        display: block;
+        width: min(95vw, 400px);
+    }
+
+    .number-buttons-grid {
+        gap: 0.4rem;
+    }
+
+    .number-btn {
+        font-size: clamp(1.1rem, 5vw, 1.4rem);
+    }
+}
   
