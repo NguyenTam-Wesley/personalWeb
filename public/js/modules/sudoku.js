@@ -1,8 +1,3 @@
-// 🎯 Sudoku Game - Tối ưu hóa kiến trúc với Web Worker
-// ✅ Thuật toán sinh Sudoku chạy nền, không block UI
-// ✅ Hỗ trợ tất cả level từ EZ đến EXPERT mượt mà
-// ✅ Loading indicator cho trải nghiệm tốt
-
 // Difficulty constants
 const DIFFICULTY = {
     EASY: "easy",
@@ -33,6 +28,9 @@ export class SudokuGame {
     constructor(sudokuScoresInstance, difficulty = DIFFICULTY.MEDIUM) {
         this.sudokuScores = sudokuScoresInstance;
         this.difficulty = difficulty;
+
+        // State duy nhất cho ô đang chọn
+        this.selectedCell = null;
 
         // Khởi tạo rỗng - sẽ được tạo trong Web Worker sau
 
@@ -80,15 +78,21 @@ export class SudokuGame {
         this.newGame();
     }
 
-    // Tạo lưới Sudoku với UX COMMERCIAL APP LEVEL ULTIMATE PERFECT
-    // ✅ Ô given: readOnly (focus được, highlight được, navigation mượt)
-    // ✅ Ô user: edit + ghi đè tức thì (xóa value tại keydown)
-    // ✅ Event: keydown (xóa số) → input (ghi) → navigation (focus tất cả)
-    // ✅ IME/Telex: tắt được, không can thiệp
-    // ✅ Caret: ẩn, text center (UX như game native)
-    // ✅ Navigation: focus vào tất cả ô, arrow mượt trên given
-    // ✅ Smart Highlight: highlight PERFECT - CSS priority fix, màu vàng đẹp
-    // ✅ Result: Nhập số PERFECT, di chuyển mượt, highlight đỉnh cao
+    // Quản lý selection state - thay thế cho :focus
+    selectCell(cell) {
+        // Xóa selected class khỏi tất cả cells
+        this.grid.querySelectorAll('.selected')
+            .forEach(c => c.classList.remove('selected'));
+
+        // Thêm selected class và cập nhật state
+        if (cell) {
+            cell.classList.add('selected');
+            this.selectedCell = cell;
+        } else {
+            this.selectedCell = null;
+        }
+    }
+
     createGrid() {
         this.grid.innerHTML = "";
 
@@ -108,7 +112,7 @@ export class SudokuGame {
                 const value = this.puzzle[row][col];
                 if (value !== null) {
                     input.value = value;
-                    input.readOnly = true; // ❗ Thay disabled bằng readOnly để cho phép focus
+                    input.readOnly = true; 
                     input.classList.add('given');
                 } else {
                     input.classList.add('user-input');
@@ -118,10 +122,10 @@ export class SudokuGame {
                     }
                 }
 
-                // Event listeners cho tất cả ô (bao gồm given để có thể di chuyển)
                 input.addEventListener("mousedown", (e) => {
                     e.preventDefault();
                     input.focus(); // Đảm bảo focus khi click
+                    this.selectCell(input); // Cập nhật selectedCell state
                 });
 
                 input.addEventListener("input", (e) => this.handleInput(e));
@@ -134,10 +138,7 @@ export class SudokuGame {
         }
     }
 
-    // Xử lý nhập số - FIX DỨT ĐIỂM lỗi "không ghi đè được số cũ"
-    // ✅ Dùng e.data để lấy ký tự vừa nhập (không bị lệch trạng thái)
-    // ✅ Xử lý inputType để phân biệt xóa và nhập
-    // ✅ Ghi đè trực tiếp, không cần slice
+    // Xử lý nhập số
     handleInput(e) {
         const input = e.target;
 
@@ -164,7 +165,7 @@ export class SudokuGame {
         this.highlightCorrectFocus(input); // Cập nhật highlight sau khi nhập
     }
 
-    // Kiểm tra ô có chứa số đúng không (FIX quan trọng)
+    // Kiểm tra ô có chứa số đúng không
     isCorrectCell(input) {
         if (!input.value) return false;
 
@@ -172,10 +173,10 @@ export class SudokuGame {
         const col = Number(input.dataset.col);
         const value = Number(input.value);
 
-        // ✅ GIVEN luôn đúng (được lấy từ solution gốc)
+        // GIVEN luôn đúng (được lấy từ solution gốc)
         if (input.readOnly) return true;
 
-        // ✅ USER nhập đúng mới true (so với solution)
+        // USER nhập đúng mới true (so với solution)
         return this.solution?.[row]?.[col] === value;
     }
 
@@ -188,11 +189,11 @@ export class SudokuGame {
         });
     }
 
-    // Highlight thông minh - CHUẨN COMMERCIAL APP (FIX hoàn hảo)
+    // Highlight thông minh
     highlightCorrectFocus(input) {
         this.clearHighlights();
 
-        // ✅ GIVEN luôn highlight, USER chỉ khi đúng
+        // GIVEN luôn highlight, USER chỉ khi đúng
         if (!this.isCorrectCell(input)) return;
 
         const value = input.value;
@@ -236,17 +237,14 @@ export class SudokuGame {
 
     handleFocus(e) {
         const input = e.target;
+        this.selectCell(input); // Cập nhật selectedCell state
         this.highlightCorrectFocus(input);
     }
 
     handleBlur(e) {
-        // ❌ KHÔNG clear ở blur (tránh xóa highlight khi chuyển ô bằng arrow)
-        // Highlight sẽ được clear bởi highlightCorrectFocus() hoặc clearHighlights()
+       
     }
 
-    // Xử lý phím đặc biệt - FIX ULTIMATE "navigation + highlight hoàn hảo"
-    // 🔥 Xóa value cũ ngay tại keydown khi gõ số 1-9
-    // 💡 GIVEN: không cho nhập số, NHƯNG cho navigation + highlight
     handleKeydown(e) {
         const input = e.target;
 
@@ -277,16 +275,14 @@ export class SudokuGame {
             return; // Chặn tất cả keys khác trên given
         }
 
-        // ✅ USER INPUT: Gõ số 1-9 → XÓA GIÁ TRỊ CŨ TRƯỚC
         if (/^[1-9]$/.test(e.key)) {
-            input.value = ""; // 🔥 Browser sẽ ghi ký tự mới vào ô trống
+            input.value = "";
             return;
         }
 
-        // Arrow key navigation - KHÔNG blur để tránh mất highlight
+        // Arrow key navigation
         if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
             e.preventDefault();
-            // ❌ BỎ blur() - để tránh mất highlight
 
             let row = parseInt(input.dataset.row);
             let col = parseInt(input.dataset.col);
@@ -316,7 +312,7 @@ export class SudokuGame {
         }
     }
 
-    // Di chuyển focus - CHUẨN COMMERCIAL: cho phép focus vào TẤT CẢ ô
+    // Di chuyển focus - cho phép focus vào TẤT CẢ ô
     moveFocus(row, col, dRow = 0, dCol = 0) {
         for (let i = 0; i < 9; i++) {
             // Wrap around the grid
@@ -327,7 +323,7 @@ export class SudokuGame {
 
             const targetInput = this.grid.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
 
-            // ✅ Focus vào TẤT CẢ ô (given và user-input)
+            // Focus vào TẤT CẢ ô (given và user-input)
             if (targetInput) {
                 targetInput.focus();
                 return;
@@ -554,11 +550,6 @@ export class SudokuGame {
     }
 
 
-    // 🎯 Thuật toán sinh Sudoku đã được chuyển sang Web Worker
-    // 📁 /js/workers/sudoku.worker.js
-    // ✅ Không block UI, không lag, hỗ trợ Expert level
-
-    // Timer functions
     startTimer() {
         if (this.timer) clearInterval(this.timer);
 
@@ -667,14 +658,15 @@ export class SudokuGame {
 
     // Handle number button clicks for mobile input
     handleNumberButtonClick(number) {
-        // Find currently focused cell
-        const focusedCell = this.grid.querySelector('input:focus');
+        // Use selectedCell state instead of browser focus
+        const cell = this.selectedCell;
 
-        if (!focusedCell) {
-            // If no cell is focused, focus on first empty cell
+        if (!cell) {
+            // If no cell is selected, select first empty cell
             const emptyCells = Array.from(this.grid.querySelectorAll('input:not(.given)'))
                 .filter(input => !input.value);
             if (emptyCells.length > 0) {
+                this.selectCell(emptyCells[0]);
                 emptyCells[0].focus();
                 return; // Let user click again to input number
             }
@@ -682,13 +674,13 @@ export class SudokuGame {
         }
 
         // Don't allow input on given cells
-        if (focusedCell.readOnly) {
+        if (cell.readOnly) {
             return;
         }
 
         if (number === 'delete') {
             // Delete current value
-            focusedCell.value = '';
+            cell.value = '';
             this.clearConflicts();
             this.clearHighlights();
         } else {
@@ -697,9 +689,9 @@ export class SudokuGame {
 
             // Validate input (1-9 only, though buttons should only provide valid numbers)
             if (/^[1-9]$/.test(numValue)) {
-                focusedCell.value = numValue;
-                this.checkConflicts(focusedCell);
-                this.highlightCorrectFocus(focusedCell);
+                cell.value = numValue;
+                this.checkConflicts(cell);
+                this.highlightCorrectFocus(cell);
             }
         }
     }

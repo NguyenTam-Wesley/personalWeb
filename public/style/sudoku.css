@@ -120,6 +120,19 @@
     background-color: var(--hl-same) !important;
 }
 
+/* Selected cell - thay thế cho :focus */
+.sudoku-cell.selected {
+    background: #e8f4f8;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+}
+
+/* Selected state cho ô người dùng nhập */
+.sudoku-cell.selected:not(.given) {
+    color: #1565c0;        /* xanh đậm hơn khi selected */
+    font-weight: 600;      /* đậm hơn chút khi selected */
+}
+
 /* Achievements Dropdown */
 .achievements-container {
     position: relative;
