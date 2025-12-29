@@ -20,6 +20,15 @@ const DIFFICULTY_SETTINGS = {
     expert: { min: 60, max: 64, name: "EXPERT" }
 };
 
+// Hint penalty time in seconds (1,2,3,4,5 minutes)
+const HINT_PENALTY = {
+    easy: 60,        // 1 minute
+    medium: 120,     // 2 minutes
+    hard: 180,       // 3 minutes
+    very_hard: 240,  // 4 minutes
+    expert: 300      // 5 minutes
+};
+
 export class SudokuGame {
     constructor(sudokuScoresInstance, difficulty = DIFFICULTY.MEDIUM) {
         this.sudokuScores = sudokuScoresInstance;
@@ -500,6 +509,18 @@ export class SudokuGame {
             alert("🎯 Không còn ô trống nào để gợi ý!");
             return;
         }
+
+        // Áp dụng hint penalty dựa trên độ khó
+        const penaltySeconds = HINT_PENALTY[this.difficulty];
+        this.seconds += penaltySeconds;
+
+        // Cập nhật UI timer ngay lập tức
+        this.updateTimerUI();
+
+        // Thông báo penalty cho người dùng
+        const penaltyMinutes = Math.floor(penaltySeconds / 60);
+        const penaltyText = penaltyMinutes === 1 ? "1 phút" : `${penaltyMinutes} phút`;
+        console.log(`💡 Sử dụng gợi ý: +${penaltyText} penalty time`);
 
         const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
         const { row, col } = randomCell.dataset;
