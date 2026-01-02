@@ -29,7 +29,8 @@ export class Achievements {
 
     // Lấy thông tin user hiện tại
     async getCurrentUser() {
-        return await getCurrentUser();
+        const result = await getCurrentUser();
+        return result ? result.user : null; // Extract user object từ {user, profile}
     }
 
     // Lấy danh sách tất cả achievements
@@ -77,23 +78,23 @@ export class Achievements {
 
     // Lấy achievements đã unlock của user
     async getUserAchievements(forceRefresh = false) {
-        if (!(await this.isLoggedIn())) {
-            return [];
-        }
-
-        const cacheKey = 'user_achievements';
-
-        // Kiểm tra cache
-        if (!forceRefresh && this.cache.has(cacheKey)) {
-            const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < this.userAchievementsCacheTimeout) {
-                return cached.data;
-            }
-        }
-
         try {
             const user = await this.getCurrentUser();
-            if (!user) return [];
+
+            if (!user || !user.id) {
+                console.warn('User ID is undefined, cannot fetch achievements yet.');
+                return [];
+            }
+
+            const cacheKey = `user_achievements_${user.id}`;
+
+            // Kiểm tra cache
+            if (!forceRefresh && this.cache.has(cacheKey)) {
+                const cached = this.cache.get(cacheKey);
+                if (Date.now() - cached.timestamp < this.userAchievementsCacheTimeout) {
+                    return cached.data;
+                }
+            }
 
             const { data, error } = await supabase
                 .from('user_achievements')
@@ -727,6 +728,22 @@ export class Achievements {
     // Clear cache
     clearCache() {
         this.cache.clear();
+    }
+
+    // Clear cache cho user cụ thể
+    clearUserCache(userId = null) {
+        if (userId) {
+            // Clear cache cho user cụ thể
+            const userCacheKey = `user_achievements_${userId}`;
+            this.cache.delete(userCacheKey);
+        } else {
+            // Clear tất cả cache liên quan đến user achievements
+            for (const key of this.cache.keys()) {
+                if (key.startsWith('user_achievements_')) {
+                    this.cache.delete(key);
+                }
+            }
+        }
     }
 
     // Debug: log user achievements

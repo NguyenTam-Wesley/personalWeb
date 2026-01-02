@@ -6,7 +6,6 @@
 // ✅ Cache để tối ưu performance
 
 import { supabase } from '../supabase/supabase.js';
-import { getCurrentUser } from '../supabase/auth.js';
 import { userProfile } from './user_profile.js';
 
 export class Items {
@@ -15,17 +14,77 @@ export class Items {
         this.cache = new Map();
         this.cacheTimeout = 5 * 60 * 1000; // 5 phút cho items
         this.inventoryCacheTimeout = 2 * 60 * 1000; // 2 phút cho inventory
+
+        // Track user auth state để tránh query khi user chưa ready
+        this.userReady = false;
+
+        // Listen auth state changes để biết khi nào user đã sẵn sàng
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log('🔄 Items auth state:', event);
+
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+                if (session?.user) {
+                    this.userReady = true;
+                    console.log('✅ Items: User ready for queries, ID:', session.user.id);
+
+                    // Auto-load inventory khi user sign in
+                    this.getUserInventory(true).catch(error => {
+                        console.error('❌ Auto-load inventory failed:', error);
+                    });
+                }
+            } else if (event === 'SIGNED_OUT') {
+                this.userReady = false;
+                // Clear cache khi logout
+                this.clearCache();
+            }
+        });
+
+        // Check initial session
+        supabase.auth.getSession().then(({ data: { session }, error }) => {
+            if (error) {
+                console.error('❌ Items initial session error:', error);
+                return;
+            }
+
+            if (session?.user) {
+                this.userReady = true;
+                console.log('✅ Items: Initial session found, user ready:', session.user.id);
+            } else {
+                console.log('ℹ️ Items: No initial session');
+            }
+        });
     }
 
-    // Kiểm tra user đã đăng nhập chưa
+    // Kiểm tra user đã đăng nhập và sẵn sàng chưa
     async isLoggedIn() {
-        const user = await getCurrentUser();
+        // Kiểm tra flag userReady trước (nhanh hơn)
+        if (this.userReady) {
+            return true;
+        }
+
+        // Double check với Supabase auth
+        const user = await this.getCurrentUser();
         return !!user;
     }
 
-    // Lấy thông tin user hiện tại
+    // Lấy thông tin user hiện tại (direct from Supabase Auth)
     async getCurrentUser() {
-        return await getCurrentUser();
+        // Check userReady flag first
+        if (!this.userReady) {
+            console.warn('❌ getCurrentUser: User chưa sẵn sàng');
+            return null;
+        }
+
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) {
+            console.error('❌ Auth getUser error:', error);
+            return null;
+        }
+        if (!user) {
+            console.warn('❌ getCurrentUser: No user from Supabase auth');
+            return null;
+        }
+        return user;
     }
 
     // Lấy danh sách tất cả items có sẵn
@@ -80,7 +139,9 @@ export class Items {
 
     // Lấy inventory của user
     async getUserInventory(forceRefresh = false) {
-        if (!(await this.isLoggedIn())) {
+        // Double check user ready trước khi query
+        if (!this.userReady) {
+            console.warn('🔍 getUserInventory: User chưa sẵn sàng, không query DB');
             return {};
         }
 
@@ -96,7 +157,13 @@ export class Items {
 
         try {
             const user = await this.getCurrentUser();
-            if (!user) return {};
+            if (!user) {
+                console.warn('🔍 getUserInventory: User chưa sẵn sàng (getCurrentUser failed)');
+                return {};
+            }
+
+            console.log('🔍 getUserInventory: User authenticated with ID:', user.id);
+            console.log('🔍 getUserInventory: Querying user_items with user_id =', user.id);
 
             const { data, error } = await supabase
                 .from('user_items')
@@ -160,7 +227,7 @@ export class Items {
 
     // Mua item
     async buyItem(itemId) {
-        if (!(await this.isLoggedIn())) {
+        if (!this.userReady) {
             return { success: false, message: 'Vui lòng đăng nhập để mua items' };
         }
 
@@ -217,6 +284,10 @@ export class Items {
 
             // Thêm vào inventory
             const user = await this.getCurrentUser();
+            if (!user) {
+                return { success: false, message: 'Không thể xác định thông tin user' };
+            }
+
             const { data, error } = await supabase
                 .from('user_items')
                 .upsert({
@@ -255,7 +326,7 @@ export class Items {
 
     // Sử dụng consumable item
     async useItem(itemId, quantity = 1) {
-        if (!(await this.isLoggedIn())) {
+        if (!this.userReady) {
             return { success: false, message: 'Vui lòng đăng nhập' };
         }
 
@@ -278,6 +349,10 @@ export class Items {
 
             // Giảm số lượng item
             const user = await this.getCurrentUser();
+            if (!user) {
+                return { success: false, message: 'Không thể xác định thông tin user' };
+            }
+
             const newQuantity = inventoryItem.quantity - quantity;
 
             if (newQuantity <= 0) {
@@ -372,12 +447,16 @@ export class Items {
 
     // Thêm item vào inventory (cho rewards, etc.)
     async addItemToInventory(itemId, quantity = 1) {
-        if (!(await this.isLoggedIn())) {
+        if (!this.userReady) {
+            console.warn('🔍 addItemToInventory: User chưa sẵn sàng');
             return false;
         }
 
         try {
             const user = await this.getCurrentUser();
+            if (!user) {
+                return false;
+            }
 
             // Kiểm tra item hiện có
             const currentItem = await this.getInventoryItem(itemId);

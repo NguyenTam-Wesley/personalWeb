@@ -9,31 +9,90 @@ import { items } from './items.js';
 import { pets } from './pets.js';
 import { achievements } from './achievements.js';
 import { rewards } from './rewards.js';
-import {
-  getCurrentUserWithRetry,
-  logoutUser
-} from '../supabase/auth.js';
+import { supabase } from '../supabase/supabase.js';
 
 class ProfilePage {
     constructor() {
         this.currentTab = 'inventory';
-        this.init();
+        // Đợi components.js khởi tạo xong trước khi init
+        this.waitForComponentsAndInit();
+    }
+
+    async waitForComponentsAndInit() {
+        // Chờ components.js update global user state
+        const maxWait = 5000; // 5 seconds max
+        const startTime = Date.now();
+
+        while (Date.now() - startTime < maxWait) {
+            // Check if components has initialized and updated user status
+            if (window.components && window.components.initialized && window.components.isLoggedIn !== undefined) {
+                console.log('✅ Components ready, proceeding with ProfilePage init');
+                await this.init();
+                return;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+
+        console.warn('⚠️ Components not ready after 5s, initializing ProfilePage anyway');
+        await this.init();
+    }
+
+    async waitForAuth(maxWait = 3000) {
+        const startTime = Date.now();
+        console.log('🔍 Waiting for auth to be ready...');
+
+        while (Date.now() - startTime < maxWait) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                console.log('✅ Auth ready! User:', session.user.id);
+                return session;
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        console.log('❌ Auth timeout after', maxWait, 'ms');
+        return null;
     }
 
     async init() {
-        await this.checkAuth();
-        this.setupEventListeners();
-        await this.loadProfile();
-        await this.loadCurrentTab();
-    }
+        console.log('=== PROFILE PAGE INIT ===');
+        console.log('1. Current URL:', window.location.href);
+        console.log('2. Document ready state:', document.readyState);
 
-    async checkAuth() {
-        const userData = await getCurrentUserWithRetry();
-        if (!userData?.user) {
+        // Check localStorage for auth tokens
+        const keys = Object.keys(localStorage);
+        console.log('3. LocalStorage keys:', keys);
+        const authKey = keys.find(k => k.includes('supabase.auth.token'));
+        if (authKey) {
+            console.log('4. Auth token exists in localStorage:', authKey);
+        } else {
+            console.log('4. ⚠️ No auth token in localStorage!');
+        }
+
+        // Setup auth state change listener
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log('🔄 ProfilePage auth state change:', event, session?.user?.id);
+
+            if (event === 'SIGNED_OUT') {
+                console.log('👋 User signed out, redirecting to login...');
+                window.location.href = '/pages/login.html';
+            }
+        });
+
+        // Wait for auth to be ready
+        const session = await this.waitForAuth();
+
+        if (!session) {
+            console.log('❌ No valid session found, redirecting to login');
             window.location.href = '/pages/login.html';
             return;
         }
-        console.log('👤 Profile page auth check passed:', userData.user.email);
+
+        console.log('✅ Session confirmed, setting up profile page...');
+        this.setupEventListeners();
+        await this.loadProfile();
+        await this.loadCurrentTab();
     }
 
     setupEventListeners() {
@@ -332,7 +391,7 @@ class ProfilePage {
             dailyConfig.forEach(day => {
                 const isToday = (currentStreak % 7) + 1 === day.day;
                 const isClaimed = hasClaimedToday && isToday;
-                const isAvailable = !hasClaimedToday && isToday;
+                const _isAvailable = !hasClaimedToday && isToday;
 
                 const dayElement = document.createElement('div');
                 dayElement.className = `daily-item ${isToday ? 'today' : ''} ${isClaimed ? 'claimed' : ''}`;

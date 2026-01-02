@@ -6,13 +6,15 @@ import components from '../components/components.js';
 import { ProfileManager } from './profile_manager.js';
 import { UserProfile } from './user_profile.js';
 import { ProfilePage } from './profile_page.js';
+import { achievements } from './achievements.js';
 
-// Khởi tạo components và page logic khi DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize components for consistency
-    components.init();
+// Initialize components immediately (like other entry points)
+components.init();
 
-    window.profileManager = new ProfileManager();
-    window.userProfile = new UserProfile();
-    window.profilePage = new ProfilePage();
-});
+// Initialize page specific functionality
+window.profileManager = new ProfileManager();
+window.userProfile = new UserProfile();
+window.profilePage = new ProfilePage();
+
+// Clear stale achievements cache khi load profile page
+achievements.clearUserCache();
