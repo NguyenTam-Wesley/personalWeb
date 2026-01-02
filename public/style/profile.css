@@ -1,11 +1,175 @@
 /* Profile Page Styles */
 @import 'variables.css';
 
-.profile-container {
-  max-width: var(--breakpoint-lg);
-  margin: 0 auto;
-  padding: calc(var(--header-height) + var(--spacing-xl)) var(--spacing-lg) var(--spacing-xl);
+/* Dark theme cho profile page - sử dụng class để đảm bảo specificity */
+.dark-theme {
+  background: #000000 !important;
+  color: #ffffff !important;
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
+}
+
+.dark-theme * {
+  color: inherit !important;
+}
+
+/* Override container chính */
+.dark-theme .container {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Override main content */
+.dark-theme .main-content {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme h5,
+.dark-theme h6,
+.dark-theme .profile-section h2,
+.dark-theme .tabs-header h3,
+.dark-theme .achievement-stat .stat-number,
+.dark-theme .achievement-stat .stat-label {
+  color: #ffffff !important;
+}
+
+.dark-theme .profile-header p,
+.dark-theme .stat-label,
+.dark-theme .empty-subtext,
+.dark-theme .achievement-stat .stat-label {
+  color: #cccccc !important;
+}
+
+.dark-theme .username,
+.dark-theme .currency-amount,
+.dark-theme .stat-value,
+.dark-theme .xp-text,
+.dark-theme .streak-count,
+.dark-theme .completion-rate {
+  color: #ffffff !important;
+}
+
+.dark-theme .level-badge {
+  color: #ffffff !important;
+  background: #333333 !important;
+  border: 1px solid #555555 !important;
+}
+
+/* Override form inputs cho dark theme */
+.dark-theme .form-group input,
+.dark-theme .form-group textarea {
+  background: #333333 !important;
+  border: 1px solid #555555 !important;
+  color: #ffffff !important;
+}
+
+.dark-theme .form-group input:focus,
+.dark-theme .form-group textarea:focus {
+  border-color: var(--accent-primary) !important;
+  background: #444444 !important;
+}
+
+.dark-theme .form-group input:read-only {
+  background: #222222 !important;
+  color: #aaaaaa !important;
+}
+
+/* Override stat cards cho dark theme */
+.dark-theme .stat-card {
+  background: #333333 !important;
+  border: 1px solid #555555 !important;
+  color: #ffffff !important;
+}
+
+.dark-theme .stat-card:hover {
+  border-color: var(--accent-primary) !important;
+}
+
+/* Override profile sections cho dark theme */
+.dark-theme .profile-section {
+  background: #222222 !important;
+  border: 1px solid #555555 !important;
+  color: #ffffff !important;
+}
+
+.dark-theme .profile-header {
+  background: #333333 !important;
+  border: 1px solid #555555 !important;
+  color: #ffffff !important;
+}
+
+/* Override tabs và achievements */
+.dark-theme .tabs-header {
+  background: #222222 !important;
+  border-bottom: 1px solid #555555 !important;
+}
+
+.dark-theme .tab-button {
+  background: #333333 !important;
+  color: #ffffff !important;
+  border: 1px solid #555555 !important;
+}
+
+.dark-theme .tab-button.active {
+  background: var(--accent-primary) !important;
+  color: #000000 !important;
+}
+
+.dark-theme .achievements-summary {
+  background: #222222 !important;
+  border: 1px solid #555555 !important;
+}
+
+/* Override empty states */
+.dark-theme .empty-state {
+  color: #cccccc !important;
+}
+
+.dark-theme .empty-icon {
+  color: #666666 !important;
+}
+
+/* Override icons và special elements */
+.dark-theme .currency-icon,
+.dark-theme .stat-icon,
+.dark-theme .streak-icon,
+.dark-theme .avatar-placeholder {
+  color: var(--accent-primary) !important;
+}
+
+.dark-theme .xp-bar {
+  background: #333333 !important;
+  border: 1px solid #555555 !important;
+}
+
+.dark-theme .xp-fill {
+  background: var(--accent-primary) !important;
+}
+
+.dark-theme .currency-item {
+  background: #222222 !important;
+  border: 1px solid #555555 !important;
+  color: #ffffff !important;
+}
+
+.dark-theme .daily-header {
+  border-bottom: 1px solid #555555 !important;
+}
+
+.dark-theme .claim-daily-btn {
+  background: var(--accent-primary) !important;
+  color: #000000 !important;
+  border: 1px solid var(--accent-primary) !important;
+}
+
+.dark-theme .claim-daily-btn:hover {
+  background: var(--accent-secondary) !important;
 }
 
 .profile-header {
@@ -244,42 +408,42 @@
 
 /* Responsive Design */
 @media (max-width: var(--breakpoint-md)) {
-  .profile-container {
+  .dark-theme .container {
     padding: calc(var(--header-height) + var(--spacing-lg)) var(--spacing-md) var(--spacing-lg);
   }
-  
-  .profile-header h1 {
+
+  .dark-theme .profile-header h1 {
     font-size: 2rem;
   }
-  
-  .profile-section {
+
+  .dark-theme .profile-section {
     padding: var(--spacing-lg);
   }
-  
-  .stats-grid {
+
+  .dark-theme .stats-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: var(--breakpoint-sm)) {
-  .profile-container {
+  .dark-theme .container {
     padding: calc(var(--header-height) + var(--spacing-md)) var(--spacing-sm) var(--spacing-md);
   }
-  
-  .profile-header {
+
+  .dark-theme .profile-header {
     padding: var(--spacing-md);
   }
-  
-  .profile-header h1 {
+
+  .dark-theme .profile-header h1 {
     font-size: 1.75rem;
   }
-  
-  .profile-section {
+
+  .dark-theme .profile-section {
     padding: var(--spacing-md);
   }
-  
-  .btn-primary,
-  .btn-secondary {
+
+  .dark-theme .btn-primary,
+  .dark-theme .btn-secondary {
     padding: var(--spacing-sm) var(--spacing-lg);
     font-size: 0.9rem;
   }

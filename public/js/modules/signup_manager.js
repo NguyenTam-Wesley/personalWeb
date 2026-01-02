@@ -34,6 +34,7 @@ export class SignupManager {
       const password = this.passwordInput.value;
       const confirmPassword = this.confirmPasswordInput.value;
 
+      // Validation
       if (!username || !password || !confirmPassword) {
         alert("Vui lòng nhập đầy đủ thông tin");
         return;
@@ -41,6 +42,13 @@ export class SignupManager {
 
       if (username.length < 3) {
         alert("Username phải có ít nhất 3 ký tự");
+        return;
+      }
+
+      // Kiểm tra username chỉ chứa chữ cái, số và dấu gạch dưới
+      const usernameRegex = /^[a-zA-Z0-9_]+$/;
+      if (!usernameRegex.test(username)) {
+        alert("Username chỉ được chứa chữ cái, số và dấu gạch dưới");
         return;
       }
 
@@ -63,12 +71,32 @@ export class SignupManager {
       }
 
       try {
-        await registerUser(username, password);
-        alert("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
-        window.location.href = "../pages/login.html";
+        // Gọi hàm registerUser với username và password
+        const result = await registerUser(username, password);
+
+        if (result?.user) {
+          console.log('🎉 Registration completed with profile:', result.profile);
+          alert("Đăng ký thành công! Profile đã được tạo. Vui lòng đăng nhập để tiếp tục.");
+          window.location.href = "../pages/login.html";
+        }
+
       } catch (error) {
         console.error('Signup error:', error);
-        alert(error.message || "Đăng ký thất bại. Vui lòng thử lại.");
+        
+        // Xử lý các loại lỗi cụ thể
+        let errorMessage = "Đăng ký thất bại. Vui lòng thử lại.";
+        
+        if (error.message?.includes("User already registered")) {
+          errorMessage = "Username này đã được đăng ký. Vui lòng chọn username khác.";
+        } else if (error.message?.includes("Password should be at least 6 characters")) {
+          errorMessage = "Mật khẩu phải có ít nhất 6 ký tự.";
+        } else if (error.message?.includes("Unable to validate email address")) {
+          errorMessage = "Lỗi xác thực. Vui lòng thử lại.";
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        alert(errorMessage);
       } finally {
         // Re-enable button
         if (this.signupBtn) {
@@ -82,5 +110,3 @@ export class SignupManager {
     }
   }
 }
-
-// Have to be exported for entry point

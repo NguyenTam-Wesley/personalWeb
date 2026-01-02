@@ -226,7 +226,6 @@ body {
     padding-bottom: calc(var(--footer-height, 3.5rem) + 1rem);
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Cho phép scroll dọc trên mobile */
 }
 
 .sudoku-container {
@@ -238,7 +237,6 @@ body {
     min-height: calc(100vh - var(--header-height, 4rem) - var(--footer-height, 3.5rem) - 2rem);
     padding: 1rem;
     box-sizing: border-box;
-    overflow: visible; /* Cho phép nội dung mở rộng ra ngoài */
 }
 
 .sudoku-header {
@@ -410,7 +408,7 @@ body {
 }
 
 .sudoku-instructions {
-    margin-top: auto;
+    margin-top: 1rem;
     padding-top: 1rem;
     text-align: center;
     background: var(--card-bg);
@@ -504,28 +502,10 @@ body {
         display: block;
     }
 
-    /* Disable keyboard input on mobile - force readonly */
-    .sudoku-cell:not(.given) {
-        pointer-events: none; /* Prevent focus via touch */
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    .sudoku-cell.given {
-        pointer-events: auto; /* Allow navigation on given cells */
-    }
-
-    /* Allow programmatic focus for navigation */
-    .sudoku-cell:focus {
-        pointer-events: auto;
-    }
-
-    /* Cho phép container mở rộng để hiển thị number-buttons */
-    .sudoku-container {
-        min-height: auto;
-        height: auto;
+    /* Mobile touch optimizations */
+    .sudoku-cell {
+        caret-color: transparent;
+        -webkit-tap-highlight-color: transparent;
     }
 }
 
@@ -542,13 +522,6 @@ body {
 
     .number-btn {
         font-size: clamp(1.1rem, 5vw, 1.4rem);
-    }
-
-    /* Cho phép sudoku-container mở rộng tự do để hiển thị number-buttons */
-    .sudoku-container {
-        min-height: auto;
-        height: auto;
-        padding-bottom: 2rem; /* Thêm padding để tránh bị footer che */
     }
 }
   

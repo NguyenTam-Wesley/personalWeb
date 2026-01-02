@@ -64,6 +64,10 @@ export class MusicPlayer {
       this.showNotification.bind(this),
       this.loadMainMenu.bind(this)
     );
+    
+    // Setup auth listener trước khi init
+    this.user.setupAuthListener();
+    
     this.init();
 
     // Đảm bảo progressBar là input range
@@ -138,7 +142,6 @@ export class MusicPlayer {
       
       console.log("Creating playlist for user:", this.state.currentUser);
       console.log("User ID from state:", this.state.currentUser.id);
-      console.log("User ID from localStorage:", localStorage.getItem('userId'));
 
       // Kiểm tra playlist đã tồn tại
       const { data: existingPlaylists, error: checkError } = await this.supabase
@@ -160,7 +163,7 @@ export class MusicPlayer {
       // Tạo playlist mới
       const playlistData = {
         name: name,
-        user_id: this.state.currentUser.id, // uuid từ bảng users
+        user_id: this.state.currentUser.id, // uuid từ auth.users
         created_at: new Date().toISOString()
       };
       
@@ -250,33 +253,30 @@ export class MusicPlayer {
 
   // Navigation
   saveNavigationState() {
-    localStorage.setItem("navigationStack", JSON.stringify(this.state.navigationStack));
+    // KHÔNG lưu vào localStorage nữa vì session được Supabase Auth quản lý
+    // Chỉ giữ trong memory
   }
 
   loadNavigationState() {
-    const saved = localStorage.getItem("navigationStack");
-    if (saved) {
-      this.state.navigationStack = JSON.parse(saved);
-    }
+    // KHÔNG load từ localStorage nữa
+    // Navigation stack sẽ reset mỗi khi reload trang
+    this.state.navigationStack = [];
   }
 
   // Initialize
   async init() {
     try {
-      // Luôn setup event listeners và navigation state trước
-      await this.user.checkLoginStatus();
-      this.loadNavigationState();
+      // Luôn setup event listeners trước
       this.setupEventListeners();
+      
+      // Kiểm tra login status từ Supabase Auth
+      await this.user.checkLoginStatus();
+      
+      // Load navigation state (sẽ là empty array)
+      this.loadNavigationState();
 
-      // Nếu có playlist đang xem trong localStorage, tự động load lại (chỉ 1 lần)
-      const lastPlaylist = localStorage.getItem("currentPlaylistView");
-      if (lastPlaylist) {
-        const { id, name } = JSON.parse(lastPlaylist);
-        await this.loadSongsByCategory("playlist", id, name);
-        localStorage.removeItem("currentPlaylistView");
-      } else {
-        await this.loadMainMenu();
-      }
+      // Load main menu
+      await this.loadMainMenu();
     } catch (error) {
       this.handleError(error, "Lỗi khởi tạo ứng dụng");
     }
@@ -378,9 +378,6 @@ export class MusicPlayer {
       }
 
       this.elements.backBtn.style.display = "none";
-
-      // Xóa trạng thái playlist đang xem
-      localStorage.removeItem("currentPlaylistView");
 
       const categories = [
         { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
@@ -585,12 +582,11 @@ export class MusicPlayer {
       this.state.navigationStack.push({ view: "category", type, displayTitle: displayName });
       this.saveNavigationState();
 
-      // Nếu là playlist, lưu lại thông tin vào state và localStorage để reload khi cần
+      // Nếu là playlist, lưu lại thông tin vào state
       if (type === "playlist") {
         this.state.currentView = "playlistSongs";
         this.state.currentPlaylistId = id;
         this.state.currentPlaylistName = displayName;
-        localStorage.setItem("currentPlaylistView", JSON.stringify({ id, name: displayName }));
       }
 
       let data = [];
@@ -635,11 +631,6 @@ export class MusicPlayer {
       if (!data || data.length === 0) {
         this.elements.playlistContainer.innerHTML += this.createMessage("Không có bài hát nào trong mục này.");
         return;
-      }
-
-      if (type === "playlist" && this.state.currentUserRole !== "guest") {
-        // XÓA nút '➕ Thêm bài hát vào playlist này' (KHÔNG tạo addBtn nữa)
-        // Không cho phép user thêm bài hát vào playlist bằng cách nhập url thủ công
       }
 
       this.state.currentPlaylist = data;

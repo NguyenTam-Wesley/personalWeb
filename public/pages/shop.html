@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - ntam</title>
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" type="image/jpeg">
+    <link rel="stylesheet" href="../style/variables.css">
+    <link rel="stylesheet" href="../style/components.css">
+    <link rel="stylesheet" href="../style/shop.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="site-title">
+                    <a href="/" class="site-link">🎯 NTam Sudoku</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Game</a>
+                    <a href="/pages/profile.html" class="nav-link">Profile</a>
+                    <a href="/pages/shop.html" class="nav-link active">Shop</a>
+                    <div id="auth-section" class="auth-section">
+                        <!-- Auth buttons will be inserted here -->
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Currency Display -->
+        <div class="currency-bar">
+            <div class="currency-item">
+                <span class="currency-icon">🪙</span>
+                <span class="currency-amount" id="coins-amount">0</span>
+            </div>
+            <div class="currency-item">
+                <span class="currency-icon">💎</span>
+                <span class="currency-amount" id="gems-amount">0</span>
+            </div>
+        </div>
+
+        <!-- Shop Tabs -->
+        <section class="shop-section">
+            <div class="shop-tabs">
+                <button class="shop-tab active" data-category="items">Items</button>
+                <button class="shop-tab" data-category="pets">Pets</button>
+            </div>
+
+            <!-- Items Shop -->
+            <div class="shop-content active" id="items-shop">
+                <div class="shop-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="consumable">Consumables</button>
+                    <button class="filter-btn" data-filter="cosmetic">Cosmetics</button>
+                    <button class="filter-btn" data-filter="tool">Tools</button>
+                </div>
+                <div class="shop-grid" id="items-grid">
+                    <!-- Items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Pets Shop -->
+            <div class="shop-content" id="pets-shop">
+                <div class="pets-grid" id="pets-grid">
+                    <!-- Pets will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="modal" id="purchase-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="purchase-modal-title">Confirm Purchase</h3>
+                <button class="modal-close" id="purchase-modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="purchase-modal-body">
+                <!-- Purchase details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="purchase-cancel">Cancel</button>
+                <button class="btn btn-primary" id="purchase-confirm">Confirm Purchase</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/modules/shop_entry.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { getCurrentUser, logoutUser } from '../supabase/auth.js';
+import { getCurrentUserWithRetry, logoutUser } from '../supabase/auth.js';
 import { ROUTES, route } from '../routes/routes.js';
 
 export class Components {
@@ -39,9 +39,13 @@ export class Components {
     if (this.initialized) return;
     this.initialized = true;
 
+    console.log('🎯 Components initializing...');
+
     this.initHeader();
     this.initFooter();
     this.setupScrollHandlers();
+
+    console.log('✅ Components initialized successfully!');
   }
 
   /* ================= HEADER ================= */
@@ -98,17 +102,26 @@ export class Components {
   }
 
   async updateLoginStatus() {
-    let user = null;
+    let userData = null;
     try {
-      user = await getCurrentUser();
+      // ✅ Sử dụng retry logic để chờ profile được tạo
+      userData = await getCurrentUserWithRetry();
     } catch (err) {
       console.error('❌ Lỗi lấy user:', err);
     }
 
     const prevState = this.isLoggedIn;
-    this.isLoggedIn = !!user;
-    this.userName = user?.username || '';
-    this.userRole = user?.role || '';
+    this.isLoggedIn = !!(userData && userData.user);
+    this.userName = userData?.profile?.username || userData?.user?.user_metadata?.username || '';
+    this.userRole = userData?.profile?.role || 'guest'; // App role, fallback to 'guest' when no profile
+
+    // Log comprehensive user status
+    if (this.isLoggedIn) {
+      const authRole = userData?.user?.role || 'unknown';
+      console.log(`🔐 User status updated: ${this.userName} | Auth Role: ${authRole} | App Role: ${this.userRole}`);
+    } else {
+      console.log(`🚪 User not logged in (guest mode)`);
+    }
 
     if (prevState !== this.isLoggedIn) {
       this.setupHeader();
@@ -181,4 +194,3 @@ export class Components {
 
 const components = new Components();
 export default components;
-components.init();

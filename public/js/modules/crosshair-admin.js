@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/supabase.js';
-import { getCurrentUser } from '../supabase/auth.js';
+import { getCurrentUserWithRetry } from '../supabase/auth.js';
 
 export class CrosshairAdminManager {
     constructor() {
@@ -18,11 +18,18 @@ export class CrosshairAdminManager {
 
     async init() {
         // Kiểm tra quyền admin
-        this.currentUser = await getCurrentUser();
+        const userData = await getCurrentUserWithRetry();
+        this.currentUser = userData?.profile;
+
+        console.log(`🔒 Admin check: User=${this.currentUser?.username}, App Role=${this.currentUser?.role}`);
+
         if (!this.currentUser || this.currentUser.role !== 'admin') {
+            console.log(`❌ Access denied: User does not have admin App Role (current: ${this.currentUser?.role || 'none'})`);
             this.redirectToLogin();
             return;
         }
+
+        console.log(`✅ Admin access granted for: ${this.currentUser.username} (App Role: admin)`);
 
         await this.loadCrosshairs();
         this.setupEventListeners();

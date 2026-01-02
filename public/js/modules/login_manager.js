@@ -15,6 +15,13 @@ export class LoginManager {
 
   init() {
     this.loginBtn.addEventListener("click", () => this.handleLogin());
+    
+    // ✅ Thêm: Cho phép Enter để login
+    this.passwordInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        this.handleLogin();
+      }
+    });
   }
 
   async handleLogin() {
@@ -41,12 +48,36 @@ export class LoginManager {
       }
 
       try {
-        const user = await loginUser(username, password);
-        alert("Đăng nhập thành công, xin chào " + user.username);
+        // ✅ Nhận object {user, session, profile} từ loginUser
+        const { user, _session, profile } = await loginUser(username, password);
+
+        // ✅ Hiển thị username từ profile (hoặc fallback sang metadata)
+        // Profile có thể chưa được tạo ngay lập tức, nhưng user đã có
+        const displayName = profile?.username || user?.user_metadata?.username || username;
+        
+        alert(`Đăng nhập thành công! Xin chào ${displayName}`);
+        
+        // Redirect về trang chủ
         window.location.href = "../index.html";
+        
       } catch (error) {
         console.error('Login error:', error);
-        alert("Đăng nhập thất bại: " + (error.message || "Đã xảy ra lỗi không mong muốn"));
+        
+        // ✅ Xử lý các loại lỗi cụ thể
+        let errorMessage = "Đăng nhập thất bại. Vui lòng thử lại.";
+        
+        if (error.message?.includes("Invalid login credentials")) {
+          errorMessage = "Sai username hoặc password!";
+        } else if (error.message?.includes("Email not confirmed")) {
+          errorMessage = "Vui lòng xác thực email trước khi đăng nhập.";
+        } else if (error.message?.includes("Too many requests")) {
+          errorMessage = "Quá nhiều lần thử. Vui lòng đợi vài phút.";
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        alert(errorMessage);
+        
       } finally {
         // Re-enable button
         if (this.loginBtn) {
@@ -60,5 +91,3 @@ export class LoginManager {
     }
   }
 }
-
-// Have to be exported for entry point

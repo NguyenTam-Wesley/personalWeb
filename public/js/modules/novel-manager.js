@@ -9,23 +9,95 @@ export class NovelManager {
     this.addAuthorBtn = document.getElementById('add-author-btn');
     this.novelListBody = document.getElementById('novel-list-body');
     this.editingNovelId = null;
+    this.currentUser = null;
+    this.isAdmin = false;
     this.init();
   }
 
   async init() {
     try {
+      // Kiểm tra user đã đăng nhập chưa
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError || !user) {
+        this.showError('Bạn cần đăng nhập để sử dụng chức năng này.');
+        // Vẫn load novels để xem (public read)
+        await this.loadAuthors();
+        await this.loadGenres();
+        await this.loadNovels();
+        this.disableAdminFeatures();
+        return;
+      }
+      
+      this.currentUser = user;
+      
+      // Kiểm tra role của user
+      await this.checkUserRole();
+      
       await this.loadAuthors();
       await this.loadGenres();
       await this.loadNovels();
+      
       if (this.form) {
         this.form.onsubmit = this.addOrUpdateNovel.bind(this);
       }
       if (this.addAuthorBtn) {
         this.addAuthorBtn.onclick = this.addAuthor.bind(this);
       }
+
+      // Ẩn các nút admin nếu không phải admin
+      if (!this.isAdmin) {
+        this.disableAdminFeatures();
+      }
     } catch (err) {
       console.error('Error in init:', err);
       this.showError('Đã xảy ra lỗi khi khởi tạo. Vui lòng thử lại sau.');
+    }
+  }
+
+  async checkUserRole() {
+    try {
+      if (!this.currentUser) return;
+
+      // Query từ bảng public.users dựa trên id
+      const { data, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', this.currentUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.log(`❌ App Role check failed for user ${this.currentUser.username}:`, error);
+        console.log(`👤 Defaulting to regular user (App Role: user, not admin)`);
+        this.isAdmin = false;
+        return;
+      }
+
+      this.isAdmin = data?.role === 'admin';
+
+      console.log(`🔍 App Role check result: User=${this.currentUser.username}, App Role=${data?.role}, IsAdmin=${this.isAdmin}`);
+
+      if (this.isAdmin) {
+        console.log(`✅ Admin privileges granted: ${this.currentUser.username} (App Role: admin)`);
+      } else {
+        console.log(`👤 Regular user access: ${this.currentUser.username} (App Role: ${data?.role})`);
+      }
+    } catch (err) {
+      console.error('Error checking user role:', err);
+      this.isAdmin = false;
+    }
+  }
+
+  disableAdminFeatures() {
+    // Ẩn form thêm/sửa novel
+    if (this.form) {
+      this.form.style.display = 'none';
+    }
+    
+    // Hiển thị thông báo
+    if (this.messageEl) {
+      this.messageEl.textContent = 'Bạn chỉ có quyền xem. Chỉ admin mới có thể thêm/sửa/xóa novels.';
+      this.messageEl.style.color = '#b58900';
     }
   }
 
@@ -107,9 +179,12 @@ export class NovelManager {
 
       this.novelListBody.innerHTML = '<tr><td colspan="5">Đang tải...</td></tr>';
       
-      // Lấy novels, authors, genres
+      // Lấy TẤT CẢ novels (public read)
       const [novelsResult, authorsResult, genresResult, novelGenresResult] = await Promise.all([
-        supabase.from('novels').select('id, title, author_id, status, summary'),
+        supabase
+          .from('novels')
+          .select('id, title, author_id, status, summary')
+          .order('created_at', { ascending: false }),
         supabase.from('authors').select('id, name'),
         supabase.from('genres').select('id, name'),
         supabase.from('novel_genres').select('novel_id, genre_id')
@@ -134,6 +209,13 @@ export class NovelManager {
       this.novelListBody.innerHTML = novels.map(novel => {
         const gIds = novelGenres.filter(ng => ng.novel_id === novel.id).map(ng => ng.genre_id);
         const gNames = gIds.map(id => genresMap[id]).filter(Boolean).join(', ');
+        
+        // Chỉ hiển thị nút Sửa/Xóa nếu là admin
+        const adminButtons = this.isAdmin ? `
+          <button class="btn-secondary" data-edit="${novel.id}">Sửa</button>
+          <button class="btn-secondary" data-delete="${novel.id}">Xóa</button>
+        ` : '';
+        
         return `<tr>
           <td>${this.escapeHtml(novel.title || '')}</td>
           <td>${this.escapeHtml(authorsMap[novel.author_id] || 'Không rõ')}</td>
@@ -141,19 +223,20 @@ export class NovelManager {
           <td>${this.escapeHtml(gNames)}</td>
           <td>
             <a class="btn-secondary" href="volume-manager.html?novel_id=${novel.id}">Quản lý quyển</a>
-            <button class="btn-secondary" data-edit="${novel.id}">Sửa</button>
-            <button class="btn-secondary" data-delete="${novel.id}">Xóa</button>
+            ${adminButtons}
           </td>
         </tr>`;
       }).join('') || '<tr><td colspan="5">Chưa có tiểu thuyết nào</td></tr>';
       
-      // Gắn event
-      this.novelListBody.querySelectorAll('[data-edit]').forEach(btn => {
-        btn.onclick = () => this.editNovel(btn.dataset.edit);
-      });
-      this.novelListBody.querySelectorAll('[data-delete]').forEach(btn => {
-        btn.onclick = () => this.deleteNovel(btn.dataset.delete);
-      });
+      // Gắn event cho admin
+      if (this.isAdmin) {
+        this.novelListBody.querySelectorAll('[data-edit]').forEach(btn => {
+          btn.onclick = () => this.editNovel(btn.dataset.edit);
+        });
+        this.novelListBody.querySelectorAll('[data-delete]').forEach(btn => {
+          btn.onclick = () => this.deleteNovel(btn.dataset.delete);
+        });
+      }
     } catch (err) {
       console.error('Error in loadNovels:', err);
       if (this.novelListBody) {
@@ -170,6 +253,12 @@ export class NovelManager {
 
   async addOrUpdateNovel(e) {
     e.preventDefault();
+    
+    if (!this.isAdmin) {
+      this.showError('Bạn không có quyền thực hiện thao tác này. Chỉ admin mới được phép.');
+      return;
+    }
+
     try {
       const titleInput = document.getElementById('novel-title');
       const statusInput = document.getElementById('novel-status');
@@ -227,7 +316,7 @@ export class NovelManager {
           }
         }
       } else {
-        // Thêm mới
+        // Thêm mới - KHÔNG CẦN user_id vì novels là public
         const result = await supabase
           .from('novels')
           .insert([{ title, author_id, status, summary }])
@@ -247,7 +336,7 @@ export class NovelManager {
 
       if (error || !novel) {
         console.error('Error saving novel:', error);
-        this.showError('Lỗi khi lưu tiểu thuyết. Vui lòng thử lại.');
+        this.showError('Lỗi khi lưu tiểu thuyết. Có thể bạn không có quyền admin.');
         return;
       }
 
@@ -267,9 +356,18 @@ export class NovelManager {
   }
 
   async editNovel(id) {
+    if (!this.isAdmin) {
+      this.showError('Bạn không có quyền thực hiện thao tác này.');
+      return;
+    }
+
     try {
       const [novelResult, genresResult] = await Promise.all([
-        supabase.from('novels').select('id, title, author_id, status, summary').eq('id', id).single(),
+        supabase
+          .from('novels')
+          .select('id, title, author_id, status, summary')
+          .eq('id', id)
+          .single(),
         supabase.from('novel_genres').select('genre_id').eq('novel_id', id)
       ]);
 
@@ -316,6 +414,11 @@ export class NovelManager {
   }
 
   async deleteNovel(id) {
+    if (!this.isAdmin) {
+      this.showError('Bạn không có quyền thực hiện thao tác này.');
+      return;
+    }
+
     try {
       if (!confirm('Bạn có chắc chắn muốn xóa tiểu thuyết này?')) return;
 
@@ -330,7 +433,7 @@ export class NovelManager {
 
       if (deleteNovelResult.error) {
         console.error('Error deleting novel:', deleteNovelResult.error);
-        this.showError('Lỗi khi xóa tiểu thuyết. Vui lòng thử lại.');
+        this.showError('Lỗi khi xóa tiểu thuyết. Có thể bạn không có quyền admin.');
         return;
       }
 
@@ -360,6 +463,7 @@ export class NovelManager {
         }
 
         await this.loadAuthors();
+        alert('Đã thêm tác giả thành công!');
       }
     } catch (err) {
       console.error('Error in addAuthor:', err);

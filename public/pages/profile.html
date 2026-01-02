@@ -1,88 +1,181 @@
-<!-- pages/profile.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>Profile - Loading...</title>
-  <link rel="stylesheet" href="../style/components.css" />
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="../style/profile.css" />
-  <link
-      rel="icon"
-      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
-    />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - ntam</title>
+    <link rel="stylesheet" href="../style/variables.css">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" type="image/jpeg">
+    <link rel="stylesheet" href="../style/components.css">
+    <link rel="stylesheet" href="../style/profile.css">
 </head>
-<body>
-  <main class="profile-container">
-    <div class="profile-header">
-      <h1>Profile</h1>
-      <p>Quản lý thông tin tài khoản của bạn</p>
+<body class="dark-theme">
+    <div class="container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- User Profile Section -->
+            <section class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <div class="avatar-placeholder">👤</div>
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="username-display" class="username">Loading...</h2>
+                        <div class="level-info">
+                            <span class="level-badge" id="level-badge">Lv. 1</span>
+                            <div class="xp-bar">
+                                <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
+                                <span class="xp-text" id="xp-text">0 / 100 XP</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="currency-info">
+                        <div class="currency-item">
+                            <span class="currency-icon">🪙</span>
+                            <span class="currency-amount" id="coins-amount">0</span>
+                        </div>
+                        <div class="currency-item">
+                            <span class="currency-icon">💎</span>
+                            <span class="currency-amount" id="gems-amount">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎮</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="games-played">0</div>
+                            <div class="stat-label">Games Played</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="total-time">0h</div>
+                            <div class="stat-label">Total Time</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="current-streak">0</div>
+                            <div class="stat-label">Current Streak</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="best-streak">0</div>
+                            <div class="stat-label">Best Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabs Section -->
+            <section class="tabs-section">
+                <div class="tabs-header">
+                    <button class="tab-button active" data-tab="inventory">🎒 Inventory</button>
+                    <button class="tab-button" data-tab="achievements">🏆 Achievements</button>
+                    <button class="tab-button" data-tab="pets">🐾 Pets</button>
+                    <button class="tab-button" data-tab="daily">📅 Daily</button>
+                </div>
+
+                <div class="tabs-content">
+                    <!-- Inventory Tab -->
+                    <div class="tab-pane active" id="inventory-tab">
+                        <div class="inventory-grid" id="inventory-grid">
+                            <!-- Items will be loaded here -->
+                        </div>
+                        <div class="empty-state" id="empty-inventory">
+                            <div class="empty-icon">🎒</div>
+                            <div class="empty-text">Your inventory is empty</div>
+                            <div class="empty-subtext">Complete games to earn items!</div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Tab -->
+                    <div class="tab-pane" id="achievements-tab">
+                        <div class="achievements-summary">
+                            <div class="achievement-stat">
+                                <div class="stat-number" id="achievements-unlocked">0</div>
+                                <div class="stat-label">Unlocked</div>
+                            </div>
+                            <div class="achievement-stat">
+                                <div class="stat-number" id="achievements-total">0</div>
+                                <div class="stat-label">Total</div>
+                            </div>
+                            <div class="achievement-stat">
+                                <div class="stat-number" id="completion-rate">0%</div>
+                                <div class="stat-label">Completion</div>
+                            </div>
+                        </div>
+                        <div class="achievements-grid" id="achievements-grid">
+                            <!-- Achievements will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Pets Tab -->
+                    <div class="tab-pane" id="pets-tab">
+                        <div class="pets-grid" id="pets-grid">
+                            <!-- Pets will be loaded here -->
+                        </div>
+                        <div class="empty-state" id="empty-pets">
+                            <div class="empty-icon">🐾</div>
+                            <div class="empty-text">No pets yet</div>
+                            <div class="empty-subtext">Visit the shop to buy pets!</div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Tab -->
+                    <div class="tab-pane" id="daily-tab">
+                        <div class="daily-rewards">
+                            <div class="daily-header">
+                                <h3>Daily Rewards</h3>
+                                <div class="streak-info">
+                                    <span class="streak-icon">🔥</span>
+                                    <span class="streak-count" id="daily-streak">0</span>
+                                </div>
+                            </div>
+                            <div class="daily-grid" id="daily-rewards-grid">
+                                <!-- Daily rewards will be loaded here -->
+                            </div>
+                            <button class="claim-daily-btn" id="claim-daily-btn">Claim Today's Reward</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <div class="profile-content">
-      <div class="profile-section">
-        <h2>Thông tin cá nhân</h2>
-        <div class="profile-form">
-          <div class="form-group">
-            <label for="username">Tên đăng nhập</label>
-            <input type="text" id="username" readonly />
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="Nhập email của bạn" />
-          </div>
-          <div class="form-group">
-            <label for="fullName">Họ và tên</label>
-            <input type="text" id="fullName" placeholder="Nhập họ và tên" />
-          </div>
-          <div class="form-group">
-            <label for="bio">Giới thiệu</label>
-            <textarea id="bio" placeholder="Viết gì đó về bản thân..." rows="3"></textarea>
-          </div>
-          <button id="saveProfileBtn" class="btn-primary">Lưu thông tin</button>
+    <!-- Modals -->
+    <div class="modal" id="item-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="item-modal-title">Item Details</h3>
+                <button class="modal-close" id="item-modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="item-modal-body">
+                <!-- Item details will be loaded here -->
+            </div>
         </div>
-      </div>
-
-      <div class="profile-section">
-        <h2>Đổi mật khẩu</h2>
-        <div class="profile-form">
-          <div class="form-group">
-            <label for="currentPassword">Mật khẩu hiện tại</label>
-            <input type="password" id="currentPassword" placeholder="Nhập mật khẩu hiện tại" />
-          </div>
-          <div class="form-group">
-            <label for="newPassword">Mật khẩu mới</label>
-            <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới" />
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
-            <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu mới" />
-          </div>
-          <button id="changePasswordBtn" class="btn-secondary">Đổi mật khẩu</button>
-        </div>
-      </div>
-
-      <div class="profile-section">
-        <h2>Thống kê</h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number" id="loginCount">0</div>
-            <div class="stat-label">Lần đăng nhập</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="joinDate">-</div>
-            <div class="stat-label">Ngày tham gia</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="userRole">User</div>
-            <div class="stat-label">Vai trò</div>
-          </div>
-        </div>
-      </div>
     </div>
-  </main>
 
-  <script type="module" src="../js/modules/profile_entry.js"></script>
+    <div class="modal" id="achievement-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="achievement-modal-title">Achievement Details</h3>
+                <button class="modal-close" id="achievement-modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="achievement-modal-body">
+                <!-- Achievement details will be loaded here -->
+            </div>
+        </div>
+    </div>
 
+    <!-- Scripts -->
+    <script type="module" src="../js/modules/profile_entry.js"></script>
 </body>
-</html> 
+</html>

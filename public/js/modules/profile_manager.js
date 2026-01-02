@@ -1,5 +1,6 @@
 import { supabase } from '../supabase/supabase.js';
 import { getCurrentUser } from '../supabase/auth.js';
+import { userProfile } from './user_profile.js';
 
 export class ProfileManager {
   constructor() {
@@ -26,8 +27,9 @@ export class ProfileManager {
 
   async loadUserProfile() {
     try {
+      // Load from user_profiles table (has XP, level, coins)
       const { data: userData, error } = await supabase
-        .from('users')
+        .from('user_profiles')
         .select('*')
         .eq('id', this.currentUser.id)
         .single();
@@ -38,8 +40,21 @@ export class ProfileManager {
         return;
       }
 
-      this.fillProfileForm(userData);
-      this.updateStats(userData);
+      // Also get username from users table
+      const { data: userInfo } = await supabase
+        .from('users')
+        .select('username')
+        .eq('id', this.currentUser.id)
+        .single();
+
+      // Merge data
+      const profileData = {
+        ...userData,
+        username: userInfo?.username || userData.username
+      };
+
+      this.fillProfileForm(profileData);
+      this.updateStats(profileData);
     } catch (err) {
       console.error('Unexpected error:', err);
       this.showMessage('Lỗi khi tải thông tin profile', 'error');
@@ -67,6 +82,7 @@ export class ProfileManager {
   }
 
   updateStats(userData) {
+    // Legacy stats
     const loginCountEl = document.getElementById('loginCount');
     const joinDateEl = document.getElementById('joinDate');
     const userRoleEl = document.getElementById('userRole');
@@ -84,6 +100,40 @@ export class ProfileManager {
 
     if (userRoleEl) {
       userRoleEl.textContent = userData.role || 'User';
+    }
+
+    // Game stats from user_profiles
+    const levelBadgeEl = document.getElementById('level-badge');
+    const xpFillEl = document.getElementById('xp-fill');
+    const xpTextEl = document.getElementById('xp-text');
+    const coinsAmountEl = document.getElementById('coins-amount');
+    const gemsAmountEl = document.getElementById('gems-amount');
+
+    // Update level
+    if (levelBadgeEl) {
+      levelBadgeEl.textContent = `Lv. ${userData.level || 1}`;
+    }
+
+    // Update XP bar
+    const currentXP = userData.xp || 0;
+    const levelXPNeeded = userProfile.getXPNeededForLevel(userData.level || 1);
+    const progressPercent = levelXPNeeded > 0 ? (currentXP / levelXPNeeded) * 100 : 0;
+
+    if (xpFillEl) {
+      xpFillEl.style.width = `${Math.min(progressPercent, 100)}%`;
+    }
+
+    if (xpTextEl) {
+      xpTextEl.textContent = `${currentXP} / ${levelXPNeeded} XP`;
+    }
+
+    // Update currencies
+    if (coinsAmountEl) {
+      coinsAmountEl.textContent = userData.coins || 0;
+    }
+
+    if (gemsAmountEl) {
+      gemsAmountEl.textContent = userData.gems || 0;
     }
   }
 

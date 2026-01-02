@@ -4,8 +4,8 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import { createLogger, format, transports } from 'winston';
+import authRoutes from './auth';
 
 // Load environment variables
 dotenv.config();
@@ -53,6 +53,8 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 // Routes
+app.use('/auth', authRoutes);
+
 app.get('/', (req: express.Request, res: express.Response) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });

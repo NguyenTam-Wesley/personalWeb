@@ -1,5 +1,5 @@
 import components from '../components/components.js';
-import { getCurrentUser } from '../supabase/auth.js';
+import { getCurrentUserWithRetry } from '../supabase/auth.js';
 import { supabase } from '../supabase/supabase.js';
 
 export class BlogDetailManager {
@@ -41,7 +41,10 @@ export class BlogDetailManager {
 
   async initializeAuth() {
     try {
-      this.currentUser = await getCurrentUser();
+      const userData = await getCurrentUserWithRetry();
+      this.currentUser = userData?.profile;
+
+      console.log(`📖 Blog detail: User=${this.currentUser?.username}, App Role=${this.currentUser?.role}`);
     } catch (error) {
       console.error('Error initializing auth:', error);
     }

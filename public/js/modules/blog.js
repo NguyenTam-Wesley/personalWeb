@@ -1,6 +1,6 @@
 // blog.js
 import components from '../components/components.js';
-import { getCurrentUser } from '../supabase/auth.js';
+import { getCurrentUserWithRetry } from '../supabase/auth.js';
 import { supabase } from '../supabase/supabase.js';
 
 export class BlogManager {
@@ -24,8 +24,11 @@ export class BlogManager {
 
   async init() {
     try {
-      // Lấy user hiện tại
-      this.currentUser = await getCurrentUser();
+      // Lấy user hiện tại với retry logic
+      const userData = await getCurrentUserWithRetry();
+      this.currentUser = userData?.profile;
+
+      console.log(`📝 Blog module: User=${this.currentUser?.username}, App Role=${this.currentUser?.role}`);
 
       // Header đã được init sẵn trong components.js
       // Chỉ cần update lại trạng thái login

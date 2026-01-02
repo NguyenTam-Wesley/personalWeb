@@ -7,6 +7,10 @@ const DIFFICULTY = {
     EXPERT: "expert"
 };
 
+// Import modules
+import { rewards } from './rewards.js';
+import { achievements } from './achievements.js';
+
 const DIFFICULTY_SETTINGS = {
     easy: { min: 35, max: 40, name: "EZ" },
     medium: { min: 45, max: 50, name: "MED" },
@@ -116,16 +120,19 @@ export class SudokuGame {
                     input.classList.add('given');
                 } else {
                     input.classList.add('user-input');
-                    // Set readonly on mobile to prevent virtual keyboard
-                    if (this.isMobileDevice()) {
-                        input.readOnly = true;
-                    }
+                    // Không set readonly - cho phép click chọn ô trên mobile
                 }
 
                 input.addEventListener("mousedown", (e) => {
                     e.preventDefault();
                     input.focus(); // Đảm bảo focus khi click
                     this.selectCell(input); // Cập nhật selectedCell state
+                });
+
+                // Mobile: thêm click event để chọn ô
+                input.addEventListener("click", (e) => {
+                    if (input.readOnly) return; // Không chọn given cells
+                    this.selectCell(input);
                 });
 
                 input.addEventListener("input", (e) => this.handleInput(e));
@@ -488,19 +495,40 @@ export class SudokuGame {
                 const secs = String(this.seconds % 60).padStart(2, '0');
                 const difficultyName = DIFFICULTY_SETTINGS[this.difficulty].name;
 
+                let message = `🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!`;
+
                 // Lưu best time nếu user đã đăng nhập
                 if (await this.sudokuScores.isLoggedIn()) {
                     const saved = await this.sudokuScores.saveScore(this.difficulty, this.seconds);
                     if (saved) {
                         // Cập nhật best time display
                         await this.updateBestTimeDisplay();
-                        alert(`🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!\n🎯 Thành tích mới được lưu!`);
-                    } else {
-                        alert(`🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!`);
+                        message += '\n🎯 Thành tích mới được lưu!';
                     }
+
+                    // Grant game rewards
+                    const maintainStreak = this.checkStreakMaintenance();
+                    const gameRewards = await rewards.grantGameRewards(this.difficulty, this.seconds, maintainStreak);
+
+                    if (gameRewards.success) {
+                        message += `\n💰 Nhận được ${gameRewards.rewards.xp} XP và ${gameRewards.rewards.coins} coins!`;
+
+                        // Check for achievements
+                        const achievementResult = await achievements.unlockAchievements('games_completed', {
+                            difficulty: this.difficulty,
+                            timeTaken: this.seconds
+                        });
+
+                        if (achievementResult.unlocked_count > 0) {
+                            message += `\n🏆 Unlock ${achievementResult.unlocked_count} achievement(s)!`;
+                        }
+                    }
+
                 } else {
-                    alert(`🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!\n💡 Đăng nhập để lưu thành tích!`);
+                    message += '\n💡 Đăng nhập để lưu thành tích và nhận rewards!';
                 }
+
+                alert(message);
             }
         }, 500);
     }
@@ -729,6 +757,23 @@ export class SudokuGame {
         }).join('');
 
         this.achievementsDropdown.style.display = 'block';
+    }
+
+    // Check if current game maintains the daily streak
+    checkStreakMaintenance() {
+        // Simple implementation: check if last game was completed today
+        // In a real implementation, you'd track this in the database
+        const today = new Date().toDateString();
+        const lastGameDate = localStorage.getItem('lastGameDate');
+
+        if (lastGameDate === today) {
+            // Already played today, streak maintained
+            return true;
+        }
+
+        // Update last game date
+        localStorage.setItem('lastGameDate', today);
+        return false;
     }
 
     // Detect if device is mobile/touch device
