@@ -16,59 +16,64 @@
             <!-- User Profile Section -->
             <section class="profile-section">
                 <div class="profile-header">
-                    <div class="profile-avatar">
-                        <div class="avatar-placeholder">👤</div>
-                    </div>
-                    <div class="profile-info">
-                        <h2 id="username-display" class="username">Loading...</h2>
-                        <div class="level-info">
-                            <span class="level-badge" id="level-badge">Lv. 1</span>
-                            <div class="xp-bar">
-                                <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
-                                <span class="xp-text" id="xp-text">0 / 100 XP</span>
+                    <!-- Left side: Profile info -->
+                    <div class="profile-left">
+                        <div class="profile-avatar">
+                            <div class="avatar-placeholder">👤</div>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="username-display" class="username">Loading...</h2>
+                            <div class="level-info">
+                                <span class="level-badge" id="level-badge">Lv. 1</span>
+                                <div class="xp-bar">
+                                    <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
+                                    <span class="xp-text" id="xp-text">0 / 100 XP</span>
+                                </div>
+                                <div class="currency-info">
+                                    <div class="currency-item">
+                                        <span class="currency-icon">🪙</span>
+                                        <span class="currency-amount" id="coins-amount">0</span>
+                                    </div>
+                                    <div class="currency-item">
+                                        <span class="currency-icon">💎</span>
+                                        <span class="currency-amount" id="gems-amount">0</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="currency-info">
-                        <div class="currency-item">
-                            <span class="currency-icon">🪙</span>
-                            <span class="currency-amount" id="coins-amount">0</span>
-                        </div>
-                        <div class="currency-item">
-                            <span class="currency-icon">💎</span>
-                            <span class="currency-amount" id="gems-amount">0</span>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Stats Grid -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">🎮</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="games-played">0</div>
-                            <div class="stat-label">Games Played</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⏱️</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="total-time">0h</div>
-                            <div class="stat-label">Total Time</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🔥</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="current-streak">0</div>
-                            <div class="stat-label">Current Streak</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🏆</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="best-streak">0</div>
-                            <div class="stat-label">Best Streak</div>
+                    <!-- Right side: Stats grid -->
+                    <div class="profile-right">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">🎮</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="games-played">0</div>
+                                    <div class="stat-label">Games Played</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="total-time">0h</div>
+                                    <div class="stat-label">Total Time</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🔥</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="current-streak">0</div>
+                                    <div class="stat-label">Current Streak</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🏆</div>
+                                <div class="stat-info">
+                                    <div class="stat-value" id="best-streak">0</div>
+                                    <div class="stat-label">Best Streak</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
