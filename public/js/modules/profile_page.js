@@ -100,10 +100,9 @@ class ProfilePage {
                 document.getElementById('gems-amount').textContent = userProfile.formatNumber(profile.gems);
 
                 // Update XP bar
-                const currentLevelXP = userProfile.getCurrentLevelXP(profile);
-                const progressPercent = userProfile.getLevelProgress(profile);
-                document.getElementById('xp-fill').style.width = `${progressPercent}%`;
-                document.getElementById('xp-text').textContent = `${currentLevelXP} / ${profile.xp_to_next_level} XP`;
+                const xpInfo = userProfile.getXPInfo(profile);
+                document.getElementById('xp-fill').style.width = `${xpInfo.percent}%`;
+                document.getElementById('xp-text').textContent = `${xpInfo.current} / ${xpInfo.required} XP`;
 
                 // Update stats
                 document.getElementById('games-played').textContent = profile.total_games_played;

@@ -145,6 +145,7 @@ Deno.serve(async (req) => {
         data: {
           old_level: profile.level,
           new_level: newLevel,
+          current_xp: newXP,
           xp_gained: amount,
           level_up: newLevel > profile.level,
           rewards: levelUpRewards

@@ -375,6 +375,27 @@ export class UserProfile {
         return level * 100 + (level - 1) * 50;
     }
 
+    // Lấy XP hiện tại trong level
+    getCurrentLevelXP(profile) {
+        // XP hiện tại trong level (đã được backend tính sẵn)
+        return profile.xp || 0;
+    }
+
+    // Lấy XP cần cho level tiếp theo
+    getXPForNextLevel(level) {
+        return this.getXPNeededForLevel(level);
+    }
+
+    // Lấy thông tin XP đầy đủ (cải tiến)
+    getXPInfo(profile) {
+        const xpForNext = this.getXPForNextLevel(profile.level);
+        return {
+            current: profile.xp,
+            required: xpForNext,
+            percent: Math.min((profile.xp / xpForNext) * 100, 100)
+        };
+    }
+
     // Lấy phần trăm tiến trình level
     getLevelProgress(profile) {
         const currentLevelXP = profile.xp; // profile.xp là XP trong level hiện tại
