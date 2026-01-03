@@ -22,13 +22,26 @@ export class Pets {
 
     // Kiểm tra user đã đăng nhập chưa
     async isLoggedIn() {
-        const user = await getCurrentUser();
-        return !!user;
+        const userData = await getCurrentUser();
+        return !!userData?.user;
     }
 
-    // Lấy thông tin user hiện tại
-    async getCurrentUser() {
+    // Lấy thông tin user hiện tại từ auth.js
+    async getCurrentUserData() {
         return await getCurrentUser();
+    }
+
+    // Helper function để lấy user ID một cách an toàn
+    async getUserId() {
+        const userData = await this.getCurrentUserData();
+        if (!userData?.user) {
+            console.error('No user data found');
+            return null;
+        }
+        
+        // userData có cấu trúc: { user, profile }
+        // user.id là UUID từ auth
+        return userData.user.id;
     }
 
     // Lấy danh sách tất cả pets có sẵn
@@ -58,11 +71,11 @@ export class Pets {
 
             // Cache kết quả
             this.cache.set(cacheKey, {
-                data: data,
+                data: data || [],
                 timestamp: Date.now()
             });
 
-            return data;
+            return data || [];
         } catch (error) {
             console.error('Error in getAllPets:', error);
             return [];
@@ -78,6 +91,7 @@ export class Pets {
     // Lấy pets user sở hữu
     async getUserPets(forceRefresh = false) {
         if (!(await this.isLoggedIn())) {
+            console.log('User not logged in, returning empty pets array');
             return [];
         }
 
@@ -92,8 +106,13 @@ export class Pets {
         }
 
         try {
-            const user = await this.getCurrentUser();
-            if (!user) return [];
+            const userId = await this.getUserId();
+            if (!userId) {
+                console.error('User ID not found in getUserPets');
+                return [];
+            }
+
+            console.log('Fetching pets for user:', userId);
 
             const { data, error } = await supabase
                 .from('user_pets')
@@ -113,7 +132,7 @@ export class Pets {
                         unlock_level
                     )
                 `)
-                .eq('user_id', user.id);
+                .eq('user_id', userId);
 
             if (error) {
                 console.error('Error getting user pets:', error);
@@ -122,11 +141,11 @@ export class Pets {
 
             // Cache kết quả
             this.cache.set(cacheKey, {
-                data: data,
+                data: data || [],
                 timestamp: Date.now()
             });
 
-            return data;
+            return data || [];
         } catch (error) {
             console.error('Error in getUserPets:', error);
             return [];
@@ -204,14 +223,18 @@ export class Pets {
             }
 
             // Thêm pet vào user_pets
-            const user = await this.getCurrentUser();
+            const userId = await this.getUserId();
+            if (!userId) {
+                return { success: false, message: 'Không thể lấy user ID' };
+            }
+
             const { data, error } = await supabase
                 .from('user_pets')
                 .insert({
-                    user_id: user.id,
+                    user_id: userId,
                     pet_id: petId,
-                    is_active: false, // Mặc định không active
-                    happiness_level: 100 // Full happiness khi mới mua
+                    is_active: false,
+                    happiness_level: 100
                 })
                 .select()
                 .single();
@@ -253,23 +276,27 @@ export class Pets {
                 return { success: false, message: 'Bạn không sở hữu pet này' };
             }
 
-            const user = await this.getCurrentUser();
+            const userId = await this.getUserId();
+            if (!userId) {
+                return { success: false, message: 'Không thể lấy user ID' };
+            }
 
-            // Bắt đầu transaction - set tất cả pets thành inactive, rồi set pet mới thành active
+            // Set tất cả pets thành inactive
             const { error: updateError } = await supabase
                 .from('user_pets')
                 .update({ is_active: false })
-                .eq('user_id', user.id);
+                .eq('user_id', userId);
 
             if (updateError) {
                 console.error('Error deactivating pets:', updateError);
                 return { success: false, message: 'Lỗi khi cập nhật pet' };
             }
 
+            // Set pet mới thành active
             const { error: activateError } = await supabase
                 .from('user_pets')
                 .update({ is_active: true })
-                .eq('user_id', user.id)
+                .eq('user_id', userId)
                 .eq('pet_id', petId);
 
             if (activateError) {
@@ -309,7 +336,7 @@ export class Pets {
             }
 
             // Kiểm tra có pet food không
-            const hasPetFood = await items.hasItem('pet_food_item_id', 1); // Cần ID thực tế của pet food
+            const hasPetFood = await items.hasItem('pet_food_item_id', 1);
             if (!hasPetFood) {
                 return { success: false, message: 'Bạn không có pet food' };
             }
@@ -321,8 +348,12 @@ export class Pets {
             }
 
             // Cập nhật happiness và last_fed_at
-            const user = await this.getCurrentUser();
-            const newHappiness = Math.min(userPet.happiness_level + 25, 100); // Tăng 25 happiness, max 100
+            const userId = await this.getUserId();
+            if (!userId) {
+                return { success: false, message: 'Không thể lấy user ID' };
+            }
+
+            const newHappiness = Math.min(userPet.happiness_level + 25, 100);
 
             const { error } = await supabase
                 .from('user_pets')
@@ -330,7 +361,7 @@ export class Pets {
                     happiness_level: newHappiness,
                     last_fed_at: new Date().toISOString()
                 })
-                .eq('user_id', user.id)
+                .eq('user_id', userId)
                 .eq('pet_id', petId);
 
             if (error) {
@@ -368,7 +399,7 @@ export class Pets {
         };
     }
 
-    // Tự động giảm happiness theo thời gian (có thể gọi định kỳ)
+    // Tự động giảm happiness theo thời gian
     async updatePetHappiness() {
         if (!(await this.isLoggedIn())) {
             return;
@@ -376,10 +407,14 @@ export class Pets {
 
         try {
             const userPets = await this.getUserPets();
-            const user = await this.getCurrentUser();
+            const userId = await this.getUserId();
+
+            if (!userId) {
+                console.error('No user ID for happiness update');
+                return;
+            }
 
             const updates = userPets.map(pet => {
-                // Giảm 1 happiness mỗi giờ kể từ lần cuối feed
                 const lastFed = new Date(pet.last_fed_at || pet.acquired_at);
                 const hoursSinceFed = (Date.now() - lastFed.getTime()) / (1000 * 60 * 60);
                 const happinessDecrease = Math.floor(hoursSinceFed);
@@ -414,8 +449,15 @@ export class Pets {
 
     // Debug: log user pets
     async debugLogUserPets() {
+        console.log('=== DEBUG USER PETS ===');
+        const userData = await this.getCurrentUserData();
+        console.log('User Data:', userData);
+        console.log('User ID:', userData?.user?.id);
+        console.log('Profile:', userData?.profile);
+        
         const userPets = await this.getUserPets(true);
         console.log('User Pets:', userPets);
+        console.log('======================');
     }
 }
 
