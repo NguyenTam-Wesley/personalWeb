@@ -1,3 +1,5 @@
+import { rewards } from './rewards.js';
+
 export class Game2048 {
     constructor(gridId, size = 4) {
       this.size = size;
@@ -213,8 +215,8 @@ export class Game2048 {
 
         if (this.isGameOver()) {
           this.gameOver = true;
-          setTimeout(() => {
-            alert(`Game Over!\nĐiểm: ${this.score}\nNhấn R để chơi lại`);
+          setTimeout(async () => {
+            await this.handleGameOver();
           }, 100);
         }
         return;
@@ -238,9 +240,11 @@ export class Game2048 {
 
         // Check game over
         if (this.isGameOver()) {
+          console.log('🎯 GAME OVER DETECTED! Calling handleGameOver...');
           this.gameOver = true;
-          setTimeout(() => {
-            alert(`Game Over!\nĐiểm: ${this.score}\nNhấn R để chơi lại`);
+          setTimeout(async () => {
+            console.log('⏰ Timeout triggered, calling handleGameOver now...');
+            await this.handleGameOver();
           }, 100);
         }
       });
@@ -515,6 +519,135 @@ export class Game2048 {
       }
 
       return true;
+    }
+
+    // Tính toán XP cho game 2048: (điểm số / 10000) + 15
+    calculateXP() {
+      return Math.floor(this.score / 10000) + 15;
+    }
+
+    // Tính toán coin dựa trên ô lớn nhất (từ 256 trở đi)
+    // Công thức: 2^(n-1) coin với n bắt đầu từ 2 cho 256
+    calculateCoins() {
+      const maxTile = this.getMaxTile();
+
+      // Chỉ tính coin từ 256 trở đi
+      if (maxTile < 256) return 0;
+
+      // Tính n: 256 = 2^8, n bắt đầu từ 2
+      // n = (log2(maxTile) - 8) + 2 = log2(maxTile) - 6
+      const n = Math.log2(maxTile) - 6;
+      return Math.pow(2, n - 1);
+    }
+
+    // Tính toán gem dựa trên ô lớn nhất (từ 2048 trở đi)
+    // Công thức: 2^(n-1) gem với n bắt đầu từ 2 cho 2048, công sai cấp số cộng là 4
+    calculateGems() {
+      const maxTile = this.getMaxTile();
+
+      // Chỉ tính gem từ 2048 trở đi
+      if (maxTile < 2048) return 0;
+
+      // Tính n: 2048 = 2^11, n bắt đầu từ 2
+      // Với công sai 4: n = 2 + 4 * (log2(maxTile) - 11)
+      const exponent = Math.log2(maxTile);
+      const n = 2 + 4 * (exponent - 11);
+      return Math.pow(2, n - 1);
+    }
+
+    // Lấy giá trị ô lớn nhất trên bảng
+    getMaxTile() {
+      let max = 0;
+      for (let r = 0; r < this.size; r++) {
+        for (let c = 0; c < this.size; c++) {
+          max = Math.max(max, this.board[r][c]);
+        }
+      }
+      return max;
+    }
+
+    // Xử lý game over và grant rewards
+    async handleGameOver() {
+      console.log('🎮 === GAME OVER HANDLER STARTED ===');
+      console.log('🎮 Game Over! Processing rewards...');
+      console.log(`📊 Final Score: ${this.score}`);
+
+      try {
+
+      // Tính toán rewards
+      const xp = this.calculateXP();
+      const coins = this.calculateCoins();
+      const gems = this.calculateGems();
+      const maxTile = this.getMaxTile();
+
+      console.log(`🎯 Calculated XP: ${xp} (from score ${this.score})`);
+      console.log(`🪙 Calculated Coins: ${coins} (from max tile ${maxTile})`);
+      console.log(`💎 Calculated Gems: ${gems} (from max tile ${maxTile})`);
+
+      let message = `🎮 Game Over!\n`;
+      message += `Điểm: ${this.score}\n`;
+      message += `Ô lớn nhất: ${maxTile}\n\n`;
+
+      // Hiển thị rewards
+      if (xp > 0) message += `⭐ XP: ${xp}\n`;
+      if (coins > 0) message += `🪙 Coins: ${coins}\n`;
+      if (gems > 0) message += `💎 Gems: ${gems}\n`;
+
+      // Grant rewards nếu user đã đăng nhập
+      console.log('🔍 About to check if user is logged in...');
+      const loginStatus = await rewards.isLoggedIn();
+      console.log('🔍 Login check result:', loginStatus);
+
+      if (loginStatus) {
+        console.log('✅ User is logged in, granting rewards...');
+        try {
+          // 🎯 Use new architecture: grantGameRewards with game result
+          const gameResult = {
+            maxTile: maxTile,
+            score: this.score,
+            moves: this.moves
+          };
+
+          const gameRewards = await rewards.grantGameRewards('2048', gameResult);
+
+          if (gameRewards.success) {
+            console.log('✅ 2048 rewards granted successfully:', gameRewards.rewards);
+            message += `\n✅ Nhận được ${gameRewards.rewards.xp} XP và ${gameRewards.rewards.coins} coins!`;
+
+            // Still grant gems separately (not handled by new architecture yet)
+            if (gems > 0) {
+              console.log(`💎 Granting ${gems} gems for 2048 game (max tile: ${maxTile})`);
+              const gemsResult = await rewards.addGems(gems);
+              if (gemsResult) {
+                message += `\n💎 Nhận thêm ${gems} gems!`;
+              }
+            }
+          } else {
+            console.error('❌ Error granting 2048 rewards:', gameRewards.message);
+            message += `\n❌ Lỗi khi lưu rewards: ${gameRewards.message}`;
+          }
+        } catch (error) {
+          console.error('❌ Error granting 2048 rewards:', error);
+          message += `\n❌ Lỗi khi lưu rewards: ${error.message}`;
+        }
+      } else {
+        console.log('❌ User not logged in');
+        message += `\n💡 Đăng nhập để lưu thành tích và nhận rewards!`;
+      }
+
+      message += `\n\nNhấn R để chơi lại`;
+
+      console.log('🎮 === ALERT MESSAGE ===');
+      console.log(message);
+      console.log('🎮 === GAME OVER HANDLER ENDED ===');
+
+      alert(message);
+
+      } catch (error) {
+        console.error('💥 CRITICAL ERROR in handleGameOver:', error);
+        console.error('Stack trace:', error.stack);
+        alert(`❌ Lỗi nghiêm trọng khi xử lý rewards: ${error.message}\n\nNhấn R để chơi lại`);
+      }
     }
 
     destroy() {

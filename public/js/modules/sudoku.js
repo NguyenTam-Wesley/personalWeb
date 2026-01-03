@@ -506,9 +506,13 @@ export class SudokuGame {
                         message += '\n🎯 Thành tích mới được lưu!';
                     }
 
-                    // Grant game rewards
-                    const maintainStreak = this.checkStreakMaintenance();
-                    const gameRewards = await rewards.grantGameRewards(this.difficulty, this.seconds, maintainStreak);
+                    // Grant game rewards using new architecture
+                    const gameResult = {
+                        difficulty: this.difficulty,
+                        timeTaken: this.seconds,
+                        mistakes: 0 // TODO: Track mistakes in sudoku game
+                    };
+                    const gameRewards = await rewards.grantGameRewards('sudoku', gameResult);
 
                     if (gameRewards.success) {
                         message += `\n💰 Nhận được ${gameRewards.rewards.xp} XP và ${gameRewards.rewards.coins} coins!`;
@@ -759,22 +763,22 @@ export class SudokuGame {
         this.achievementsDropdown.style.display = 'block';
     }
 
-    // Check if current game maintains the daily streak
-    checkStreakMaintenance() {
-        // Simple implementation: check if last game was completed today
-        // In a real implementation, you'd track this in the database
-        const today = new Date().toDateString();
-        const lastGameDate = localStorage.getItem('lastGameDate');
+    // Check if current game maintains the daily streak (DISABLED)
+    // checkStreakMaintenance() {
+    //     // Simple implementation: check if last game was completed today
+    //     // In a real implementation, you'd track this in the database
+    //     const today = new Date().toDateString();
+    //     const lastGameDate = localStorage.getItem('lastGameDate');
 
-        if (lastGameDate === today) {
-            // Already played today, streak maintained
-            return true;
-        }
+    //     if (lastGameDate === today) {
+    //         // Already played today, streak maintained
+    //         return true;
+    //     }
 
-        // Update last game date
-        localStorage.setItem('lastGameDate', today);
-        return false;
-    }
+    //     // Update last game date
+    //     localStorage.setItem('lastGameDate', today);
+    //     return false;
+    // }
 
     // Detect if device is mobile/touch device
     isMobileDevice() {

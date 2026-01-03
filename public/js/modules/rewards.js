@@ -123,37 +123,93 @@ export class Rewards {
         }
     }
 
-    // Tính toán rewards cho game completion
-    async calculateGameRewards(difficulty, timeTaken, _maintainStreak = false) {
-        const config = await this.getGameRewardsConfig();
-        const difficultyConfig = config[difficulty];
+    // 🎯 GAME-SPECIFIC REWARD CALCULATORS
+    // Tách riêng logic tính reward cho từng game
+
+    // Sudoku: dựa trên difficulty + time + mistakes
+    calculateSudokuRewards(result, config) {
+        const difficultyConfig = config[result.difficulty];
 
         if (!difficultyConfig) {
-            console.warn(`No reward config found for difficulty: ${difficulty}`);
+            console.warn(`No reward config found for difficulty: ${result.difficulty}`);
             return { xp: 0, coins: 0 };
         }
 
-        let baseXP = difficultyConfig.base_xp;
-        let baseCoins = difficultyConfig.base_coins;
+        let xp = difficultyConfig.base_xp;
+        let coins = difficultyConfig.base_coins;
 
         // Time bonus: reward nhanh hơn
         const timeBonusMultiplier = difficultyConfig.time_bonus_multiplier;
-        if (timeTaken < 600) { // Dưới 10 phút
-            baseXP = Math.floor(baseXP * timeBonusMultiplier);
-            baseCoins = Math.floor(baseCoins * timeBonusMultiplier);
+        if (result.timeTaken < 600) { // Dưới 10 phút
+            xp = Math.floor(xp * timeBonusMultiplier);
+            coins = Math.floor(coins * timeBonusMultiplier);
         }
 
-        // Pet bonuses
-        const petBonuses = await pets.getCurrentPetBonuses();
-        baseXP = Math.floor(baseXP * (1 + petBonuses.happiness_boost / 100));
-        baseCoins = Math.floor(baseCoins * (1 + petBonuses.luck_boost / 100));
+        // Mistake penalty: ít sai thì bonus
+        if (result.mistakes === 0) {
+            xp = Math.floor(xp * 1.1); // +10% cho perfect game
+        }
 
-        // Item effects (active effects from consumable items)
-        const activeEffects = await items.getCurrentActiveEffects();
+        return {
+            xp: Math.max(xp, 1),
+            coins: Math.max(coins, 1)
+        };
+    }
+
+    // 2048: dựa trên maxTile + score + moves (không có difficulty/time)
+    calculate2048Rewards(result, config) {
+        let xp = Math.floor(result.score / 100); // 1 XP per 100 points
+        let coins = Math.floor(result.score / 200); // 1 coin per 200 points
+
+        // Max tile bonuses
+        if (result.maxTile >= 2048) {
+            xp += 200;
+            coins += 50;
+        }
+        if (result.maxTile >= 1024) {
+            xp += 100;
+            coins += 25;
+        }
+        if (result.maxTile >= 512) {
+            xp += 50;
+            coins += 10;
+        }
+
+        // Efficiency bonus: ít moves thì bonus
+        const efficiencyRatio = result.score / result.moves;
+        if (efficiencyRatio > 10) { // High efficiency
+            xp = Math.floor(xp * 1.2);
+            coins = Math.floor(coins * 1.2);
+        }
+
+        return {
+            xp: Math.max(xp, 10), // Minimum 10 XP cho 2048
+            coins: Math.max(coins, 5) // Minimum 5 coins cho 2048
+        };
+    }
+
+    // 🎯 GAME REWARD CALCULATORS REGISTRY
+    // Map game type → calculator function
+    GAME_REWARD_CALCULATORS = {
+        sudoku: this.calculateSudokuRewards,
+        '2048': this.calculate2048Rewards
+    };
+
+    // 🎯 GLOBAL BONUSES APPLIER
+    // Áp dụng pet + item bonuses (cross-game)
+    applyGlobalBonuses(baseReward, petBonuses, itemEffects) {
+        let finalXP = baseReward.xp;
+        let finalCoins = baseReward.coins;
+
+        // Pet bonuses (happiness = XP boost, luck = coin boost)
+        finalXP = Math.floor(finalXP * (1 + petBonuses.happiness_boost / 100));
+        finalCoins = Math.floor(finalCoins * (1 + petBonuses.luck_boost / 100));
+
+        // Item effects (active consumable effects)
         let xpBoost = 0;
         let coinBoost = 0;
 
-        activeEffects.forEach(effect => {
+        itemEffects.forEach(effect => {
             if (effect.effect_type === 'xp_boost') {
                 xpBoost += effect.value;
             } else if (effect.effect_type === 'coin_boost') {
@@ -161,30 +217,56 @@ export class Rewards {
             }
         });
 
-        baseXP = Math.floor(baseXP * (1 + xpBoost / 100));
-        baseCoins = Math.floor(baseCoins * (1 + coinBoost / 100));
+        finalXP = Math.floor(finalXP * (1 + xpBoost / 100));
+        finalCoins = Math.floor(finalCoins * (1 + coinBoost / 100));
 
         return {
-            xp: Math.max(baseXP, 1), // Minimum 1 XP
-            coins: Math.max(baseCoins, 1), // Minimum 1 coin
+            xp: Math.max(finalXP, 1),
+            coins: Math.max(finalCoins, 1)
+        };
+    }
+
+    // 🎯 NEW ARCHITECTURE: calculateGameRewards
+    // gameType: 'sudoku' | '2048'
+    // gameResult: { difficulty, timeTaken, mistakes } | { maxTile, score, moves }
+    async calculateGameRewards(gameType, gameResult) {
+        const config = await this.getGameRewardsConfig();
+
+        // Get base reward from game-specific calculator
+        const calculator = this.GAME_REWARD_CALCULATORS[gameType];
+        if (!calculator) {
+            console.warn(`No calculator found for game type: ${gameType}`);
+            return { xp: 0, coins: 0 };
+        }
+
+        const baseReward = calculator.call(this, gameResult, config);
+
+        // Apply global modifiers (pet + item bonuses)
+        const petBonuses = await pets.getCurrentPetBonuses();
+        const itemEffects = await items.getCurrentActiveEffects();
+
+        const finalReward = this.applyGlobalBonuses(baseReward, petBonuses, itemEffects);
+
+        // Return with breakdown for debugging
+        return {
+            ...finalReward,
             breakdown: {
-                baseXP: difficultyConfig.base_xp,
-                baseCoins: difficultyConfig.base_coins,
-                timeBonus: timeTaken < 600,
-                streakBonus: false, // Removed streak bonus
-                petXPBonus: petBonuses.happiness_boost,
-                petCoinBonus: petBonuses.luck_boost,
-                itemXPBoost: xpBoost,
-                itemCoinBoost: coinBoost
+                gameType,
+                baseReward,
+                petBonuses,
+                itemEffects,
+                finalReward
             }
         };
     }
 
-    // Grant game completion rewards
-    async grantGameRewards(difficulty, timeTaken, maintainStreak = false) {
+    // 🎯 NEW ARCHITECTURE: grantGameRewards
+    // gameType: 'sudoku' | '2048'
+    // gameResult: game-specific result object
+    async grantGameRewards(gameType, gameResult) {
         try {
             return await this.withUser(async (_user) => {
-                const rewards = await this.calculateGameRewards(difficulty, timeTaken, maintainStreak);
+                const rewards = await this.calculateGameRewards(gameType, gameResult);
 
                 // Grant XP reward
                 await userProfile.addXP(rewards.xp);
@@ -192,11 +274,11 @@ export class Rewards {
                 // Add coins using client-side method
                 await userProfile.addCoins(rewards.coins);
 
-                // Update game stats (without streak tracking)
-                await userProfile.updateGameStats({
-                    timeSpent: timeTaken,
-                    maintainStreak: false // No longer track streak
-                });
+                // Update game stats (game-specific tracking)
+                const statsUpdate = this.buildGameStatsUpdate(gameType, gameResult);
+                if (statsUpdate) {
+                    await userProfile.updateGameStats(statsUpdate);
+                }
 
                 return {
                     success: true,
@@ -207,6 +289,28 @@ export class Rewards {
         } catch (error) {
             console.error('Error granting game rewards:', error);
             return { success: false, message: error.message || 'Lỗi khi nhận rewards' };
+        }
+    }
+
+    // 🎯 Helper: Build game stats update based on game type
+    buildGameStatsUpdate(gameType, gameResult) {
+        switch (gameType) {
+            case 'sudoku':
+                return {
+                    timeSpent: gameResult.timeTaken,
+                    sudokuGames: 1,
+                    maintainStreak: false
+                };
+
+            case '2048':
+                return {
+                    game2048Played: 1,
+                    maxTileAchieved: gameResult.maxTile,
+                    maintainStreak: false
+                };
+
+            default:
+                return null;
         }
     }
 
