@@ -10,19 +10,29 @@ import { supabase } from '../supabase/supabase.js';
 import { getCurrentUser } from '../supabase/auth.js';
 import { userProfile } from './user_profile.js';
 import { pets } from './pets.js';
+import { items } from './items.js';
 
 export class Rewards {
     constructor() {
-        // Cache để tránh query quá nhiều
-        this.cache = new Map();
-        this.cacheTimeout = 5 * 60 * 1000; // 5 phút cho rewards config
-        this.dailyRewardsCacheTimeout = 2 * 60 * 1000; // 2 phút cho daily rewards
+        // Structured caching with different TTLs
+        this.cache = {
+            config: new Map(), // Long TTL for game/daily configs
+            userState: new Map(), // Short TTL for user-specific data
+        };
+        this.cacheTimeout = {
+            config: 5 * 60 * 1000, // 5 minutes for configs
+            userState: 2 * 60 * 1000, // 2 minutes for user state
+        };
     }
 
     // Kiểm tra user đã đăng nhập chưa
     async isLoggedIn() {
+        console.log('🔐 Checking login status in rewards.isLoggedIn()...');
         const user = await getCurrentUser();
-        return !!user;
+        console.log('🔐 User from getCurrentUser():', user ? 'EXISTS' : 'NULL');
+        const result = !!user;
+        console.log('🔐 isLoggedIn result:', result);
+        return result;
     }
 
     // Lấy thông tin user hiện tại
@@ -30,16 +40,56 @@ export class Rewards {
         return await getCurrentUser();
     }
 
+    // Helper: Execute callback with authenticated user
+    async withUser(callback) {
+        const user = await this.getCurrentUser();
+        if (!user) {
+            throw new Error('Vui lòng đăng nhập để thực hiện thao tác này');
+        }
+        return callback(user);
+    }
+
+    // Cache helper methods
+    getCached(cacheType, key) {
+        const cache = this.cache[cacheType];
+        if (!cache.has(key)) return null;
+
+        const cached = cache.get(key);
+        const ttl = this.cacheTimeout[cacheType];
+        if (Date.now() - cached.timestamp > ttl) {
+            cache.delete(key);
+            return null;
+        }
+        return cached.data;
+    }
+
+    setCached(cacheType, key, data) {
+        this.cache[cacheType].set(key, {
+            data: data,
+            timestamp: Date.now()
+        });
+    }
+
+    invalidateUserCache(userId) {
+        const userKeys = [
+            `daily_rewards_${userId}`,
+            `streak_${userId}`,
+            `user_daily_${userId}`
+        ];
+        userKeys.forEach(key => this.cache.userState.delete(key));
+    }
+
+    invalidateConfigCache() {
+        this.cache.config.clear();
+    }
+
     // Lấy game rewards config
     async getGameRewardsConfig(forceRefresh = false) {
         const cacheKey = 'game_rewards_config';
 
-        // Kiểm tra cache
-        if (!forceRefresh && this.cache.has(cacheKey)) {
-            const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < this.cacheTimeout) {
-                return cached.data;
-            }
+        if (!forceRefresh) {
+            const cached = this.getCached('config', cacheKey);
+            if (cached) return cached;
         }
 
         try {
@@ -58,12 +108,7 @@ export class Rewards {
                 config[reward.difficulty] = reward;
             });
 
-            // Cache kết quả
-            this.cache.set(cacheKey, {
-                data: config,
-                timestamp: Date.now()
-            });
-
+            this.setCached('config', cacheKey, config);
             return config;
         } catch (error) {
             console.error('Error in getGameRewardsConfig:', error);
@@ -72,7 +117,7 @@ export class Rewards {
     }
 
     // Tính toán rewards cho game completion
-    async calculateGameRewards(difficulty, timeTaken, maintainStreak = false) {
+    async calculateGameRewards(difficulty, timeTaken, _maintainStreak = false) {
         const config = await this.getGameRewardsConfig();
         const difficultyConfig = config[difficulty];
 
@@ -91,20 +136,26 @@ export class Rewards {
             baseCoins = Math.floor(baseCoins * timeBonusMultiplier);
         }
 
-        // Streak bonus
-        const streakBonusMultiplier = difficultyConfig.streak_bonus_multiplier;
-        if (maintainStreak) {
-            baseXP = Math.floor(baseXP * streakBonusMultiplier);
-            baseCoins = Math.floor(baseCoins * streakBonusMultiplier);
-        }
-
         // Pet bonuses
         const petBonuses = await pets.getCurrentPetBonuses();
         baseXP = Math.floor(baseXP * (1 + petBonuses.happiness_boost / 100));
         baseCoins = Math.floor(baseCoins * (1 + petBonuses.luck_boost / 100));
 
-        // Item effects (nếu có active items)
-        // TODO: Implement item effects system
+        // Item effects (active effects from consumable items)
+        const activeEffects = await items.getCurrentActiveEffects();
+        let xpBoost = 0;
+        let coinBoost = 0;
+
+        activeEffects.forEach(effect => {
+            if (effect.effect_type === 'xp_boost') {
+                xpBoost += effect.value;
+            } else if (effect.effect_type === 'coin_boost') {
+                coinBoost += effect.value;
+            }
+        });
+
+        baseXP = Math.floor(baseXP * (1 + xpBoost / 100));
+        baseCoins = Math.floor(baseCoins * (1 + coinBoost / 100));
 
         return {
             xp: Math.max(baseXP, 1), // Minimum 1 XP
@@ -113,43 +164,42 @@ export class Rewards {
                 baseXP: difficultyConfig.base_xp,
                 baseCoins: difficultyConfig.base_coins,
                 timeBonus: timeTaken < 600,
-                streakBonus: maintainStreak,
+                streakBonus: false, // Removed streak bonus
                 petXPBonus: petBonuses.happiness_boost,
-                petCoinBonus: petBonuses.luck_boost
+                petCoinBonus: petBonuses.luck_boost,
+                itemXPBoost: xpBoost,
+                itemCoinBoost: coinBoost
             }
         };
     }
 
     // Grant game completion rewards
     async grantGameRewards(difficulty, timeTaken, maintainStreak = false) {
-        if (!(await this.isLoggedIn())) {
-            return { success: false, message: 'Vui lòng đăng nhập để nhận rewards' };
-        }
-
         try {
-            const rewards = await this.calculateGameRewards(difficulty, timeTaken, maintainStreak);
+            return await this.withUser(async (_user) => {
+                const rewards = await this.calculateGameRewards(difficulty, timeTaken, maintainStreak);
 
-            // TEMP: Use client-side XP update for now (to test if it works)
-            console.log('🔄 Using client-side XP update with amount:', rewards.xp);
-            await userProfile.addXP(rewards.xp);
+                // Grant XP reward
+                await userProfile.addXP(rewards.xp);
 
-            // Add coins using client-side method
-            await userProfile.addCoins(rewards.coins);
+                // Add coins using client-side method
+                await userProfile.addCoins(rewards.coins);
 
-            // Update game stats
-            await userProfile.updateGameStats({
-                timeSpent: timeTaken,
-                maintainStreak: maintainStreak
+                // Update game stats (without streak tracking)
+                await userProfile.updateGameStats({
+                    timeSpent: timeTaken,
+                    maintainStreak: false // No longer track streak
+                });
+
+                return {
+                    success: true,
+                    rewards: rewards,
+                    message: `Nhận được ${rewards.xp} XP và ${rewards.coins} coins!`
+                };
             });
-
-            return {
-                success: true,
-                rewards: rewards,
-                message: `Nhận được ${rewards.xp} XP và ${rewards.coins} coins!`
-            };
         } catch (error) {
             console.error('Error granting game rewards:', error);
-            return { success: false, message: 'Lỗi khi nhận rewards' };
+            return { success: false, message: error.message || 'Lỗi khi nhận rewards' };
         }
     }
 
@@ -157,12 +207,9 @@ export class Rewards {
     async getDailyRewardsConfig(forceRefresh = false) {
         const cacheKey = 'daily_rewards_config';
 
-        // Kiểm tra cache
-        if (!forceRefresh && this.cache.has(cacheKey)) {
-            const cached = this.cache.get(cacheKey);
-            if (Date.now() - cached.timestamp < this.dailyRewardsCacheTimeout) {
-                return cached.data;
-            }
+        if (!forceRefresh) {
+            const cached = this.getCached('config', cacheKey);
+            if (cached) return cached;
         }
 
         try {
@@ -176,17 +223,31 @@ export class Rewards {
                 return [];
             }
 
-            // Cache kết quả
-            this.cache.set(cacheKey, {
-                data: data,
-                timestamp: Date.now()
-            });
-
+            this.setCached('config', cacheKey, data);
             return data;
         } catch (error) {
             console.error('Error in getDailyRewardsConfig:', error);
             return [];
         }
+    }
+
+    // Helper: Get today's date in UTC (timezone-safe)
+    getTodayUTC() {
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    // Helper: Get cycle start date (Sunday of current week) in UTC
+    getCycleStartDate(today) {
+        const cycleStart = new Date(today);
+        const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        cycleStart.setDate(today.getDate() - dayOfWeek);
+        return cycleStart;
+    }
+
+    // Helper: Get day number (1 = Sunday, 2 = Monday, ..., 7 = Saturday)
+    getDayNumber(date) {
+        return date.getDay() + 1; // Convert to 1-7 range
     }
 
     // Lấy thông tin daily rewards của user hôm nay
@@ -196,12 +257,11 @@ export class Rewards {
         }
 
         try {
-            const user = await this.getCurrentUser();
-            const today = new Date();
-            const cycleStartDate = new Date(today);
-            cycleStartDate.setDate(today.getDate() - today.getDay()); // Chủ nhật của tuần này
+            const _user = await this.getCurrentUser(); // Not directly used, but required for auth
+            const today = this.getTodayUTC();
+            const cycleStartDate = this.getCycleStartDate(today);
             const cycleStartDateStr = cycleStartDate.toISOString().split('T')[0];
-            const day = today.getDay() + 1; // 1 = Chủ nhật, 2 = Thứ 2, ..., 7 = Thứ 7
+            const day = this.getDayNumber(today);
 
             const { data, error } = await supabase
                 .from('user_daily_rewards')
@@ -223,6 +283,51 @@ export class Rewards {
         }
     }
 
+    // Helper: Check if user has claimed reward today
+    async getTodayStreakIfClaimed(user) {
+        const today = this.getTodayUTC();
+        const cycleStartDate = this.getCycleStartDate(today);
+        const cycleStartDateStr = cycleStartDate.toISOString().split('T')[0];
+        const day = this.getDayNumber(today);
+
+        const { data: todayRecord } = await supabase
+            .from('user_daily_rewards')
+            .select('streak_day')
+            .eq('user_id', user.id)
+            .eq('day', day)
+            .eq('cycle_start_date', cycleStartDateStr)
+            .single();
+
+        return todayRecord ? todayRecord.streak_day : null;
+    }
+
+    // Helper: Calculate streak from last claim
+    async calculateStreakFromLastClaim(user) {
+        const { data, error } = await supabase
+            .from('user_daily_rewards')
+            .select('claimed_at, streak_day')
+            .eq('user_id', user.id)
+            .order('claimed_at', { ascending: false })
+            .limit(1);
+
+        if (error || data.length === 0) {
+            return 0;
+        }
+
+        // Check if last claim was yesterday (timezone-safe)
+        const lastClaimDate = new Date(data[0].claimed_at);
+        const today = this.getTodayUTC();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const lastClaimUTC = new Date(lastClaimDate.getFullYear(), lastClaimDate.getMonth(), lastClaimDate.getDate());
+        const yesterdayUTC = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+
+        const isYesterday = lastClaimUTC.getTime() === yesterdayUTC.getTime();
+
+        return isYesterday ? data[0].streak_day : 0;
+    }
+
     // Tính streak hiện tại cho daily rewards
     async getCurrentDailyStreak() {
         if (!(await this.isLoggedIn())) {
@@ -230,54 +335,16 @@ export class Rewards {
         }
 
         try {
-            const user = await this.getCurrentUser();
+            const _user = await this.getCurrentUser();
 
-            // Check đã claim hôm nay chưa
-            const today = new Date();
-            const cycleStartDate = new Date(today);
-            cycleStartDate.setDate(today.getDate() - today.getDay()); // Chủ nhật của tuần này
-            const cycleStartDateStr = cycleStartDate.toISOString().split('T')[0];
-            const day = today.getDay() + 1; // 1 = Chủ nhật, 2 = Thứ 2, ..., 7 = Thứ 7
-
-            const { data: todayRecord } = await supabase
-                .from('user_daily_rewards')
-                .select('streak_day')
-                .eq('user_id', user.id)
-                .eq('day', day)
-                .eq('cycle_start_date', cycleStartDateStr)
-                .single();
-
-            if (todayRecord) {
-                // Đã claim hôm nay, trả về streak hiện tại
-                return todayRecord.streak_day;
+            // Check if already claimed today
+            const todayStreak = await this.getTodayStreakIfClaimed(_user);
+            if (todayStreak !== null) {
+                return todayStreak;
             }
 
-            // Chưa claim hôm nay, kiểm tra streak từ ngày gần nhất
-            const { data, error } = await supabase
-                .from('user_daily_rewards')
-                .select('claimed_at, streak_day')
-                .eq('user_id', user.id)
-                .order('claimed_at', { ascending: false })
-                .limit(1);
-
-            if (error || data.length === 0) {
-                return 0;
-            }
-
-            // Check if last claim was yesterday
-            const lastClaimDate = new Date(data[0].claimed_at);
-            const yesterday = new Date(today);
-            yesterday.setDate(yesterday.getDate() - 1);
-
-            const isYesterday = lastClaimDate.toDateString() === yesterday.toDateString();
-
-            if (isYesterday) {
-                // Vẫn duy trì streak
-                return data[0].streak_day;
-            } else {
-                // Streak bị reset về 0 (chưa claim hôm nay)
-                return 0;
-            }
+            // Calculate streak from last claim
+            return await this.calculateStreakFromLastClaim(_user);
         } catch (error) {
             console.error('Error in getCurrentDailyStreak:', error);
             return 0;
@@ -336,6 +403,9 @@ async claimDailyReward() {
 
         console.log('✅ Daily reward claimed successfully:', result.data);
 
+        // Invalidate user cache after successful claim
+        this.invalidateDailyRewardCache(user.supabase_user_id || user.id);
+
         return {
             success: true,
             message: `Nhận daily reward ngày ${result.data.day}: ${result.data.rewards.coins} coins, ${result.data.rewards.gems} gems`,
@@ -351,57 +421,60 @@ async claimDailyReward() {
 
     // Claim level up rewards
     async claimLevelUpRewards(level) {
-        if (!(await this.isLoggedIn())) {
-            return { success: false, message: 'Vui lòng đăng nhập' };
-        }
-
         try {
-            const { data, error } = await supabase
-                .from('level_rewards')
-                .select('*')
-                .eq('level', level)
-                .single();
+            return await this.withUser(async (_user) => {
+                const { data, error } = await supabase
+                    .from('level_rewards')
+                    .select('*')
+                    .eq('level', level)
+                    .single();
 
-            if (error && error.code !== 'PGRST116') {
-                console.error('Error getting level rewards:', error);
-                return { success: false, message: 'Lỗi khi lấy level rewards' };
-            }
+                if (error && error.code !== 'PGRST116') {
+                    console.error('Error getting level rewards:', error);
+                    return { success: false, message: 'Lỗi khi lấy level rewards' };
+                }
 
-            if (!data) {
-                return { success: false, message: 'Không có rewards cho level này' };
-            }
+                if (!data) {
+                    return { success: false, message: 'Không có rewards cho level này' };
+                }
 
-            // Grant rewards
-            const rewards = [];
-            if (data.reward_coins > 0) {
-                await userProfile.addCoins(data.reward_coins);
-                rewards.push(`${data.reward_coins} coins`);
-            }
+                // Grant rewards
+                const rewards = [];
+                if (data.reward_coins > 0) {
+                    await userProfile.addCoins(data.reward_coins);
+                    rewards.push(`${data.reward_coins} coins`);
+                }
 
-            if (data.reward_gems > 0) {
-                await userProfile.addGems(data.reward_gems);
-                rewards.push(`${data.reward_gems} gems`);
-            }
+                if (data.reward_gems > 0) {
+                    await userProfile.addGems(data.reward_gems);
+                    rewards.push(`${data.reward_gems} gems`);
+                }
 
-            // TODO: Grant items and pets if specified
-            if (data.reward_item_id) {
-                // await items.addItemToInventory(data.reward_item_id, 1);
-                rewards.push('1 item');
-            }
+                if (data.reward_item_id) {
+                    // Grant item reward
+                    const itemAdded = await items.addItemToInventory(data.reward_item_id, 1);
+                    if (itemAdded) {
+                        rewards.push('1 item');
+                    }
+                }
 
-            if (data.reward_pet_id) {
-                // Special handling for pet rewards
-                rewards.push('1 pet');
-            }
+                if (data.reward_pet_id) {
+                    // Grant pet reward
+                    const petGranted = await pets.addPetToUser(data.reward_pet_id);
+                    if (petGranted) {
+                        rewards.push('1 pet');
+                    }
+                }
 
-            return {
-                success: true,
-                message: `Nhận level ${level} rewards: ${rewards.join(', ')}`,
-                rewards: data
-            };
+                return {
+                    success: true,
+                    message: `Nhận level ${level} rewards: ${rewards.join(', ')}`,
+                    rewards: data
+                };
+            });
         } catch (error) {
             console.error('Error in claimLevelUpRewards:', error);
-            return { success: false, message: 'Lỗi không xác định' };
+            return { success: false, message: error.message || 'Lỗi không xác định' };
         }
     }
 
@@ -452,9 +525,51 @@ async claimDailyReward() {
         };
     }
 
-    // Clear cache
+    // Add XP directly (for 2048 game)
+    async addXP(amount, reason = 'game_completion', referenceId = null) {
+        if (!(await this.isLoggedIn())) {
+            throw new Error('User not logged in');
+        }
+        const result = await userProfile.addXP(amount, reason, referenceId);
+        if (!result) {
+            throw new Error('Failed to add XP');
+        }
+        return result;
+    }
+
+    // Add coins directly (for 2048 game)
+    async addCoins(amount) {
+        if (!(await this.isLoggedIn())) {
+            throw new Error('User not logged in');
+        }
+        const result = await userProfile.addCoins(amount);
+        if (result === false) {
+            throw new Error('Failed to add coins');
+        }
+        return true;
+    }
+
+    // Add gems directly (for 2048 game)
+    async addGems(amount) {
+        if (!(await this.isLoggedIn())) {
+            throw new Error('User not logged in');
+        }
+        const result = await userProfile.addGems(amount);
+        if (result === false) {
+            throw new Error('Failed to add gems');
+        }
+        return true;
+    }
+
+    // Clear cache (invalidate all)
     clearCache() {
-        this.cache.clear();
+        this.cache.config.clear();
+        this.cache.userState.clear();
+    }
+
+    // Invalidate cache after claiming daily reward
+    invalidateDailyRewardCache(userId) {
+        this.invalidateUserCache(userId);
     }
 
     // Debug: log rewards config
