@@ -166,10 +166,10 @@ export async function logoutUser() {
 }
 
 /**
- * Lấy user hiện tại
- * Supabase tự động quản lý session và refresh token
+ * Lấy AUTH USER hiện tại (từ Supabase Auth)
+ * Chỉ trả về auth user với UUID - DÙNG CHO DATABASE QUERIES
  */
-export async function getCurrentUser() {
+export async function getAuthUser() {
   try {
     // ✅ Kiểm tra session trước để tránh AuthSessionMissingError
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -191,32 +191,67 @@ export async function getCurrentUser() {
       return null;
     }
 
+    console.log('🔐 Auth user ready:', user.id);
+    return user;
+
+  } catch (error) {
+    console.error('❌ Get auth user error:', error);
+    return null;
+  }
+}
+
+/**
+ * Lấy PROFILE USER hiện tại (từ bảng users)
+ * Trả về profile với username, role, etc. - DÙNG CHO UI LOGIC
+ */
+export async function getProfileUser() {
+  try {
     // 🔥 Sử dụng RPC để get/create profile (luôn thành công)
     const { data: userData, error: userError } = await supabase
       .rpc('get_or_create_profile');
 
     if (userError) {
       console.error('❌ RPC get_or_create_profile failed:', userError);
-      return {
-        user,
-        profile: null
-      };
+      return null;
     }
 
     // ✅ RPC đảm bảo luôn trả về profile
     if (!userData) {
       console.error('❌ RPC returned null profile - unexpected');
-      return {
-        user,
-        profile: null
-      };
+      return null;
     }
 
-    console.log('✅ Current user:', userData.username);
+    console.log('👤 Profile user ready:', userData.username);
+    return userData;
+
+  } catch (error) {
+    console.error('❌ Get profile user error:', error);
+    return null;
+  }
+}
+
+/**
+ * Lấy user hiện tại (LEGACY - giữ để tương thích)
+ * ⚠️  CẢNH BÁO: Hàm này trả về {user, profile} - KHÔNG DÙNG CHO DATABASE QUERIES
+ * Chỉ dùng cho code cũ chưa refactor
+ */
+export async function getCurrentUser() {
+  try {
+    const [authUser, profileUser] = await Promise.all([
+      getAuthUser(),
+      getProfileUser()
+    ]);
+
+    if (!authUser) {
+      console.log('ℹ️ No auth user');
+      return null;
+    }
+
+    console.log('✅ Current user (legacy):', profileUser?.username || 'unknown');
 
     return {
-      user,
-      profile: userData
+      user: authUser,
+      profile: profileUser
     };
 
   } catch (error) {
@@ -314,8 +349,36 @@ export async function getCurrentUserWithRetry() {
 }
 
 /**
- * Utility function để lấy user an toàn (cho các module khác dùng)
- * Tự động retry nếu cần, return profile nếu có
+ * Utility function để lấy AUTH USER an toàn (cho database queries)
+ * Trả về auth user với UUID - DÙNG CHO DATABASE QUERIES
+ */
+export async function getAuthUserSafely() {
+  try {
+    const authUser = await getAuthUser();
+    return authUser || null;
+  } catch (error) {
+    console.error('❌ Error getting auth user safely:', error);
+    return null;
+  }
+}
+
+/**
+ * Utility function để lấy PROFILE USER an toàn (cho UI logic)
+ * Trả về profile user với username, role, etc. - DÙNG CHO UI LOGIC
+ */
+export async function getProfileUserSafely() {
+  try {
+    const profileUser = await getProfileUser();
+    return profileUser || null;
+  } catch (error) {
+    console.error('❌ Error getting profile user safely:', error);
+    return null;
+  }
+}
+
+/**
+ * Utility function để lấy user an toàn (LEGACY - giữ để tương thích)
+ * ⚠️  CẢNH BÁO: Hàm này trả về profile - KHÔNG DÙNG CHO DATABASE QUERIES
  */
 export async function getUserSafely() {
   try {

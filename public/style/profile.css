@@ -955,4 +955,147 @@
     padding: var(--spacing-xs);
     font-size: 0.8rem;
   }
+}
+
+/* ============= TOAST NOTIFICATIONS ============= */
+.profile-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.profile-toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Toast types */
+.toast-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border-left: 4px solid #047857;
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-left: 4px solid #b91c1c;
+}
+
+.toast-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border-left: 4px solid #92400e;
+}
+
+.toast-info {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-left: 4px solid #1d4ed8;
+}
+
+/* ============= LOADING STATES ============= */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.loading-spinner::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--error-color, #ef4444);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Loading state for individual elements */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid currentColor;
+  border-top: 1px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 8px;
+}
+
+/* Additional loading and error styles */
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.error {
+  color: #ef4444;
+}
+
+/* Dark theme support for toasts */
+.dark-theme .profile-toast {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.dark-theme .loading-spinner {
+  color: #cccccc;
+}
+
+.dark-theme .error-message {
+  color: #ef4444;
 } 

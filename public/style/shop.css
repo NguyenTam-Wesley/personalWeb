@@ -1,5 +1,9 @@
 /* Shop Page Styles */
 
+.container {
+    padding-top: calc(var(--header-height) + 2rem);
+}
+
 .currency-bar {
     background: var(--card-bg);
     border-radius: 15px;
@@ -423,6 +427,195 @@
 
 .btn-secondary:hover {
     background: #666;
+}
+
+/* Dark Theme Overrides */
+.dark-theme {
+    background: #000000 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme * {
+    color: inherit !important;
+}
+
+.dark-theme .container {
+    background: #000000 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .currency-bar {
+    background: #333333 !important;
+    border: 1px solid #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .currency-item {
+    background: #222222 !important;
+    border: 1px solid #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .currency-amount {
+    color: #ffffff !important;
+}
+
+.dark-theme .shop-section {
+    background: #222222 !important;
+    border: 1px solid #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .shop-tabs {
+    background: #333333 !important;
+    border-bottom-color: #555555 !important;
+}
+
+.dark-theme .shop-tab {
+    background: transparent !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .shop-tab:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dark-theme .shop-tab.active {
+    background: #444444 !important;
+    color: var(--accent-primary) !important;
+}
+
+.dark-theme .shop-tab.active::after {
+    background: var(--accent-primary) !important;
+}
+
+.dark-theme .shop-content {
+    background: #222222 !important;
+}
+
+.dark-theme .filter-btn {
+    background: #333333 !important;
+    border-color: #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .filter-btn:hover {
+    border-color: var(--accent-primary) !important;
+    color: var(--accent-primary) !important;
+}
+
+.dark-theme .filter-btn.active {
+    background: var(--accent-primary) !important;
+    color: #000000 !important;
+    border-color: var(--accent-primary) !important;
+}
+
+.dark-theme .shop-item {
+    background: #333333 !important;
+    border-color: #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .shop-item:hover {
+    border-color: var(--accent-primary) !important;
+}
+
+.dark-theme .shop-item .item-name {
+    color: #ffffff !important;
+}
+
+.dark-theme .shop-item .item-description {
+    color: #cccccc !important;
+}
+
+.dark-theme .item-price {
+    color: var(--accent-primary) !important;
+}
+
+.dark-theme .pet-card {
+    background: #333333 !important;
+    border-color: #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .pet-card:hover {
+    border-color: var(--accent-primary) !important;
+}
+
+.dark-theme .pet-name {
+    color: #ffffff !important;
+}
+
+.dark-theme .pet-description {
+    color: #cccccc !important;
+}
+
+.dark-theme .pet-stat {
+    color: #cccccc !important;
+}
+
+.dark-theme .pet-price {
+    color: var(--accent-primary) !important;
+}
+
+.dark-theme .pet-requirement {
+    color: #cccccc !important;
+}
+
+.dark-theme .pet-status.available {
+    background: var(--accent-primary) !important;
+}
+
+.dark-theme .pet-status.owned {
+    background: var(--accent-primary) !important;
+}
+
+.dark-theme .pet-status.locked {
+    background: #666666 !important;
+}
+
+/* Modal Dark Theme */
+.dark-theme .modal {
+    background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark-theme .modal-content {
+    background: #222222 !important;
+    border-color: #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .modal-header {
+    border-bottom-color: #555555 !important;
+}
+
+.dark-theme .modal-header h3 {
+    color: #ffffff !important;
+}
+
+.dark-theme .modal-close {
+    color: #cccccc !important;
+}
+
+.dark-theme .modal-close:hover {
+    background: #333333 !important;
+    color: var(--accent-primary) !important;
+}
+
+.dark-theme .modal-footer {
+    border-top-color: #555555 !important;
+}
+
+.dark-theme .btn-secondary {
+    background: #333333 !important;
+    border: 1px solid #555555 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme .btn-secondary:hover {
+    background: #444444 !important;
+    border-color: var(--accent-primary) !important;
+    color: var(--accent-primary) !important;
 }
 
 /* Responsive Design */

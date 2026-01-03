@@ -50,13 +50,13 @@ Deno.serve(async (req) => {
       .eq('user_id', user_id)
       .eq('day', day)
       .eq('cycle_start_date', cycleStartDateStr)
-      .single()
+      .maybeSingle()
 
     if (existingClaim) {
       throw new Error('Already claimed daily reward today')
     }
 
-    if (checkError && checkError.code !== 'PGRST116') {
+    if (checkError) {
       console.error('❌ Check error:', checkError)
       throw new Error('Failed to check existing claims')
     }
@@ -99,19 +99,24 @@ Deno.serve(async (req) => {
     const rewards = { coins: 0, gems: 0 }
 
     if (dailyConfig.reward_coins > 0) {
-      // Fetch current coins
+      // Fetch current coins - use maybeSingle in case profile doesn't exist yet
       const { data: userData, error: fetchError } = await supabaseClient
         .from('users')
         .select('coins')
         .eq('id', user_id)
-        .single()
+        .maybeSingle()
 
       if (fetchError) {
         console.error('❌ Fetch coins error:', fetchError)
         throw new Error('Failed to fetch user coins')
       }
 
-      const newCoins = (userData?.coins || 0) + dailyConfig.reward_coins
+      // If no profile found, this user hasn't been properly initialized
+      if (!userData) {
+        throw new Error('User profile not found - please contact support')
+      }
+
+      const newCoins = (userData.coins || 0) + dailyConfig.reward_coins
 
       // Update with new value
       const { error: coinError } = await supabaseClient
@@ -127,19 +132,24 @@ Deno.serve(async (req) => {
     }
 
     if (dailyConfig.reward_gems > 0) {
-      // Fetch current gems
+      // Fetch current gems - use maybeSingle in case profile doesn't exist yet
       const { data: userData, error: fetchError } = await supabaseClient
         .from('users')
         .select('gems')
         .eq('id', user_id)
-        .single()
+        .maybeSingle()
 
       if (fetchError) {
         console.error('❌ Fetch gems error:', fetchError)
         throw new Error('Failed to fetch user gems')
       }
 
-      const newGems = (userData?.gems || 0) + dailyConfig.reward_gems
+      // If no profile found, this user hasn't been properly initialized
+      if (!userData) {
+        throw new Error('User profile not found - please contact support')
+      }
+
+      const newGems = (userData.gems || 0) + dailyConfig.reward_gems
 
       // Update with new value
       const { error: gemError } = await supabaseClient
@@ -204,7 +214,7 @@ async function calculateCurrentStreak(supabaseClient: any, userId: string): Prom
     .eq('user_id', userId)
     .eq('day', day)
     .eq('cycle_start_date', cycleStartDateStr)
-    .single()
+    .maybeSingle()
 
   if (todayClaim) {
     return todayClaim.streak_day
@@ -222,7 +232,7 @@ async function calculateCurrentStreak(supabaseClient: any, userId: string): Prom
     .eq('user_id', userId)
     .eq('day', yesterdayDay)
     .eq('cycle_start_date', yesterdayCycleStr)
-    .single()
+    .maybeSingle()
 
   if (yesterdayClaim) {
     return yesterdayClaim.streak_day

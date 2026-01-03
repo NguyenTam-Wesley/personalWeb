@@ -7,7 +7,7 @@
 // ✅ Cache để tối ưu performance
 
 import { supabase } from '../supabase/supabase.js';
-import { getCurrentUser } from '../supabase/auth.js';
+import { getAuthUser } from '../supabase/auth.js';
 import { userProfile } from './user_profile.js';
 import { pets } from './pets.js';
 import { items } from './items.js';
@@ -25,19 +25,19 @@ export class Rewards {
         };
     }
 
-    // Kiểm tra user đã đăng nhập chưa
+    // Kiểm tra user đã đăng nhập chưa (kiểm tra AUTH USER UUID)
     async isLoggedIn() {
         console.log('🔐 Checking login status in rewards.isLoggedIn()...');
-        const user = await getCurrentUser();
-        console.log('🔐 User from getCurrentUser():', user ? 'EXISTS' : 'NULL');
-        const result = !!user;
+        const authUser = await getAuthUser();
+        console.log('🔐 Auth user UUID:', authUser?.id || 'NULL');
+        const result = !!(authUser?.id);
         console.log('🔐 isLoggedIn result:', result);
         return result;
     }
 
-    // Lấy thông tin user hiện tại
+    // Lấy thông tin AUTH USER hiện tại (có UUID)
     async getCurrentUser() {
-        return await getCurrentUser();
+        return await getAuthUser();
     }
 
     // Helper: Execute callback with authenticated user
@@ -70,12 +70,19 @@ export class Rewards {
         });
     }
 
-    invalidateUserCache(userId) {
+    invalidateUserCache(authUserId) {
+        // 🛡️ CHẶN CACHE: Không có UUID → không invalidate
+        if (!authUserId) {
+            console.log('[Rewards] No auth user ID, skip cache invalidation');
+            return;
+        }
+
         const userKeys = [
-            `daily_rewards_${userId}`,
-            `streak_${userId}`,
-            `user_daily_${userId}`
+            `daily_rewards_${authUserId}`,
+            `streak_${authUserId}`,
+            `user_daily_${authUserId}`
         ];
+        console.log('[Rewards] Invalidating cache for UUID:', authUserId, userKeys);
         userKeys.forEach(key => this.cache.userState.delete(key));
     }
 
@@ -252,21 +259,26 @@ export class Rewards {
 
     // Lấy thông tin daily rewards của user hôm nay
     async getUserDailyRewards() {
-        if (!(await this.isLoggedIn())) {
-            return null;
-        }
-
         try {
-            const _user = await this.getCurrentUser(); // Not directly used, but required for auth
+            const authUser = await getAuthUser();
+
+            // 🛡️ CHẶN QUERY SỚM: Không có UUID → không query
+            if (!authUser?.id) {
+                console.log('[Rewards] Auth user not ready, skip getUserDailyRewards');
+                return null;
+            }
+
             const today = this.getTodayUTC();
             const cycleStartDate = this.getCycleStartDate(today);
             const cycleStartDateStr = cycleStartDate.toISOString().split('T')[0];
             const day = this.getDayNumber(today);
 
+            console.log('[Rewards] Querying daily rewards for UUID:', authUser.id);
+
             const { data, error } = await supabase
                 .from('user_daily_rewards')
                 .select('*')
-                .eq('user_id', user.id)
+                .eq('user_id', authUser.id)
                 .eq('day', day)
                 .eq('cycle_start_date', cycleStartDateStr)
                 .single();
@@ -284,16 +296,24 @@ export class Rewards {
     }
 
     // Helper: Check if user has claimed reward today
-    async getTodayStreakIfClaimed(user) {
+    async getTodayStreakIfClaimed(authUser) {
+        // 🛡️ CHẶN QUERY SỚM: Không có UUID → không query
+        if (!authUser?.id) {
+            console.log('[Rewards] Auth user not ready, skip getTodayStreakIfClaimed');
+            return null;
+        }
+
         const today = this.getTodayUTC();
         const cycleStartDate = this.getCycleStartDate(today);
         const cycleStartDateStr = cycleStartDate.toISOString().split('T')[0];
         const day = this.getDayNumber(today);
 
+        console.log('[Rewards] Querying today streak for UUID:', authUser.id);
+
         const { data: todayRecord } = await supabase
             .from('user_daily_rewards')
             .select('streak_day')
-            .eq('user_id', user.id)
+            .eq('user_id', authUser.id)
             .eq('day', day)
             .eq('cycle_start_date', cycleStartDateStr)
             .single();
@@ -302,11 +322,19 @@ export class Rewards {
     }
 
     // Helper: Calculate streak from last claim
-    async calculateStreakFromLastClaim(user) {
+    async calculateStreakFromLastClaim(authUser) {
+        // 🛡️ CHẶN QUERY SỚM: Không có UUID → không query
+        if (!authUser?.id) {
+            console.log('[Rewards] Auth user not ready, skip calculateStreakFromLastClaim');
+            return 0;
+        }
+
+        console.log('[Rewards] Querying streak history for UUID:', authUser.id);
+
         const { data, error } = await supabase
             .from('user_daily_rewards')
             .select('claimed_at, streak_day')
-            .eq('user_id', user.id)
+            .eq('user_id', authUser.id)
             .order('claimed_at', { ascending: false })
             .limit(1);
 
@@ -330,21 +358,25 @@ export class Rewards {
 
     // Tính streak hiện tại cho daily rewards
     async getCurrentDailyStreak() {
-        if (!(await this.isLoggedIn())) {
-            return 0;
-        }
-
         try {
-            const _user = await this.getCurrentUser();
+            const authUser = await getAuthUser();
+
+            // 🛡️ CHẶN QUERY SỚM: Không có UUID → không query
+            if (!authUser?.id) {
+                console.log('[Rewards] Auth user not ready, skip getCurrentDailyStreak');
+                return 0;
+            }
+
+            console.log('[Rewards] Calculating streak for UUID:', authUser.id);
 
             // Check if already claimed today
-            const todayStreak = await this.getTodayStreakIfClaimed(_user);
+            const todayStreak = await this.getTodayStreakIfClaimed(authUser);
             if (todayStreak !== null) {
                 return todayStreak;
             }
 
             // Calculate streak from last claim
-            return await this.calculateStreakFromLastClaim(_user);
+            return await this.calculateStreakFromLastClaim(authUser);
         } catch (error) {
             console.error('Error in getCurrentDailyStreak:', error);
             return 0;
@@ -356,11 +388,11 @@ export class Rewards {
         return 'https://calwzopyjitbtahiafzw.supabase.co';
     }    
 
-    // Claim daily reward (sử dụng Edge Function để bypass RLS)
-    // ✅ FIX: Claim daily reward with proper Authorization header
+// Claim daily reward (sử dụng Edge Function để bypass RLS)
+// ✅ FIX: Claim daily reward with proper Authorization header
 async claimDailyReward() {
-    const user = await this.getCurrentUser();
-    if (!user) {
+    const authUser = await getAuthUser();
+    if (!authUser?.id) {
         return { success: false, message: 'Vui lòng đăng nhập' };
     }
 
@@ -373,7 +405,7 @@ async claimDailyReward() {
 
         const accessToken = session.access_token;
 
-        console.log('🔑 Calling Edge Function with auth token...');
+        console.log('🔑 Calling Edge Function with auth token for UUID:', authUser.id);
 
         const response = await fetch(`${this.supabaseUrl}/functions/v1/claimDailyReward`, {
             method: 'POST',
@@ -382,16 +414,16 @@ async claimDailyReward() {
                 'Authorization': `Bearer ${accessToken}`, // ✅ FIX: Added Authorization header
             },
             body: JSON.stringify({
-                user_id: user.supabase_user_id || user.id // Use Supabase user ID
+                user_id: authUser.id // Use auth user UUID directly
             })
         });
 
         if (!response.ok) {
             const errorText = await response.text();
             console.error('❌ Edge Function error:', response.status, errorText);
-            return { 
-                success: false, 
-                message: `Lỗi ${response.status}: ${errorText}` 
+            return {
+                success: false,
+                message: `Lỗi ${response.status}: ${errorText}`
             };
         }
 
@@ -404,7 +436,7 @@ async claimDailyReward() {
         console.log('✅ Daily reward claimed successfully:', result.data);
 
         // Invalidate user cache after successful claim
-        this.invalidateDailyRewardCache(user.supabase_user_id || user.id);
+        this.invalidateDailyRewardCache(authUser.id);
 
         return {
             success: true,
@@ -527,7 +559,8 @@ async claimDailyReward() {
 
     // Add XP directly (for 2048 game)
     async addXP(amount, reason = 'game_completion', referenceId = null) {
-        if (!(await this.isLoggedIn())) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
             throw new Error('User not logged in');
         }
         const result = await userProfile.addXP(amount, reason, referenceId);
@@ -539,7 +572,8 @@ async claimDailyReward() {
 
     // Add coins directly (for 2048 game)
     async addCoins(amount) {
-        if (!(await this.isLoggedIn())) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
             throw new Error('User not logged in');
         }
         const result = await userProfile.addCoins(amount);
@@ -551,7 +585,8 @@ async claimDailyReward() {
 
     // Add gems directly (for 2048 game)
     async addGems(amount) {
-        if (!(await this.isLoggedIn())) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
             throw new Error('User not logged in');
         }
         const result = await userProfile.addGems(amount);
