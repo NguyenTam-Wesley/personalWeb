@@ -628,26 +628,17 @@ class ProfilePage {
         itemDiv.dataset.itemId = item.id;
         itemDiv.dataset.quantity = quantity;
 
-        const icon = document.createElement('div');
-        icon.className = 'item-icon';
-        icon.textContent = this.getItemIcon(item.type);
-
-        const name = document.createElement('div');
-        name.className = 'item-name';
-        name.textContent = item.name;
-
-        const qty = document.createElement('div');
-        qty.className = 'item-quantity';
-        qty.textContent = quantity;
-
-        const rarity = document.createElement('div');
-        rarity.className = `item-rarity ${item.rarity}`;
-        rarity.textContent = item.rarity;
-
-        itemDiv.appendChild(icon);
-        itemDiv.appendChild(name);
-        itemDiv.appendChild(qty);
-        itemDiv.appendChild(rarity);
+        // Create HTML structure similar to shop items
+        itemDiv.innerHTML = `
+            <div class="item-icon">${this.getItemIcon(item.type)}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-description">${item.description}</div>
+            <div class="item-quantity">
+                <span class="quantity-icon">📦</span>
+                <span>${quantity}</span>
+            </div>
+            <div class="item-rarity ${item.rarity}">${item.rarity}</div>
+        `;
 
         return itemDiv;
     }

@@ -166,6 +166,31 @@ export class Game2048 {
           this.leaderboardDropdown.style.display = 'none';
         }
       });
+
+      // ✅ SAFE AUTH LISTENER: Listen to global auth events (no conflicts)
+      this.handleAuthChange = (e) => {
+        const { event, session } = e.detail;
+        console.log('🔄 2048 received auth event:', event);
+
+        if (event === 'SIGNED_IN' && session) {
+          console.log('✅ User signed in, updating 2048 displays...');
+          this.updateBestScoreDisplay();
+          this.updateRankDisplay();
+        } else if (event === 'SIGNED_OUT') {
+          console.log('🔓 User signed out, resetting 2048 displays...');
+          if (this.bestScoreDisplay) {
+            this.bestScoreDisplay.textContent = 'Best: --';
+          }
+          if (this.rankDisplay) {
+            this.rankDisplay.textContent = 'Rank: --';
+          }
+          if (this.leaderboardDropdown) {
+            this.leaderboardDropdown.style.display = 'none';
+          }
+        }
+      };
+
+      window.addEventListener('authStateChanged', this.handleAuthChange);
     }
 
     // Touch event handlers for mobile swipe support
@@ -675,13 +700,8 @@ export class Game2048 {
       if (loginStatus) {
         try {
           console.log('📤 Submitting 2048 game result...');
-          const submitResponse = await fetch('/functions/v1/submitGameResult', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-            },
-            body: JSON.stringify({
+          const submitResult = await supabase.functions.invoke('submitGameResult', {
+            body: {
               game_code: '2048',
               mode_code: 'classic',
               metric_type: 'score',
@@ -691,15 +711,28 @@ export class Game2048 {
                 moves: this.moves,
                 gameOver: true
               }
-            })
+            }
           });
 
-          const submitResult = await submitResponse.json();
-
-          if (submitResponse.ok) {
-            console.log('✅ Game result submitted! Best score updated automatically.');
+          if (submitResult.error) {
+            console.error('❌ Failed to submit game result:', submitResult.error);
           } else {
-            console.error('❌ Failed to submit game result:', submitResult);
+            console.log('✅ Game result submitted! Best score updated automatically.');
+
+            // 🔄 REALTIME UI UPDATE: Refresh displays after successful submission
+            try {
+              await this.updateBestScoreDisplay();
+              await this.updateRankDisplay();
+
+              // Update leaderboard if it's currently open
+              if (this.leaderboardDropdown && this.leaderboardDropdown.style.display !== 'none') {
+                await this.loadLeaderboard();
+              }
+
+              console.log('✅ UI updated with latest best score and rank');
+            } catch (updateError) {
+              console.error('❌ Error updating UI after game submission:', updateError);
+            }
           }
         } catch (error) {
           console.error('❌ Error submitting game result:', error);
@@ -877,6 +910,11 @@ export class Game2048 {
         this.grid.removeEventListener("touchstart", this.handleTouchStart);
         this.grid.removeEventListener("touchmove", this.handleTouchMove);
         this.grid.removeEventListener("touchend", this.handleTouchEnd);
+      }
+
+      // Remove auth event listener
+      if (this.handleAuthChange) {
+        window.removeEventListener('authStateChanged', this.handleAuthChange);
       }
     }
   }

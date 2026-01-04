@@ -538,6 +538,42 @@ export class SudokuGame {
                 });
             });
         }
+
+        // ✅ SAFE AUTH LISTENER: Listen to global auth events (no conflicts)
+        this.handleAuthChange = (e) => {
+            const { event, session } = e.detail;
+            console.log('🔄 Sudoku received auth event:', event);
+
+            if (event === 'SIGNED_IN' && session) {
+                console.log('✅ User signed in, updating Sudoku displays...');
+                this.updateBestTimeDisplay();
+                this.updateRankDisplay();
+            } else if (event === 'SIGNED_OUT') {
+                console.log('🔓 User signed out, resetting Sudoku displays...');
+                if (this.bestTimeDisplay) {
+                    this.bestTimeDisplay.textContent = 'Best: --:--';
+                }
+                if (this.rankDisplay) {
+                    this.rankDisplay.textContent = 'Rank: --';
+                }
+                if (this.achievementsDropdown) {
+                    this.achievementsDropdown.style.display = 'none';
+                }
+                if (this.leaderboardDropdown) {
+                    this.leaderboardDropdown.style.display = 'none';
+                }
+            }
+        };
+
+        window.addEventListener('authStateChanged', this.handleAuthChange);
+    }
+
+    // Cleanup method
+    destroy() {
+        // Remove auth event listener
+        if (this.handleAuthChange) {
+            window.removeEventListener('authStateChanged', this.handleAuthChange);
+        }
     }
 
     async checkSolution() {
@@ -583,13 +619,8 @@ export class SudokuGame {
                 const user = await supabase.auth.getUser();
                 if (user.data.user) {
                     try {
-                        const submitResponse = await fetch('/functions/v1/submitGameResult', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-                            },
-                            body: JSON.stringify({
+                        const submitResult = await supabase.functions.invoke('submitGameResult', {
+                            body: {
                                 game_code: 'sudoku',
                                 mode_code: this.difficulty,
                                 metric_type: 'time',
@@ -598,15 +629,33 @@ export class SudokuGame {
                                     mistakes: 0, // TODO: Track mistakes in sudoku game
                                     completed: true
                                 }
-                            })
+                            }
                         });
 
-                        const submitResult = await submitResponse.json();
-
-                        if (submitResponse.ok) {
-                            message += '\n🎯 Game result submitted! Best score updated automatically.';
+                        if (submitResult.error) {
+                            console.error('Failed to submit game result:', submitResult.error);
                         } else {
-                            console.error('Failed to submit game result:', submitResult);
+                            message += '\n🎯 Game result submitted! Best score updated automatically.';
+
+                            // 🔄 REALTIME UI UPDATE: Refresh displays after successful submission
+                            try {
+                                await this.updateBestTimeDisplay();
+                                await this.updateRankDisplay();
+
+                                // Update achievements if dropdown is open
+                                if (this.achievementsDropdown && this.achievementsDropdown.style.display !== 'none') {
+                                    await this.showAchievements();
+                                }
+
+                                // Update leaderboard if it's currently open
+                                if (this.leaderboardDropdown && this.leaderboardDropdown.style.display !== 'none') {
+                                    await this.loadLeaderboard();
+                                }
+
+                                console.log('✅ Sudoku UI updated with latest best time and rank');
+                            } catch (updateError) {
+                                console.error('❌ Error updating Sudoku UI after game submission:', updateError);
+                            }
                         }
                     } catch (error) {
                         console.error('Error submitting game result:', error);

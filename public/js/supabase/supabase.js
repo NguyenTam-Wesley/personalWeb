@@ -20,17 +20,33 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 // ✅ Log khi khởi tạo thành công
 console.log('✅ Supabase client initialized');
 
-// ✅ Optional: Lắng nghe auth state changes (để debug hoặc handle UI)
+// ✅ BROADCAST AUTH EVENTS: Custom events for UI components to listen
 supabase.auth.onAuthStateChange((event, session) => {
   console.log('🔄 Auth event:', event);
-  
+
   if (event === 'SIGNED_IN') {
     console.log('✅ User signed in:', session?.user?.user_metadata?.username);
+    // Broadcast to all tabs/windows
+    window.dispatchEvent(new CustomEvent('authStateChanged', {
+      detail: { event: 'SIGNED_IN', session }
+    }));
   } else if (event === 'SIGNED_OUT') {
     console.log('🔓 User signed out');
+    // Broadcast to all tabs/windows
+    window.dispatchEvent(new CustomEvent('authStateChanged', {
+      detail: { event: 'SIGNED_OUT', session: null }
+    }));
   } else if (event === 'TOKEN_REFRESHED') {
     console.log('🔄 Token refreshed');
+    // Broadcast token refresh
+    window.dispatchEvent(new CustomEvent('authStateChanged', {
+      detail: { event: 'TOKEN_REFRESHED', session }
+    }));
   } else if (event === 'USER_UPDATED') {
     console.log('👤 User updated');
+    // Broadcast user update
+    window.dispatchEvent(new CustomEvent('authStateChanged', {
+      detail: { event: 'USER_UPDATED', session }
+    }));
   }
 });

@@ -188,10 +188,10 @@ class ShopPage {
 
             petsGrid.innerHTML = '';
 
-            allPets.forEach(pet => {
-                const petElement = this.createShopPet(pet);
+            for (const pet of allPets) {
+                const petElement = await this.createShopPet(pet);
                 petsGrid.appendChild(petElement);
-            });
+            }
         } catch (error) {
             console.error('Error loading pets:', error);
         }
