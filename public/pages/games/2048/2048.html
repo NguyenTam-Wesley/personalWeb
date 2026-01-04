@@ -14,11 +14,28 @@
     <div class="game-header">
       <div class="game-title-section">
         <h1>2048</h1>
-        <div id="score" class="game-score">Điểm: 0</div>
+        <div class="score-container">
+          <div id="score" class="game-score">Điểm: 0</div>
+          <div id="best-score-display" class="best-score-display">Best: --</div>
+        </div>
       </div>
       <p>Sử dụng các phím mũi tên để di chuyển | Nhấn R để chơi lại</p>
       <div class="game-controls">
         <button id="resetBtn" class="btn-secondary">Chơi lại</button>
+        <div class="rank-display-container">
+          <div id="rank-display" class="rank-display">Rank: --</div>
+        </div>
+        <div class="leaderboard-container">
+          <button id="leaderboardBtn" class="btn-secondary leaderboard-btn">🏅 Leaderboard</button>
+          <div id="leaderboardDropdown" class="leaderboard-dropdown" style="display: none;">
+            <div class="leaderboard-content">
+              <h4>Top Players</h4>
+              <div id="leaderboard-list" class="leaderboard-list">
+                <!-- Leaderboard will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

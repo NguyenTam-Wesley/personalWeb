@@ -1,4 +1,5 @@
 import { rewards } from './rewards.js';
+import { supabase } from '../supabase/supabase.js';
 
 export class Game2048 {
     constructor(gridId, size = 4) {
@@ -12,6 +13,17 @@ export class Game2048 {
       this.previousBoard = []; // Store previous board state for animation
       this.tileElements = []; // Store tile DOM elements
 
+      // UI elements
+      this.scoreDisplay = document.getElementById('score');
+      this.bestScoreDisplay = document.getElementById('best-score-display');
+      this.rankDisplay = document.getElementById('rank-display');
+      this.leaderboardBtn = document.getElementById('leaderboardBtn');
+      this.leaderboardDropdown = document.getElementById('leaderboardDropdown');
+      this.leaderboardList = document.getElementById('leaderboard-list');
+
+      // Game config cache
+      this.gameConfig = null;
+
       // Touch event properties
       this.touchStartX = null;
       this.touchStartY = null;
@@ -19,7 +31,49 @@ export class Game2048 {
       this.touchEndY = null;
       this.minSwipeDistance = 50; // Minimum distance for swipe detection
     }
-  
+
+    // Load game configuration
+    async loadGameConfig() {
+      if (this.gameConfig) return this.gameConfig;
+
+      try {
+        // Get game ID
+        const { data: gameData, error: gameError } = await supabase
+          .from('games')
+          .select('id')
+          .eq('code', '2048')
+          .maybeSingle();
+
+        if (gameError || !gameData) {
+          console.error('Failed to load game config:', gameError);
+          return null;
+        }
+
+        // Get mode ID
+        const { data: modeData, error: modeError } = await supabase
+          .from('game_modes')
+          .select('id')
+          .eq('game_id', gameData.id)
+          .eq('code', 'classic')
+          .maybeSingle();
+
+        if (modeError || !modeData) {
+          console.error('Failed to load game mode config:', modeError);
+          return null;
+        }
+
+        this.gameConfig = {
+          gameId: gameData.id,
+          modeId: modeData.id
+        };
+
+        return this.gameConfig;
+      } catch (error) {
+        console.error('Error loading game config:', error);
+        return null;
+      }
+    }
+
     init() {
       this.board = Array(this.size)
         .fill()
@@ -36,6 +90,11 @@ export class Game2048 {
       this.addRandomTile();
       this.addRandomTile();
       this.render();
+
+      // Update displays
+      this.updateScoreDisplay();
+      this.updateBestScoreDisplay();
+      this.updateRankDisplay();
 
       this.bindEvents();
     }
@@ -90,6 +149,23 @@ export class Game2048 {
       this.grid.addEventListener("touchstart", this.handleTouchStart.bind(this), { passive: false });
       this.grid.addEventListener("touchmove", this.handleTouchMove.bind(this), { passive: false });
       this.grid.addEventListener("touchend", this.handleTouchEnd.bind(this), { passive: false });
+
+      // Leaderboard button
+      if (this.leaderboardBtn) {
+        this.leaderboardBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.toggleLeaderboard();
+        });
+      }
+
+      // Close leaderboard when clicking outside
+      document.addEventListener('click', (e) => {
+        if (this.leaderboardDropdown &&
+            !this.leaderboardDropdown.contains(e.target) &&
+            !this.leaderboardBtn.contains(e.target)) {
+          this.leaderboardDropdown.style.display = 'none';
+        }
+      });
     }
 
     // Touch event handlers for mobile swipe support
@@ -593,12 +669,42 @@ export class Game2048 {
       if (coins > 0) message += `🪙 Coins: ${coins}\n`;
       if (gems > 0) message += `💎 Gems: ${gems}\n`;
 
-      // Grant rewards nếu user đã đăng nhập
-      console.log('🔍 About to check if user is logged in...');
+      // Submit game result qua Edge Function (tự động tính XP và update best score)
       const loginStatus = await rewards.isLoggedIn();
-      console.log('🔍 Login check result:', loginStatus);
 
       if (loginStatus) {
+        try {
+          console.log('📤 Submitting 2048 game result...');
+          const submitResponse = await fetch('/functions/v1/submitGameResult', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+            },
+            body: JSON.stringify({
+              game_code: '2048',
+              mode_code: 'classic',
+              metric_type: 'score',
+              metric_value: this.score,
+              extra_data: {
+                maxTile: maxTile,
+                moves: this.moves,
+                gameOver: true
+              }
+            })
+          });
+
+          const submitResult = await submitResponse.json();
+
+          if (submitResponse.ok) {
+            console.log('✅ Game result submitted! Best score updated automatically.');
+          } else {
+            console.error('❌ Failed to submit game result:', submitResult);
+          }
+        } catch (error) {
+          console.error('❌ Error submitting game result:', error);
+        }
+
         console.log('✅ User is logged in, granting rewards...');
         try {
           // 🎯 Use new architecture: grantGameRewards with game result
@@ -647,6 +753,117 @@ export class Game2048 {
         console.error('💥 CRITICAL ERROR in handleGameOver:', error);
         console.error('Stack trace:', error.stack);
         alert(`❌ Lỗi nghiêm trọng khi xử lý rewards: ${error.message}\n\nNhấn R để chơi lại`);
+      }
+    }
+
+    // Update score display
+    updateScoreDisplay() {
+      if (this.scoreDisplay) {
+        this.scoreDisplay.textContent = `Điểm: ${this.score}`;
+      }
+    }
+
+    // Update best score display
+    async updateBestScoreDisplay() {
+      if (!this.bestScoreDisplay) return;
+
+      try {
+        const config = await this.loadGameConfig();
+        if (!config) {
+          this.bestScoreDisplay.textContent = 'Best: --';
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('game_best_scores')
+          .select('metric_value')
+          .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+          .eq('game_id', config.gameId)
+          .eq('mode_id', config.modeId)
+          .maybeSingle();
+
+        if (error || !data) {
+          this.bestScoreDisplay.textContent = 'Best: --';
+          return;
+        }
+
+        this.bestScoreDisplay.textContent = `Best: ${data.metric_value}`;
+      } catch (error) {
+        console.error('Error updating best score display:', error);
+        this.bestScoreDisplay.textContent = 'Best: --';
+      }
+    }
+
+    // Update rank display
+    async updateRankDisplay() {
+      if (!this.rankDisplay) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('v_user_best_scores')
+          .select('user_rank')
+          .eq('game_code', '2048')
+          .eq('mode_code', 'classic')
+          .maybeSingle();
+
+        if (error || !data) {
+          this.rankDisplay.textContent = 'Rank: --';
+          return;
+        }
+
+        this.rankDisplay.textContent = `Rank: #${data.user_rank || '--'}`;
+      } catch (error) {
+        console.error('Error updating rank display:', error);
+        this.rankDisplay.textContent = 'Rank: --';
+      }
+    }
+
+    // Toggle leaderboard dropdown
+    toggleLeaderboard() {
+      if (!this.leaderboardDropdown) return;
+
+      const isVisible = this.leaderboardDropdown.style.display !== 'none';
+
+      if (isVisible) {
+        this.leaderboardDropdown.style.display = 'none';
+      } else {
+        this.leaderboardDropdown.style.display = 'block';
+        this.loadLeaderboard();
+      }
+    }
+
+    // Load leaderboard data
+    async loadLeaderboard() {
+      if (!this.leaderboardList) return;
+
+      try {
+        const { data, error } = await supabase
+          .rpc('get_leaderboard', {
+            p_game_code: '2048',
+            p_mode_code: 'classic',
+            p_limit: 10
+          });
+
+        if (error) {
+          console.error('Error loading leaderboard:', error);
+          this.leaderboardList.innerHTML = '<div class="leaderboard-item">Không thể tải leaderboard</div>';
+          return;
+        }
+
+        const user = await supabase.auth.getUser();
+        const currentUserId = user.data.user?.id;
+
+        this.leaderboardList.innerHTML = data.map(item => `
+          <div class="leaderboard-item ${item.user_id === currentUserId ? 'current-user' : ''}">
+            <span class="leaderboard-rank">${item.rank}</span>
+            <span class="leaderboard-username">${item.username}</span>
+            <span class="leaderboard-score">${item.metric_value.toLocaleString()}</span>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        console.error('Error in loadLeaderboard:', error);
+        this.leaderboardList.innerHTML = '<div class="leaderboard-item">Lỗi tải dữ liệu</div>';
       }
     }
 

@@ -13,6 +13,47 @@ import { items } from './items.js';
 import { pets } from './pets.js';
 import { sudokuScores } from './sudoku_scores.js';
 
+// Helper function to get best time from game_best_scores
+async function getBestTimeFromGameBestScores(difficulty) {
+    try {
+        const user = await supabase.auth.getUser();
+        if (!user.data.user) return null;
+
+        // Get game and mode IDs
+        const { data: gameData } = await supabase
+            .from('games')
+            .select('id')
+            .eq('code', 'sudoku')
+            .maybeSingle();
+
+        if (!gameData) return null;
+
+        const { data: modeData } = await supabase
+            .from('game_modes')
+            .select('id')
+            .eq('game_id', gameData.id)
+            .eq('code', difficulty)
+            .maybeSingle();
+
+        if (!modeData) return null;
+
+        const { data, error } = await supabase
+            .from('game_best_scores')
+            .select('metric_value')
+            .eq('user_id', user.data.user.id)
+            .eq('game_id', gameData.id)
+            .eq('mode_id', modeData.id)
+            .maybeSingle();
+
+        if (error || !data) return null;
+
+        return data.metric_value;
+    } catch (error) {
+        console.error('Error getting best time from game_best_scores:', error);
+        return null;
+    }
+}
+
 export class Achievements {
     constructor() {
         // Cache để tránh query quá nhiều
@@ -199,7 +240,7 @@ export class Achievements {
                         achievement.difficulty_filter !== triggerData.difficulty) {
                         return false;
                     }
-                    const bestTime = await sudokuScores.getBestScore(triggerData.difficulty);
+                    const bestTime = await getBestTimeFromGameBestScores(triggerData.difficulty);
                     return bestTime && bestTime <= achievement.trigger_value;
 
                 case 'streak':
@@ -502,7 +543,7 @@ export class Achievements {
                         achievement.difficulty_filter !== triggerData.difficulty) {
                         return false;
                     }
-                    const bestTime = await sudokuScores.getBestScore(triggerData.difficulty);
+                    const bestTime = await getBestTimeFromGameBestScores(triggerData.difficulty);
                     return bestTime && bestTime <= achievement.trigger_value;
 
                 case 'streak':
@@ -556,7 +597,7 @@ export class Achievements {
                     .select('id')
                     .eq('user_id', user.id)
                     .eq('achievement_id', achievement.id)
-                    .single();
+                    .maybeSingle();
 
                 if (existing) continue; // Đã unlock rồi
 

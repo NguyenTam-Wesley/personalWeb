@@ -211,15 +211,33 @@ async function checkAchievementCondition(
           return false
         }
 
-        // Get best time from sudoku_scores
-        const { data: bestScore } = await supabaseClient
-          .from('sudoku_scores')
-          .select('best_time')
-          .eq('user_id', userId)
-          .eq('difficulty', triggerData.difficulty)
+        // Get best time from game_best_scores
+        const { data: gameData } = await supabaseClient
+          .from('games')
+          .select('id')
+          .eq('code', 'sudoku')
           .single()
 
-        return bestScore && bestScore.best_time <= achievement.trigger_value
+        if (!gameData) return false
+
+        const { data: modeData } = await supabaseClient
+          .from('game_modes')
+          .select('id')
+          .eq('game_id', gameData.id)
+          .eq('code', triggerData.difficulty)
+          .single()
+
+        if (!modeData) return false
+
+        const { data: bestScore } = await supabaseClient
+          .from('game_best_scores')
+          .select('metric_value')
+          .eq('user_id', userId)
+          .eq('game_id', gameData.id)
+          .eq('mode_id', modeData.id)
+          .single()
+
+        return bestScore && bestScore.metric_value <= achievement.trigger_value
       }
 
       case 'streak': {

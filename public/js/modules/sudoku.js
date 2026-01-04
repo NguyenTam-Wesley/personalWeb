@@ -10,6 +10,18 @@ const DIFFICULTY = {
 // Import modules
 import { rewards } from './rewards.js';
 import { achievements } from './achievements.js';
+import { supabase } from '../supabase/supabase.js';
+
+// Utility function to format time
+function formatTime(seconds) {
+    if (seconds === null || seconds === undefined) {
+        return '--:--';
+    }
+
+    const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    return `${mins}:${secs}`;
+}
 
 const DIFFICULTY_SETTINGS = {
     easy: { min: 35, max: 40, name: "EZ" },
@@ -29,7 +41,8 @@ const HINT_PENALTY = {
 };
 
 export class SudokuGame {
-    constructor(sudokuScoresInstance, difficulty = DIFFICULTY.MEDIUM) {
+    constructor(sudokuScoresInstance = null, difficulty = DIFFICULTY.MEDIUM) {
+        // Legacy parameter for backward compatibility
         this.sudokuScores = sudokuScoresInstance;
         this.difficulty = difficulty;
 
@@ -46,9 +59,16 @@ export class SudokuGame {
         this.difficultySelect = document.getElementById("difficulty");
         this.loadingIndicator = document.getElementById("loadingIndicator");
         this.bestTimeDisplay = document.getElementById("best-time-display");
+        this.rankDisplay = document.getElementById("rank-display");
         this.achievementsBtn = document.getElementById("achievementsBtn");
         this.achievementsDropdown = document.getElementById("achievementsDropdown");
         this.achievementsList = document.getElementById("achievements-list");
+        this.leaderboardBtn = document.getElementById("leaderboardBtn");
+        this.leaderboardDropdown = document.getElementById("leaderboardDropdown");
+        this.leaderboardList = document.getElementById("leaderboard-list");
+
+        // Game config cache
+        this.gameConfig = null;
 
         // Number input buttons for mobile
         this.numberButtons = document.getElementById("number-buttons");
@@ -71,12 +91,59 @@ export class SudokuGame {
         this.init();
     }
 
+    // Load game configuration for current difficulty
+    async loadGameConfig() {
+        const cacheKey = `config_${this.difficulty}`;
+        if (this.gameConfig && this.gameConfig.difficulty === this.difficulty) {
+            return this.gameConfig;
+        }
+
+        try {
+            // Get game ID
+            const { data: gameData, error: gameError } = await supabase
+                .from('games')
+                .select('id')
+                .eq('code', 'sudoku')
+                .maybeSingle();
+
+            if (gameError || !gameData) {
+                console.error('Failed to load game config:', gameError);
+                return null;
+            }
+
+            // Get mode ID for current difficulty
+            const { data: modeData, error: modeError } = await supabase
+                .from('game_modes')
+                .select('id')
+                .eq('game_id', gameData.id)
+                .eq('code', this.difficulty)
+                .maybeSingle();
+
+            if (modeError || !modeData) {
+                console.error('Failed to load game mode config:', modeError);
+                return null;
+            }
+
+            this.gameConfig = {
+                gameId: gameData.id,
+                modeId: modeData.id,
+                difficulty: this.difficulty
+            };
+
+            return this.gameConfig;
+        } catch (error) {
+            console.error('Error loading game config:', error);
+            return null;
+        }
+    }
+
     init() {
         // Khởi tạo UI và events
         this.setupEventListeners();
 
-        // Hiển thị best time ban đầu
+        // Hiển thị best time và rank ban đầu
         this.updateBestTimeDisplay();
+        this.updateRankDisplay();
 
         // Sinh Sudoku đầu tiên qua Web Worker
         this.newGame();
@@ -409,6 +476,7 @@ export class SudokuGame {
             this.difficultySelect.addEventListener('change', (e) => {
                 this.difficulty = e.target.value;
                 this.updateBestTimeDisplay();
+                this.updateRankDisplay();
                 this.newGame();
             });
         }
@@ -421,12 +489,26 @@ export class SudokuGame {
             });
         }
 
+        // Leaderboard dropdown
+        if (this.leaderboardBtn) {
+            this.leaderboardBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleLeaderboard();
+            });
+        }
+
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if (this.achievementsDropdown &&
                 !this.achievementsDropdown.contains(e.target) &&
                 !this.achievementsBtn.contains(e.target)) {
                 this.achievementsDropdown.style.display = 'none';
+            }
+
+            if (this.leaderboardDropdown &&
+                !this.leaderboardDropdown.contains(e.target) &&
+                !this.leaderboardBtn.contains(e.target)) {
+                this.leaderboardDropdown.style.display = 'none';
             }
         });
 
@@ -497,13 +579,37 @@ export class SudokuGame {
 
                 let message = `🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!`;
 
-                // Lưu best time nếu user đã đăng nhập
-                if (await this.sudokuScores.isLoggedIn()) {
-                    const saved = await this.sudokuScores.saveScore(this.difficulty, this.seconds);
-                    if (saved) {
-                        // Cập nhật best time display
-                        await this.updateBestTimeDisplay();
-                        message += '\n🎯 Thành tích mới được lưu!';
+                // Submit game result qua Edge Function (tự động tính XP và update best score)
+                const user = await supabase.auth.getUser();
+                if (user.data.user) {
+                    try {
+                        const submitResponse = await fetch('/functions/v1/submitGameResult', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+                            },
+                            body: JSON.stringify({
+                                game_code: 'sudoku',
+                                mode_code: this.difficulty,
+                                metric_type: 'time',
+                                metric_value: this.seconds,
+                                extra_data: {
+                                    mistakes: 0, // TODO: Track mistakes in sudoku game
+                                    completed: true
+                                }
+                            })
+                        });
+
+                        const submitResult = await submitResponse.json();
+
+                        if (submitResponse.ok) {
+                            message += '\n🎯 Game result submitted! Best score updated automatically.';
+                        } else {
+                            console.error('Failed to submit game result:', submitResult);
+                        }
+                    } catch (error) {
+                        console.error('Error submitting game result:', error);
                     }
 
                     // Grant game rewards using new architecture
@@ -664,15 +770,92 @@ export class SudokuGame {
 
     // Cập nhật hiển thị best time cho độ khó hiện tại
     async updateBestTimeDisplay() {
-        if (!this.bestTimeDisplay || !(await this.sudokuScores.isLoggedIn())) {
-            if (this.bestTimeDisplay) {
-                this.bestTimeDisplay.textContent = 'Best: --:--';
-            }
+        if (!this.bestTimeDisplay) {
             return;
         }
 
-        const bestTime = await this.sudokuScores.getBestScore(this.difficulty);
-        this.bestTimeDisplay.textContent = `Best: ${this.sudokuScores.formatTime(bestTime)}`;
+        const user = await supabase.auth.getUser();
+        if (!user.data.user) {
+            this.bestTimeDisplay.textContent = 'Best: --:--';
+            return;
+        }
+
+        const bestTime = await this.getBestTimeFromBestScores(this.difficulty);
+        this.bestTimeDisplay.textContent = `Best: ${formatTime(bestTime)}`;
+    }
+
+    // Get all best scores từ game_best_scores table
+    async getAllBestScores() {
+        try {
+            const user = await supabase.auth.getUser();
+            if (!user.data.user) return {};
+
+            const { data, error } = await supabase
+                .from('game_best_scores')
+                .select('mode_id, metric_value')
+                .eq('user_id', user.data.user.id)
+                .eq('game_id', (await this.loadGameConfig())?.gameId)
+                .eq('metric_type', 'time');
+
+            if (error || !data) return {};
+
+            // Map mode_id back to difficulty codes
+            const modeToDifficulty = {};
+            const difficulties = ['easy', 'medium', 'hard', 'very_hard', 'expert'];
+
+            // Get all mode data
+            const { data: modes } = await supabase
+                .from('game_modes')
+                .select('id, code')
+                .eq('game_id', (await this.loadGameConfig())?.gameId);
+
+            if (modes) {
+                modes.forEach(mode => {
+                    modeToDifficulty[mode.id] = mode.code;
+                });
+            }
+
+            // Convert to object format {easy: time, medium: time, ...}
+            const scores = {};
+            data.forEach(record => {
+                const difficulty = modeToDifficulty[record.mode_id];
+                if (difficulty) {
+                    scores[difficulty] = record.metric_value;
+                }
+            });
+
+            return scores;
+        } catch (error) {
+            console.error('Error getting all best scores:', error);
+            return {};
+        }
+    }
+
+    // Get best time từ game_best_scores table
+    async getBestTimeFromBestScores(difficulty) {
+        try {
+            const user = await supabase.auth.getUser();
+            if (!user.data.user) return null;
+
+            const config = await this.loadGameConfig();
+            if (!config) return null;
+
+            const { data, error } = await supabase
+                .from('game_best_scores')
+                .select('metric_value')
+                .eq('user_id', user.data.user.id)
+                .eq('game_id', config.gameId)
+                .eq('mode_id', config.modeId);
+
+            if (error || !data || data.length === 0) {
+                return null;
+            }
+
+            return data[0].metric_value;
+        } catch (error) {
+            console.error('Error getting best time from best scores:', error);
+            return null;
+        }
     }
 
     // Toggle achievements dropdown
@@ -732,13 +915,14 @@ export class SudokuGame {
     async showAchievements() {
         if (!this.achievementsDropdown || !this.achievementsList) return;
 
-        if (!(await this.sudokuScores.isLoggedIn())) {
+        const user = await supabase.auth.getUser();
+        if (!user.data.user) {
             this.achievementsList.innerHTML = '<div style="text-align: center; color: var(--text-light);">Vui lòng đăng nhập để xem thành tích</div>';
             this.achievementsDropdown.style.display = 'block';
             return;
         }
 
-        const scores = await this.sudokuScores.getAllScores();
+        const scores = await this.getAllBestScores();
 
         const difficultyNames = {
             easy: 'EZ',
@@ -755,7 +939,7 @@ export class SudokuGame {
             return `
                 <div class="achievement-item">
                     <span class="achievement-difficulty">${difficultyNames[diff]}</span>
-                    <span class="achievement-time">${time ? this.sudokuScores.formatTime(time) : '<span class="achievement-no-score">Chưa chơi</span>'}</span>
+                    <span class="achievement-time">${time ? formatTime(time) : '<span class="achievement-no-score">Chưa chơi</span>'}</span>
                 </div>
             `;
         }).join('');
@@ -779,6 +963,92 @@ export class SudokuGame {
     //     localStorage.setItem('lastGameDate', today);
     //     return false;
     // }
+
+    // Update rank display
+    async updateRankDisplay() {
+        if (!this.rankDisplay) {
+            return;
+        }
+
+        const user = await supabase.auth.getUser();
+        if (!user.data.user) {
+            this.rankDisplay.textContent = 'Rank: --';
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('v_user_best_scores')
+                .select('user_rank')
+                .eq('game_code', 'sudoku')
+                .eq('mode_code', this.difficulty)
+                .maybeSingle();
+
+            if (error || !data) {
+                this.rankDisplay.textContent = 'Rank: --';
+                return;
+            }
+
+            this.rankDisplay.textContent = `Rank: #${data.user_rank || '--'}`;
+        } catch (error) {
+            console.error('Error updating rank display:', error);
+            this.rankDisplay.textContent = 'Rank: --';
+        }
+    }
+
+    // Toggle leaderboard dropdown
+    toggleLeaderboard() {
+        if (!this.leaderboardDropdown) return;
+
+        const isVisible = this.leaderboardDropdown.style.display !== 'none';
+
+        // Hide achievements dropdown if visible
+        if (this.achievementsDropdown && this.achievementsDropdown.style.display !== 'none') {
+            this.achievementsDropdown.style.display = 'none';
+        }
+
+        if (isVisible) {
+            this.leaderboardDropdown.style.display = 'none';
+        } else {
+            this.leaderboardDropdown.style.display = 'block';
+            this.loadLeaderboard();
+        }
+    }
+
+    // Load leaderboard data
+    async loadLeaderboard() {
+        if (!this.leaderboardList) return;
+
+        try {
+            const { data, error } = await supabase
+                .rpc('get_leaderboard', {
+                    p_game_code: 'sudoku',
+                    p_mode_code: this.difficulty,
+                    p_limit: 10
+                });
+
+            if (error) {
+                console.error('Error loading leaderboard:', error);
+                this.leaderboardList.innerHTML = '<div class="leaderboard-item">Không thể tải leaderboard</div>';
+                return;
+            }
+
+            const user = await supabase.auth.getUser();
+            const currentUserId = user.data.user?.id;
+
+            this.leaderboardList.innerHTML = data.map(item => `
+                <div class="leaderboard-item ${item.user_id === currentUserId ? 'current-user' : ''}">
+                    <span class="leaderboard-rank">${item.rank}</span>
+                    <span class="leaderboard-username">${item.username}</span>
+                    <span class="leaderboard-score">${formatTime(item.metric_value)}</span>
+                </div>
+            `).join('');
+
+        } catch (error) {
+            console.error('Error in loadLeaderboard:', error);
+            this.leaderboardList.innerHTML = '<div class="leaderboard-item">Lỗi tải dữ liệu</div>';
+        }
+    }
 
     // Detect if device is mobile/touch device
     isMobileDevice() {
