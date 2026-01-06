@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reward System - XP, Coins, Gems</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .game-section {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+
+        .game-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .game-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        select, input {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .game-over-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+
+        .stats-panel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+        }
+
+        .stats-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .level { color: #007bff; }
+        .xp { color: #28a745; }
+        .coins { color: #ffc107; }
+        .gems { color: #e83e8c; }
+
+        .xp-bar-container {
+            background: #e9ecef;
+            border-radius: 20px;
+            height: 20px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .xp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .xp-text {
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 5px;
+            color: #6c757d;
+        }
+
+        .game-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .game-result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .game-result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .logs-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .logs-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .logs-container {
+            background: #343a40;
+            color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .log-time {
+            color: #6c757d;
+        }
+
+        .log-level-info { color: #17a2b8; }
+        .log-level-success { color: #28a745; }
+        .log-level-error { color: #dc3545; }
+        .log-level-reward { color: #ffc107; font-weight: bold; }
+
+        /* Reward notification styles */
+        .reward-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-family: 'Arial', sans-serif;
+            max-width: 300px;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .reward-notification h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Test Reward System</h1>
+            <p>Test XP, Coins & Gems rewards based on game performance</p>
+        </div>
+
+        <div class="game-section">
+            <!-- Game Area -->
+            <div class="game-area">
+                <h2>🎯 Game Simulator</h2>
+
+                <div class="game-controls">
+                    <div class="control-group">
+                        <label for="game-select">Game:</label>
+                        <select id="game-select">
+                            <option value="sudoku">Sudoku</option>
+                            <option value="2048">2048</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="mode-select">Mode/Difficulty:</label>
+                        <select id="mode-select" id="mode-select">
+                            <!-- Options will be populated dynamically based on selected game -->
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="metric-type-select">Metric Type:</label>
+                        <select id="metric-type-select">
+                            <option value="time">Time (seconds)</option>
+                            <option value="score">Score (points)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="metric-value-input">Metric Value:</label>
+                        <input type="number" id="metric-value-input" value="100" min="1" max="1000000">
+                    </div>
+                </div>
+
+                <div class="game-buttons">
+                    <button class="play-btn" onclick="startGame()" id="play-btn">
+                        🎮 Start Game
+                    </button>
+                    <button class="game-over-btn" onclick="endGame()" id="end-btn" disabled>
+                        💀 Game Over (Submit Result)
+                    </button>
+                </div>
+
+                <div id="game-result" class="game-result"></div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="stats-panel">
+                <div class="stats-title">📊 User Stats</div>
+
+                <div class="stat-item">
+                    <span class="stat-label">Level:</span>
+                    <span class="stat-value level" id="level-display">1</span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="stat-label">XP:</span>
+                    <span class="stat-value xp" id="xp-display">0 / 1000</span>
+                </div>
+
+                <div class="xp-bar-container">
+                    <div class="xp-bar" id="xp-bar"></div>
+                </div>
+                <div class="xp-text" id="xp-text">0 / 1000 XP to next level</div>
+
+                <div class="stat-item">
+                    <span class="stat-label">🪙 Coins:</span>
+                    <span class="stat-value coins" id="coins-display">0</span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="stat-label">💎 Gems:</span>
+                    <span class="stat-value gems" id="gems-display">0</span>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="refreshStats()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        🔄 Refresh Stats
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Section -->
+        <div class="logs-section">
+            <div class="logs-title">📋 Activity Logs</div>
+            <div class="logs-container" id="logs-container">
+                <div class="log-entry">
+                    <span class="log-time">[00:00:00]</span>
+                    <span class="log-level-info">System initialized</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { supabase } from '../public/js/supabase/supabase.js';
+        import { rewards } from '../public/js/modules/rewards.js';
+        import { userProfile } from '../public/js/modules/user_profile.js';
+
+        // Global state
+        let currentUser = null;
+        let isGameActive = false;
+        let currentSessionId = null;
+
+        // Game mode configurations
+        const GAME_MODES = {
+            sudoku: [
+                { code: 'easy', name: 'Easy' },
+                { code: 'medium', name: 'Medium' },
+                { code: 'hard', name: 'Hard' },
+                { code: 'very_hard', name: 'Very Hard' },
+                { code: 'expert', name: 'Expert' }
+            ],
+            '2048': [
+                { code: 'classic', name: 'Classic' }
+            ]
+        };
+
+        // DOM elements
+        const playBtn = document.getElementById('play-btn');
+        const endBtn = document.getElementById('end-btn');
+        const gameResult = document.getElementById('game-result');
+        const logsContainer = document.getElementById('logs-container');
+        const gameSelect = document.getElementById('game-select');
+        const modeSelect = document.getElementById('mode-select');
+
+        // Initialize
+        async function init() {
+            log('info', 'Initializing test reward system...');
+
+            try {
+                // Check authentication
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error || !user) {
+                    log('error', 'User not authenticated. Please login first.');
+                    alert('Please login first to use the reward system test!');
+                    return;
+                }
+
+                currentUser = user;
+                log('success', `Authenticated as: ${user.email}`);
+
+                // Load initial stats
+                await refreshStats();
+
+                // Initialize mode options
+                updateModeOptions();
+
+            } catch (error) {
+                log('error', `Initialization failed: ${error.message}`);
+                console.error('Init error:', error);
+            }
+        }
+
+        // Start game simulation
+        window.startGame = function() {
+            if (isGameActive) return;
+
+            isGameActive = true;
+            playBtn.disabled = true;
+            endBtn.disabled = false;
+            playBtn.textContent = '🎮 Game In Progress...';
+
+            const game = document.getElementById('game-select').value;
+            const mode = document.getElementById('mode-select').value;
+
+            log('info', `Started ${game} game in ${mode} mode`);
+            gameResult.style.display = 'none';
+        };
+
+        // End game and submit result
+        window.endGame = async function() {
+            if (!isGameActive) return;
+
+            try {
+                endBtn.disabled = true;
+                endBtn.innerHTML = '<span class="loading"></span>Submitting...';
+
+                const gameCode = document.getElementById('game-select').value;
+                const modeCode = document.getElementById('mode-select').value;
+                const metricType = document.getElementById('metric-type-select').value;
+                const metricValue = parseInt(document.getElementById('metric-value-input').value);
+
+                log('info', `Submitting ${gameCode} result: ${metricValue} ${metricType} (${modeCode} mode)`);
+
+                // Step 1: Submit game result
+                const submitResult = await supabase.functions.invoke('submitGameResult', {
+                    body: {
+                        game_code: gameCode,
+                        mode_code: modeCode,
+                        metric_type: metricType,
+                        metric_value: metricValue,
+                        extra_data: {
+                            test_mode: true,
+                            timestamp: new Date().toISOString()
+                        }
+                    }
+                });
+
+                if (submitResult.error) {
+                    throw new Error(`Submit failed: ${submitResult.error.message}`);
+                }
+
+                const sessionId = submitResult.data?.session_id;
+                if (!sessionId) {
+                    throw new Error('No session ID returned from submit');
+                }
+
+                currentSessionId = sessionId;
+                log('success', `Game result submitted. Session ID: ${sessionId}`);
+
+                // Step 2: Calculate rewards
+                log('info', 'Calculating rewards...');
+                const rewardData = await rewards.calculateRewardsForSession(sessionId);
+
+                log('reward', `Rewards earned: ${JSON.stringify(rewardData)}`);
+
+                // Step 3: Show reward notification
+                showRewardNotification(rewardData);
+
+                // Step 4: Update stats
+                await refreshStats();
+
+                // Step 5: Show success message
+                gameResult.className = 'game-result success';
+                gameResult.innerHTML = `
+                    <h3>✅ Game Result Submitted!</h3>
+                    <p><strong>Game:</strong> ${gameCode} (${modeCode})</p>
+                    <p><strong>Performance:</strong> ${metricValue} ${metricType}</p>
+                    <p><strong>Session ID:</strong> ${sessionId}</p>
+                    <p><strong>Rewards Applied!</strong></p>
+                `;
+                gameResult.style.display = 'block';
+
+            } catch (error) {
+                log('error', `Game submission failed: ${error.message}`);
+                console.error('Submit error:', error);
+
+                gameResult.className = 'game-result error';
+                gameResult.innerHTML = `
+                    <h3>❌ Submission Failed</h3>
+                    <p>Error: ${error.message}</p>
+                `;
+                gameResult.style.display = 'block';
+            } finally {
+                // Reset UI
+                isGameActive = false;
+                playBtn.disabled = false;
+                playBtn.textContent = '🎮 Start Game';
+                endBtn.disabled = true;
+                endBtn.textContent = '💀 Game Over (Submit Result)';
+            }
+        };
+
+        // Refresh user stats
+        window.refreshStats = async function() {
+            try {
+                log('info', 'Refreshing user stats...');
+
+                // Get user profile data
+                const profile = await userProfile.getProfile();
+                if (!profile) {
+                    log('error', 'Could not load user profile');
+                    return;
+                }
+
+                // Update displays
+                document.getElementById('level-display').textContent = profile.level || 1;
+                document.getElementById('coins-display').textContent = (profile.coins || 0).toLocaleString();
+                document.getElementById('gems-display').textContent = (profile.gems || 0).toLocaleString();
+
+                // Update XP display
+                const currentXp = profile.xp || 0;
+                const xpForNextLevel = profile.xp_for_next_level || 1000;
+                const xpProgress = profile.xp_progress || 0;
+                const xpPercent = profile.xp_progress_percent || 0;
+
+                document.getElementById('xp-display').textContent = `${currentXp.toLocaleString()} / ${xpForNextLevel.toLocaleString()}`;
+                document.getElementById('xp-text').textContent = `${xpProgress.toLocaleString()} / ${xpForNextLevel.toLocaleString()} XP to next level`;
+
+                // Update XP bar
+                document.getElementById('xp-bar').style.width = `${xpPercent}%`;
+
+                log('success', `Stats updated: Lv.${profile.level}, ${currentXp} XP, ${profile.coins || 0} coins, ${profile.gems || 0} gems`);
+
+            } catch (error) {
+                log('error', `Failed to refresh stats: ${error.message}`);
+                console.error('Stats refresh error:', error);
+            }
+        };
+
+        // Show reward notification
+        function showRewardNotification(rewardData) {
+            if (!rewardData) return;
+
+            const { xp_gained = 0, coins_gained = 0, gems_gained = 0, level_up = false } = rewardData;
+
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'reward-notification';
+
+            // Build reward message
+            let message = '<h3 style="margin: 0 0 10px 0;">🎉 Rewards Earned!</h3>';
+            const rewards = [];
+
+            if (xp_gained > 0) rewards.push(`⭐ ${xp_gained.toLocaleString()} XP`);
+            if (coins_gained > 0) rewards.push(`🪙 ${coins_gained.toLocaleString()} Coins`);
+            if (gems_gained > 0) rewards.push(`💎 ${gems_gained.toLocaleString()} Gems`);
+            if (level_up) rewards.push(`⬆️ LEVEL UP!`);
+
+            if (rewards.length > 0) {
+                message += '<div style="margin-bottom: 15px;">' + rewards.join('<br>') + '</div>';
+            }
+
+            message += '<button onclick="this.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">OK</button>';
+
+            notification.innerHTML = message;
+
+            // Add to page and auto-remove after 5 seconds
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+
+            log('reward', 'Reward notification displayed');
+        }
+
+        // Update mode options based on selected game
+        function updateModeOptions() {
+            const selectedGame = gameSelect.value;
+            const modes = GAME_MODES[selectedGame] || [];
+
+            modeSelect.innerHTML = '';
+
+            modes.forEach(mode => {
+                const option = document.createElement('option');
+                option.value = mode.code;
+                option.textContent = mode.name;
+                modeSelect.appendChild(option);
+            });
+
+            // Set default selection
+            if (modes.length > 0) {
+                modeSelect.value = modes[0].code;
+            }
+        }
+
+        // Event listener for game selection change
+        gameSelect.addEventListener('change', updateModeOptions);
+
+        // Logging function
+        function log(level, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-time">[${timestamp}]</span>
+                <span class="log-level-${level}">${message}</span>
+            `;
+
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+
+            console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

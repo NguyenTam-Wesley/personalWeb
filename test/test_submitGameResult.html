@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test submitGameResult Function</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .test-group {
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .test-group-header {
+            background: #e9ecef;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #495057;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .test-case {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-case:last-child {
+            border-bottom: none;
+        }
+
+        .test-info {
+            flex: 1;
+        }
+
+        .test-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .test-description {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .test-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .status-panel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            position: sticky;
+            top: 20px;
+        }
+
+        .status-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+
+        .status-label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .status-value {
+            font-size: 1.1em;
+        }
+
+        .status-passed { color: #28a745; font-weight: bold; }
+        .status-failed { color: #dc3545; font-weight: bold; }
+        .status-pending { color: #ffc107; font-weight: bold; }
+        .status-running { color: #007bff; font-weight: bold; }
+
+        .test-result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .test-result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .test-result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .logs-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .logs-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .logs-container {
+            background: #343a40;
+            color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .log-time {
+            color: #6c757d;
+        }
+
+        .log-level-info { color: #17a2b8; }
+        .log-level-success { color: #28a745; }
+        .log-level-error { color: #dc3545; }
+        .log-level-warning { color: #ffc107; }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .test-summary {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .summary-stat {
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .summary-stat.passed { background: #d4edda; color: #155724; }
+        .summary-stat.failed { background: #f8d7da; color: #721c24; }
+        .summary-stat.pending { background: #fff3cd; color: #856404; }
+        .summary-stat.running { background: #cce5ff; color: #004085; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test submitGameResult Function</h1>
+            <p>Comprehensive testing for the submitGameResult Supabase Edge Function</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Test Section -->
+            <div class="test-section">
+                <h2>🧪 Test Cases</h2>
+
+                <!-- Test Summary -->
+                <div class="test-summary">
+                    <div class="summary-stats">
+                        <div class="summary-stat passed">
+                            <div style="font-size: 1.5em; font-weight: bold;" id="passed-count">0</div>
+                            <div>Passed</div>
+                        </div>
+                        <div class="summary-stat failed">
+                            <div style="font-size: 1.5em; font-weight: bold;" id="failed-count">0</div>
+                            <div>Failed</div>
+                        </div>
+                        <div class="summary-stat pending">
+                            <div style="font-size: 1.5em; font-weight: bold;" id="pending-count">0</div>
+                            <div>Pending</div>
+                        </div>
+                        <div class="summary-stat running">
+                            <div style="font-size: 1.5em; font-weight: bold;" id="running-count">0</div>
+                            <div>Running</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation Tests -->
+                <div class="test-group">
+                    <div class="test-group-header">🔍 Validation Tests</div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Invalid Request Body</div>
+                            <div class="test-description">Test với request body không hợp lệ</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('validation-invalid-body')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-validation-invalid-body" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Missing game_code</div>
+                            <div class="test-description">Test khi thiếu trường game_code</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('validation-missing-game-code')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-validation-missing-game-code" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Invalid metric_type</div>
+                            <div class="test-description">Test với metric_type không hợp lệ</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('validation-invalid-metric-type')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-validation-invalid-metric-type" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Invalid metric_value</div>
+                            <div class="test-description">Test với metric_value không hợp lệ (âm, 0, NaN)</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('validation-invalid-metric-value')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-validation-invalid-metric-value" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Authentication Tests -->
+                <div class="test-group">
+                    <div class="test-group-header">🔐 Authentication Tests</div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Missing Authorization Header</div>
+                            <div class="test-description">Test khi thiếu Authorization header</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('auth-missing-header')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-auth-missing-header" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Invalid Authorization Header</div>
+                            <div class="test-description">Test với Authorization header không hợp lệ</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('auth-invalid-header')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-auth-invalid-header" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Anti-Cheat Tests -->
+                <div class="test-group">
+                    <div class="test-group-header">🛡️ Anti-Cheat Tests</div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Suspicious Time Value</div>
+                            <div class="test-description">Test với time < 10 giây (threshold)</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('anticheat-time-low')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-anticheat-time-low" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Suspicious Score Value</div>
+                            <div class="test-description">Test với score > 10,000,000 (threshold)</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('anticheat-score-high')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-anticheat-score-high" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Database/Not Found Tests -->
+                <div class="test-group">
+                    <div class="test-group-header">🗄️ Database & Not Found Tests</div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Game Not Found</div>
+                            <div class="test-description">Test với game_code không tồn tại</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('db-game-not-found')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-db-game-not-found" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Game Mode Not Found</div>
+                            <div class="test-description">Test với mode_code không tồn tại</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-primary" onclick="runTest('db-mode-not-found')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-db-mode-not-found" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Success Tests -->
+                <div class="test-group">
+                    <div class="test-group-header">✅ Success Tests</div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Valid Time Submission</div>
+                            <div class="test-description">Test submit time hợp lệ</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-success" onclick="runTest('success-time-submission')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-success-time-submission" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Valid Score Submission</div>
+                            <div class="test-description">Test submit score hợp lệ</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-success" onclick="runTest('success-score-submission')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-success-score-submission" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">With Game Mode</div>
+                            <div class="test-description">Test submit với mode_code</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-success" onclick="runTest('success-with-mode')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-success-with-mode" style="display: none;"></div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">With Extra Data</div>
+                            <div class="test-description">Test submit với extra_data</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-success" onclick="runTest('success-with-extra-data')">Run Test</button>
+                        </div>
+                        <div class="test-result" id="test-success-with-extra-data" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Batch Testing -->
+                <div class="test-group">
+                    <div class="test-group-header">🔄 Batch Testing</div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Run All Validation Tests</div>
+                            <div class="test-description">Chạy tất cả validation tests</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-warning" onclick="runBatchTests(['validation-invalid-body', 'validation-missing-game-code', 'validation-invalid-metric-type', 'validation-invalid-metric-value'])">Run Batch</button>
+                        </div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Run All Success Tests</div>
+                            <div class="test-description">Chạy tất cả success tests</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-success" onclick="runBatchTests(['success-time-submission', 'success-score-submission', 'success-with-mode', 'success-with-extra-data'])">Run Batch</button>
+                        </div>
+                    </div>
+
+                    <div class="test-case">
+                        <div class="test-info">
+                            <div class="test-name">Run All Tests</div>
+                            <div class="test-description">Chạy tất cả test cases</div>
+                        </div>
+                        <div class="test-controls">
+                            <button class="btn-danger" onclick="runAllTests()">Run All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Panel -->
+            <div class="status-panel">
+                <div class="status-title">📊 Test Status</div>
+
+                <div class="status-item">
+                    <span class="status-label">Authentication:</span>
+                    <span class="status-value" id="auth-status">Checking...</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Total Tests:</span>
+                    <span class="status-value" id="total-tests">18</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Tests Run:</span>
+                    <span class="status-value" id="tests-run">0</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Pass Rate:</span>
+                    <span class="status-value" id="pass-rate">0%</span>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="resetAllTests()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        🔄 Reset All Tests
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Section -->
+        <div class="logs-section">
+            <div class="logs-title">📋 Activity Logs</div>
+            <div class="logs-container" id="logs-container">
+                <div class="log-entry">
+                    <span class="log-time">[00:00:00]</span>
+                    <span class="log-level-info">Test system initialized</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { supabase } from '../public/js/supabase/supabase.js';
+
+        // Global state
+        let currentUser = null;
+        let testStats = {
+            passed: 0,
+            failed: 0,
+            pending: 18, // Total number of tests
+            running: 0
+        };
+
+        // Initialize
+        async function init() {
+            log('info', 'Initializing submitGameResult test system...');
+
+            try {
+                // Check authentication
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error || !user) {
+                    log('error', 'User not authenticated. Please login first.');
+                    document.getElementById('auth-status').textContent = 'Not Authenticated';
+                    document.getElementById('auth-status').style.color = '#dc3545';
+                    alert('Please login first to run tests!');
+                    return;
+                }
+
+                currentUser = user;
+                document.getElementById('auth-status').textContent = 'Authenticated';
+                document.getElementById('auth-status').style.color = '#28a745';
+                log('success', `Authenticated as: ${user.email}`);
+
+            } catch (error) {
+                log('error', `Initialization failed: ${error.message}`);
+                console.error('Init error:', error);
+            }
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            document.getElementById('passed-count').textContent = testStats.passed;
+            document.getElementById('failed-count').textContent = testStats.failed;
+            document.getElementById('pending-count').textContent = testStats.pending;
+            document.getElementById('running-count').textContent = testStats.running;
+
+            const totalRun = testStats.passed + testStats.failed;
+            document.getElementById('tests-run').textContent = totalRun;
+
+            const passRate = totalRun > 0 ? Math.round((testStats.passed / totalRun) * 100) : 0;
+            document.getElementById('pass-rate').textContent = `${passRate}%`;
+        }
+
+        // Test cases definitions
+        const testCases = {
+            // Validation tests
+            'validation-invalid-body': {
+                name: 'Invalid Request Body',
+                description: 'Test với request body không hợp lệ',
+                request: null, // Invalid body
+                expectedError: 'Invalid request body'
+            },
+
+            'validation-missing-game-code': {
+                name: 'Missing game_code',
+                description: 'Test khi thiếu trường game_code',
+                request: {
+                    mode_code: 'easy',
+                    metric_type: 'time',
+                    metric_value: 100
+                },
+                expectedError: 'Missing or invalid game_code'
+            },
+
+            'validation-invalid-metric-type': {
+                name: 'Invalid metric_type',
+                description: 'Test với metric_type không hợp lệ',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'invalid_type',
+                    metric_value: 100
+                },
+                expectedError: 'Invalid metric_type'
+            },
+
+            'validation-invalid-metric-value': {
+                name: 'Invalid metric_value',
+                description: 'Test với metric_value không hợp lệ',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'time',
+                    metric_value: -50
+                },
+                expectedError: 'Invalid metric_value'
+            },
+
+            // Auth tests
+            'auth-missing-header': {
+                name: 'Missing Authorization Header',
+                description: 'Test khi thiếu Authorization header',
+                skipAuth: true,
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'time',
+                    metric_value: 100
+                },
+                expectedError: 'Missing Authorization header'
+            },
+
+            'auth-invalid-header': {
+                name: 'Invalid Authorization Header',
+                description: 'Test với Authorization header không hợp lệ',
+                customAuth: 'Bearer invalid_token',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'time',
+                    metric_value: 100
+                },
+                expectedError: 'Authentication failed'
+            },
+
+            // Anti-cheat tests
+            'anticheat-time-low': {
+                name: 'Suspicious Time Value',
+                description: 'Test với time < 10 giây',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'time',
+                    metric_value: 5
+                },
+                expectedError: 'Suspicious time value'
+            },
+
+            'anticheat-score-high': {
+                name: 'Suspicious Score Value',
+                description: 'Test với score > 10,000,000',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'score',
+                    metric_value: 15000000
+                },
+                expectedError: 'Suspicious score value'
+            },
+
+            // Database tests
+            'db-game-not-found': {
+                name: 'Game Not Found',
+                description: 'Test với game_code không tồn tại',
+                request: {
+                    game_code: 'nonexistent_game',
+                    metric_type: 'time',
+                    metric_value: 100
+                },
+                expectedError: 'Game "nonexistent_game" not found'
+            },
+
+            'db-mode-not-found': {
+                name: 'Game Mode Not Found',
+                description: 'Test với mode_code không tồn tại',
+                request: {
+                    game_code: 'sudoku',
+                    mode_code: 'nonexistent_mode',
+                    metric_type: 'time',
+                    metric_value: 100
+                },
+                expectedError: 'Game mode "nonexistent_mode" not found'
+            },
+
+            // Success tests
+            'success-time-submission': {
+                name: 'Valid Time Submission',
+                description: 'Test submit time hợp lệ',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'time',
+                    metric_value: 120
+                },
+                expectSuccess: true
+            },
+
+            'success-score-submission': {
+                name: 'Valid Score Submission',
+                description: 'Test submit score hợp lệ',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'score',
+                    metric_value: 5000
+                },
+                expectSuccess: true
+            },
+
+            'success-with-mode': {
+                name: 'With Game Mode',
+                description: 'Test submit với mode_code',
+                request: {
+                    game_code: 'sudoku',
+                    mode_code: 'easy',
+                    metric_type: 'time',
+                    metric_value: 90
+                },
+                expectSuccess: true
+            },
+
+            'success-with-extra-data': {
+                name: 'With Extra Data',
+                description: 'Test submit với extra_data',
+                request: {
+                    game_code: 'sudoku',
+                    metric_type: 'time',
+                    metric_value: 85,
+                    extra_data: {
+                        test_mode: true,
+                        device_info: 'test_device',
+                        timestamp: new Date().toISOString()
+                    }
+                },
+                expectSuccess: true
+            }
+        };
+
+        // Run a single test
+        window.runTest = async function(testId) {
+            if (!currentUser && !testCases[testId].skipAuth) {
+                alert('Please login first!');
+                return;
+            }
+
+            const testCase = testCases[testId];
+            const resultDiv = document.getElementById(`test-${testId}`);
+
+            // Update stats
+            testStats.pending--;
+            testStats.running++;
+            updateStatsDisplay();
+
+            // Show running state
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'test-result';
+            resultDiv.innerHTML = '<span class="loading"></span>Running test...';
+
+            log('info', `Running test: ${testCase.name}`);
+
+            try {
+                let response;
+
+                if (testCase.skipAuth) {
+                    // For auth tests, we need to make a raw request without auth
+                    response = await fetch('/functions/v1/submitGameResult', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(testCase.request)
+                    });
+                } else {
+                    // Normal authenticated request
+                    const authHeader = testCase.customAuth || supabase.supabaseKey;
+
+                    response = await fetch('/functions/v1/submitGameResult', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': authHeader
+                        },
+                        body: JSON.stringify(testCase.request)
+                    });
+                }
+
+                const data = await response.json();
+
+                // Check if test passed
+                let testPassed = false;
+                let resultMessage = '';
+
+                if (testCase.expectSuccess) {
+                    if (response.ok && data.success && data.session_id) {
+                        testPassed = true;
+                        resultMessage = `✅ SUCCESS: Session ID: ${data.session_id}`;
+                    } else {
+                        resultMessage = `❌ FAILED: Expected success but got ${response.status}: ${data.error || 'Unknown error'}`;
+                    }
+                } else {
+                    if (!response.ok && data.error && data.error.includes(testCase.expectedError)) {
+                        testPassed = true;
+                        resultMessage = `✅ SUCCESS: Got expected error "${data.error}"`;
+                    } else {
+                        resultMessage = `❌ FAILED: Expected error "${testCase.expectedError}" but got ${response.ok ? 'success' : data.error || 'unexpected response'}`;
+                    }
+                }
+
+                // Update UI
+                resultDiv.className = `test-result ${testPassed ? 'success' : 'error'}`;
+                resultDiv.innerHTML = resultMessage;
+
+                // Update stats
+                testStats.running--;
+                if (testPassed) {
+                    testStats.passed++;
+                } else {
+                    testStats.failed++;
+                }
+                updateStatsDisplay();
+
+                log(testPassed ? 'success' : 'error', `${testCase.name}: ${testPassed ? 'PASSED' : 'FAILED'}`);
+
+            } catch (error) {
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `❌ ERROR: ${error.message}`;
+
+                testStats.running--;
+                testStats.failed++;
+                updateStatsDisplay();
+
+                log('error', `${testCase.name}: ERROR - ${error.message}`);
+            }
+        };
+
+        // Run batch tests
+        window.runBatchTests = async function(testIds) {
+            log('info', `Running batch of ${testIds.length} tests`);
+
+            for (const testId of testIds) {
+                await runTest(testId);
+                // Small delay between tests
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        };
+
+        // Run all tests
+        window.runAllTests = async function() {
+            const allTestIds = Object.keys(testCases);
+            await runBatchTests(allTestIds);
+        };
+
+        // Reset all tests
+        window.resetAllTests = function() {
+            // Reset stats
+            testStats = {
+                passed: 0,
+                failed: 0,
+                pending: 18,
+                running: 0
+            };
+            updateStatsDisplay();
+
+            // Hide all results
+            Object.keys(testCases).forEach(testId => {
+                const resultDiv = document.getElementById(`test-${testId}`);
+                resultDiv.style.display = 'none';
+            });
+
+            log('info', 'All tests reset');
+        };
+
+        // Logging function
+        function log(level, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-time">[${timestamp}]</span>
+                <span class="log-level-${level}">${message}</span>
+            `;
+
+            const logsContainer = document.getElementById('logs-container');
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+
+            console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

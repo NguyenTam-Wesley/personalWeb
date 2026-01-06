@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Leaderboard System - Realtime Rankings</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .game-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .game-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        select, input {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .game-over-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+
+        .game-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .game-result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .game-result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        /* Leaderboard Styles */
+        .leaderboard-panel {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            position: sticky;
+            top: 20px;
+        }
+
+        .leaderboard-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .leaderboard-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn {
+            background: #6c757d;
+            color: white;
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .auto-refresh-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        .auto-refresh-toggle input {
+            width: auto;
+        }
+
+        .leaderboard-list {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 100px;
+            gap: 10px;
+            padding: 15px;
+            background: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .leaderboard-item {
+            display: grid;
+            grid-template-columns: 60px 1fr 100px;
+            gap: 10px;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background-color 0.2s ease;
+        }
+
+        .leaderboard-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .leaderboard-item.current-user {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 4px solid #ffc107;
+        }
+
+        .leaderboard-item.top-3 {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+
+        .leaderboard-item.top-1 {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #d63031;
+            font-weight: bold;
+        }
+
+        .leaderboard-rank {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .leaderboard-rank.top-1::before {
+            content: '👑';
+            margin-right: 5px;
+        }
+
+        .leaderboard-rank.top-2::before {
+            content: '🥈';
+            margin-right: 5px;
+        }
+
+        .leaderboard-rank.top-3::before {
+            content: '🥉';
+            margin-right: 5px;
+        }
+
+        .leaderboard-username {
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .leaderboard-score {
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .leaderboard-empty {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .leaderboard-loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .leaderboard-loading .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logs-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .logs-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .logs-container {
+            background: #343a40;
+            color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .log-time {
+            color: #6c757d;
+        }
+
+        .log-level-info { color: #17a2b8; }
+        .log-level-success { color: #28a745; }
+        .log-level-error { color: #dc3545; }
+        .log-level-leaderboard { color: #ffc107; font-weight: bold; }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        .stats-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .stats-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+        }
+
+        .stat-value {
+            font-weight: bold;
+        }
+
+        .rank-highlight {
+            color: #ffc107;
+        }
+
+        .time-format {
+            color: #28a745;
+        }
+
+        .score-format {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Test Leaderboard System</h1>
+            <p>Test realtime leaderboard rankings cho các game mode khác nhau</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Game Section -->
+            <div class="game-section">
+                <h2>🎮 Game Simulator</h2>
+
+                <div class="game-controls">
+                    <div class="control-group">
+                        <label for="game-select">Game:</label>
+                        <select id="game-select">
+                            <option value="sudoku">Sudoku</option>
+                            <option value="2048">2048</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="mode-select">Mode/Difficulty:</label>
+                        <select id="mode-select">
+                            <!-- Options will be populated dynamically based on selected game -->
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="metric-type-select">Metric Type:</label>
+                        <select id="metric-type-select">
+                            <option value="time">Time (seconds)</option>
+                            <option value="score">Score (points)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="metric-value-input">Metric Value:</label>
+                        <input type="number" id="metric-value-input" value="100" min="1" max="1000000">
+                    </div>
+                </div>
+
+                <div class="game-buttons">
+                    <button class="play-btn" onclick="startGame()" id="play-btn">
+                        🎮 Start Game
+                    </button>
+                    <button class="game-over-btn" onclick="endGame()" id="end-btn" disabled>
+                        💀 Game Over (Submit Score)
+                    </button>
+                </div>
+
+                <div id="game-result" class="game-result"></div>
+
+                <!-- Stats Panel -->
+                <div class="stats-panel">
+                    <div class="stats-title">📊 Your Current Stats</div>
+                    <div class="stat-item">
+                        <span class="stat-label">Current Rank:</span>
+                        <span class="stat-value rank-highlight" id="current-rank">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Best Score/Time:</span>
+                        <span class="stat-value" id="best-score">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Last Updated:</span>
+                        <span class="stat-value" id="last-updated">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Panel -->
+            <div class="leaderboard-panel">
+                <div class="leaderboard-title">🏅 Leaderboard</div>
+
+                <div class="leaderboard-controls">
+                    <button class="refresh-btn" onclick="refreshLeaderboard()">
+                        🔄 Refresh
+                    </button>
+                    <div class="auto-refresh-toggle">
+                        <input type="checkbox" id="auto-refresh" checked onchange="toggleAutoRefresh()">
+                        <label for="auto-refresh">Auto Refresh</label>
+                    </div>
+                </div>
+
+                <div class="leaderboard-list" id="leaderboard-list">
+                    <div class="leaderboard-loading">
+                        <div class="spinner"></div>
+                        <div>Loading leaderboard...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Section -->
+        <div class="logs-section">
+            <div class="logs-title">📋 Activity Logs</div>
+            <div class="logs-container" id="logs-container">
+                <div class="log-entry">
+                    <span class="log-time">[00:00:00]</span>
+                    <span class="log-level-info">Leaderboard test system initialized</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { supabase } from '../public/js/supabase/supabase.js';
+        import { rewards } from '../public/js/modules/rewards.js';
+
+        // Global state
+        let currentUser = null;
+        let isGameActive = false;
+        let currentSessionId = null;
+        let autoRefreshEnabled = true;
+        let autoRefreshInterval = null;
+
+        // Game mode configurations
+        const GAME_MODES = {
+            sudoku: [
+                { code: 'easy', name: 'Easy' },
+                { code: 'medium', name: 'Medium' },
+                { code: 'hard', name: 'Hard' },
+                { code: 'very_hard', name: 'Very Hard' },
+                { code: 'expert', name: 'Expert' }
+            ],
+            '2048': [
+                { code: 'classic', name: 'Classic' }
+            ]
+        };
+
+        // DOM elements
+        const playBtn = document.getElementById('play-btn');
+        const endBtn = document.getElementById('end-btn');
+        const gameResult = document.getElementById('game-result');
+        const logsContainer = document.getElementById('logs-container');
+        const gameSelect = document.getElementById('game-select');
+        const modeSelect = document.getElementById('mode-select');
+        const leaderboardList = document.getElementById('leaderboard-list');
+
+        // Initialize
+        async function init() {
+            log('info', 'Initializing leaderboard test system...');
+
+            try {
+                // Check authentication
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error || !user) {
+                    log('error', 'User not authenticated. Please login first.');
+                    alert('Please login first to use the leaderboard test!');
+                    return;
+                }
+
+                currentUser = user;
+                log('success', `Authenticated as: ${user.email}`);
+
+                // Load initial data
+                updateModeOptions();
+                await refreshLeaderboard();
+                await loadUserStats();
+
+                // Start auto refresh
+                startAutoRefresh();
+
+            } catch (error) {
+                log('error', `Initialization failed: ${error.message}`);
+                console.error('Init error:', error);
+            }
+        }
+
+        // Start game simulation
+        window.startGame = function() {
+            if (isGameActive) return;
+
+            isGameActive = true;
+            playBtn.disabled = true;
+            endBtn.disabled = false;
+            playBtn.textContent = '🎮 Game In Progress...';
+
+            const game = gameSelect.value;
+            const mode = modeSelect.value;
+
+            log('info', `Started ${game} game in ${mode} mode`);
+            gameResult.style.display = 'none';
+        };
+
+        // End game and submit result
+        window.endGame = async function() {
+            if (!isGameActive) return;
+
+            try {
+                endBtn.disabled = true;
+                endBtn.innerHTML = '<span class="loading"></span>Submitting...';
+
+                const gameCode = gameSelect.value;
+                const modeCode = modeSelect.value;
+                const metricType = document.getElementById('metric-type-select').value;
+                const metricValue = parseInt(document.getElementById('metric-value-input').value);
+
+                log('info', `Submitting ${gameCode} result: ${metricValue} ${metricType} (${modeCode} mode)`);
+
+                // Step 1: Submit game result
+                const submitResult = await supabase.functions.invoke('submitGameResult', {
+                    body: {
+                        game_code: gameCode,
+                        mode_code: modeCode,
+                        metric_type: metricType,
+                        metric_value: metricValue,
+                        extra_data: {
+                            test_mode: true,
+                            timestamp: new Date().toISOString()
+                        }
+                    }
+                });
+
+                if (submitResult.error) {
+                    throw new Error(`Submit failed: ${submitResult.error.message}`);
+                }
+
+                const sessionId = submitResult.data?.session_id;
+                if (!sessionId) {
+                    throw new Error('No session ID returned from submit');
+                }
+
+                currentSessionId = sessionId;
+                log('success', `Game result submitted. Session ID: ${sessionId}`);
+
+                // Step 2: Calculate rewards
+                log('info', 'Calculating rewards...');
+                const rewardData = await rewards.calculateRewardsForSession(sessionId);
+                log('leaderboard', `Rewards earned: ${JSON.stringify(rewardData)}`);
+
+                // Step 3: Update user stats and refresh leaderboard
+                await loadUserStats();
+                await refreshLeaderboard();
+
+                // Step 4: Show success message
+                gameResult.className = 'game-result success';
+                gameResult.innerHTML = `
+                    <h3>✅ Score Submitted!</h3>
+                    <p><strong>Game:</strong> ${gameCode} (${modeCode})</p>
+                    <p><strong>Performance:</strong> ${metricValue} ${metricType}</p>
+                    <p><strong>Session ID:</strong> ${sessionId}</p>
+                    <p><strong>Leaderboard Updated!</strong></p>
+                `;
+                gameResult.style.display = 'block';
+
+            } catch (error) {
+                log('error', `Game submission failed: ${error.message}`);
+                console.error('Submit error:', error);
+
+                gameResult.className = 'game-result error';
+                gameResult.innerHTML = `
+                    <h3>❌ Submission Failed</h3>
+                    <p>Error: ${error.message}</p>
+                `;
+                gameResult.style.display = 'block';
+            } finally {
+                // Reset UI
+                isGameActive = false;
+                playBtn.disabled = false;
+                playBtn.textContent = '🎮 Start Game';
+                endBtn.disabled = true;
+                endBtn.textContent = '💀 Game Over (Submit Score)';
+            }
+        };
+
+        // Refresh leaderboard
+        window.refreshLeaderboard = async function() {
+            const gameCode = gameSelect.value;
+            const modeCode = modeSelect.value;
+
+            try {
+                log('info', `Refreshing leaderboard for ${gameCode} - ${modeCode}...`);
+
+                // Show loading
+                leaderboardList.innerHTML = `
+                    <div class="leaderboard-loading">
+                        <div class="spinner"></div>
+                        <div>Loading leaderboard...</div>
+                    </div>
+                `;
+
+                const { data, error } = await supabase
+                    .rpc('get_leaderboard', {
+                        p_game_code: gameCode,
+                        p_mode_code: modeCode,
+                        p_limit: 10
+                    });
+
+                if (error) {
+                    throw new Error(`Leaderboard load failed: ${error.message}`);
+                }
+
+                if (!data || data.length === 0) {
+                    leaderboardList.innerHTML = `
+                        <div class="leaderboard-header">
+                            <div>Rank</div>
+                            <div>Player</div>
+                            <div>Score/Time</div>
+                        </div>
+                        <div class="leaderboard-empty">
+                            No scores yet for this game mode!<br>
+                            Be the first to submit a score!
+                        </div>
+                    `;
+                    log('info', 'No leaderboard data available');
+                    return;
+                }
+
+                // Render leaderboard
+                const isTimeBased = document.getElementById('metric-type-select').value === 'time';
+
+                leaderboardList.innerHTML = `
+                    <div class="leaderboard-header">
+                        <div>Rank</div>
+                        <div>Player</div>
+                        <div>${isTimeBased ? 'Time' : 'Score'}</div>
+                    </div>
+                    ${data.map(item => {
+                        const isCurrentUser = item.user_id === currentUser?.id;
+                        const rankClass = item.rank <= 3 ? `top-${item.rank}` : '';
+                        const itemClass = `leaderboard-item ${rankClass} ${isCurrentUser ? 'current-user' : ''}`;
+
+                        return `
+                            <div class="${itemClass}">
+                                <span class="leaderboard-rank ${rankClass}">${item.rank}</span>
+                                <span class="leaderboard-username">${item.username || 'Anonymous'}</span>
+                                <span class="leaderboard-score">${formatMetricValue(item.metric_value, isTimeBased)}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                `;
+
+                log('leaderboard', `Leaderboard loaded: ${data.length} entries`);
+
+            } catch (error) {
+                log('error', `Failed to load leaderboard: ${error.message}`);
+                leaderboardList.innerHTML = `
+                    <div class="leaderboard-empty">
+                        Error loading leaderboard<br>
+                        <small style="color: #dc3545;">${error.message}</small>
+                    </div>
+                `;
+            }
+        };
+
+        // Load user stats
+        async function loadUserStats() {
+            try {
+                const gameCode = gameSelect.value;
+                const modeCode = modeSelect.value;
+
+                // Get user's best score for current game/mode
+                const { data, error } = await supabase
+                    .from('v_user_best_scores')
+                    .select('*')
+                    .eq('game_code', gameCode)
+                    .eq('mode_code', modeCode)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+                    throw error;
+                }
+
+                if (data) {
+                    const isTimeBased = data.metric_type === 'time';
+                    document.getElementById('current-rank').textContent = data.user_rank || '--';
+                    document.getElementById('best-score').textContent = formatMetricValue(data.metric_value, isTimeBased);
+                    document.getElementById('last-updated').textContent = new Date(data.updated_at).toLocaleString();
+                } else {
+                    document.getElementById('current-rank').textContent = '--';
+                    document.getElementById('best-score').textContent = '--';
+                    document.getElementById('last-updated').textContent = '--';
+                }
+
+            } catch (error) {
+                log('error', `Failed to load user stats: ${error.message}`);
+            }
+        }
+
+        // Toggle auto refresh
+        window.toggleAutoRefresh = function() {
+            autoRefreshEnabled = document.getElementById('auto-refresh').checked;
+
+            if (autoRefreshEnabled) {
+                startAutoRefresh();
+                log('info', 'Auto refresh enabled');
+            } else {
+                stopAutoRefresh();
+                log('info', 'Auto refresh disabled');
+            }
+        };
+
+        // Start auto refresh
+        function startAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+
+            if (autoRefreshEnabled) {
+                autoRefreshInterval = setInterval(async () => {
+                    await refreshLeaderboard();
+                    await loadUserStats();
+                }, 10000); // Refresh every 10 seconds
+            }
+        }
+
+        // Stop auto refresh
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+        }
+
+        // Update mode options based on selected game
+        function updateModeOptions() {
+            const selectedGame = gameSelect.value;
+            const modes = GAME_MODES[selectedGame] || [];
+
+            modeSelect.innerHTML = '';
+
+            modes.forEach(mode => {
+                const option = document.createElement('option');
+                option.value = mode.code;
+                option.textContent = mode.name;
+                modeSelect.appendChild(option);
+            });
+
+            // Set default selection
+            if (modes.length > 0) {
+                modeSelect.value = modes[0].code;
+            }
+        }
+
+        // Format metric value (time or score)
+        function formatMetricValue(value, isTime) {
+            if (isTime) {
+                const mins = String(Math.floor(value / 60)).padStart(2, '0');
+                const secs = String(value % 60).padStart(2, '0');
+                return `${mins}:${secs}`;
+            } else {
+                return value.toLocaleString();
+            }
+        }
+
+        // Event listeners
+        gameSelect.addEventListener('change', async () => {
+            updateModeOptions();
+            await refreshLeaderboard();
+            await loadUserStats();
+        });
+
+        modeSelect.addEventListener('change', async () => {
+            await refreshLeaderboard();
+            await loadUserStats();
+        });
+
+        document.getElementById('metric-type-select').addEventListener('change', () => {
+            refreshLeaderboard(); // Refresh to update headers
+        });
+
+        // Logging function
+        function log(level, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-time">[${timestamp}]</span>
+                <span class="log-level-${level}">${message}</span>
+            `;
+
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+
+            console.log(`[${timestamp}] ${level.toUpperCase()}: ${message}`);
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            stopAutoRefresh();
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

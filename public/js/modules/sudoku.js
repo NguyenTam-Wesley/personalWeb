@@ -637,6 +637,21 @@ export class SudokuGame {
                         } else {
                             message += '\n🎯 Game result submitted! Best score updated automatically.';
 
+                            // 🎁 Calculate and apply rewards using rewards module
+                            try {
+                                const sessionId = submitResult.data?.session_id;
+                                if (sessionId) {
+                                    const rewardData = await rewards.calculateRewardsForSession(sessionId);
+
+                                    // Show reward notification if rewards were given
+                                    if (rewardData && (rewardData.xp_gained > 0 || rewardData.coins_gained > 0 || rewardData.gems_gained > 0)) {
+                                        this.showRewardNotification(rewardData);
+                                    }
+                                }
+                            } catch (rewardError) {
+                                console.error('❌ Error calculating rewards:', rewardError);
+                            }
+
                             // 🔄 REALTIME UI UPDATE: Refresh displays after successful submission
                             try {
                                 await this.updateBestTimeDisplay();
@@ -1105,5 +1120,67 @@ export class SudokuGame {
                 (navigator.maxTouchPoints > 0) ||
                 (navigator.msMaxTouchPoints > 0)) &&
                window.innerWidth <= 768;
+    }
+
+    // 🎁 Show reward notification after successful game submission
+    showRewardNotification(rewardData) {
+        if (!rewardData) return;
+
+        const { xp_gained = 0, coins_gained = 0, gems_gained = 0, level_up = false } = rewardData;
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'reward-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-family: 'Arial', sans-serif;
+            max-width: 300px;
+            animation: slideInRight 0.5s ease-out;
+        `;
+
+        // Build reward message
+        let message = '<h3 style="margin: 0 0 10px 0; font-size: 18px;">🎉 Rewards Earned!</h3>';
+        const rewards = [];
+
+        if (xp_gained > 0) rewards.push(`⭐ ${xp_gained} XP`);
+        if (coins_gained > 0) rewards.push(`🪙 ${coins_gained} Coins`);
+        if (gems_gained > 0) rewards.push(`💎 ${gems_gained} Gems`);
+        if (level_up) rewards.push(`⬆️ LEVEL UP!`);
+
+        if (rewards.length > 0) {
+            message += '<div style="margin-bottom: 15px;">' + rewards.join('<br>') + '</div>';
+        }
+
+        message += '<button onclick="this.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">OK</button>';
+
+        notification.innerHTML = message;
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add to page and auto-remove after 5 seconds
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+
+        console.log('🎁 Reward notification shown:', rewardData);
     }
 }

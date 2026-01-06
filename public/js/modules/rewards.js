@@ -711,6 +711,31 @@ async claimDailyReward() {
         this.invalidateUserCache(userId);
     }
 
+    // 🎁 Calculate and apply rewards for a game session using RPC
+    async calculateRewardsForSession(sessionId) {
+        return await this.withUser(async (user) => {
+            console.log('🎁 Calculating rewards for session:', sessionId);
+
+            try {
+                const { data, error } = await supabase.rpc('calc_reward_tx', {
+                    p_game_session_id: sessionId
+                });
+
+                if (error) {
+                    console.error('❌ Failed to calculate rewards:', error);
+                    throw new Error(`Failed to calculate rewards: ${error.message}`);
+                }
+
+                console.log('✅ Rewards calculated:', data);
+                return data;
+
+            } catch (error) {
+                console.error('❌ Error in calculateRewardsForSession:', error);
+                throw error;
+            }
+        });
+    }
+
     // Debug: log rewards config
     async debugLogRewardsConfig() {
         const config = await this.getGameRewardsConfig(true);
