@@ -49,6 +49,9 @@ export class SudokuGame {
         // State duy nhất cho ô đang chọn
         this.selectedCell = null;
 
+        // Game completion state
+        this.gameCompleted = false;
+
         // Khởi tạo rỗng - sẽ được tạo trong Web Worker sau
 
         this.grid = document.getElementById("sudoku-grid");
@@ -608,6 +611,10 @@ export class SudokuGame {
             } else if (!correct) {
                 alert("❌ Có lỗi! Kiểm tra lại các số đã điền.");
             } else {
+                // Game completed successfully - hide check button
+                this.gameCompleted = true;
+                this.checkBtn.style.display = 'none';
+
                 this.stopTimer();
                 const mins = String(Math.floor(this.seconds / 60)).padStart(2, '0');
                 const secs = String(this.seconds % 60).padStart(2, '0');
@@ -702,7 +709,8 @@ export class SudokuGame {
                     message += '\n💡 Đăng nhập để lưu thành tích và nhận rewards!';
                 }
 
-                alert(message);
+                // Alert removed - using custom popup instead
+                console.log('Game completed:', message);
             }
         }, 500);
     }
@@ -780,6 +788,10 @@ export class SudokuGame {
     }
 
     newGame() {
+        // Reset game completion state and show check button
+        this.gameCompleted = false;
+        this.checkBtn.style.display = 'inline-block';
+
         // Hiển thị loading cho tất cả level (vì dùng Web Worker)
         if (this.loadingIndicator) {
             this.loadingIndicator.style.display = 'flex';
@@ -1131,20 +1143,6 @@ export class SudokuGame {
         // Create notification element
         const notification = document.createElement('div');
         notification.className = 'reward-notification';
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: 10000;
-            font-family: 'Arial', sans-serif;
-            max-width: 300px;
-            animation: slideInRight 0.5s ease-out;
-        `;
 
         // Build reward message
         let message = '<h3 style="margin: 0 0 10px 0; font-size: 18px;">🎉 Rewards Earned!</h3>';
@@ -1162,16 +1160,6 @@ export class SudokuGame {
         message += '<button onclick="this.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">OK</button>';
 
         notification.innerHTML = message;
-
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
 
         // Add to page and auto-remove after 5 seconds
         document.body.appendChild(notification);

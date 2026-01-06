@@ -606,4 +606,45 @@ body {
         font-size: clamp(1.1rem, 5vw, 1.4rem);
     }
 }
+
+/* Reward Notification */
+.reward-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-family: 'Arial', sans-serif;
+    max-width: 300px;
+    animation: slideInRight 0.5s ease-out;
+}
+
+.reward-notification h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.reward-notification button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.reward-notification button:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
   
