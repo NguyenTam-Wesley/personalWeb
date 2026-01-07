@@ -127,19 +127,29 @@
 
 /* Override tabs và achievements */
 .dark-theme .tabs-header {
-  background: #222222 !important;
-  border-bottom: 1px solid #555555 !important;
+  /* Remove background and border since we now use .tab-buttons */
+}
+
+.dark-theme .tab-buttons {
+  background: #333333 !important;
+  border-radius: var(--border-radius-sm) !important;
 }
 
 .dark-theme .tab-button {
-  background: #333333 !important;
+  background: transparent !important;
   color: #ffffff !important;
-  border: 1px solid #555555 !important;
+  border: none !important;
+}
+
+.dark-theme .tab-button:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--accent-primary) !important;
 }
 
 .dark-theme .tab-button.active {
   background: var(--accent-primary) !important;
   color: #000000 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
 .dark-theme .achievements-summary {
@@ -206,36 +216,43 @@
 }
 
 /* Tabs System */
+/* New tab container style - similar to test_buff_system.html */
 .tabs-header {
-  display: flex;
-  gap: var(--spacing-xs);
   margin-bottom: var(--spacing-lg);
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: var(--spacing-sm);
+}
+
+.tab-buttons {
+  display: flex;
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius-sm);
+  padding: 5px;
+  margin-bottom: 20px;
+  gap: 0; /* Remove gap to make buttons connect seamlessly */
 }
 
 .tab-button {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--border-radius-sm);
-  color: var(--text-primary);
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
   cursor: pointer;
+  border-radius: 3px;
   transition: all var(--transition-normal);
   font-size: 0.9rem;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .tab-button:hover {
-  background: var(--overlay-bg);
-  border-color: var(--accent-primary);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--accent-primary);
 }
 
 .tab-button.active {
   background: var(--accent-primary);
   color: var(--text-dark);
-  border-color: var(--accent-primary);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
 }
 
 .tabs-content {
