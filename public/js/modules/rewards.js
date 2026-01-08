@@ -84,10 +84,85 @@ export class Rewards {
 
 
 
-    // 🎯 Calculate game rewards using RPC
+    // 🎯 Calculate game rewards using RPC (preview without applying)
     // sessionId: UUID of the game session
     async calculateGameRewards(sessionId) {
-        return await this.calculateRewardsForSession(sessionId);
+        try {
+            const result = await this.calculateRewardsForSession(sessionId);
+            return {
+                xp_gained: result.xp_gained,
+                coins_gained: result.coins_gained,
+                gems_gained: result.gems_gained,
+                multipliers: result.multipliers,
+                buffs: result.buffs
+            };
+        } catch (error) {
+            console.error('Error calculating game rewards:', error);
+            return {
+                xp_gained: 0,
+                coins_gained: 0,
+                gems_gained: 0,
+                multipliers: { xp: 1.0, coin: 1.0 },
+                buffs: null
+            };
+        }
+    }
+
+    // Get active user buffs for display
+    async getActiveBuffs() {
+        try {
+            const authUser = await getAuthUser();
+            if (!authUser?.id) {
+                return [];
+            }
+
+            const { data, error } = await supabase
+                .from('user_buffs')
+                .select(`
+                    id,
+                    buff_id,
+                    is_active,
+                    expires_at,
+                    remaining_uses,
+                    source_type,
+                    buffs (
+                        id,
+                        name,
+                        description,
+                        target,
+                        effect_type,
+                        value,
+                        icon_url
+                    )
+                `)
+                .eq('user_id', authUser.id)
+                .eq('is_active', true);
+
+            if (error) {
+                console.error('Error getting active buffs:', error);
+                return [];
+            }
+
+            // Filter buffs based on RPC logic:
+            // - pet: is_active = true
+            // - item/event: (expires_at is null or > now) AND (remaining_uses is null or > 0)
+            const now = new Date();
+            const activeBuffs = data.filter(buff => {
+                if (buff.source_type === 'pet') {
+                    return buff.is_active;
+                } else {
+                    // item or event
+                    const notExpired = !buff.expires_at || new Date(buff.expires_at) > now;
+                    const hasUses = buff.remaining_uses === null || buff.remaining_uses > 0;
+                    return buff.is_active && notExpired && hasUses;
+                }
+            });
+
+            return activeBuffs;
+        } catch (error) {
+            console.error('Error in getActiveBuffs:', error);
+            return [];
+        }
     }
 
     // 🎯 Grant game rewards using RPC
@@ -95,17 +170,21 @@ export class Rewards {
     async grantGameRewards(sessionId) {
         try {
             return await this.withUser(async (_user) => {
-                const rewards = await this.calculateRewardsForSession(sessionId);
+                const result = await this.calculateRewardsForSession(sessionId);
+
+                if (!result.success) {
+                    return { success: false, message: 'Failed to calculate rewards' };
+                }
 
                 return {
                     success: true,
                     rewards: {
-                        xp: rewards.xp_gained,
-                        coins: rewards.coins_gained,
-                        gems: rewards.gems_gained
+                        xp: result.xp_gained,
+                        coins: result.coins_gained,
+                        gems: result.gems_gained
                     },
-                    multipliers: rewards.multipliers,
-                    message: `Nhận được ${rewards.xp_gained} XP, ${rewards.coins_gained} coins, ${rewards.gems_gained} gems!`
+                    buffs: result.buffs,
+                    message: `Nhận được ${result.xp_gained} XP, ${result.coins_gained} coins, ${result.gems_gained} gems!`
                 };
             });
         } catch (error) {
@@ -441,6 +520,7 @@ async claimDailyReward() {
         const dailyStreak = await this.getCurrentDailyStreak();
         const dailyConfig = await this.getDailyRewardsConfig();
         const levelConfig = await this.getLevelRewardsConfig();
+        const activeBuffs = await this.getActiveBuffs();
 
         const nextDay = (dailyStreak % 7) + 1;
         const nextDailyReward = dailyConfig.find(config => config.day === nextDay);
@@ -457,6 +537,10 @@ async claimDailyReward() {
                 currentLevel: profile?.level || 1,
                 nextReward: nextLevelReward,
                 progress: profile ? userProfile.getLevelProgress(profile) : 0
+            },
+            buffs: {
+                active: activeBuffs,
+                count: activeBuffs.length
             }
         };
     }
@@ -488,8 +572,27 @@ async claimDailyReward() {
                     throw new Error(`Failed to calculate rewards: ${error.message}`);
                 }
 
-                console.log('✅ Rewards calculated:', data);
-                return data;
+                if (!data || !data.success) {
+                    console.error('❌ RPC returned unsuccessful result:', data);
+                    throw new Error(data?.error || 'RPC calculation failed');
+                }
+
+                console.log('✅ Rewards calculated and applied:', data);
+
+                // Return the full result from RPC including buffs breakdown
+                return {
+                    success: data.success,
+                    user_id: data.user_id,
+                    mode_id: data.mode_id,
+                    xp_gained: data.xp_gained,
+                    coins_gained: data.coins_gained,
+                    gems_gained: data.gems_gained,
+                    buffs: data.buffs,
+                    multipliers: {
+                        xp: data.buffs?.xp?.multiplier || 1.0,
+                        coin: data.buffs?.coin?.multiplier || 1.0
+                    }
+                };
 
             } catch (error) {
                 console.error('❌ Error in calculateRewardsForSession:', error);
@@ -498,10 +601,55 @@ async claimDailyReward() {
         });
     }
 
-    // Debug: log rewards config
+    // Debug: log rewards config and active buffs
     async debugLogRewardsConfig() {
         const dailyConfig = await this.getDailyRewardsConfig(true);
+        const activeBuffs = await this.getActiveBuffs();
+
         console.log('Daily Rewards Config:', dailyConfig);
+        console.log('Active Buffs:', activeBuffs);
+
+        // Log buff effects summary
+        const buffEffects = this.calculateBuffEffects(activeBuffs);
+        console.log('Buff Effects Summary:', buffEffects);
+    }
+
+    // Helper: Calculate total buff effects for display
+    calculateBuffEffects(activeBuffs) {
+        let xpMultiplier = 1.0;
+        let coinMultiplier = 1.0;
+        let xpAdd = 0;
+        let coinAdd = 0;
+        let gemAdd = 0;
+
+        activeBuffs.forEach(buff => {
+            const effect = buff.buffs;
+            if (!effect) return;
+
+            const { target, effect_type, value } = effect;
+
+            if (effect_type === 'multiplier') {
+                if (target === 'xp') {
+                    xpMultiplier *= value;
+                } else if (target === 'coin') {
+                    coinMultiplier *= value;
+                }
+            } else if (effect_type === 'flat') {
+                if (target === 'xp') {
+                    xpAdd += value;
+                } else if (target === 'coin') {
+                    coinAdd += value;
+                } else if (target === 'gem') {
+                    gemAdd += value;
+                }
+            }
+        });
+
+        return {
+            xp: { multiplier: xpMultiplier, add: xpAdd },
+            coin: { multiplier: coinMultiplier, add: coinAdd },
+            gem: { add: gemAdd }
+        };
     }
 }
 

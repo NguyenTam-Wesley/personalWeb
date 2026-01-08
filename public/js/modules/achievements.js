@@ -11,7 +11,6 @@ import { getCurrentUser } from '../supabase/auth.js';
 import { userProfile } from './user_profile.js';
 import { items } from './items.js';
 import { pets } from './pets.js';
-import { sudokuScores } from './sudoku_scores.js';
 
 // Helper function to get best time from game_best_scores
 async function getBestTimeFromGameBestScores(difficulty) {

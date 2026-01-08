@@ -169,6 +169,14 @@ export class Game2048 {
         }
       });
 
+      // Reset button
+      const resetBtn = document.getElementById('resetBtn');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          this.reset();
+        });
+      }
+
       // ✅ SAFE AUTH LISTENER: Listen to global auth events (no conflicts)
       this.handleAuthChange = (e) => {
         const { event, session } = e.detail;
@@ -624,50 +632,6 @@ export class Game2048 {
       return true;
     }
 
-    // Tính toán XP cho game 2048: (điểm số / 10000) + 15
-    calculateXP() {
-      return Math.floor(this.score / 10000) + 15;
-    }
-
-    // Tính toán coin dựa trên ô lớn nhất (từ 256 trở đi)
-    // Công thức: 2^(n-1) coin với n bắt đầu từ 2 cho 256
-    calculateCoins() {
-      const maxTile = this.getMaxTile();
-
-      // Chỉ tính coin từ 256 trở đi
-      if (maxTile < 256) return 0;
-
-      // Tính n: 256 = 2^8, n bắt đầu từ 2
-      // n = (log2(maxTile) - 8) + 2 = log2(maxTile) - 6
-      const n = Math.log2(maxTile) - 6;
-      return Math.pow(2, n - 1);
-    }
-
-    // Tính toán gem dựa trên ô lớn nhất (từ 2048 trở đi)
-    // Công thức: 2^(n-1) gem với n bắt đầu từ 2 cho 2048, công sai cấp số cộng là 4
-    calculateGems() {
-      const maxTile = this.getMaxTile();
-
-      // Chỉ tính gem từ 2048 trở đi
-      if (maxTile < 2048) return 0;
-
-      // Tính n: 2048 = 2^11, n bắt đầu từ 2
-      // Với công sai 4: n = 2 + 4 * (log2(maxTile) - 11)
-      const exponent = Math.log2(maxTile);
-      const n = 2 + 4 * (exponent - 11);
-      return Math.pow(2, n - 1);
-    }
-
-    // Lấy giá trị ô lớn nhất trên bảng
-    getMaxTile() {
-      let max = 0;
-      for (let r = 0; r < this.size; r++) {
-        for (let c = 0; c < this.size; c++) {
-          max = Math.max(max, this.board[r][c]);
-        }
-      }
-      return max;
-    }
 
     // Xử lý game over và grant rewards
     async handleGameOver() {
@@ -676,135 +640,91 @@ export class Game2048 {
       console.log(`📊 Final Score: ${this.score}`);
 
       try {
+        // Submit game result qua Edge Function (tự động tính XP và update best score)
+        const loginStatus = await rewards.isLoggedIn();
 
-      // Tính toán rewards
-      const xp = this.calculateXP();
-      const coins = this.calculateCoins();
-      const gems = this.calculateGems();
-      const maxTile = this.getMaxTile();
-
-      console.log(`🎯 Calculated XP: ${xp} (from score ${this.score})`);
-      console.log(`🪙 Calculated Coins: ${coins} (from max tile ${maxTile})`);
-      console.log(`💎 Calculated Gems: ${gems} (from max tile ${maxTile})`);
-
-      let message = `🎮 Game Over!\n`;
-      message += `Điểm: ${this.score}\n`;
-      message += `Ô lớn nhất: ${maxTile}\n\n`;
-
-      // Hiển thị rewards
-      if (xp > 0) message += `⭐ XP: ${xp}\n`;
-      if (coins > 0) message += `🪙 Coins: ${coins}\n`;
-      if (gems > 0) message += `💎 Gems: ${gems}\n`;
-
-      // Submit game result qua Edge Function (tự động tính XP và update best score)
-      const loginStatus = await rewards.isLoggedIn();
-
-      if (loginStatus) {
-        try {
-          console.log('📤 Submitting 2048 game result...');
-          const submitResult = await supabase.functions.invoke('submitGameResult', {
-            body: {
-              game_code: '2048',
-              mode_code: 'classic',
-              metric_type: 'score',
-              metric_value: this.score,
-              extra_data: {
-                maxTile: maxTile,
-                moves: this.moves,
-                gameOver: true
-              }
-            }
-          });
-
-          if (submitResult.error) {
-            console.error('❌ Failed to submit game result:', submitResult.error);
-          } else {
-            console.log('✅ Game result submitted! Best score updated automatically.');
-
-            // 🎁 Calculate and apply rewards using rewards module
-            try {
-              const sessionId = submitResult.data?.session_id;
-              if (sessionId) {
-                const rewardData = await rewards.calculateRewardsForSession(sessionId);
-
-                // Show reward notification if rewards were given
-                if (rewardData && (rewardData.xp_gained > 0 || rewardData.coins_gained > 0 || rewardData.gems_gained > 0)) {
-                  this.showRewardNotification(rewardData);
-                }
-
-                // 🏆 Update leaderboard using leaderboard module
-                try {
-                  await leaderboard.updateLeaderboard(sessionId);
-                } catch (leaderboardError) {
-                  console.error('❌ Error updating leaderboard:', leaderboardError);
+        if (loginStatus) {
+          try {
+            console.log('📤 Submitting 2048 game result...');
+            const submitResult = await supabase.functions.invoke('submitGameResult', {
+              body: {
+                game_code: '2048',
+                mode_code: 'classic',
+                metric_type: 'score',
+                metric_value: this.score,
+                extra_data: {
+                  moves: this.moves,
+                  gameOver: true
                 }
               }
-            } catch (rewardError) {
-              console.error('❌ Error calculating rewards:', rewardError);
-            }
+            });
 
-            // 🔄 REALTIME UI UPDATE: Refresh displays after successful submission
-            try {
-              await this.updateBestScoreDisplay();
-              await this.updateRankDisplay();
+            if (submitResult.error) {
+              console.error('❌ Failed to submit game result:', submitResult.error);
+            } else {
+              console.log('✅ Game result submitted! Best score updated automatically.');
 
-              // Update leaderboard if it's currently open
-              if (this.leaderboardDropdown && this.leaderboardDropdown.style.display !== 'none') {
-                await this.loadLeaderboard();
+              // 🎁 Calculate and apply rewards using RPC
+              try {
+                const sessionId = submitResult.data?.session_id;
+                if (sessionId) {
+                  const rewardData = await rewards.calculateRewardsForSession(sessionId);
+
+                  // Show reward notification if rewards were given
+                  if (rewardData && (rewardData.xp_gained > 0 || rewardData.coins_gained > 0 || rewardData.gems_gained > 0)) {
+                    this.showRewardNotification(rewardData);
+                  }
+
+                  // 🏆 Update leaderboard using leaderboard module
+                  try {
+                    await leaderboard.updateLeaderboard(sessionId);
+                  } catch (leaderboardError) {
+                    console.error('❌ Error updating leaderboard:', leaderboardError);
+                  }
+                }
+              } catch (rewardError) {
+                console.error('❌ Error calculating rewards:', rewardError);
               }
 
-              console.log('✅ UI updated with latest best score and rank');
-            } catch (updateError) {
-              console.error('❌ Error updating UI after game submission:', updateError);
-            }
-          }
-        } catch (error) {
-          console.error('❌ Error submitting game result:', error);
-        }
+              // 🔄 REALTIME UI UPDATE: Refresh displays after successful submission
+              try {
+                await this.updateBestScoreDisplay();
+                await this.updateRankDisplay();
 
-        console.log('✅ User is logged in, granting rewards...');
-        try {
-          // 🎯 Use new architecture: grantGameRewards with game result
-          const gameResult = {
-            maxTile: maxTile,
-            score: this.score,
-            moves: this.moves
-          };
+                // Update leaderboard if it's currently open
+                if (this.leaderboardDropdown && this.leaderboardDropdown.style.display !== 'none') {
+                  await this.loadLeaderboard();
+                }
 
-          const gameRewards = await rewards.grantGameRewards('2048', gameResult);
-
-          if (gameRewards.success) {
-            console.log('✅ 2048 rewards granted successfully:', gameRewards.rewards);
-            message += `\n✅ Nhận được ${gameRewards.rewards.xp} XP và ${gameRewards.rewards.coins} coins!`;
-
-            // Still grant gems separately (not handled by new architecture yet)
-            if (gems > 0) {
-              console.log(`💎 Granting ${gems} gems for 2048 game (max tile: ${maxTile})`);
-              const gemsResult = await rewards.addGems(gems);
-              if (gemsResult) {
-                message += `\n💎 Nhận thêm ${gems} gems!`;
+                console.log('✅ UI updated with latest best score and rank');
+              } catch (updateError) {
+                console.error('❌ Error updating UI after game submission:', updateError);
               }
             }
-          } else {
-            console.error('❌ Error granting 2048 rewards:', gameRewards.message);
-            message += `\n❌ Lỗi khi lưu rewards: ${gameRewards.message}`;
+          } catch (error) {
+            console.error('❌ Error submitting game result:', error);
           }
-        } catch (error) {
-          console.error('❌ Error granting 2048 rewards:', error);
-          message += `\n❌ Lỗi khi lưu rewards: ${error.message}`;
+        } else {
+          console.log('❌ User not logged in');
         }
-      } else {
-        console.log('❌ User not logged in');
-        message += `\n💡 Đăng nhập để lưu thành tích và nhận rewards!`;
-      }
 
-      message += `\n\nNhấn R để chơi lại`;
+        // Simple game over message without detailed rewards
+        let message = `🎮 Game Over!\n`;
+        message += `Điểm: ${this.score}\n\n`;
 
-      console.log('🎮 === ALERT MESSAGE ===');
-      console.log(message);
-      console.log('🎮 === GAME OVER HANDLER ENDED ===');
+        if (loginStatus) {
+          message += `✅ Thành tích đã được lưu!`;
+        } else {
+          message += `💡 Đăng nhập để lưu thành tích và nhận rewards!`;
+        }
 
-      alert(message);
+        message += `\n\nNhấn R để chơi lại`;
+
+        console.log('🎮 === ALERT MESSAGE ===');
+        console.log(message);
+        console.log('🎮 === GAME OVER HANDLER ENDED ===');
+
+        alert(message);
 
       } catch (error) {
         console.error('💥 CRITICAL ERROR in handleGameOver:', error);

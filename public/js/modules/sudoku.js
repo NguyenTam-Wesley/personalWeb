@@ -43,9 +43,7 @@ const HINT_PENALTY = {
 };
 
 export class SudokuGame {
-    constructor(sudokuScoresInstance = null, difficulty = DIFFICULTY.MEDIUM) {
-        // Legacy parameter for backward compatibility
-        this.sudokuScores = sudokuScoresInstance;
+    constructor(difficulty = DIFFICULTY.MEDIUM) {
         this.difficulty = difficulty;
 
         // State duy nhất cho ô đang chọn
@@ -1153,7 +1151,7 @@ export class SudokuGame {
         notification.className = 'reward-notification';
 
         // Build reward message
-        let message = '<h3 style="margin: 0 0 10px 0; font-size: 18px;">🎉 Rewards Earned!</h3>';
+        let message = '<h3>🎉 Rewards Earned!</h3>';
         const rewards = [];
 
         if (xp_gained > 0) rewards.push(`⭐ ${xp_gained} XP`);
@@ -1162,10 +1160,10 @@ export class SudokuGame {
         if (level_up) rewards.push(`⬆️ LEVEL UP!`);
 
         if (rewards.length > 0) {
-            message += '<div style="margin-bottom: 15px;">' + rewards.join('<br>') + '</div>';
+            message += '<div class="reward-list">' + rewards.join('<br>') + '</div>';
         }
 
-        message += '<button onclick="this.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer;">OK</button>';
+        message += '<button class="reward-close-btn" onclick="this.parentElement.remove()">OK</button>';
 
         notification.innerHTML = message;
 
