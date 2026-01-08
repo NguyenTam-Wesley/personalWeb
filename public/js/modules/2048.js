@@ -1,5 +1,7 @@
 import { rewards } from './rewards.js';
+import { leaderboard } from './leaderboard.js';
 import { supabase } from '../supabase/supabase.js';
+import { getAuthUser } from '../supabase/auth.js';
 
 export class Game2048 {
     constructor(gridId, size = 4) {
@@ -729,6 +731,13 @@ export class Game2048 {
                 if (rewardData && (rewardData.xp_gained > 0 || rewardData.coins_gained > 0 || rewardData.gems_gained > 0)) {
                   this.showRewardNotification(rewardData);
                 }
+
+                // 🏆 Update leaderboard using leaderboard module
+                try {
+                  await leaderboard.updateLeaderboard(sessionId);
+                } catch (leaderboardError) {
+                  console.error('❌ Error updating leaderboard:', leaderboardError);
+                }
               }
             } catch (rewardError) {
               console.error('❌ Error calculating rewards:', rewardError);
@@ -816,26 +825,20 @@ export class Game2048 {
       if (!this.bestScoreDisplay) return;
 
       try {
-        const config = await this.loadGameConfig();
-        if (!config) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
           this.bestScoreDisplay.textContent = 'Best: --';
           return;
         }
 
-        const { data, error } = await supabase
-          .from('game_best_scores')
-          .select('metric_value')
-          .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-          .eq('game_id', config.gameId)
-          .eq('mode_id', config.modeId)
-          .maybeSingle();
-
-        if (error || !data) {
+        const userBest = await leaderboard.getUserBestScore(authUser.id, '2048', 'classic');
+        
+        if (!userBest || !userBest.metric_value) {
           this.bestScoreDisplay.textContent = 'Best: --';
           return;
         }
 
-        this.bestScoreDisplay.textContent = `Best: ${data.metric_value}`;
+        this.bestScoreDisplay.textContent = `Best: ${userBest.metric_value.toLocaleString()}`;
       } catch (error) {
         console.error('Error updating best score display:', error);
         this.bestScoreDisplay.textContent = 'Best: --';
@@ -847,19 +850,20 @@ export class Game2048 {
       if (!this.rankDisplay) return;
 
       try {
-        const { data, error } = await supabase
-          .from('v_user_best_scores')
-          .select('user_rank')
-          .eq('game_code', '2048')
-          .eq('mode_code', 'classic')
-          .maybeSingle();
-
-        if (error || !data) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
           this.rankDisplay.textContent = 'Rank: --';
           return;
         }
 
-        this.rankDisplay.textContent = `Rank: #${data.user_rank || '--'}`;
+        const userBest = await leaderboard.getUserBestScore(authUser.id, '2048', 'classic');
+
+        if (!userBest || !userBest.user_rank) {
+          this.rankDisplay.textContent = 'Rank: --';
+          return;
+        }
+
+        this.rankDisplay.textContent = `Rank: #${userBest.user_rank}`;
       } catch (error) {
         console.error('Error updating rank display:', error);
         this.rankDisplay.textContent = 'Rank: --';
@@ -885,27 +889,20 @@ export class Game2048 {
       if (!this.leaderboardList) return;
 
       try {
-        const { data, error } = await supabase
-          .rpc('get_leaderboard', {
-            p_game_code: '2048',
-            p_mode_code: 'classic',
-            p_limit: 10
-          });
+        const result = await leaderboard.getLeaderboardWithCurrentUser('2048', 'classic', 10);
+        const leaderboardData = result.leaderboard || [];
+        const currentUserId = result.currentUserId;
 
-        if (error) {
-          console.error('Error loading leaderboard:', error);
-          this.leaderboardList.innerHTML = '<div class="leaderboard-item">Không thể tải leaderboard</div>';
+        if (leaderboardData.length === 0) {
+          this.leaderboardList.innerHTML = '<div class="leaderboard-item">Chưa có dữ liệu</div>';
           return;
         }
 
-        const user = await supabase.auth.getUser();
-        const currentUserId = user.data.user?.id;
-
-        this.leaderboardList.innerHTML = data.map(item => `
+        this.leaderboardList.innerHTML = leaderboardData.map(item => `
           <div class="leaderboard-item ${item.user_id === currentUserId ? 'current-user' : ''}">
             <span class="leaderboard-rank">${item.rank}</span>
             <span class="leaderboard-username">${item.username}</span>
-            <span class="leaderboard-score">${item.metric_value.toLocaleString()}</span>
+            <span class="leaderboard-score">${leaderboard.formatMetricValue(item.metric_value, 'score')}</span>
           </div>
         `).join('');
 

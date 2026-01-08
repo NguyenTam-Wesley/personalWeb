@@ -10,7 +10,9 @@ const DIFFICULTY = {
 // Import modules
 import { rewards } from './rewards.js';
 import { achievements } from './achievements.js';
+import { leaderboard } from './leaderboard.js';
 import { supabase } from '../supabase/supabase.js';
+import { getAuthUser } from '../supabase/auth.js';
 
 // Utility function to format time
 function formatTime(seconds) {
@@ -654,6 +656,13 @@ export class SudokuGame {
                                     if (rewardData && (rewardData.xp_gained > 0 || rewardData.coins_gained > 0 || rewardData.gems_gained > 0)) {
                                         this.showRewardNotification(rewardData);
                                     }
+
+                                    // 🏆 Update leaderboard using leaderboard module
+                                    try {
+                                        await leaderboard.updateLeaderboard(sessionId);
+                                    } catch (leaderboardError) {
+                                        console.error('❌ Error updating leaderboard:', leaderboardError);
+                                    }
                                 }
                             } catch (rewardError) {
                                 console.error('❌ Error calculating rewards:', rewardError);
@@ -850,14 +859,25 @@ export class SudokuGame {
             return;
         }
 
-        const user = await supabase.auth.getUser();
-        if (!user.data.user) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
             this.bestTimeDisplay.textContent = 'Best: --:--';
             return;
         }
 
-        const bestTime = await this.getBestTimeFromBestScores(this.difficulty);
-        this.bestTimeDisplay.textContent = `Best: ${formatTime(bestTime)}`;
+        try {
+            const userBest = await leaderboard.getUserBestScore(authUser.id, 'sudoku', this.difficulty);
+            
+            if (!userBest || !userBest.metric_value) {
+                this.bestTimeDisplay.textContent = 'Best: --:--';
+                return;
+            }
+
+            this.bestTimeDisplay.textContent = `Best: ${formatTime(userBest.metric_value)}`;
+        } catch (error) {
+            console.error('Error updating best time display:', error);
+            this.bestTimeDisplay.textContent = 'Best: --:--';
+        }
     }
 
     // Get all best scores từ game_best_scores table
@@ -1046,26 +1066,21 @@ export class SudokuGame {
             return;
         }
 
-        const user = await supabase.auth.getUser();
-        if (!user.data.user) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
             this.rankDisplay.textContent = 'Rank: --';
             return;
         }
 
         try {
-            const { data, error } = await supabase
-                .from('v_user_best_scores')
-                .select('user_rank')
-                .eq('game_code', 'sudoku')
-                .eq('mode_code', this.difficulty)
-                .maybeSingle();
+            const userBest = await leaderboard.getUserBestScore(authUser.id, 'sudoku', this.difficulty);
 
-            if (error || !data) {
+            if (!userBest || !userBest.user_rank) {
                 this.rankDisplay.textContent = 'Rank: --';
                 return;
             }
 
-            this.rankDisplay.textContent = `Rank: #${data.user_rank || '--'}`;
+            this.rankDisplay.textContent = `Rank: #${userBest.user_rank}`;
         } catch (error) {
             console.error('Error updating rank display:', error);
             this.rankDisplay.textContent = 'Rank: --';
@@ -1096,27 +1111,20 @@ export class SudokuGame {
         if (!this.leaderboardList) return;
 
         try {
-            const { data, error } = await supabase
-                .rpc('get_leaderboard', {
-                    p_game_code: 'sudoku',
-                    p_mode_code: this.difficulty,
-                    p_limit: 10
-                });
+            const result = await leaderboard.getLeaderboardWithCurrentUser('sudoku', this.difficulty, 10);
+            const leaderboardData = result.leaderboard || [];
+            const currentUserId = result.currentUserId;
 
-            if (error) {
-                console.error('Error loading leaderboard:', error);
-                this.leaderboardList.innerHTML = '<div class="leaderboard-item">Không thể tải leaderboard</div>';
+            if (leaderboardData.length === 0) {
+                this.leaderboardList.innerHTML = '<div class="leaderboard-item">Chưa có dữ liệu</div>';
                 return;
             }
 
-            const user = await supabase.auth.getUser();
-            const currentUserId = user.data.user?.id;
-
-            this.leaderboardList.innerHTML = data.map(item => `
+            this.leaderboardList.innerHTML = leaderboardData.map(item => `
                 <div class="leaderboard-item ${item.user_id === currentUserId ? 'current-user' : ''}">
                     <span class="leaderboard-rank">${item.rank}</span>
                     <span class="leaderboard-username">${item.username}</span>
-                    <span class="leaderboard-score">${formatTime(item.metric_value)}</span>
+                    <span class="leaderboard-score">${leaderboard.formatMetricValue(item.metric_value, 'time')}</span>
                 </div>
             `).join('');
 

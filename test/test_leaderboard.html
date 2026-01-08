@@ -508,6 +508,7 @@
     <script type="module">
         import { supabase } from '../public/js/supabase/supabase.js';
         import { rewards } from '../public/js/modules/rewards.js';
+        import { leaderboard } from '../public/js/modules/leaderboard.js';
 
         // Global state
         let currentUser = null;
@@ -600,7 +601,7 @@
 
                 log('info', `Submitting ${gameCode} result: ${metricValue} ${metricType} (${modeCode} mode)`);
 
-                // Step 1: Submit game result
+                // Step 1: Submit game result (tạo game session)
                 const submitResult = await supabase.functions.invoke('submitGameResult', {
                     body: {
                         game_code: gameCode,
@@ -631,20 +632,38 @@
                 const rewardData = await rewards.calculateRewardsForSession(sessionId);
                 log('leaderboard', `Rewards earned: ${JSON.stringify(rewardData)}`);
 
-                // Step 3: Update user stats and refresh leaderboard
-                await loadUserStats();
-                await refreshLeaderboard();
+                // Step 3: Update leaderboard using RPC
+                log('info', 'Updating leaderboard...');
+                const leaderboardResult = await leaderboard.updateLeaderboard(sessionId);
 
-                // Step 4: Show success message
-                gameResult.className = 'game-result success';
-                gameResult.innerHTML = `
-                    <h3>✅ Score Submitted!</h3>
-                    <p><strong>Game:</strong> ${gameCode} (${modeCode})</p>
-                    <p><strong>Performance:</strong> ${metricValue} ${metricType}</p>
-                    <p><strong>Session ID:</strong> ${sessionId}</p>
-                    <p><strong>Leaderboard Updated!</strong></p>
-                `;
-                gameResult.style.display = 'block';
+                if (leaderboardResult.success) {
+                    const isNewRecord = leaderboardResult.is_new_record;
+                    const recordStatus = isNewRecord ? '🎉 NEW RECORD!' : '✅ Score Updated';
+                    const recordMessage = isNewRecord ?
+                        'This is your new personal best!' :
+                        'Score submitted but didn\'t beat your current best.';
+
+                    log('leaderboard', `${recordStatus} - ${recordMessage}`);
+                    log('leaderboard', `Details: ${leaderboard.formatMetricValue(leaderboardResult.metric_value, leaderboardResult.metric_type)}`);
+
+                    // Step 4: Refresh leaderboard display
+                    await refreshLeaderboard();
+                    await loadUserStats();
+
+                    // Step 5: Show success message
+                    gameResult.className = 'game-result success';
+                    gameResult.innerHTML = `
+                        <h3>${recordStatus}</h3>
+                        <p><strong>Game:</strong> ${gameCode} (${modeCode})</p>
+                        <p><strong>Performance:</strong> ${leaderboard.formatMetricValue(leaderboardResult.metric_value, leaderboardResult.metric_type)}</p>
+                        <p><strong>Session ID:</strong> ${sessionId}</p>
+                        <p><em>${recordMessage}</em></p>
+                        ${isNewRecord ? '<p style="color: #ffc107; font-weight: bold;">⭐ Personal Best Updated!</p>' : ''}
+                    `;
+                    gameResult.style.display = 'block';
+                } else {
+                    throw new Error('Leaderboard update failed');
+                }
 
             } catch (error) {
                 log('error', `Game submission failed: ${error.message}`);
@@ -682,16 +701,14 @@
                     </div>
                 `;
 
-                const { data, error } = await supabase
-                    .rpc('get_leaderboard', {
-                        p_game_code: gameCode,
-                        p_mode_code: modeCode,
-                        p_limit: 10
-                    });
+                // Use leaderboard module to get data
+                const leaderboardData = await leaderboard.getLeaderboardWithCurrentUser(
+                    gameCode,
+                    modeCode,
+                    10
+                );
 
-                if (error) {
-                    throw new Error(`Leaderboard load failed: ${error.message}`);
-                }
+                const data = leaderboardData.leaderboard;
 
                 if (!data || data.length === 0) {
                     leaderboardList.innerHTML = `
@@ -720,14 +737,14 @@
                     </div>
                     ${data.map(item => {
                         const isCurrentUser = item.user_id === currentUser?.id;
-                        const rankClass = item.rank <= 3 ? `top-${item.rank}` : '';
+                        const rankClass = leaderboard.getRankDisplayClass(item.rank);
                         const itemClass = `leaderboard-item ${rankClass} ${isCurrentUser ? 'current-user' : ''}`;
 
                         return `
                             <div class="${itemClass}">
                                 <span class="leaderboard-rank ${rankClass}">${item.rank}</span>
                                 <span class="leaderboard-username">${item.username || 'Anonymous'}</span>
-                                <span class="leaderboard-score">${formatMetricValue(item.metric_value, isTimeBased)}</span>
+                                <span class="leaderboard-score">${leaderboard.formatMetricValue(item.metric_value, isTimeBased ? 'time' : 'score')}</span>
                             </div>
                         `;
                     }).join('')}
@@ -752,23 +769,18 @@
                 const gameCode = gameSelect.value;
                 const modeCode = modeSelect.value;
 
-                // Get user's best score for current game/mode
-                const { data, error } = await supabase
-                    .from('v_user_best_scores')
-                    .select('*')
-                    .eq('game_code', gameCode)
-                    .eq('mode_code', modeCode)
-                    .single();
+                // Use leaderboard module to get user best score
+                const userBest = await leaderboard.getUserBestScore(
+                    currentUser.id,
+                    gameCode,
+                    modeCode
+                );
 
-                if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-                    throw error;
-                }
-
-                if (data) {
-                    const isTimeBased = data.metric_type === 'time';
-                    document.getElementById('current-rank').textContent = data.user_rank || '--';
-                    document.getElementById('best-score').textContent = formatMetricValue(data.metric_value, isTimeBased);
-                    document.getElementById('last-updated').textContent = new Date(data.updated_at).toLocaleString();
+                if (userBest) {
+                    const isTimeBased = userBest.metric_type === 'time';
+                    document.getElementById('current-rank').textContent = userBest.user_rank || '--';
+                    document.getElementById('best-score').textContent = leaderboard.formatMetricValue(userBest.metric_value, userBest.metric_type);
+                    document.getElementById('last-updated').textContent = new Date(userBest.updated_at).toLocaleString();
                 } else {
                     document.getElementById('current-rank').textContent = '--';
                     document.getElementById('best-score').textContent = '--';

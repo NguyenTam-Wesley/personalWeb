@@ -1,11 +1,3 @@
-// 🎯 Rewards Module - Quản lý hệ thống phân phát rewards
-// ✅ Tính toán game rewards dựa trên difficulty và performance
-// ✅ Quản lý daily rewards
-// ✅ Claim level up rewards
-// ✅ Tích hợp tất cả các loại rewards
-// ✅ Áp dụng pet bonuses và item effects
-// ✅ Cache để tối ưu performance
-
 import { supabase } from '../supabase/supabase.js';
 import { getAuthUser } from '../supabase/auth.js';
 import { userProfile } from './user_profile.js';
@@ -20,8 +12,8 @@ export class Rewards {
             userState: new Map(), // Short TTL for user-specific data
         };
         this.cacheTimeout = {
-            config: 5 * 60 * 1000, // 5 minutes for configs
-            userState: 2 * 60 * 1000, // 2 minutes for user state
+            config: 3 * 60 * 1000, // 5 minutes for configs
+            userState: 1 * 60 * 1000, // 2 minutes for user state
         };
     }
 
@@ -90,200 +82,30 @@ export class Rewards {
         this.cache.config.clear();
     }
 
-    // Lấy game rewards config
-    async getGameRewardsConfig(forceRefresh = false) {
-        const cacheKey = 'game_rewards_config';
 
-        if (!forceRefresh) {
-            const cached = this.getCached('config', cacheKey);
-            if (cached) return cached;
-        }
 
-        try {
-            const { data, error } = await supabase
-                .from('game_rewards')
-                .select('*');
-
-            if (error) {
-                console.error('Error getting game rewards config:', error);
-                return {};
-            }
-
-            // Convert thành object {difficulty: config}
-            const config = {};
-            data.forEach(reward => {
-                config[reward.difficulty] = reward;
-            });
-
-            this.setCached('config', cacheKey, config);
-            return config;
-        } catch (error) {
-            console.error('Error in getGameRewardsConfig:', error);
-            return {};
-        }
+    // 🎯 Calculate game rewards using RPC
+    // sessionId: UUID of the game session
+    async calculateGameRewards(sessionId) {
+        return await this.calculateRewardsForSession(sessionId);
     }
 
-    // 🎯 GAME-SPECIFIC REWARD CALCULATORS
-    // Tách riêng logic tính reward cho từng game
-
-    // Sudoku: dựa trên difficulty + time + mistakes
-    calculateSudokuRewards(result, config) {
-        const difficultyConfig = config[result.difficulty];
-
-        if (!difficultyConfig) {
-            console.warn(`No reward config found for difficulty: ${result.difficulty}`);
-            return { xp: 0, coins: 0 };
-        }
-
-        let xp = difficultyConfig.base_xp;
-        let coins = difficultyConfig.base_coins;
-
-        // Time bonus: reward nhanh hơn
-        const timeBonusMultiplier = difficultyConfig.time_bonus_multiplier;
-        if (result.timeTaken < 600) { // Dưới 10 phút
-            xp = Math.floor(xp * timeBonusMultiplier);
-            coins = Math.floor(coins * timeBonusMultiplier);
-        }
-
-        // Mistake penalty: ít sai thì bonus
-        if (result.mistakes === 0) {
-            xp = Math.floor(xp * 1.1); // +10% cho perfect game
-        }
-
-        return {
-            xp: Math.max(xp, 1),
-            coins: Math.max(coins, 1)
-        };
-    }
-
-    // 2048: dựa trên maxTile + score + moves (không có difficulty/time)
-    calculate2048Rewards(result, config) {
-        let xp = Math.floor(result.score / 100); // 1 XP per 100 points
-        let coins = Math.floor(result.score / 200); // 1 coin per 200 points
-
-        // Max tile bonuses
-        if (result.maxTile >= 2048) {
-            xp += 200;
-            coins += 50;
-        }
-        if (result.maxTile >= 1024) {
-            xp += 100;
-            coins += 25;
-        }
-        if (result.maxTile >= 512) {
-            xp += 50;
-            coins += 10;
-        }
-
-        // Efficiency bonus: ít moves thì bonus
-        const efficiencyRatio = result.score / result.moves;
-        if (efficiencyRatio > 10) { // High efficiency
-            xp = Math.floor(xp * 1.2);
-            coins = Math.floor(coins * 1.2);
-        }
-
-        return {
-            xp: Math.max(xp, 10), // Minimum 10 XP cho 2048
-            coins: Math.max(coins, 5) // Minimum 5 coins cho 2048
-        };
-    }
-
-    // 🎯 GAME REWARD CALCULATORS REGISTRY
-    // Map game type → calculator function
-    GAME_REWARD_CALCULATORS = {
-        sudoku: this.calculateSudokuRewards,
-        '2048': this.calculate2048Rewards
-    };
-
-    // 🎯 GLOBAL BONUSES APPLIER
-    // Áp dụng pet + item bonuses (cross-game)
-    applyGlobalBonuses(baseReward, petBonuses, itemEffects) {
-        let finalXP = baseReward.xp;
-        let finalCoins = baseReward.coins;
-
-        // Pet bonuses (happiness = XP boost, luck = coin boost)
-        finalXP = Math.floor(finalXP * (1 + petBonuses.happiness_boost / 100));
-        finalCoins = Math.floor(finalCoins * (1 + petBonuses.luck_boost / 100));
-
-        // Item effects (active consumable effects)
-        let xpBoost = 0;
-        let coinBoost = 0;
-
-        itemEffects.forEach(effect => {
-            if (effect.effect_type === 'xp_boost') {
-                xpBoost += effect.value;
-            } else if (effect.effect_type === 'coin_boost') {
-                coinBoost += effect.value;
-            }
-        });
-
-        finalXP = Math.floor(finalXP * (1 + xpBoost / 100));
-        finalCoins = Math.floor(finalCoins * (1 + coinBoost / 100));
-
-        return {
-            xp: Math.max(finalXP, 1),
-            coins: Math.max(finalCoins, 1)
-        };
-    }
-
-    // 🎯 NEW ARCHITECTURE: calculateGameRewards
-    // gameType: 'sudoku' | '2048'
-    // gameResult: { difficulty, timeTaken, mistakes } | { maxTile, score, moves }
-    async calculateGameRewards(gameType, gameResult) {
-        const config = await this.getGameRewardsConfig();
-
-        // Get base reward from game-specific calculator
-        const calculator = this.GAME_REWARD_CALCULATORS[gameType];
-        if (!calculator) {
-            console.warn(`No calculator found for game type: ${gameType}`);
-            return { xp: 0, coins: 0 };
-        }
-
-        const baseReward = calculator.call(this, gameResult, config);
-
-        // Apply global modifiers (pet + item bonuses)
-        const petBonuses = await pets.getCurrentPetBonuses();
-        const itemEffects = await items.getCurrentActiveEffects();
-
-        const finalReward = this.applyGlobalBonuses(baseReward, petBonuses, itemEffects);
-
-        // Return with breakdown for debugging
-        return {
-            ...finalReward,
-            breakdown: {
-                gameType,
-                baseReward,
-                petBonuses,
-                itemEffects,
-                finalReward
-            }
-        };
-    }
-
-    // 🎯 NEW ARCHITECTURE: grantGameRewards
-    // gameType: 'sudoku' | '2048'
-    // gameResult: game-specific result object
-    async grantGameRewards(gameType, gameResult) {
+    // 🎯 Grant game rewards using RPC
+    // sessionId: UUID of the game session
+    async grantGameRewards(sessionId) {
         try {
             return await this.withUser(async (_user) => {
-                const rewards = await this.calculateGameRewards(gameType, gameResult);
-
-                // Grant XP reward
-                await userProfile.addXP(rewards.xp);
-
-                // Add coins using client-side method
-                await userProfile.addCoins(rewards.coins);
-
-                // Update game stats (game-specific tracking)
-                const statsUpdate = this.buildGameStatsUpdate(gameType, gameResult);
-                if (statsUpdate) {
-                    await userProfile.updateGameStats(statsUpdate);
-                }
+                const rewards = await this.calculateRewardsForSession(sessionId);
 
                 return {
                     success: true,
-                    rewards: rewards,
-                    message: `Nhận được ${rewards.xp} XP và ${rewards.coins} coins!`
+                    rewards: {
+                        xp: rewards.xp_gained,
+                        coins: rewards.coins_gained,
+                        gems: rewards.gems_gained
+                    },
+                    multipliers: rewards.multipliers,
+                    message: `Nhận được ${rewards.xp_gained} XP, ${rewards.coins_gained} coins, ${rewards.gems_gained} gems!`
                 };
             });
         } catch (error) {
@@ -292,27 +114,6 @@ export class Rewards {
         }
     }
 
-    // 🎯 Helper: Build game stats update based on game type
-    buildGameStatsUpdate(gameType, gameResult) {
-        switch (gameType) {
-            case 'sudoku':
-                return {
-                    timeSpent: gameResult.timeTaken,
-                    sudokuGames: 1,
-                    maintainStreak: false
-                };
-
-            case '2048':
-                return {
-                    game2048Played: 1,
-                    maxTileAchieved: gameResult.maxTile,
-                    maintainStreak: false
-                };
-
-            default:
-                return null;
-        }
-    }
 
     // Lấy daily rewards config
     async getDailyRewardsConfig(forceRefresh = false) {
@@ -656,49 +457,10 @@ async claimDailyReward() {
                 currentLevel: profile?.level || 1,
                 nextReward: nextLevelReward,
                 progress: profile ? userProfile.getLevelProgress(profile) : 0
-            },
-            game: await this.getGameRewardsConfig()
+            }
         };
     }
 
-    // Add XP directly (for 2048 game)
-    async addXP(amount, reason = 'game_completion', referenceId = null) {
-        const authUser = await getAuthUser();
-        if (!authUser?.id) {
-            throw new Error('User not logged in');
-        }
-        const result = await userProfile.addXP(amount, reason, referenceId);
-        if (!result) {
-            throw new Error('Failed to add XP');
-        }
-        return result;
-    }
-
-    // Add coins directly (for 2048 game)
-    async addCoins(amount) {
-        const authUser = await getAuthUser();
-        if (!authUser?.id) {
-            throw new Error('User not logged in');
-        }
-        const result = await userProfile.addCoins(amount);
-        if (result === false) {
-            throw new Error('Failed to add coins');
-        }
-        return true;
-    }
-
-    // Add gems directly (for 2048 game)
-    async addGems(amount) {
-        const authUser = await getAuthUser();
-        if (!authUser?.id) {
-            throw new Error('User not logged in');
-        }
-        const result = await userProfile.addGems(amount);
-        if (result === false) {
-            throw new Error('Failed to add gems');
-        }
-        return true;
-    }
 
     // Clear cache (invalidate all)
     clearCache() {
@@ -713,7 +475,7 @@ async claimDailyReward() {
 
     // 🎁 Calculate and apply rewards for a game session using RPC
     async calculateRewardsForSession(sessionId) {
-        return await this.withUser(async (user) => {
+        return await this.withUser(async (_user) => {
             console.log('🎁 Calculating rewards for session:', sessionId);
 
             try {
@@ -738,9 +500,7 @@ async claimDailyReward() {
 
     // Debug: log rewards config
     async debugLogRewardsConfig() {
-        const config = await this.getGameRewardsConfig(true);
         const dailyConfig = await this.getDailyRewardsConfig(true);
-        console.log('Game Rewards Config:', config);
         console.log('Daily Rewards Config:', dailyConfig);
     }
 }
