@@ -5,7 +5,6 @@ let cols = 0;
 let numMines = 0;
 let firstClick = true;
 let gameOver = false;
-let gameWon = false;
 
 // Cell structure
 class Cell {
@@ -24,11 +23,12 @@ onmessage = function(event) {
     const { type, data } = event.data;
 
     switch (type) {
-        case 'init':
+        case 'init': {
             initGame(data);
             break;
+        }
 
-        case 'openCell':
+        case 'openCell': {
             const result = openCell(data.x, data.y);
             postMessage({
                 type: 'update',
@@ -36,24 +36,28 @@ onmessage = function(event) {
                 gameOver: result.gameOver
             });
             break;
+        }
 
-        case 'toggleFlag':
+        case 'toggleFlag': {
             toggleFlag(data.x, data.y);
             postMessage({
                 type: 'update',
                 flagged: `${data.x},${data.y}`
             });
             break;
+        }
 
-        case 'checkWin':
+        case 'checkWin': {
             postMessage({
                 type: 'win',
                 won: checkWin()
             });
             break;
+        }
 
-        default:
+        default: {
             console.warn('Unknown message type:', type);
+        }
     }
 };
 
@@ -82,7 +86,12 @@ function initGame(config) {
     });
 }
 
-// Place mines randomly, avoiding first click position
+// Check if cell is in the 3x3 safe zone around first click
+function isInSafeZone(x, y, firstX, firstY) {
+    return Math.abs(x - firstX) <= 1 && Math.abs(y - firstY) <= 1;
+}
+
+// Place mines randomly, avoiding the entire 3x3 safe zone
 function placeMines(firstX, firstY) {
     let minesPlaced = 0;
 
@@ -91,8 +100,8 @@ function placeMines(firstX, firstY) {
         const y = Math.floor(Math.random() * cols);
 
         const cell = board[x][y];
-        // Don't place mine on first click or if already has mine
-        if ((x !== firstX || y !== firstY) && !cell.isMine) {
+        // Don't place mine in the 3x3 safe zone or if already has mine
+        if (!cell.isMine && !isInSafeZone(x, y, firstX, firstY)) {
             cell.isMine = true;
             minesPlaced++;
         }
@@ -131,14 +140,15 @@ function openCell(x, y) {
         return { revealed: getAllCells(), gameOver: true };
     }
 
-    // Flood fill using BFS
+    // Flood fill using BFS (optimized queue)
     const queue = [[x, y]];
+    let head = 0;
 
-    while (queue.length > 0) {
-        const [cx, cy] = queue.shift();
+    while (head < queue.length) {
+        const [cx, cy] = queue[head++];
         const c = board[cx][cy];
 
-        if (c.isRevealed) continue;
+        if (c.isRevealed || c.isFlagged) continue;
 
         c.isRevealed = true;
         revealedCells.push({
@@ -157,7 +167,7 @@ function openCell(x, y) {
                     const nx = cx + dx;
                     const ny = cy + dy;
 
-                    if (inBounds(nx, ny) && !board[nx][ny].isRevealed) {
+                    if (inBounds(nx, ny) && !board[nx][ny].isRevealed && !board[nx][ny].isFlagged) {
                         queue.push([nx, ny]);
                     }
                 }
@@ -190,7 +200,6 @@ function checkWin() {
         }
     }
 
-    gameWon = true;
     return true;
 }
 

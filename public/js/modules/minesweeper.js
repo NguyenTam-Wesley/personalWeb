@@ -278,6 +278,9 @@ export class MinesweeperGame {
 
                         // Update UI with latest achievements and leaderboard
                         try {
+                            // Clear user cache for this game/mode to ensure fresh rank data
+                            leaderboard.invalidateUserCache(authUser.id, 'minesweeper', this.difficulty);
+
                             // Refresh best time and rank displays
                             await this.updateBestTimeAndRank();
 
@@ -561,20 +564,14 @@ export class MinesweeperGame {
         }
 
         try {
-            // Get best score for current difficulty
+            // Get best score for current difficulty (includes rank)
             const bestScore = await leaderboard.getUserBestScore(authUser.id, 'minesweeper', this.difficulty);
+
             if (bestScore && bestScore.metric_value) {
                 this.bestTimeDisplay.textContent = `Best: ${this.formatTime(bestScore.metric_value)}`;
+                this.rankDisplay.textContent = `Rank: ${bestScore.user_rank || '--'}`;
             } else {
                 this.bestTimeDisplay.textContent = 'Best: --:--';
-            }
-
-            // Get rank for current difficulty
-            const leaderboardResult = await leaderboard.getLeaderboardWithCurrentUser('minesweeper', this.difficulty, 100);
-            const currentUserEntry = leaderboardResult.leaderboard?.find(item => item.user_id === authUser.id);
-            if (currentUserEntry && currentUserEntry.rank) {
-                this.rankDisplay.textContent = `Rank: ${currentUserEntry.rank}`;
-            } else {
                 this.rankDisplay.textContent = 'Rank: --';
             }
         } catch (error) {
