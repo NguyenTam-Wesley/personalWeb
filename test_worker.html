@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Worker Loading</title>
+</head>
+<body>
+    <h1>Worker Loading Test</h1>
+    <div id="result"></div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+
+        try {
+            console.log('Creating worker...');
+            const worker = new Worker('/js/workers/minesweeper_worker.js');
+
+            worker.onmessage = (e) => {
+                console.log('Worker message:', e.data);
+                resultDiv.innerHTML += '<p>✓ Worker loaded and responded!</p>';
+            };
+
+            worker.onerror = (error) => {
+                console.error('Worker error:', error);
+                resultDiv.innerHTML += '<p>✗ Worker error: ' + error.message + '</p>';
+            };
+
+            // Test message
+            worker.postMessage({
+                type: 'init',
+                data: { rows: 9, cols: 9, mines: 10 }
+            });
+
+            resultDiv.innerHTML += '<p>✓ Worker created successfully</p>';
+
+        } catch (error) {
+            console.error('Failed to create worker:', error);
+            resultDiv.innerHTML += '<p>✗ Failed to create worker: ' + error.message + '</p>';
+        }
+    </script>
+</body>
+</html>

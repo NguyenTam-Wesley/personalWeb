@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Minesweeper Test</title>
+    <style>
+        .board { display: grid; grid-template-columns: repeat(9, 30px); gap: 1px; margin: 20px; }
+        .cell { width: 30px; height: 30px; background: #c0c0c0; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+        .cell.revealed { background: #e0e0e0; }
+        .cell.mine { background: red; }
+        .cell.flagged { background: yellow; }
+        button { margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Simple Minesweeper Test</h1>
+    <button onclick="initGame()">New Game</button>
+    <button onclick="testFloodFill()">Test Flood Fill</button>
+    <div id="board" class="board"></div>
+
+    <script>
+        let board = [];
+        const ROWS = 9;
+        const COLS = 9;
+        const MINES = 10;
+
+        class Cell {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.isMine = false;
+                this.isRevealed = false;
+                this.isFlagged = false;
+                this.neighborMines = 0;
+            }
+        }
+
+        function initGame() {
+            // Create board
+            board = [];
+            for (let x = 0; x < ROWS; x++) {
+                board[x] = [];
+                for (let y = 0; y < COLS; y++) {
+                    board[x][y] = new Cell(x, y);
+                }
+            }
+
+            // Place mines
+            let minesPlaced = 0;
+            while (minesPlaced < MINES) {
+                const x = Math.floor(Math.random() * ROWS);
+                const y = Math.floor(Math.random() * COLS);
+                if (!board[x][y].isMine) {
+                    board[x][y].isMine = true;
+                    minesPlaced++;
+                }
+            }
+
+            // Calculate neighbors
+            for (let x = 0; x < ROWS; x++) {
+                for (let y = 0; y < COLS; y++) {
+                    if (!board[x][y].isMine) {
+                        board[x][y].neighborMines = countMinesAround(x, y);
+                    }
+                }
+            }
+
+            renderBoard();
+        }
+
+        function countMinesAround(x, y) {
+            let count = 0;
+            for (let dx = -1; dx <= 1; dx++) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    const nx = x + dx;
+                    const ny = y + dy;
+                    if (nx >= 0 && nx < ROWS && ny >= 0 && ny < COLS && board[nx][ny].isMine) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        function openCell(x, y) {
+            const cell = board[x][y];
+            if (cell.isRevealed || cell.isFlagged) return [];
+
+            cell.isRevealed = true;
+
+            if (cell.isMine) {
+                revealAllMines();
+                return [{x, y, isMine: true, isRevealed: true, neighborMines: 0}];
+            }
+
+            const revealed = [{x, y, isMine: false, isRevealed: true, neighborMines: cell.neighborMines}];
+
+            // Flood fill
+            if (cell.neighborMines === 0) {
+                const queue = [[x, y]];
+                while (queue.length > 0) {
+                    const [cx, cy] = queue.shift();
+                    const c = board[cx][cy];
+
+                    for (let dx = -1; dx <= 1; dx++) {
+                        for (let dy = -1; dy <= 1; dy++) {
+                            const nx = cx + dx;
+                            const ny = cy + dy;
+                            if (nx >= 0 && nx < ROWS && ny >= 0 && ny < COLS) {
+                                const neighbor = board[nx][ny];
+                                if (!neighbor.isRevealed && !neighbor.isMine) {
+                                    neighbor.isRevealed = true;
+                                    revealed.push({
+                                        x: nx, y: ny,
+                                        isMine: false,
+                                        isRevealed: true,
+                                        neighborMines: neighbor.neighborMines
+                                    });
+                                    if (neighbor.neighborMines === 0) {
+                                        queue.push([nx, ny]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return revealed;
+        }
+
+        function revealAllMines() {
+            for (let x = 0; x < ROWS; x++) {
+                for (let y = 0; y < COLS; y++) {
+                    if (board[x][y].isMine) {
+                        board[x][y].isRevealed = true;
+                    }
+                }
+            }
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+
+            for (let x = 0; x < ROWS; x++) {
+                for (let y = 0; y < COLS; y++) {
+                    const cell = board[x][y];
+                    const cellEl = document.createElement('div');
+                    cellEl.className = 'cell';
+                    cellEl.dataset.x = x;
+                    cellEl.dataset.y = y;
+
+                    if (cell.isRevealed) {
+                        cellEl.classList.add('revealed');
+                        if (cell.isMine) {
+                            cellEl.classList.add('mine');
+                            cellEl.textContent = '💣';
+                        } else if (cell.neighborMines > 0) {
+                            cellEl.textContent = cell.neighborMines;
+                        }
+                    }
+
+                    if (cell.isFlagged) {
+                        cellEl.classList.add('flagged');
+                        cellEl.textContent = '🚩';
+                    }
+
+                    cellEl.onclick = () => {
+                        const revealed = openCell(x, y);
+                        renderBoard();
+                        console.log(`Revealed ${revealed.length} cells`);
+                    };
+
+                    cellEl.oncontextmenu = (e) => {
+                        e.preventDefault();
+                        cell.isFlagged = !cell.isFlagged;
+                        renderBoard();
+                    };
+
+                    boardEl.appendChild(cellEl);
+                }
+            }
+        }
+
+        function testFloodFill() {
+            initGame();
+            // Open corner cell to test flood fill
+            setTimeout(() => {
+                const revealed = openCell(0, 0);
+                renderBoard();
+                console.log(`Flood fill test: revealed ${revealed.length} cells`);
+                alert(`Flood fill revealed ${revealed.length} cells`);
+            }, 100);
+        }
+
+        // Auto init
+        initGame();
+    </script>
+</body>
+</html>

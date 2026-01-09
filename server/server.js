@@ -65,7 +65,13 @@ app.use(
 app.use('/auth', authRoutes);
 
 // Serve các file tĩnh từ thư mục public
-app.use(express.static(publicPath));
+app.use(express.static(publicPath, {
+  setHeaders: (res, path) => {
+    if (path.endsWith('_worker.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  }
+}));
 
 // Route mặc định
 app.get("/", (req, res) => {

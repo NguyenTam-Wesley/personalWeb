@@ -48,6 +48,14 @@ export class GamesManager {
                 image: 'https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/wuthering-waves.jpg?v=1750260140246',
                 detailUrl: './games/ww.html',
                 description: 'Wuthering Waves là một game nhập vai hành động thế giới mở được phát triển bởi KURO Game.'
+            },
+            minesweeper: {
+                id: 'minesweeper',
+                name: 'Minesweeper',
+                subtitle: 'Classic Puzzle Game',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMjAiIGZpbGw9IiMxMEI5ODEiLz4KPHN2ZyB4PSI3NSIgeT0iMTAwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiLz4KPHBhdGggZD0iTTkgMTJMMTEgMTBNMTMgMTJMMTEgMTQiLz4KPHN2Zz4KPHRleHQgeD0iMTUwIiB5PSIyMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1pbmVzd2VlcGVyPC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjQ0NDIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DbGFzc2ljIFB1enpsZTwvdGV4dD4KPC9zdmc+',
+                detailUrl: './games/minesweeper/minesweeper.html',
+                description: 'Minesweeper là một game giải đố cổ điển, tìm tất cả các quả mìn ẩn trong bảng mà không kích hoạt chúng.'
             }
         };
         this.init()

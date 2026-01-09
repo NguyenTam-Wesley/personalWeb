@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper Game</title>
+    <link rel="stylesheet" href="../../../style/components.css" />
+    <link rel="stylesheet" href="../../../style/style.css" />
+    <link rel="stylesheet" href="../../../style/minesweeper.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="minesweeper-container">
+        <div class="minesweeper-header">
+            <h1>Minesweeper</h1>
+            <div class="game-info">
+                <div id="timer" class="timer">⏱ 00:00</div>
+                <div class="mine-counter">
+                    <span id="mine-count">10</span> 💣
+                </div>
+                <div class="difficulty-selector">
+                    <label for="difficulty">Độ khó:</label>
+                    <select id="difficulty" class="difficulty-select">
+                        <option value="easy">Dễ (9x9, 10 mìn)</option>
+                        <option value="medium" selected>Trung bình (16x16, 40 mìn)</option>
+                        <option value="hard">Khó (16x30, 99 mìn)</option>
+                        <option value="very_hard">Rất khó (30x30, 200 mìn)</option>
+                        <option value="expert">Chuyên gia (50x50, 500 mìn)</option>
+                    </select>
+                </div>
+            </div>
+            <p>Tìm tất cả các quả mìn | Click trái để mở ô, click phải để cắm cờ</p>
+        </div>
+
+        <div class="game-controls">
+            <button id="newGameBtn" class="btn-primary">Ván mới</button>
+            <button id="resetBtn" class="btn-secondary">Chơi lại</button>
+            <div class="game-status">
+                <span id="game-status">Sẵn sàng</span>
+            </div>
+        </div>
+
+        <div id="game-board" class="game-board">
+            <!-- Game board will be rendered here -->
+        </div>
+
+        <div class="game-instructions">
+            <div class="instruction-item">
+                <span class="instruction-icon">👆</span>
+                <span>Click trái: Mở ô</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">👉</span>
+                <span>Click phải: Cắm cờ</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">🔢</span>
+                <span>Số hiển thị: Số mìn xung quanh</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">🚩</span>
+                <span>Cờ: Đánh dấu vị trí nghi ngờ có mìn</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../../js/modules/minesweeper_entry.js"></script>
+</body>
+</html>
