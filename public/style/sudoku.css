@@ -538,10 +538,17 @@ body {
     font-size: clamp(0.85rem, 2.2vw, 1rem);
 }
 
+/* Hide instructions on mobile - only show on PC */
+@media (max-width: 768px) {
+    .sudoku-instructions {
+        display: none;
+    }
+}
+
 /* Number Input Buttons */
 .number-buttons {
     display: none;
-    margin: 2rem auto 1rem auto;
+    margin: 4.5rem auto 1rem auto; /* Tăng khoảng cách xa hơn từ lưới sudoku */
     width: min(90vw, 450px);
 }
 
@@ -690,7 +697,7 @@ body {
         padding-top: 1rem;
         background: rgba(0, 255, 255, 0.05);
         border-radius: 12px;
-        margin-top: 2.5rem !important;
+        margin-top: 4rem !important; /* Tăng khoảng cách trên mobile */
     }
 
     /* Prevent keyboard popup on mobile */
@@ -712,7 +719,7 @@ body {
     .number-buttons {
         display: block;
         width: min(95vw, 400px);
-        margin-top: 2.5rem !important;
+        margin-top: 5rem !important; /* Tăng khoảng cách xa hơn trên small screens */
     }
 
     .sudoku-cell {
