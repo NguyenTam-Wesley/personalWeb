@@ -26,6 +26,8 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .nav-logo {
@@ -49,6 +51,49 @@ nav {
   display: flex;
   gap: var(--spacing-md);
   align-items: center;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  overflow-x: auto; /* Allow horizontal scroll on mobile */
+  overflow-y: hidden;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--accent-primary) transparent;
+}
+
+/* Custom scrollbar for webkit browsers */
+.nav-links::-webkit-scrollbar {
+  height: 3px;
+}
+
+.nav-links::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-links::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 2px;
+}
+
+.nav-links::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+}
+
+/* Mobile navigation adjustments */
+@media (max-width: var(--breakpoint-md)) {
+  .nav-links {
+    /* Allow horizontal scroll with touch */
+    -webkit-overflow-scrolling: touch;
+    /* Ensure nav-links don't push other elements */
+    max-width: calc(100vw - 120px); /* Account for logo and auth buttons */
+  }
+
+  /* Hide scrollbar on touch devices but keep functionality */
+  @media (hover: none) and (pointer: coarse) {
+    .nav-links::-webkit-scrollbar {
+      display: none;
+    }
+    .nav-links {
+      scrollbar-width: none;
+    }
+  }
 }
 
 .nav-link {
@@ -231,14 +276,19 @@ footer .socials a:hover {
 @media (max-width: var(--breakpoint-md)) {
   nav {
     padding: 0 var(--spacing-md);
+    width: 100%;
+    max-width: 100vw;
   }
 
   .nav-links {
-    display: none;
+    display: flex; /* Keep nav-links visible on mobile with horizontal scroll */
+    flex-shrink: 0; /* Prevent shrinking */
+    min-width: 0; /* Allow shrinking below content width */
   }
 
   .nav-logo {
     font-size: 1.25rem;
+    flex-shrink: 0; /* Prevent logo from shrinking */
   }
 
   footer .socials {
