@@ -667,6 +667,11 @@ body {
    ============================================ */
 
 @media (max-width: 768px) {
+    .sudoku-container {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+    }
+
     .sudoku-info {
         flex-direction: column;
         gap: 1rem;
