@@ -198,8 +198,11 @@ export class SudokuGame {
 
                 // Mobile-specific attributes to BLOCK keyboard and use only number buttons
                 if (this.isMobileDevice()) {
-                    input.readOnly = true; // Chặn keyboard hoàn toàn trên mobile
-                    input.setAttribute('readonly', 'true'); // Đảm bảo readonly
+                    // Only set readonly for user input cells, not given cells
+                    if (!input.classList.contains('given')) {
+                        input.readOnly = true; // Chặn keyboard hoàn toàn trên mobile cho user cells
+                        input.setAttribute('readonly', 'true'); // Đảm bảo readonly
+                    }
                     input.style.fontSize = '16px'; // Prevent iOS zoom
                 }
 
@@ -951,7 +954,7 @@ export class SudokuGame {
         if (!cell) {
             // If no cell is selected, select first empty cell
             const emptyCells = Array.from(this.grid.querySelectorAll('input:not(.given)'))
-                .filter(input => !input.value && !input.hasAttribute('readonly'));
+                .filter(input => !input.value); // Don't filter out readonly cells - they're still selectable
             if (emptyCells.length > 0) {
                 this.selectCell(emptyCells[0]);
                 return; // Let user click again to input number
@@ -959,8 +962,8 @@ export class SudokuGame {
             return;
         }
 
-        // Don't allow input on given cells or readonly cells
-        if (cell.readOnly || cell.hasAttribute('readonly')) {
+        // Don't allow input on given cells (pre-filled numbers)
+        if (cell.classList.contains('given')) {
             return;
         }
 
