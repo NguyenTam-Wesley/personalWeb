@@ -623,8 +623,8 @@ export class SudokuGame {
                 let message = `🎉 Chúc mừng! Bạn đã hoàn thành Sudoku ${difficultyName} trong ${mins}:${secs}!`;
 
                 // Submit game result qua Edge Function (tự động tính XP và update best score)
-                const user = await supabase.auth.getUser();
-                if (user.data.user) {
+                const authUser = await getAuthUser();
+                if (authUser?.id) {
                     try {
                         const submitResult = await supabase.functions.invoke('submitGameResult', {
                             body: {
@@ -878,46 +878,29 @@ export class SudokuGame {
         }
     }
 
-    // Get all best scores từ game_best_scores table
+    // Get all best scores using leaderboard module
     async getAllBestScores() {
         try {
-            const user = await supabase.auth.getUser();
-            if (!user.data.user) return {};
+            const authUser = await getAuthUser();
+            if (!authUser?.id) return {};
 
-            const { data, error } = await supabase
-                .from('game_best_scores')
-                .select('mode_id, metric_value')
-                .eq('user_id', user.data.user.id)
-                .eq('game_id', (await this.loadGameConfig())?.gameId)
-                .eq('metric_type', 'time');
-
-            if (error || !data) return {};
-
-            // Map mode_id back to difficulty codes
-            const modeToDifficulty = {};
             const difficulties = ['easy', 'medium', 'hard', 'very_hard', 'expert'];
-
-            // Get all mode data
-            const { data: modes } = await supabase
-                .from('game_modes')
-                .select('id, code')
-                .eq('game_id', (await this.loadGameConfig())?.gameId);
-
-            if (modes) {
-                modes.forEach(mode => {
-                    modeToDifficulty[mode.id] = mode.code;
-                });
-            }
-
-            // Convert to object format {easy: time, medium: time, ...}
             const scores = {};
-            data.forEach(record => {
-                const difficulty = modeToDifficulty[record.mode_id];
-                if (difficulty) {
-                    scores[difficulty] = record.metric_value;
-                }
-            });
 
+            // Get best score for each difficulty using leaderboard module
+            const promises = difficulties.map(difficulty =>
+                leaderboard.getUserBestScore(authUser.id, 'sudoku', difficulty)
+                    .then(userBest => {
+                        if (userBest && userBest.metric_value) {
+                            scores[difficulty] = userBest.metric_value;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error getting best score for ${difficulty}:`, error);
+                    })
+            );
+
+            await Promise.all(promises);
             return scores;
         } catch (error) {
             console.error('Error getting all best scores:', error);
@@ -925,32 +908,6 @@ export class SudokuGame {
         }
     }
 
-    // Get best time từ game_best_scores table
-    async getBestTimeFromBestScores(difficulty) {
-        try {
-            const user = await supabase.auth.getUser();
-            if (!user.data.user) return null;
-
-            const config = await this.loadGameConfig();
-            if (!config) return null;
-
-            const { data, error } = await supabase
-                .from('game_best_scores')
-                .select('metric_value')
-                .eq('user_id', user.data.user.id)
-                .eq('game_id', config.gameId)
-                .eq('mode_id', config.modeId);
-
-            if (error || !data || data.length === 0) {
-                return null;
-            }
-
-            return data[0].metric_value;
-        } catch (error) {
-            console.error('Error getting best time from best scores:', error);
-            return null;
-        }
-    }
 
     // Toggle achievements dropdown
     toggleAchievements() {
@@ -1009,8 +966,8 @@ export class SudokuGame {
     async showAchievements() {
         if (!this.achievementsDropdown || !this.achievementsList) return;
 
-        const user = await supabase.auth.getUser();
-        if (!user.data.user) {
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
             this.achievementsList.innerHTML = '<div style="text-align: center; color: var(--text-light);">Vui lòng đăng nhập để xem thành tích</div>';
             this.achievementsDropdown.style.display = 'block';
             return;
@@ -1041,24 +998,6 @@ export class SudokuGame {
         this.achievementsDropdown.style.display = 'block';
     }
 
-    // Check if current game maintains the daily streak (DISABLED)
-    // checkStreakMaintenance() {
-    //     // Simple implementation: check if last game was completed today
-    //     // In a real implementation, you'd track this in the database
-    //     const today = new Date().toDateString();
-    //     const lastGameDate = localStorage.getItem('lastGameDate');
-
-    //     if (lastGameDate === today) {
-    //         // Already played today, streak maintained
-    //         return true;
-    //     }
-
-    //     // Update last game date
-    //     localStorage.setItem('lastGameDate', today);
-    //     return false;
-    // }
-
-    // Update rank display
     async updateRankDisplay() {
         if (!this.rankDisplay) {
             return;
