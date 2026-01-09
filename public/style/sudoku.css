@@ -413,6 +413,13 @@ body {
     outline: none;
     line-height: 1;
     -webkit-tap-highlight-color: transparent;
+    /* Ensure numbers appear above cell background */
+    position: relative;
+    z-index: 1;
+    /* Center numbers perfectly */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -546,7 +553,7 @@ body {
 /* Number Input Buttons - ONLY INPUT METHOD ON MOBILE */
 .number-buttons {
     display: none; /* Hidden by default - only show on mobile */
-    margin: 1rem auto;
+    margin: 2rem auto 1rem auto; /* Increased top margin to create space from grid */
     width: min(90vw, 450px);
 }
 
@@ -644,6 +651,7 @@ body {
         padding-top: 1rem;
         background: rgba(0, 255, 255, 0.05);
         border-radius: 12px;
+        margin-top: 2.5rem !important; /* Extra space on mobile */
     }
 }
 
@@ -652,6 +660,7 @@ body {
     .number-buttons {
         display: block;
         width: min(95vw, 400px);
+        margin-top: 2.5rem !important; /* Extra space on smaller screens */
     }
 
     /* Mobile text visibility fixes */
