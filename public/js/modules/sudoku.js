@@ -1057,13 +1057,18 @@ export class SudokuGame {
                 return;
             }
 
-            this.leaderboardList.innerHTML = leaderboardData.map(item => `
-                <div class="leaderboard-item ${item.user_id === currentUserId ? 'current-user' : ''}">
-                    <span class="leaderboard-rank">${item.rank}</span>
-                    <span class="leaderboard-username">${item.username}</span>
-                    <span class="leaderboard-score">${leaderboard.formatMetricValue(item.metric_value, 'time')}</span>
-                </div>
-            `).join('');
+            this.leaderboardList.innerHTML = leaderboardData.map(item => {
+                const rankClass = leaderboard.getRankDisplayClass(item.rank);
+                const itemClass = `leaderboard-item ${rankClass} ${item.user_id === currentUserId ? 'current-user' : ''}`;
+
+                return `
+                    <div class="${itemClass}">
+                        <span class="leaderboard-rank ${rankClass}">${item.rank}</span>
+                        <span class="leaderboard-username">${item.username}</span>
+                        <span class="leaderboard-score">${leaderboard.formatMetricValue(item.metric_value, 'time')}</span>
+                    </div>
+                `;
+            }).join('');
 
         } catch (error) {
             console.error('Error in loadLeaderboard:', error);

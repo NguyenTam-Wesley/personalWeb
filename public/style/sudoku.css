@@ -598,6 +598,32 @@ body {
         width: min(95vw, 400px);
     }
 
+/* Top 3 Leaderboard Styling */
+.leaderboard-item.top-3 {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+}
+
+.leaderboard-item.top-1 {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    color: #d63031;
+    font-weight: bold;
+}
+
+.leaderboard-rank.top-1::before {
+    content: '👑';
+    margin-right: 5px;
+}
+
+.leaderboard-rank.top-2::before {
+    content: '🥈';
+    margin-right: 5px;
+}
+
+.leaderboard-rank.top-3::before {
+    content: '🥉';
+    margin-right: 5px;
+}
+
     .number-buttons-grid {
         gap: 0.4rem;
     }

@@ -416,6 +416,7 @@
                         <select id="game-select">
                             <option value="sudoku">Sudoku</option>
                             <option value="2048">2048</option>
+                            <option value="minesweeper">Minesweeper</option>
                         </select>
                     </div>
 
@@ -528,6 +529,13 @@
             ],
             '2048': [
                 { code: 'classic', name: 'Classic' }
+            ],
+            minesweeper: [
+                { code: 'easy', name: 'Easy (9x9)' },
+                { code: 'medium', name: 'Medium (16x16)' },
+                { code: 'hard', name: 'Hard (16x30)' },
+                { code: 'very_hard', name: 'Very Hard (30x30)' },
+                { code: 'expert', name: 'Expert (50x50)' }
             ]
         };
 
@@ -845,6 +853,19 @@
             if (modes.length > 0) {
                 modeSelect.value = modes[0].code;
             }
+
+            // Set appropriate metric type and default value based on game
+            const metricSelect = document.getElementById('metric-type-select');
+            const metricInput = document.getElementById('metric-value-input');
+
+            if (selectedGame === 'minesweeper') {
+                metricSelect.value = 'time'; // Minesweeper uses time
+                metricInput.value = '120'; // 2 minutes default
+            } else if (selectedGame === '2048') {
+                metricSelect.value = 'score'; // 2048 uses score
+                metricInput.value = '2048'; // 2048 score default
+            }
+            // Sudoku can use either, keep current selection
         }
 
         // Format metric value (time or score)

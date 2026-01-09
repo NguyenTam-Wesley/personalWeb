@@ -28,6 +28,8 @@
                         <option value="very_hard">Rất khó (30x30, 200 mìn)</option>
                         <option value="expert">Chuyên gia (50x50, 500 mìn)</option>
                     </select>
+                    <div id="best-time-display" class="best-time-display">Best: --:--</div>
+                    <div id="rank-display" class="rank-display">Rank: --</div>
                 </div>
             </div>
             <p>Tìm tất cả các quả mìn | Click trái để mở ô, click phải để cắm cờ</p>
@@ -35,7 +37,28 @@
 
         <div class="game-controls">
             <button id="newGameBtn" class="btn-primary">Ván mới</button>
-            <button id="resetBtn" class="btn-secondary">Chơi lại</button>
+            <div class="achievements-container">
+                <button id="achievementsBtn" class="btn-secondary achievements-btn">🏆 Thành tích</button>
+                <div id="achievementsDropdown" class="achievements-dropdown" style="display: none;">
+                    <div class="achievements-content">
+                        <h4>Thành tích của bạn</h4>
+                        <div id="achievements-list" class="achievements-list">
+                            <!-- Achievements will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="leaderboard-container">
+                <button id="leaderboardBtn" class="btn-secondary leaderboard-btn">🏅 Leaderboard</button>
+                <div id="leaderboardDropdown" class="leaderboard-dropdown" style="display: none;">
+                    <div class="leaderboard-content">
+                        <h4>Top Players</h4>
+                        <div id="leaderboard-list" class="leaderboard-list">
+                            <!-- Leaderboard will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="game-status">
                 <span id="game-status">Sẵn sàng</span>
             </div>

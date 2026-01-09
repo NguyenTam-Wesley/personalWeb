@@ -1,4 +1,10 @@
 // Minesweeper Game Class
+import { rewards } from './rewards.js';
+import { achievements } from './achievements.js';
+import { leaderboard } from './leaderboard.js';
+import { supabase } from '../supabase/supabase.js';
+import { getAuthUser } from '../supabase/auth.js';
+
 const DIFFICULTIES = {
     easy: { rows: 9, cols: 9, mines: 10, name: 'Dễ' },
     medium: { rows: 16, cols: 16, mines: 40, name: 'Trung bình' },
@@ -26,10 +32,21 @@ export class MinesweeperGame {
         this.gameBoardEl = document.getElementById('game-board');
         this.difficultySelect = document.getElementById('difficulty');
         this.newGameBtn = document.getElementById('newGameBtn');
-        this.resetBtn = document.getElementById('resetBtn');
         this.timerEl = document.getElementById('timer');
         this.mineCountEl = document.getElementById('mine-count');
         this.gameStatusEl = document.getElementById('game-status');
+
+        // Achievements & Leaderboard
+        this.achievementsBtn = document.getElementById('achievementsBtn');
+        this.achievementsDropdown = document.getElementById('achievementsDropdown');
+        this.achievementsList = document.getElementById('achievements-list');
+        this.leaderboardBtn = document.getElementById('leaderboardBtn');
+        this.leaderboardDropdown = document.getElementById('leaderboardDropdown');
+        this.leaderboardList = document.getElementById('leaderboard-list');
+
+        // Best time and rank displays
+        this.bestTimeDisplay = document.getElementById('best-time-display');
+        this.rankDisplay = document.getElementById('rank-display');
 
         this.init();
     }
@@ -38,6 +55,7 @@ export class MinesweeperGame {
         this.setupWorker();
         this.setupEventListeners();
         this.startNewGame();
+        this.updateBestTimeAndRank();
     }
 
     setupWorker() {
@@ -67,6 +85,7 @@ export class MinesweeperGame {
         this.difficultySelect.addEventListener('change', (e) => {
             this.difficulty = e.target.value;
             this.startNewGame();
+            this.updateBestTimeAndRank();
         });
 
         // New game button
@@ -74,9 +93,35 @@ export class MinesweeperGame {
             this.startNewGame();
         });
 
-        // Reset button
-        this.resetBtn.addEventListener('click', () => {
-            this.startNewGame();
+        // Achievements dropdown
+        if (this.achievementsBtn) {
+            this.achievementsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleAchievements();
+            });
+        }
+
+        // Leaderboard dropdown
+        if (this.leaderboardBtn) {
+            this.leaderboardBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleLeaderboard();
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (this.achievementsDropdown &&
+                !this.achievementsDropdown.contains(e.target) &&
+                !this.achievementsBtn.contains(e.target)) {
+                this.achievementsDropdown.style.display = 'none';
+            }
+
+            if (this.leaderboardDropdown &&
+                !this.leaderboardDropdown.contains(e.target) &&
+                !this.leaderboardBtn.contains(e.target)) {
+                this.leaderboardDropdown.style.display = 'none';
+            }
         });
 
         // Board click events
@@ -186,21 +231,113 @@ export class MinesweeperGame {
         }
     }
 
-    handleGameWin(data) {
+    async handleGameWin(data) {
         if (data.won) {
             this.gameWon = true;
             this.stopTimer();
             this.gameBoardEl.classList.add('game-won');
             this.updateGameStatus('🎉 Chiến thắng!');
-            this.showGameMessage(`🎉 Chiến thắng!\n⏱ Thời gian: ${this.formatTime(this.seconds)}`);
+
+            const difficultyName = DIFFICULTIES[this.difficulty].name;
+            let message = `🎉 Chiến thắng!\n⏱ Thời gian: ${this.formatTime(this.seconds)}\n📏 Độ khó: ${difficultyName}`;
+
+            // Submit game result for leaderboard and rewards
+            const authUser = await getAuthUser();
+            if (authUser?.id) {
+                try {
+                    console.log('📤 Submitting Minesweeper result...');
+                    const submitResult = await supabase.functions.invoke('submitGameResult', {
+                        body: {
+                            game_code: 'minesweeper',
+                            mode_code: this.difficulty,
+                            metric_type: 'time',
+                            metric_value: this.seconds,
+                            extra_data: {
+                                completed: true,
+                                difficulty: this.difficulty
+                            }
+                        }
+                    });
+
+                    if (submitResult.error) {
+                        console.error('Failed to submit game result:', submitResult.error);
+                    } else {
+                        console.log('✅ Minesweeper result submitted successfully');
+                        message += '\n🎯 Kết quả đã lưu!';
+
+                        // Apply rewards using rewards module
+                        try {
+                            const sessionId = submitResult.data?.session_id;
+                            if (sessionId) {
+                                await rewards.applyGameRewards(sessionId);
+                                message += '\n🎁 Phần thưởng đã nhận!';
+                            }
+                        } catch (rewardError) {
+                            console.error('Failed to apply rewards:', rewardError);
+                        }
+
+                        // Update UI with latest achievements and leaderboard
+                        try {
+                            // Refresh best time and rank displays
+                            await this.updateBestTimeAndRank();
+
+                            // Refresh achievements if dropdown is open
+                            if (this.achievementsDropdown && this.achievementsDropdown.style.display !== 'none') {
+                                await this.showAchievements();
+                            }
+
+                            // Refresh leaderboard if dropdown is open
+                            if (this.leaderboardDropdown && this.leaderboardDropdown.style.display !== 'none') {
+                                await this.loadLeaderboard();
+                            }
+                        } catch (uiError) {
+                            console.error('Error updating UI:', uiError);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error submitting game result:', error);
+                    message += '\n⚠️ Không thể lưu kết quả (chưa đăng nhập?)';
+                }
+            } else {
+                message += '\n💡 Đăng nhập để lưu kết quả và nhận thưởng!';
+            }
+
+            this.showGameMessage(message);
         }
     }
 
-    handleGameOver() {
+    async handleGameOver() {
         this.gameOver = true;
         this.stopTimer();
         this.gameBoardEl.classList.add('game-over');
         this.updateGameStatus('💥 Thua cuộc!');
+
+        // Submit game result for progress tracking (even on loss)
+        const authUser = await getAuthUser();
+        if (authUser?.id) {
+            try {
+                const submitResult = await supabase.functions.invoke('submitGameResult', {
+                    body: {
+                        game_code: 'minesweeper',
+                        mode_code: this.difficulty,
+                        metric_type: 'progress', // Track progress even on loss
+                        metric_value: this.seconds, // Time played
+                        extra_data: {
+                            completed: false,
+                            difficulty: this.difficulty,
+                            gameOver: true
+                        }
+                    }
+                });
+
+                if (submitResult.error) {
+                    console.error('Failed to submit game result:', submitResult.error);
+                }
+            } catch (error) {
+                console.error('Error submitting game result:', error);
+            }
+        }
+
         this.showGameMessage('💥 Bạn đã thua!\nThử lại nhé!');
     }
 
@@ -367,6 +504,178 @@ export class MinesweeperGame {
         }, 3000);
 
         document.body.appendChild(messageEl);
+    }
+
+    // Toggle achievements dropdown
+    toggleAchievements() {
+        if (!this.achievementsDropdown) return;
+
+        const isVisible = this.achievementsDropdown.style.display !== 'none';
+
+        if (isVisible) {
+            this.achievementsDropdown.style.display = 'none';
+        } else {
+            this.showAchievements();
+        }
+    }
+
+    // Get all best scores for current user across all difficulties
+    async getAllBestScores() {
+        try {
+            const authUser = await getAuthUser();
+            if (!authUser?.id) return {};
+
+            const difficulties = ['easy', 'medium', 'hard', 'very_hard', 'expert'];
+            const scores = {};
+
+            // Get best score for each difficulty using leaderboard module
+            const promises = difficulties.map(difficulty =>
+                leaderboard.getUserBestScore(authUser.id, 'minesweeper', difficulty)
+            );
+
+            const results = await Promise.all(promises);
+
+            difficulties.forEach((difficulty, index) => {
+                const result = results[index];
+                if (result && result.metric_value) {
+                    scores[difficulty] = result.metric_value;
+                }
+            });
+
+            return scores;
+        } catch (error) {
+            console.error('Error getting best scores:', error);
+            return {};
+        }
+    }
+
+    // Update best time and rank displays
+    async updateBestTimeAndRank() {
+        if (!this.bestTimeDisplay || !this.rankDisplay) return;
+
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
+            this.bestTimeDisplay.textContent = 'Best: --:--';
+            this.rankDisplay.textContent = 'Rank: --';
+            return;
+        }
+
+        try {
+            // Get best score for current difficulty
+            const bestScore = await leaderboard.getUserBestScore(authUser.id, 'minesweeper', this.difficulty);
+            if (bestScore && bestScore.metric_value) {
+                this.bestTimeDisplay.textContent = `Best: ${this.formatTime(bestScore.metric_value)}`;
+            } else {
+                this.bestTimeDisplay.textContent = 'Best: --:--';
+            }
+
+            // Get rank for current difficulty
+            const leaderboardResult = await leaderboard.getLeaderboardWithCurrentUser('minesweeper', this.difficulty, 100);
+            const currentUserEntry = leaderboardResult.leaderboard?.find(item => item.user_id === authUser.id);
+            if (currentUserEntry && currentUserEntry.rank) {
+                this.rankDisplay.textContent = `Rank: ${currentUserEntry.rank}`;
+            } else {
+                this.rankDisplay.textContent = 'Rank: --';
+            }
+        } catch (error) {
+            console.error('Error updating best time and rank:', error);
+            this.bestTimeDisplay.textContent = 'Best: --:--';
+            this.rankDisplay.textContent = 'Rank: --';
+        }
+    }
+
+    // Show achievements for current user
+    async showAchievements() {
+        if (!this.achievementsDropdown || !this.achievementsList) return;
+
+        const authUser = await getAuthUser();
+        if (!authUser?.id) {
+            this.achievementsList.innerHTML = '<div style="text-align: center; color: #b0b0b0;">Vui lòng đăng nhập để xem thành tích</div>';
+            this.achievementsDropdown.style.display = 'block';
+            return;
+        }
+
+        const scores = await this.getAllBestScores();
+
+        const difficultyNames = {
+            easy: 'Dễ',
+            medium: 'Trung bình',
+            hard: 'Khó',
+            very_hard: 'Rất khó',
+            expert: 'Chuyên gia'
+        };
+
+        const difficulties = ['easy', 'medium', 'hard', 'very_hard', 'expert'];
+
+        this.achievementsList.innerHTML = difficulties.map(difficulty => {
+            const bestTime = scores[difficulty];
+            const timeDisplay = bestTime ? this.formatTime(bestTime) : '--:--';
+            const difficultyName = difficultyNames[difficulty];
+
+            return `
+                <div class="achievement-item ${bestTime ? 'unlocked' : 'locked'}">
+                    <div class="achievement-icon">${bestTime ? '⏱️' : '🔒'}</div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">${difficultyName}</div>
+                        <div class="achievement-description">Thời gian tốt nhất: ${timeDisplay}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        this.achievementsDropdown.style.display = 'block';
+    }
+
+    // Toggle leaderboard dropdown
+    toggleLeaderboard() {
+        if (!this.leaderboardDropdown) return;
+
+        const isVisible = this.leaderboardDropdown.style.display !== 'none';
+
+        // Hide achievements dropdown if visible
+        if (this.achievementsDropdown && this.achievementsDropdown.style.display !== 'none') {
+            this.achievementsDropdown.style.display = 'none';
+        }
+
+        if (isVisible) {
+            this.leaderboardDropdown.style.display = 'none';
+        } else {
+            this.leaderboardDropdown.style.display = 'block';
+            this.loadLeaderboard();
+        }
+    }
+
+    // Load leaderboard data
+    async loadLeaderboard() {
+        if (!this.leaderboardList) return;
+
+        try {
+            const result = await leaderboard.getLeaderboardWithCurrentUser('minesweeper', this.difficulty, 10);
+            const leaderboardData = result.leaderboard || [];
+            const currentUserId = result.currentUserId;
+
+            if (leaderboardData.length === 0) {
+                this.leaderboardList.innerHTML = '<div class="leaderboard-item" style="text-align: center; color: #b0b0b0;">Chưa có dữ liệu</div>';
+                return;
+            }
+
+            this.leaderboardList.innerHTML = leaderboardData.map(item => {
+                const rankClass = leaderboard.getRankDisplayClass(item.rank);
+                const itemClass = `leaderboard-item ${rankClass} ${item.user_id === currentUserId ? 'current-user' : ''}`;
+
+                return `
+                    <div class="${itemClass}">
+                        <span class="leaderboard-rank ${rankClass}">${item.rank}</span>
+                        <span class="leaderboard-username">${item.username}</span>
+                        <span class="leaderboard-score">${leaderboard.formatMetricValue(item.metric_value, 'time')}</span>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error in loadLeaderboard:', error);
+            this.leaderboardList.innerHTML = '<div class="leaderboard-item" style="text-align: center; color: #b0b0b0;">Lỗi tải dữ liệu</div>';
+        }
     }
 
     destroy() {
