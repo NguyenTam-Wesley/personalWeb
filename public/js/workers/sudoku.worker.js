@@ -24,18 +24,18 @@ function isValid(board, row, col, num) {
 
 // ===== Generate full Sudoku =====
 function generateFullBoard() {
-    const board = Array.from({ length: 9 }, () => Array(9).fill(0));
+    const board = Array.from({ length: 9 }, () => Array(9).fill(null));
 
     function solve() {
         for (let r = 0; r < 9; r++) {
             for (let c = 0; c < 9; c++) {
-                if (board[r][c] === 0) {
+                if (board[r][c] === null) {
                     const nums = [1,2,3,4,5,6,7,8,9].sort(() => Math.random() - 0.5);
                     for (let n of nums) {
                         if (isValid(board, r, c, n)) {
                             board[r][c] = n;
                             if (solve()) return true;
-                            board[r][c] = 0;
+                            board[r][c] = null;
                         }
                     }
                     return false;
@@ -49,32 +49,56 @@ function generateFullBoard() {
     return board;
 }
 
-// ===== Check unique solution =====
+// ===== Check unique solution with cache =====
 function hasUniqueSolution(board, limit = 2) {
     let count = 0;
+    let cachedSolution = null;
 
-    function solve() {
-        if (count >= limit) return;
+    function findCellWithFewestOptions() {
+        let best = null;
+        let bestOptions = null;
 
         for (let r = 0; r < 9; r++) {
             for (let c = 0; c < 9; c++) {
                 if (board[r][c] === null) {
+                    const options = [];
                     for (let n = 1; n <= 9; n++) {
-                        if (isValid(board, r, c, n)) {
-                            board[r][c] = n;
-                            solve();
-                            board[r][c] = null;
-                        }
+                        if (isValid(board, r, c, n)) options.push(n);
                     }
-                    return;
+                    if (best === null || options.length < bestOptions.length) {
+                        best = { r, c, options };
+                        bestOptions = options;
+                        if (options.length === 1) return best;
+                    }
                 }
             }
         }
-        count++;
+        return best;
+    }
+
+    function solve() {
+        if (count >= limit) return;
+
+        const cell = findCellWithFewestOptions();
+        if (!cell) {
+            count++;
+            if (!cachedSolution) {
+                cachedSolution = cloneBoard(board);
+            }
+            return;
+        }
+
+        const { r, c, options } = cell;
+        for (let n of options) {
+            board[r][c] = n;
+            solve();
+            board[r][c] = null;
+            if (count >= limit) return;
+        }
     }
 
     solve();
-    return count === 1;
+    return { unique: count === 1, solution: cachedSolution };
 }
 
 // ===== Create puzzle =====
@@ -102,13 +126,13 @@ function generatePuzzle(solution, difficulty) {
         const backup = puzzle[r][c];
         puzzle[r][c] = null;
 
-        // chỉ kiểm tra nghiệm cho mức khó
-        if (["hard", "very_hard", "expert"].includes(difficulty)) {
-            const test = cloneBoard(puzzle);
-            if (!hasUniqueSolution(test)) {
-                puzzle[r][c] = backup;
-                continue;
-            }
+        // luôn kiểm tra nghiệm duy nhất
+        const test = cloneBoard(puzzle);
+        const result = hasUniqueSolution(test);
+
+        if (!result.unique) {
+            puzzle[r][c] = backup;
+            continue;
         }
 
         removeCount--;
