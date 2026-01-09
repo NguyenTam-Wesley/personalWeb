@@ -6,6 +6,9 @@
     --hl-cell: rgba(252, 231, 243, 1);   /* pink-50 - gần trắng cho ô focus */
     --hl-line: rgba(253, 242, 248, 1);   /* pink-25 - siêu nhạt cho hàng/cột/block */
     --hl-same: rgba(250, 230, 240, 1);   /* hồng cực nhẹ cho số trùng */
+
+    /* 🔥 BOARD SIZE - TRỤC CHUNG CHO GRID & PAD */
+    --board-width: min(92vw, 420px);
 }
 
 /* SCROLLBAR-SAFE PIXEL-PERFECT LAYOUT */
@@ -327,6 +330,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;   /* 🔥 MẤU CHỐT - căn giữa sudoku-center */
     justify-content: center; /* dọc */
     width: 100%;
     padding: 1rem;
@@ -378,10 +382,8 @@ body {
 
 /* Sudoku Grid */
 .sudoku-grid {
-    --board-size: min(90vmin, 450px);
-
-    width: var(--board-size);
-    height: var(--board-size);
+    width: var(--board-width);
+    height: var(--board-width); /* 🔥 vuông tuyệt đối */
 
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -564,7 +566,7 @@ body {
 
 /* Number Input Buttons */
 .number-buttons {
-    width: var(--board-size); /* 🔥 cùng trục với grid */
+    width: var(--board-width); /* 🔥 cùng trục với grid */
     margin: 4.5rem 0 1rem 0; /* Tăng khoảng cách xa hơn từ lưới sudoku */
     display: none;
 }
@@ -706,9 +708,9 @@ body {
 
     /* Mobile cell adjustments - MINIMAL OVERRIDES */
     .sudoku-cell {
-        font-size: 20px !important; /* Prevent iOS zoom */
-        min-height: 44px; /* Touch target */
-        min-width: 44px;
+        font-size: clamp(18px, 4.5vw, 22px); /* Scale with board size */
+        min-height: 0; /* Allow scaling */
+        min-width: 0;
     }
 }
 
@@ -741,13 +743,14 @@ body {
 @media (max-width: 480px) {
     .number-buttons {
         display: block;
-        width: min(95vw, 400px);
+        width: var(--board-width);
         margin-top: 5rem !important; /* Tăng khoảng cách xa hơn trên small screens */
     }
 
     .sudoku-cell {
-        min-height: 40px;
-        min-width: 40px;
+        min-height: 0; /* Allow scaling */
+        min-width: 0;
+        font-size: clamp(16px, 4vw, 20px);
     }
 
     .number-buttons-grid {
