@@ -75,17 +75,40 @@ export class MinesweeperGame {
     detectDeviceType() {
         const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         const screenWidth = window.innerWidth;
+        const userAgent = navigator.userAgent.toLowerCase();
 
+        // Debug logging
+        console.log('🔍 Device Detection:', {
+            hasTouch,
+            screenWidth,
+            userAgent: userAgent.substring(0, 50) + '...',
+            maxTouchPoints: navigator.maxTouchPoints
+        });
+
+        // Desktop: no touch capability (prioritize this check)
         if (!hasTouch) {
+            console.log('💻 Detected: DESKTOP (no touch)');
             return 'desktop';
         }
 
-        // Tablet: has touch and screen width >= 768px
-        if (screenWidth >= 768) {
+        // Check for specific mobile/tablet user agents
+        const isTabletUA = /ipad|android.*tablet|tablet.*android/i.test(userAgent);
+        const isMobileUA = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+
+        // Tablet: touch + (screen >= 768px OR tablet user agent)
+        if (screenWidth >= 768 || isTabletUA) {
+            console.log('📱 Detected: TABLET (touch + large screen or tablet UA)');
             return 'tablet';
         }
 
-        // Mobile: has touch and screen width < 768px
+        // Mobile: touch + screen < 768px + mobile user agent
+        if (hasTouch && (screenWidth < 768 || isMobileUA)) {
+            console.log('📱 Detected: MOBILE (touch + small screen or mobile UA)');
+            return 'mobile';
+        }
+
+        // Fallback: if has touch but doesn't match above, assume mobile
+        console.log('📱 Detected: MOBILE (fallback)');
         return 'mobile';
     }
 
@@ -134,8 +157,13 @@ export class MinesweeperGame {
     }
 
     updateDeviceSpecificInstructions() {
-        // Add device type class to body for CSS targeting
+        // Remove old device classes
+        document.body.classList.remove('device-desktop', 'device-tablet', 'device-mobile');
+
+        // Add current device type class to body for CSS targeting
         document.body.classList.add(`device-${this.deviceType}`);
+
+        console.log(`🎨 Applied device class: device-${this.deviceType}`);
 
         // Update header text based on device
         const headerText = document.querySelector('.device-instruction');
@@ -143,18 +171,45 @@ export class MinesweeperGame {
             switch (this.deviceType) {
                 case 'desktop':
                     headerText.textContent = 'Tìm tất cả các quả mìn | Click trái để mở ô, click phải để cắm cờ';
+                    console.log('📝 Updated header for desktop');
                     break;
                 case 'tablet':
                     headerText.textContent = 'Tìm tất cả các quả mìn | Touch để mở ô hoặc cắm cờ (theo chế độ)';
+                    console.log('📝 Updated header for tablet');
                     break;
                 case 'mobile':
                     headerText.textContent = 'Tìm tất cả các quả mìn | Touch để mở ô hoặc cắm cờ (theo chế độ)';
+                    console.log('📝 Updated header for mobile');
                     break;
             }
         }
+
+        // Force re-render instructions by triggering a microtask
+        setTimeout(() => {
+            console.log(`📋 Instructions visible for ${this.deviceType}:`);
+            const instructions = document.querySelectorAll('.instruction-item');
+            instructions.forEach(item => {
+                const isVisible = window.getComputedStyle(item).display !== 'none';
+                const classes = item.className;
+                if (isVisible) {
+                    console.log(`  ✅ ${classes}`);
+                }
+            });
+        }, 100);
     }
 
     setupEventListeners() {
+        // Window resize - re-detect device type
+        window.addEventListener('resize', () => {
+            const newDeviceType = this.detectDeviceType();
+            if (newDeviceType !== this.deviceType) {
+                console.log(`🔄 Device type changed: ${this.deviceType} → ${newDeviceType}`);
+                this.deviceType = newDeviceType;
+                this.updateDeviceSpecificInstructions();
+                this.setupDeviceSpecificControls();
+            }
+        });
+
         // Difficulty change
         this.difficultySelect.addEventListener('change', (e) => {
             this.difficulty = e.target.value;
@@ -770,6 +825,22 @@ export class MinesweeperGame {
 
         this.isFlagMode = !this.isFlagMode;
         this.updateFlagModeUI();
+    }
+
+    // Force refresh device detection (for debugging/testing)
+    forceRefreshDeviceDetection() {
+        const oldDeviceType = this.deviceType;
+        this.deviceType = this.detectDeviceType();
+
+        if (oldDeviceType !== this.deviceType) {
+            console.log(`🔄 Force refreshed device: ${oldDeviceType} → ${this.deviceType}`);
+            this.updateDeviceSpecificInstructions();
+            this.setupDeviceSpecificControls();
+        } else {
+            console.log(`✅ Device type unchanged: ${this.deviceType}`);
+        }
+
+        return this.deviceType;
     }
 
     // Update flag mode button UI

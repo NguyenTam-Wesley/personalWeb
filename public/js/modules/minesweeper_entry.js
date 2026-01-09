@@ -3,5 +3,6 @@ import { MinesweeperGame } from './minesweeper.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     components.init();
-    new MinesweeperGame();
+    // Create and expose game instance globally for debugging
+    window.minesweeperGame = new MinesweeperGame();
 });

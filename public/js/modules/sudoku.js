@@ -144,6 +144,9 @@ export class SudokuGame {
         // Khởi tạo UI và events
         this.setupEventListeners();
 
+        // Show mobile instruction if on mobile device
+        this.showMobileInstruction();
+
         // Hiển thị best time và rank ban đầu
         this.updateBestTimeDisplay();
         this.updateRankDisplay();
@@ -186,11 +189,18 @@ export class SudokuGame {
                 const value = this.puzzle[row][col];
                 if (value !== null) {
                     input.value = value;
-                    input.readOnly = true; 
+                    input.readOnly = true;
                     input.classList.add('given');
                 } else {
                     input.classList.add('user-input');
                     // Không set readonly - cho phép click chọn ô trên mobile
+                }
+
+                // Mobile-specific attributes to BLOCK keyboard and use only number buttons
+                if (this.isMobileDevice()) {
+                    input.readOnly = true; // Chặn keyboard hoàn toàn trên mobile
+                    input.setAttribute('readonly', 'true'); // Đảm bảo readonly
+                    input.style.fontSize = '16px'; // Prevent iOS zoom
                 }
 
                 input.addEventListener("mousedown", (e) => {
@@ -199,14 +209,25 @@ export class SudokuGame {
                     this.selectCell(input); // Cập nhật selectedCell state
                 });
 
+                // Mobile: thêm touch event để chọn ô
+                input.addEventListener("touchstart", (e) => {
+                    if (input.readOnly) return; // Không chọn given cells
+                    e.preventDefault();
+                    this.selectCell(input);
+                    input.focus();
+                });
+
                 // Mobile: thêm click event để chọn ô
                 input.addEventListener("click", (e) => {
                     if (input.readOnly) return; // Không chọn given cells
                     this.selectCell(input);
                 });
 
-                input.addEventListener("input", (e) => this.handleInput(e));
-                input.addEventListener("keydown", (e) => this.handleKeydown(e));
+                // Only handle input/key events on desktop, mobile uses number buttons only
+                if (!this.isMobileDevice()) {
+                    input.addEventListener("input", (e) => this.handleInput(e));
+                    input.addEventListener("keydown", (e) => this.handleKeydown(e));
+                }
                 input.addEventListener("focus", (e) => this.handleFocus(e));
                 input.addEventListener("blur", (e) => this.handleBlur(e));
 
@@ -922,7 +943,7 @@ export class SudokuGame {
         }
     }
 
-    // Handle number button clicks for mobile input
+    // Handle number button clicks for mobile input (ONLY WAY TO INPUT ON MOBILE)
     handleNumberButtonClick(number) {
         // Use selectedCell state instead of browser focus
         const cell = this.selectedCell;
@@ -930,17 +951,16 @@ export class SudokuGame {
         if (!cell) {
             // If no cell is selected, select first empty cell
             const emptyCells = Array.from(this.grid.querySelectorAll('input:not(.given)'))
-                .filter(input => !input.value);
+                .filter(input => !input.value && !input.hasAttribute('readonly'));
             if (emptyCells.length > 0) {
                 this.selectCell(emptyCells[0]);
-                emptyCells[0].focus();
                 return; // Let user click again to input number
             }
             return;
         }
 
-        // Don't allow input on given cells
-        if (cell.readOnly) {
+        // Don't allow input on given cells or readonly cells
+        if (cell.readOnly || cell.hasAttribute('readonly')) {
             return;
         }
 
@@ -950,10 +970,8 @@ export class SudokuGame {
             this.clearConflicts();
             this.clearHighlights();
         } else {
-            // Input number
+            // Input number directly
             const numValue = number;
-
-            // Validate input (1-9 only, though buttons should only provide valid numbers)
             if (/^[1-9]$/.test(numValue)) {
                 cell.value = numValue;
                 this.checkConflicts(cell);
@@ -1082,6 +1100,14 @@ export class SudokuGame {
                 (navigator.maxTouchPoints > 0) ||
                 (navigator.msMaxTouchPoints > 0)) &&
                window.innerWidth <= 768;
+    }
+
+    // Show mobile instruction for touch devices
+    showMobileInstruction() {
+        const mobileInstruction = document.getElementById('mobile-instruction');
+        if (mobileInstruction && this.isMobileDevice()) {
+            mobileInstruction.style.display = 'block';
+        }
     }
 
     // 🎁 Show reward notification after successful game submission

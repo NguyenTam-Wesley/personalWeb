@@ -117,6 +117,18 @@
         </div>
     </div>
 
+    <!-- Debug script for testing device detection -->
+    <script>
+        // Add to global scope for testing
+        window.testDeviceDetection = function() {
+            if (window.minesweeperGame) {
+                const result = window.minesweeperGame.forceRefreshDeviceDetection();
+                alert(`Current device: ${result.toUpperCase()}\nCheck console for details.`);
+            } else {
+                alert('Game not loaded yet - try again in a moment');
+            }
+        };
+    </script>
     <script type="module" src="../../../js/modules/minesweeper_entry.js"></script>
 </body>
 </html>

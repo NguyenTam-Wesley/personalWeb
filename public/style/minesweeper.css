@@ -325,26 +325,61 @@ body {
     gap: 1rem;
 }
 
-/* Device-specific instruction visibility */
-.desktop-only,
-.tablet-only,
+/* Device-specific instruction visibility - High priority */
+.desktop-only {
+    display: none !important;
+}
+
+.tablet-only {
+    display: none !important;
+}
+
 .mobile-only {
-    display: none;
+    display: none !important;
 }
 
-/* Desktop (no touch, screen > 1024px) */
+/* Desktop instructions - only show on desktop */
 body.device-desktop .desktop-only {
-    display: block;
+    display: block !important;
 }
 
-/* Tablet (touch, screen 768px-1024px) */
+/* Tablet instructions - only show on tablet */
 body.device-tablet .tablet-only {
-    display: block;
+    display: block !important;
 }
 
-/* Mobile (touch, screen < 768px) */
+/* Mobile instructions - only show on mobile */
 body.device-mobile .mobile-only {
-    display: block;
+    display: block !important;
+}
+
+/* Debug styles - visual indicators for device type */
+/* Remove these in production */
+body.device-desktop {
+    border-top: 3px solid #4fc3f7; /* Blue border for desktop */
+}
+
+body.device-tablet {
+    border-top: 3px solid #ff9800; /* Orange border for tablet */
+}
+
+body.device-mobile {
+    border-top: 3px solid #4caf50; /* Green border for mobile */
+}
+
+/* Debug: Show which instructions are visible */
+.instruction-item {
+    transition: opacity 0.3s ease;
+}
+
+body.device-desktop .tablet-only,
+body.device-desktop .mobile-only,
+body.device-tablet .desktop-only,
+body.device-tablet .mobile-only,
+body.device-mobile .desktop-only,
+body.device-mobile .tablet-only {
+    opacity: 0.3;
+    background: rgba(255, 0, 0, 0.1);
 }
 
 /* Tablet-specific styles (can use larger buttons, different layout) */

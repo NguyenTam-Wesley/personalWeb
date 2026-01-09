@@ -295,6 +295,28 @@
         flex-wrap: wrap;
         gap: 0.5rem;
     }
+
+    /* Mobile input improvements */
+    .sudoku-cell {
+        /* Ensure text is always visible */
+        -webkit-text-fill-color: inherit !important;
+        color: inherit !important;
+        /* Prevent zoom on focus */
+        font-size: 16px !important;
+        /* Better touch interaction */
+        touch-action: manipulation;
+    }
+
+    /* Ensure proper contrast on mobile */
+    .sudoku-cell:not(.given) {
+        color: #1e88e5 !important;
+        -webkit-text-fill-color: #1e88e5 !important;
+    }
+
+    .sudoku-cell.given {
+        color: var(--text-dark) !important;
+        -webkit-text-fill-color: var(--text-dark) !important;
+    }
 }
 
 body {
@@ -521,7 +543,7 @@ body {
     font-size: clamp(0.85rem, 2.2vw, 1rem);
 }
 
-/* Number Input Buttons for Mobile */
+/* Number Input Buttons - ONLY INPUT METHOD ON MOBILE */
 .number-buttons {
     display: none; /* Hidden by default - only show on mobile */
     margin: 1rem auto;
@@ -581,13 +603,47 @@ body {
 /* Mobile Responsive - Show number buttons on touch devices */
 @media (max-width: 768px) and (hover: none) and (pointer: coarse) {
     .number-buttons {
-        display: block;
+        display: block !important; /* FORCE SHOW ON MOBILE */
     }
 
     /* Mobile touch optimizations */
     .sudoku-cell {
         caret-color: transparent;
         -webkit-tap-highlight-color: transparent;
+        /* Ensure text is visible on mobile */
+        -webkit-text-fill-color: var(--text-dark);
+        -webkit-appearance: none;
+        /* Prevent zoom on iOS */
+        font-size: 16px !important;
+        /* Better touch target */
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Make cells selectable but prevent direct keyboard input */
+    .sudoku-cell:not(.given) {
+        color: #1e88e5 !important;
+        -webkit-text-fill-color: #1e88e5 !important;
+        /* Prevent keyboard popup - selection only */
+        pointer-events: auto;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .sudoku-cell.given {
+        color: var(--text-dark) !important;
+        -webkit-text-fill-color: var(--text-dark) !important;
+        pointer-events: auto;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    /* Highlight number buttons as primary input method */
+    .number-buttons {
+        border-top: 2px solid var(--accent-primary);
+        padding-top: 1rem;
+        background: rgba(0, 255, 255, 0.05);
+        border-radius: 12px;
     }
 }
 
@@ -596,6 +652,32 @@ body {
     .number-buttons {
         display: block;
         width: min(95vw, 400px);
+    }
+
+    /* Mobile text visibility fixes */
+    .sudoku-cell {
+        /* Prevent iOS zoom on input focus */
+        font-size: 16px !important;
+        /* Ensure text is visible */
+        -webkit-text-fill-color: inherit;
+        -webkit-appearance: none;
+        /* Better touch targets */
+        min-height: 40px;
+        min-width: 40px;
+        /* Ensure text doesn't overflow */
+        text-overflow: clip;
+        white-space: nowrap;
+    }
+
+    /* Ensure input values are visible */
+    .sudoku-cell:not(.given) {
+        color: #1e88e5 !important;
+        -webkit-text-fill-color: #1e88e5 !important;
+    }
+
+    .sudoku-cell.given {
+        color: var(--text-dark) !important;
+        -webkit-text-fill-color: var(--text-dark) !important;
     }
 
 /* Top 3 Leaderboard Styling */
