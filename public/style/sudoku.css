@@ -39,12 +39,6 @@
     font-family: 'Inter', monospace;
 }
 
-/* Sudoku cells - UX như game native */
-.sudoku-cell {
-    text-align: center;
-    caret-color: transparent; /* Ẩn con trỏ nháy */
-}
-
 /* Difficulty Selector */
 .sudoku-info {
     display: flex;
@@ -113,34 +107,29 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Smart Highlighting - UX như app Sudoku commercial (FIX CSS priority) */
-/* Ô focus - độ ưu tiên cao nhất */
+/* Smart Highlighting - UX như app Sudoku commercial */
 .sudoku-cell.focus-cell {
     background-color: var(--hl-cell) !important;
     outline: 2px solid #fce7f3 !important;
 }
 
-/* Hàng / cột / block chứa ô focus đúng */
 .sudoku-cell.focus-line {
     background-color: var(--hl-line) !important;
 }
 
-/* Ô cùng số đúng */
 .sudoku-cell.same-number {
     background-color: var(--hl-same) !important;
 }
 
-/* Selected cell - thay thế cho :focus */
 .sudoku-cell.selected {
     background: #e8f4f8;
     border-color: var(--accent-primary);
     box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
 }
 
-/* Selected state cho ô người dùng nhập */
 .sudoku-cell.selected:not(.given) {
-    color: #1565c0;        /* xanh đậm hơn khi selected */
-    font-weight: 600;      /* đậm hơn chút khi selected */
+    color: #1565c0;
+    font-weight: 600;
 }
 
 /* Achievements Dropdown */
@@ -280,48 +269,36 @@
     font-size: 0.8rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .sudoku-info {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .difficulty-selector {
-        justify-content: center;
-    }
-
-    .sudoku-controls {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    /* Mobile input improvements */
-    .sudoku-cell {
-        /* Ensure text is always visible */
-        -webkit-text-fill-color: inherit !important;
-        color: inherit !important;
-        /* Prevent zoom on focus */
-        font-size: 16px !important;
-        /* Better touch interaction */
-        touch-action: manipulation;
-    }
-
-    /* Ensure proper contrast on mobile */
-    .sudoku-cell:not(.given) {
-        color: #1e88e5 !important;
-        -webkit-text-fill-color: #1e88e5 !important;
-    }
-
-    .sudoku-cell.given {
-        color: var(--text-dark) !important;
-        -webkit-text-fill-color: var(--text-dark) !important;
-    }
+/* Top 3 Leaderboard Styling */
+.leaderboard-item.top-3 {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
 }
 
+.leaderboard-item.top-1 {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    color: #d63031;
+    font-weight: bold;
+}
+
+.leaderboard-rank.top-1::before {
+    content: '👑';
+    margin-right: 5px;
+}
+
+.leaderboard-rank.top-2::before {
+    content: '🥈';
+    margin-right: 5px;
+}
+
+.leaderboard-rank.top-3::before {
+    content: '🥉';
+    margin-right: 5px;
+}
+
+/* Body & Layout */
 body {
     font-family: 'Inter', sans-serif;
-    background: #000000; /* Đen */
+    background: #000000;
     color: var(--text-dark);
     margin: 0;
     padding: 0;
@@ -386,6 +363,7 @@ body {
     transform: translateY(-2px);
 }
 
+/* Sudoku Grid */
 .sudoku-grid {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -399,40 +377,52 @@ body {
     margin: 0 auto;
 }
 
-
+/* SUDOKU CELL - MAIN DEFINITION */
 .sudoku-cell {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     text-align: center;
-    font-size: clamp(16px, 2.5vw, 22px);
-    font-weight: bold;
+    font-size: clamp(20px, 3.5vw, 26px);
+    font-weight: 700;
     background: var(--primary-bg);
     border: 1px solid var(--border-dark);
     transition: all 0.2s ease;
     outline: none;
-    line-height: 1;
-    -webkit-tap-highlight-color: transparent;
-    /* Ensure numbers appear above cell background */
-    position: relative;
-    z-index: 1;
-    /* Center numbers perfectly */
+
+    /* FIX TEXT RENDERING - CRITICAL */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-style: normal !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* CENTER TEXT PERFECTLY WITH FLEXBOX */
     display: flex;
     align-items: center;
     justify-content: center;
-}
+    line-height: 1.2; /* Prevent text cutoff with proper line height */
+    padding: 4px;
+    margin: 0;
 
+    /* MOBILE TOUCH TARGETS */
+    min-height: 44px; /* iOS touch target minimum */
+    min-width: 44px;
+
+    /* ENSURE TEXT VISIBLE - NO CUTOFF */
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    caret-color: transparent;
+    position: relative;
+    z-index: 1;
+}
 
 .sudoku-cell:focus {
     background: #e8f4f8;
     border-color: var(--accent-primary);
     box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
-}
-
-/* Focus state cho ô người dùng nhập */
-.sudoku-cell:not(.given):focus {
-    color: #1565c0;        /* xanh đậm hơn khi focus */
-    font-weight: 600;      /* đậm hơn chút khi focus */
 }
 
 /* Block styling - thicker borders for 3x3 blocks */
@@ -448,33 +438,30 @@ body {
     border-bottom: 2px solid var(--dark-bg);
 }
 
-/* Given cells styling - Ô có sẵn */
+/* Given cells - Ô có sẵn */
 .sudoku-cell.given {
     background: var(--secondary-bg);
-    color: var(--text-dark);
-    font-weight: 900;
-    cursor: default; /* Cho biết đây là ô read-only */
+    color: var(--text-dark) !important;
+    font-weight: 700 !important;
+    cursor: default;
+    -webkit-text-fill-color: var(--text-dark) !important;
+    font-style: normal !important;
 }
 
-/* User input cells - Ẩn caret để UX như game thật */
-.sudoku-cell:not(.given) {
-    caret-color: transparent; /* Ẩn con trỏ nháy */
-}
-
-/* Given cells focus - Ô có sẵn khi focus */
 .sudoku-cell.given:focus {
     outline: 2px solid var(--border-dark);
     outline-offset: -2px;
 }
 
-/* User input cells styling - Ô người dùng nhập */
+/* User input cells - Ô người dùng nhập */
 .sudoku-cell:not(.given) {
-    color: #1e88e5;        /* xanh dịu */
-    font-weight: 500;      /* mảnh hơn số gốc */
-    cursor: text;
+    color: #1e88e5 !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    -webkit-text-fill-color: #1e88e5 !important;
+    font-style: normal !important;
 }
 
-/* User input cells focus - Ô người dùng nhập khi focus */
 .sudoku-cell:not(.given):focus {
     color: #1565c0;
     font-weight: 600;
@@ -482,7 +469,7 @@ body {
     outline-offset: -2px;
 }
 
-/* Conflict highlighting - độ ưu tiên cao nhất */
+/* Conflict highlighting */
 .sudoku-cell.conflict {
     background: #ffebee !important;
     color: #d32f2f !important;
@@ -518,6 +505,7 @@ body {
     100% { background: var(--primary-bg); }
 }
 
+/* Instructions */
 .sudoku-instructions {
     margin-top: 1rem;
     padding-top: 1rem;
@@ -550,10 +538,10 @@ body {
     font-size: clamp(0.85rem, 2.2vw, 1rem);
 }
 
-/* Number Input Buttons - ONLY INPUT METHOD ON MOBILE */
+/* Number Input Buttons */
 .number-buttons {
-    display: none; /* Hidden by default - only show on mobile */
-    margin: 2rem auto 1rem auto; /* Increased top margin to create space from grid */
+    display: none;
+    margin: 2rem auto 1rem auto;
     width: min(90vw, 450px);
 }
 
@@ -605,123 +593,6 @@ body {
 .delete-btn:active {
     background: #dc2626;
     color: white;
-}
-
-/* Mobile Responsive - Show number buttons on touch devices */
-@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
-    .number-buttons {
-        display: block !important; /* FORCE SHOW ON MOBILE */
-    }
-
-    /* Mobile touch optimizations */
-    .sudoku-cell {
-        caret-color: transparent;
-        -webkit-tap-highlight-color: transparent;
-        /* Ensure text is visible on mobile */
-        -webkit-text-fill-color: var(--text-dark);
-        -webkit-appearance: none;
-        /* Prevent zoom on iOS */
-        font-size: 16px !important;
-        /* Better touch target */
-        min-height: 44px;
-        min-width: 44px;
-    }
-
-    /* Make cells selectable but prevent direct keyboard input */
-    .sudoku-cell:not(.given) {
-        color: #1e88e5 !important;
-        -webkit-text-fill-color: #1e88e5 !important;
-        /* Prevent keyboard popup - selection only */
-        pointer-events: auto;
-        user-select: none;
-        -webkit-user-select: none;
-    }
-
-    .sudoku-cell.given {
-        color: var(--text-dark) !important;
-        -webkit-text-fill-color: var(--text-dark) !important;
-        pointer-events: auto;
-        user-select: none;
-        -webkit-user-select: none;
-    }
-
-    /* Highlight number buttons as primary input method */
-    .number-buttons {
-        border-top: 2px solid var(--accent-primary);
-        padding-top: 1rem;
-        background: rgba(0, 255, 255, 0.05);
-        border-radius: 12px;
-        margin-top: 2.5rem !important; /* Extra space on mobile */
-    }
-}
-
-/* Also show on small screens regardless of touch capability */
-@media (max-width: 480px) {
-    .number-buttons {
-        display: block;
-        width: min(95vw, 400px);
-        margin-top: 2.5rem !important; /* Extra space on smaller screens */
-    }
-
-    /* Mobile text visibility fixes */
-    .sudoku-cell {
-        /* Prevent iOS zoom on input focus */
-        font-size: 16px !important;
-        /* Ensure text is visible */
-        -webkit-text-fill-color: inherit;
-        -webkit-appearance: none;
-        /* Better touch targets */
-        min-height: 40px;
-        min-width: 40px;
-        /* Ensure text doesn't overflow */
-        text-overflow: clip;
-        white-space: nowrap;
-    }
-
-    /* Ensure input values are visible */
-    .sudoku-cell:not(.given) {
-        color: #1e88e5 !important;
-        -webkit-text-fill-color: #1e88e5 !important;
-    }
-
-    .sudoku-cell.given {
-        color: var(--text-dark) !important;
-        -webkit-text-fill-color: var(--text-dark) !important;
-    }
-
-/* Top 3 Leaderboard Styling */
-.leaderboard-item.top-3 {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-}
-
-.leaderboard-item.top-1 {
-    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
-    color: #d63031;
-    font-weight: bold;
-}
-
-.leaderboard-rank.top-1::before {
-    content: '👑';
-    margin-right: 5px;
-}
-
-.leaderboard-rank.top-2::before {
-    content: '🥈';
-    margin-right: 5px;
-}
-
-.leaderboard-rank.top-3::before {
-    content: '🥉';
-    margin-right: 5px;
-}
-
-    .number-buttons-grid {
-        gap: 0.4rem;
-    }
-
-    .number-btn {
-        font-size: clamp(1.1rem, 5vw, 1.4rem);
-    }
 }
 
 /* Reward Notification */
@@ -783,4 +654,77 @@ body {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
-  
+
+/* ============================================
+   RESPONSIVE - MOBILE ONLY
+   ============================================ */
+
+@media (max-width: 768px) {
+    .sudoku-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .difficulty-selector {
+        justify-content: center;
+    }
+
+    .sudoku-controls {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* Mobile cell adjustments - MINIMAL OVERRIDES */
+    .sudoku-cell {
+        font-size: 20px !important; /* Prevent iOS zoom */
+        min-height: 44px; /* Touch target */
+        min-width: 44px;
+    }
+}
+
+/* Mobile touch devices - Show number buttons */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+    .number-buttons {
+        display: block !important;
+        border-top: 2px solid var(--accent-primary);
+        padding-top: 1rem;
+        background: rgba(0, 255, 255, 0.05);
+        border-radius: 12px;
+        margin-top: 2.5rem !important;
+    }
+
+    /* Prevent keyboard popup on mobile */
+    .sudoku-cell:not(.given) {
+        pointer-events: auto;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .sudoku-cell.given {
+        pointer-events: auto;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+    .number-buttons {
+        display: block;
+        width: min(95vw, 400px);
+        margin-top: 2.5rem !important;
+    }
+
+    .sudoku-cell {
+        min-height: 40px;
+        min-width: 40px;
+    }
+
+    .number-buttons-grid {
+        gap: 0.4rem;
+    }
+
+    .number-btn {
+        font-size: clamp(1.1rem, 5vw, 1.4rem);
+    }
+}
