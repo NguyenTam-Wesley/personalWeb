@@ -136,6 +136,48 @@ body {
     position: relative;
 }
 
+/* Mobile Flag Toggle */
+.mobile-flag-toggle {
+    display: none;
+}
+
+.flag-mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border: 2px solid #4fc3f7;
+    background: #4fc3f7;
+    color: #1a1a1a;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.flag-mode-btn.active {
+    background: #4fc3f7;
+    color: #1a1a1a;
+}
+
+.flag-mode-btn:not(.active) {
+    background: #3d3d3d;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+.flag-mode-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 195, 247, 0.3);
+}
+
+.mode-icon {
+    font-size: 1.2rem;
+}
+
+.mode-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
 /* Achievement & Leaderboard Containers */
 .achievements-container, .leaderboard-container {
     position: relative;
@@ -283,6 +325,52 @@ body {
     gap: 1rem;
 }
 
+/* Device-specific instruction visibility */
+.desktop-only,
+.tablet-only,
+.mobile-only {
+    display: none;
+}
+
+/* Desktop (no touch, screen > 1024px) */
+body.device-desktop .desktop-only {
+    display: block;
+}
+
+/* Tablet (touch, screen 768px-1024px) */
+body.device-tablet .tablet-only {
+    display: block;
+}
+
+/* Mobile (touch, screen < 768px) */
+body.device-mobile .mobile-only {
+    display: block;
+}
+
+/* Tablet-specific styles (can use larger buttons, different layout) */
+body.device-tablet .flag-mode-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+}
+
+body.device-tablet .btn-primary,
+body.device-tablet .btn-secondary {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+}
+
+/* Mobile-specific styles (compact) */
+body.device-mobile .flag-mode-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+body.device-mobile .btn-primary,
+body.device-mobile .btn-secondary {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
 .instruction-item {
     display: flex;
     align-items: center;
@@ -336,6 +424,12 @@ body {
     .game-instructions {
         grid-template-columns: 1fr;
         gap: 0.5rem;
+    }
+
+    /* Show mobile/tablet flag toggle on touch devices */
+    body.device-tablet .mobile-flag-toggle,
+    body.device-mobile .mobile-flag-toggle {
+        display: block;
     }
 }
 

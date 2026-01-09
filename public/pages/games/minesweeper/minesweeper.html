@@ -32,11 +32,17 @@
                     <div id="rank-display" class="rank-display">Rank: --</div>
                 </div>
             </div>
-            <p>Tìm tất cả các quả mìn | Click trái để mở ô, click phải để cắm cờ</p>
+            <p class="device-instruction">Tìm tất cả các quả mìn</p>
         </div>
 
         <div class="game-controls">
             <button id="newGameBtn" class="btn-primary">Ván mới</button>
+            <div class="mobile-flag-toggle" id="mobileFlagToggle" style="display: none;">
+                <button id="flagModeBtn" class="btn-secondary flag-mode-btn active">
+                    <span class="mode-icon">👆</span>
+                    <span class="mode-text">Mở ô</span>
+                </button>
+            </div>
             <div class="achievements-container">
                 <button id="achievementsBtn" class="btn-secondary achievements-btn">🏆 Thành tích</button>
                 <div id="achievementsDropdown" class="achievements-dropdown" style="display: none;">
@@ -69,14 +75,37 @@
         </div>
 
         <div class="game-instructions">
-            <div class="instruction-item">
-                <span class="instruction-icon">👆</span>
+            <!-- Desktop Instructions -->
+            <div class="instruction-item desktop-only">
+                <span class="instruction-icon">🖱️</span>
                 <span>Click trái: Mở ô</span>
             </div>
-            <div class="instruction-item">
+            <div class="instruction-item desktop-only">
                 <span class="instruction-icon">👉</span>
                 <span>Click phải: Cắm cờ</span>
             </div>
+
+            <!-- Tablet Instructions -->
+            <div class="instruction-item tablet-only">
+                <span class="instruction-icon">👆</span>
+                <span>Touch: Mở ô hoặc cắm cờ (theo chế độ)</span>
+            </div>
+            <div class="instruction-item tablet-only">
+                <span class="instruction-icon">🔄</span>
+                <span>Chế độ: Nhấn nút để chuyển đổi</span>
+            </div>
+
+            <!-- Mobile Instructions -->
+            <div class="instruction-item mobile-only">
+                <span class="instruction-icon">👆</span>
+                <span>Touch: Mở ô hoặc cắm cờ (theo chế độ)</span>
+            </div>
+            <div class="instruction-item mobile-only">
+                <span class="instruction-icon">🔄</span>
+                <span>Chế độ: Nhấn nút để chuyển đổi</span>
+            </div>
+
+            <!-- Common Instructions -->
             <div class="instruction-item">
                 <span class="instruction-icon">🔢</span>
                 <span>Số hiển thị: Số mìn xung quanh</span>

@@ -28,6 +28,10 @@ export class MinesweeperGame {
         this.timer = null;
         this.seconds = 0;
 
+        // Device detection
+        this.deviceType = 'desktop'; // 'desktop', 'tablet', 'mobile'
+        this.isFlagMode = false;
+
         // DOM elements
         this.gameBoardEl = document.getElementById('game-board');
         this.difficultySelect = document.getElementById('difficulty');
@@ -48,14 +52,41 @@ export class MinesweeperGame {
         this.bestTimeDisplay = document.getElementById('best-time-display');
         this.rankDisplay = document.getElementById('rank-display');
 
+        // Mobile flag toggle
+        this.mobileFlagToggle = document.getElementById('mobileFlagToggle');
+        this.flagModeBtn = document.getElementById('flagModeBtn');
+
         this.init();
     }
 
     init() {
+        // Detect device type
+        this.deviceType = this.detectDeviceType();
+
         this.setupWorker();
         this.setupEventListeners();
+        this.setupDeviceSpecificControls();
+        this.updateDeviceSpecificInstructions();
         this.startNewGame();
         this.updateBestTimeAndRank();
+    }
+
+    // Detect device type based on screen size and touch capability
+    detectDeviceType() {
+        const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        const screenWidth = window.innerWidth;
+
+        if (!hasTouch) {
+            return 'desktop';
+        }
+
+        // Tablet: has touch and screen width >= 768px
+        if (screenWidth >= 768) {
+            return 'tablet';
+        }
+
+        // Mobile: has touch and screen width < 768px
+        return 'mobile';
     }
 
     setupWorker() {
@@ -77,6 +108,49 @@ export class MinesweeperGame {
         } catch (error) {
             console.error('Failed to create worker:', error);
             this.showGameMessage('Trình duyệt không hỗ trợ Web Worker!');
+        }
+    }
+
+    setupDeviceSpecificControls() {
+        const isMobileOrTablet = this.deviceType === 'mobile' || this.deviceType === 'tablet';
+
+        if (isMobileOrTablet && this.flagModeBtn) {
+            // Show mobile/tablet flag toggle
+            this.mobileFlagToggle.style.display = 'block';
+
+            // Flag mode toggle button
+            this.flagModeBtn.addEventListener('click', () => {
+                this.toggleFlagMode();
+            });
+
+            // Update initial state
+            this.updateFlagModeUI();
+        } else {
+            // Hide on desktop
+            if (this.mobileFlagToggle) {
+                this.mobileFlagToggle.style.display = 'none';
+            }
+        }
+    }
+
+    updateDeviceSpecificInstructions() {
+        // Add device type class to body for CSS targeting
+        document.body.classList.add(`device-${this.deviceType}`);
+
+        // Update header text based on device
+        const headerText = document.querySelector('.device-instruction');
+        if (headerText) {
+            switch (this.deviceType) {
+                case 'desktop':
+                    headerText.textContent = 'Tìm tất cả các quả mìn | Click trái để mở ô, click phải để cắm cờ';
+                    break;
+                case 'tablet':
+                    headerText.textContent = 'Tìm tất cả các quả mìn | Touch để mở ô hoặc cắm cờ (theo chế độ)';
+                    break;
+                case 'mobile':
+                    headerText.textContent = 'Tìm tất cả các quả mìn | Touch để mở ô hoặc cắm cờ (theo chế độ)';
+                    break;
+            }
         }
     }
 
@@ -131,20 +205,27 @@ export class MinesweeperGame {
             if (cell && !this.gameOver) {
                 const x = parseInt(cell.dataset.x);
                 const y = parseInt(cell.dataset.y);
-                this.handleCellClick(x, y, 'open');
+                // Determine action based on device and flag mode
+                const isMobileOrTablet = this.deviceType === 'mobile' || this.deviceType === 'tablet';
+                const action = isMobileOrTablet
+                    ? (this.isFlagMode ? 'flag' : 'open')
+                    : 'open';
+                this.handleCellClick(x, y, action);
             }
         });
 
-        // Right click for flagging
-        this.gameBoardEl.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            const cell = e.target.closest('.cell');
-            if (cell && !this.gameOver) {
-                const x = parseInt(cell.dataset.x);
-                const y = parseInt(cell.dataset.y);
-                this.handleCellClick(x, y, 'flag');
-            }
-        });
+        // Right click for flagging (desktop only)
+        if (this.deviceType === 'desktop') {
+            this.gameBoardEl.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                const cell = e.target.closest('.cell');
+                if (cell && !this.gameOver) {
+                    const x = parseInt(cell.dataset.x);
+                    const y = parseInt(cell.dataset.y);
+                    this.handleCellClick(x, y, 'flag');
+                }
+            });
+        }
     }
 
     startNewGame() {
@@ -170,6 +251,13 @@ export class MinesweeperGame {
         this.updateTimer();
         this.updateGameStatus('Sẵn sàng');
         this.gameBoardEl.classList.remove('game-over', 'game-won');
+
+        // Reset flag mode to reveal mode when starting new game
+        const isMobileOrTablet = this.deviceType === 'mobile' || this.deviceType === 'tablet';
+        if (isMobileOrTablet) {
+            this.isFlagMode = false;
+            this.updateFlagModeUI();
+        }
     }
 
     handleCellClick(x, y, action) {
@@ -672,6 +760,34 @@ export class MinesweeperGame {
         } catch (error) {
             console.error('Error in loadLeaderboard:', error);
             this.leaderboardList.innerHTML = '<div class="leaderboard-item" style="text-align: center; color: #b0b0b0;">Lỗi tải dữ liệu</div>';
+        }
+    }
+
+    // Toggle between reveal and flag mode (mobile/tablet only)
+    toggleFlagMode() {
+        const isMobileOrTablet = this.deviceType === 'mobile' || this.deviceType === 'tablet';
+        if (!isMobileOrTablet) return;
+
+        this.isFlagMode = !this.isFlagMode;
+        this.updateFlagModeUI();
+    }
+
+    // Update flag mode button UI
+    updateFlagModeUI() {
+        const isMobileOrTablet = this.deviceType === 'mobile' || this.deviceType === 'tablet';
+        if (!isMobileOrTablet || !this.flagModeBtn) return;
+
+        const icon = this.flagModeBtn.querySelector('.mode-icon');
+        const text = this.flagModeBtn.querySelector('.mode-text');
+
+        if (this.isFlagMode) {
+            this.flagModeBtn.classList.remove('active');
+            icon.textContent = '🚩';
+            text.textContent = 'Cắm cờ';
+        } else {
+            this.flagModeBtn.classList.add('active');
+            icon.textContent = '👆';
+            text.textContent = 'Mở ô';
         }
     }
 
