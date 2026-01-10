@@ -77,6 +77,13 @@ export class SudokuGame {
         this.numberButtons = document.getElementById("number-buttons");
         this.deleteBtn = document.getElementById("deleteBtn");
 
+        // Pencil and clear buttons
+        this.pencilBtn = document.getElementById("pencilBtn");
+        this.clearBtn = document.getElementById("clearBtn");
+
+        // Pencil mode state
+        this.pencilMode = false;
+
         // Web Worker cho việc sinh Sudoku
         this.worker = null;
 
@@ -175,66 +182,71 @@ export class SudokuGame {
 
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
-                const input = document.createElement("input");
-                input.type = "text";
-                input.maxLength = 1;
-                input.dataset.row = row;
-                input.dataset.col = col;
+                const cell = document.createElement("div");
+                cell.className = `sudoku-cell block-${Math.floor(row / 3)}-${Math.floor(col / 3)}`;
+                cell.dataset.row = row;
+                cell.dataset.col = col;
 
-                // Add CSS classes for styling
-                const blockRow = Math.floor(row / 3);
-                const blockCol = Math.floor(col / 3);
-                input.className = `sudoku-cell block-${blockRow}-${blockCol}`;
+                // Create value span
+                const valueSpan = document.createElement("span");
+                valueSpan.className = "cell-value";
+
+                // Create notes grid
+                const notesDiv = document.createElement("div");
+                notesDiv.className = "cell-notes";
+                for (let i = 1; i <= 9; i++) {
+                    const noteSpan = document.createElement("span");
+                    noteSpan.dataset.n = i;
+                    notesDiv.appendChild(noteSpan);
+                }
+
+                // Add notes data structure to cell
+                cell.notes = new Set();
+
+                cell.appendChild(valueSpan);
+                cell.appendChild(notesDiv);
 
                 const value = this.puzzle[row][col];
                 if (value !== null) {
-                    input.value = value;
-                    input.readOnly = true;
-                    input.classList.add('given');
+                    valueSpan.textContent = value;
+                    cell.classList.add('given');
+                    cell.given = true;
                 } else {
-                    input.classList.add('user-input');
-                    // Không set readonly - cho phép click chọn ô trên mobile
+                    cell.classList.add('user-input');
+                    cell.given = false;
                 }
 
-                // Mobile-specific attributes to BLOCK keyboard and use only number buttons
-                if (this.isMobileDevice()) {
-                    // Only set readonly for user input cells, not given cells
-                    if (!input.classList.contains('given')) {
-                        input.readOnly = true; // Chặn keyboard hoàn toàn trên mobile cho user cells
-                        input.setAttribute('readonly', 'true'); // Đảm bảo readonly
-                    }
-                    input.style.fontSize = '16px'; // Prevent iOS zoom
-                }
+                // Make cell focusable
+                cell.tabIndex = 0;
 
-                input.addEventListener("mousedown", (e) => {
+                cell.addEventListener("mousedown", (e) => {
                     e.preventDefault();
-                    input.focus(); // Đảm bảo focus khi click
-                    this.selectCell(input); // Cập nhật selectedCell state
+                    cell.focus();
+                    this.selectCell(cell);
                 });
 
-                // Mobile: thêm touch event để chọn ô
-                input.addEventListener("touchstart", (e) => {
-                    if (input.readOnly) return; // Không chọn given cells
+                // Mobile: touch event để chọn ô
+                cell.addEventListener("touchstart", (e) => {
+                    if (cell.given) return; // Không chọn given cells
                     e.preventDefault();
-                    this.selectCell(input);
-                    input.focus();
+                    this.selectCell(cell);
+                    cell.focus();
                 });
 
-                // Mobile: thêm click event để chọn ô
-                input.addEventListener("click", (e) => {
-                    if (input.readOnly) return; // Không chọn given cells
-                    this.selectCell(input);
+                // Mobile: click event để chọn ô
+                cell.addEventListener("click", (e) => {
+                    if (cell.given) return; // Không chọn given cells
+                    this.selectCell(cell);
                 });
 
                 // Only handle input/key events on desktop, mobile uses number buttons only
                 if (!this.isMobileDevice()) {
-                    input.addEventListener("input", (e) => this.handleInput(e));
-                    input.addEventListener("keydown", (e) => this.handleKeydown(e));
+                    cell.addEventListener("keydown", (e) => this.handleKeydown(e));
                 }
-                input.addEventListener("focus", (e) => this.handleFocus(e));
-                input.addEventListener("blur", (e) => this.handleBlur(e));
+                cell.addEventListener("focus", (e) => this.handleFocus(e));
+                cell.addEventListener("blur", (e) => this.handleBlur(e));
 
-                this.grid.appendChild(input);
+                this.grid.appendChild(cell);
             }
         }
     }
@@ -267,15 +279,16 @@ export class SudokuGame {
     }
 
     // Kiểm tra ô có chứa số đúng không
-    isCorrectCell(input) {
-        if (!input.value) return false;
+    isCorrectCell(cell) {
+        const valueSpan = cell.querySelector('.cell-value');
+        if (!valueSpan || !valueSpan.textContent) return false;
 
-        const row = Number(input.dataset.row);
-        const col = Number(input.dataset.col);
-        const value = Number(input.value);
+        const row = Number(cell.dataset.row);
+        const col = Number(cell.dataset.col);
+        const value = Number(valueSpan.textContent);
 
         // GIVEN luôn đúng (được lấy từ solution gốc)
-        if (input.readOnly) return true;
+        if (cell.given) return true;
 
         // USER nhập đúng mới true (so với solution)
         return this.solution?.[row]?.[col] === value;
@@ -291,29 +304,30 @@ export class SudokuGame {
     }
 
     // Highlight thông minh
-    highlightCorrectFocus(input) {
+    highlightCorrectFocus(cell) {
         this.clearHighlights();
 
         // GIVEN luôn highlight, USER chỉ khi đúng
-        if (!this.isCorrectCell(input)) return;
+        if (!this.isCorrectCell(cell)) return;
 
-        const value = input.value;
-        const row = parseInt(input.dataset.row);
-        const col = parseInt(input.dataset.col);
+        const valueSpan = cell.querySelector('.cell-value');
+        const value = valueSpan.textContent;
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
 
-        input.classList.add('focus-cell');
+        cell.classList.add('focus-cell');
 
         // Highlight row
         for (let c = 0; c < 9; c++) {
             this.grid
-                .querySelector(`input[data-row="${row}"][data-col="${c}"]`)
+                .querySelector(`[data-row="${row}"][data-col="${c}"]`)
                 .classList.add('focus-line');
         }
 
         // Highlight column
         for (let r = 0; r < 9; r++) {
             this.grid
-                .querySelector(`input[data-row="${r}"][data-col="${col}"]`)
+                .querySelector(`[data-row="${r}"][data-col="${col}"]`)
                 .classList.add('focus-line');
         }
 
@@ -323,15 +337,16 @@ export class SudokuGame {
         for (let r = br; r < br + 3; r++) {
             for (let c = bc; c < bc + 3; c++) {
                 this.grid
-                    .querySelector(`input[data-row="${r}"][data-col="${c}"]`)
+                    .querySelector(`[data-row="${r}"][data-col="${c}"]`)
                     .classList.add('focus-line');
             }
         }
 
         // Highlight same number - CHỈ KHI Ô ĐÓ CŨNG ĐÚNG
-        this.grid.querySelectorAll('input').forEach(cell => {
-            if (cell.value === value && this.isCorrectCell(cell)) {
-                cell.classList.add('same-number');
+        this.grid.querySelectorAll('.sudoku-cell').forEach(otherCell => {
+            const otherValueSpan = otherCell.querySelector('.cell-value');
+            if (otherValueSpan && otherValueSpan.textContent === value && this.isCorrectCell(otherCell)) {
+                otherCell.classList.add('same-number');
             }
         });
     }
@@ -347,16 +362,16 @@ export class SudokuGame {
     }
 
     handleKeydown(e) {
-        const input = e.target;
+        const cell = e.target;
 
         // ❗ GIVEN: không cho nhập số, NHƯNG cho navigation + highlight
-        if (input.readOnly) {
+        if (cell.given) {
             // ✅ Cho phép arrow keys trên ô given
             if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
                 e.preventDefault();
 
-                let row = Number(input.dataset.row);
-                let col = Number(input.dataset.col);
+                let row = Number(cell.dataset.row);
+                let col = Number(cell.dataset.col);
 
                 switch (e.key) {
                     case 'ArrowUp':
@@ -376,8 +391,11 @@ export class SudokuGame {
             return; // Chặn tất cả keys khác trên given
         }
 
+        // Number input with pencil mode support
         if (/^[1-9]$/.test(e.key)) {
-            input.value = "";
+            e.preventDefault();
+            const number = parseInt(e.key);
+            this.inputNumber(cell, number);
             return;
         }
 
@@ -385,8 +403,8 @@ export class SudokuGame {
         if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
             e.preventDefault();
 
-            let row = parseInt(input.dataset.row);
-            let col = parseInt(input.dataset.col);
+            let row = parseInt(cell.dataset.row);
+            let col = parseInt(cell.dataset.col);
 
             // Truyền hướng di chuyển
             switch (e.key) {
@@ -405,9 +423,13 @@ export class SudokuGame {
             }
         }
 
-        // Backspace/Delete - xóa giá trị
+        // Backspace/Delete - xóa giá trị và notes
         if (e.key === 'Backspace' || e.key === 'Delete') {
-            input.value = "";
+            e.preventDefault();
+            const valueSpan = cell.querySelector('.cell-value');
+            valueSpan.textContent = '';
+            cell.notes.clear();
+            this.renderNotes(cell);
             this.clearConflicts();
             this.clearHighlights(); // Xóa highlight khi xóa số
         }
@@ -422,11 +444,11 @@ export class SudokuGame {
             if (col < 0) col = 8;
             if (col > 8) col = 0;
 
-            const targetInput = this.grid.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
+            const targetCell = this.grid.querySelector(`[data-row="${row}"][data-col="${col}"]`);
 
             // Focus vào TẤT CẢ ô (given và user-input)
-            if (targetInput) {
-                targetInput.focus();
+            if (targetCell) {
+                targetCell.focus();
                 return;
             }
 
@@ -436,23 +458,26 @@ export class SudokuGame {
         }
     }
 
-    checkConflicts(currentInput) {
+    checkConflicts(currentCell) {
         this.clearConflicts();
 
-        const value = currentInput.value;
+        const valueSpan = currentCell.querySelector('.cell-value');
+        const value = valueSpan ? valueSpan.textContent : '';
         if (!value) return;
 
-        const { row, col } = currentInput.dataset;
+        const { row, col } = currentCell.dataset;
         const rowNum = parseInt(row);
         const colNum = parseInt(col);
 
         // Check row conflicts
         for (let c = 0; c < 9; c++) {
             if (c !== colNum) {
-                const cell = this.grid.querySelector(`input[data-row="${rowNum}"][data-col="${c}"]`);
-                if (cell.value === value) {
+                const cell = this.grid.querySelector(`[data-row="${rowNum}"][data-col="${c}"]`);
+                const cellValueSpan = cell.querySelector('.cell-value');
+                const cellValue = cellValueSpan ? cellValueSpan.textContent : '';
+                if (cellValue === value) {
                     cell.classList.add('conflict');
-                    currentInput.classList.add('conflict');
+                    currentCell.classList.add('conflict');
                 }
             }
         }
@@ -460,10 +485,12 @@ export class SudokuGame {
         // Check column conflicts
         for (let r = 0; r < 9; r++) {
             if (r !== rowNum) {
-                const cell = this.grid.querySelector(`input[data-row="${r}"][data-col="${colNum}"]`);
-                if (cell.value === value) {
+                const cell = this.grid.querySelector(`[data-row="${r}"][data-col="${colNum}"]`);
+                const cellValueSpan = cell.querySelector('.cell-value');
+                const cellValue = cellValueSpan ? cellValueSpan.textContent : '';
+                if (cellValue === value) {
                     cell.classList.add('conflict');
-                    currentInput.classList.add('conflict');
+                    currentCell.classList.add('conflict');
                 }
             }
         }
@@ -475,10 +502,12 @@ export class SudokuGame {
         for (let r = blockRow; r < blockRow + 3; r++) {
             for (let c = blockCol; c < blockCol + 3; c++) {
                 if (r !== rowNum || c !== colNum) {
-                    const cell = this.grid.querySelector(`input[data-row="${r}"][data-col="${c}"]`);
-                    if (cell.value === value) {
+                    const cell = this.grid.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+                    const cellValueSpan = cell.querySelector('.cell-value');
+                    const cellValue = cellValueSpan ? cellValueSpan.textContent : '';
+                    if (cellValue === value) {
                         cell.classList.add('conflict');
-                        currentInput.classList.add('conflict');
+                        currentCell.classList.add('conflict');
                     }
                 }
             }
@@ -496,6 +525,14 @@ export class SudokuGame {
         this.hintBtn.addEventListener('click', () => this.giveHint());
         if (this.newGameBtn) {
             this.newGameBtn.addEventListener('click', () => this.newGame());
+        }
+
+        // Pencil and clear buttons
+        if (this.pencilBtn) {
+            this.pencilBtn.addEventListener('click', () => this.togglePencilMode());
+        }
+        if (this.clearBtn) {
+            this.clearBtn.addEventListener('click', () => this.clearAll());
         }
 
         // Difficulty selector
@@ -604,30 +641,31 @@ export class SudokuGame {
     }
 
     async checkSolution() {
-        const inputs = this.grid.querySelectorAll('input:not(.given)');
+        const cells = this.grid.querySelectorAll('.sudoku-cell:not(.given)');
         let complete = true;
         let correct = true;
 
-        inputs.forEach(input => {
-            const { row, col } = input.dataset;
-            const userValue = parseInt(input.value);
+        cells.forEach(cell => {
+            const { row, col } = cell.dataset;
+            const valueSpan = cell.querySelector('.cell-value');
+            const userValue = valueSpan && valueSpan.textContent ? parseInt(valueSpan.textContent) : null;
             const correctValue = this.solution[row][col];
 
-            if (!input.value) {
+            if (!userValue) {
                 complete = false;
-                input.classList.add('empty');
+                cell.classList.add('empty');
             } else if (userValue !== correctValue) {
                 correct = false;
-                input.classList.add('wrong');
+                cell.classList.add('wrong');
             } else {
-                input.classList.add('correct');
+                cell.classList.add('correct');
             }
         });
 
         setTimeout(async () => {
             // Clear visual feedback
-            inputs.forEach(input => {
-                input.classList.remove('empty', 'wrong', 'correct');
+            cells.forEach(cell => {
+                cell.classList.remove('empty', 'wrong', 'correct');
             });
 
             if (!complete) {
@@ -747,10 +785,13 @@ export class SudokuGame {
     }
 
     reset() {
-        const inputs = this.grid.querySelectorAll('input:not(.given)');
-        inputs.forEach(input => {
-            input.value = "";
-            input.classList.remove('conflict');
+        const cells = this.grid.querySelectorAll('.sudoku-cell:not(.given)');
+        cells.forEach(cell => {
+            const valueSpan = cell.querySelector('.cell-value');
+            if (valueSpan) valueSpan.textContent = '';
+            cell.notes.clear();
+            this.renderNotes(cell);
+            cell.classList.remove('conflict');
         });
         this.clearHighlights(); // Xóa tất cả highlight khi reset
         this.resetTimer();
@@ -758,8 +799,11 @@ export class SudokuGame {
     }
 
     giveHint() {
-        const emptyCells = Array.from(this.grid.querySelectorAll('input:not(.given)'))
-            .filter(input => !input.value);
+        const emptyCells = Array.from(this.grid.querySelectorAll('.sudoku-cell:not(.given)'))
+            .filter(cell => {
+                const valueSpan = cell.querySelector('.cell-value');
+                return !valueSpan || !valueSpan.textContent;
+            });
 
         if (emptyCells.length === 0) {
             alert("🎯 Không còn ô trống nào để gợi ý!");
@@ -782,7 +826,10 @@ export class SudokuGame {
         const { row, col } = randomCell.dataset;
         const hintValue = this.solution[row][col];
 
-        randomCell.value = hintValue;
+        const valueSpan = randomCell.querySelector('.cell-value');
+        valueSpan.textContent = hintValue;
+        randomCell.notes.clear();
+        this.renderNotes(randomCell);
         randomCell.classList.add('hint');
 
         setTimeout(() => {
@@ -953,8 +1000,8 @@ export class SudokuGame {
 
         if (!cell) {
             // If no cell is selected, select first empty cell
-            const emptyCells = Array.from(this.grid.querySelectorAll('input:not(.given)'))
-                .filter(input => !input.value); // Don't filter out readonly cells - they're still selectable
+            const emptyCells = Array.from(this.grid.querySelectorAll('.sudoku-cell:not(.given)'))
+                .filter(cell => !cell.querySelector('.cell-value').textContent);
             if (emptyCells.length > 0) {
                 this.selectCell(emptyCells[0]);
                 return; // Let user click again to input number
@@ -962,23 +1009,24 @@ export class SudokuGame {
             return;
         }
 
-        // Don't allow input on given cells (pre-filled numbers)
-        if (cell.classList.contains('given')) {
+        // Don't allow input on given cells
+        if (cell.given) {
             return;
         }
 
         if (number === 'delete') {
-            // Delete current value
-            cell.value = '';
+            // Delete current value and notes
+            const valueSpan = cell.querySelector('.cell-value');
+            valueSpan.textContent = '';
+            cell.notes.clear();
+            this.renderNotes(cell);
             this.clearConflicts();
             this.clearHighlights();
         } else {
-            // Input number directly
-            const numValue = number;
-            if (/^[1-9]$/.test(numValue)) {
-                cell.value = numValue;
-                this.checkConflicts(cell);
-                this.highlightCorrectFocus(cell);
+            // Input number using pencil mode logic
+            const numValue = parseInt(number);
+            if (numValue >= 1 && numValue <= 9) {
+                this.inputNumber(cell, numValue);
             }
         }
     }
@@ -1149,5 +1197,184 @@ export class SudokuGame {
         }, 5000);
 
         console.log('🎁 Reward notification shown:', rewardData);
+    }
+
+    // ===== PENCIL MODE METHODS =====
+
+    togglePencilMode() {
+        this.pencilMode = !this.pencilMode;
+        this.pencilBtn.classList.toggle('active', this.pencilMode);
+
+        // Disable pencil mode when a given cell is selected
+        if (this.selectedCell && this.selectedCell.given) {
+            this.pencilMode = false;
+            this.pencilBtn.classList.remove('active');
+        }
+    }
+
+    clearAll() {
+        // Clear all user input cells and notes, but keep given cells
+        const cells = this.grid.querySelectorAll('.sudoku-cell');
+        cells.forEach(cell => {
+            if (!cell.given) {
+                // Clear value
+                const valueSpan = cell.querySelector('.cell-value');
+                if (valueSpan) valueSpan.textContent = '';
+
+                // Clear notes
+                cell.notes.clear();
+                this.renderNotes(cell);
+            }
+        });
+
+        // Clear highlights and conflicts
+        this.clearHighlights();
+        this.clearConflicts();
+
+        // Reset selected cell
+        this.selectCell(null);
+    }
+
+    // ===== NOTE LOGIC METHODS =====
+
+    toggleNote(cell, number) {
+        if (cell.given) return;
+
+        // Initialize notes if not exists
+        if (!cell.notes) {
+            cell.notes = new Set();
+        }
+
+        const valueSpan = cell.querySelector('.cell-value');
+
+        if (cell.notes.has(number)) {
+            // Deleting existing note - don't clear value
+            cell.notes.delete(number);
+        } else {
+            // Adding new note - clear value only when adding the first note
+            if (valueSpan.textContent) {
+                valueSpan.textContent = '';
+            }
+            cell.notes.add(number);
+        }
+
+        this.renderNotes(cell);
+    }
+
+    setValue(cell, number) {
+        if (cell.given) return;
+
+        // 1. Set value FIRST (most important!)
+        const valueSpan = cell.querySelector('.cell-value');
+        valueSpan.textContent = number;
+
+        // 2. Then clear notes (since we now have a main value)
+        cell.notes.clear();
+
+        // 3. Remove has-notes class (notes should be hidden when main value exists)
+        cell.classList.remove('has-notes');
+
+        // 4. Update notes display (will hide all note spans)
+        this.renderNotes(cell);
+
+        // 5. Auto-clear notes in peers
+        this.clearNotesInPeers(cell, number);
+
+        // 6. Check conflicts and update highlights
+        this.checkConflicts(cell);
+        this.highlightCorrectFocus(cell);
+    }
+
+    clearNotesInPeers(cell, number) {
+        const peers = this.getPeers(cell);
+        peers.forEach(peer => {
+            if (peer.notes.has(number)) {
+                peer.notes.delete(number);
+                this.renderNotes(peer);
+            }
+        });
+    }
+
+    getPeers(cell) {
+        const row = Number(cell.dataset.row);
+        const col = Number(cell.dataset.col);
+        const peers = [];
+
+        // Same row
+        for (let c = 0; c < 9; c++) {
+            if (c !== col) {
+                const peer = this.grid.querySelector(`[data-row="${row}"][data-col="${c}"]`);
+                if (peer) peers.push(peer);
+            }
+        }
+
+        // Same column
+        for (let r = 0; r < 9; r++) {
+            if (r !== row) {
+                const peer = this.grid.querySelector(`[data-row="${r}"][data-col="${col}"]`);
+                if (peer) peers.push(peer);
+            }
+        }
+
+        // Same 3x3 block
+        const br = Math.floor(row / 3) * 3;
+        const bc = Math.floor(col / 3) * 3;
+        for (let r = br; r < br + 3; r++) {
+            for (let c = bc; c < bc + 3; c++) {
+                if (r !== row || c !== col) {
+                    const peer = this.grid.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+                    if (peer) peers.push(peer);
+                }
+            }
+        }
+
+        return peers;
+    }
+
+    renderNotes(cell) {
+        // Initialize notes if not exists
+        if (!cell.notes) {
+            cell.notes = new Set();
+        }
+
+        const noteSpans = cell.querySelectorAll('.cell-notes span');
+        const valueSpan = cell.querySelector('.cell-value');
+
+        noteSpans.forEach(span => {
+            const n = Number(span.dataset.n);
+            // Explicitly manage active class and text content
+            if (cell.notes.has(n)) {
+                span.classList.add('active');
+                span.textContent = n; // 🔥 CRITICAL: Set text content to display the number!
+            } else {
+                span.classList.remove('active');
+                span.textContent = ''; // Clear text when not active
+            }
+        });
+
+        // Manage has-notes class: show notes only when cell has notes AND no main value
+        // Check trim() to avoid whitespace confusion
+        const hasNotes = cell.notes.size > 0;
+        const hasValue = valueSpan && valueSpan.textContent.trim() !== '';
+
+        if (hasNotes && !hasValue) {
+            cell.classList.add('has-notes');
+        } else {
+            cell.classList.remove('has-notes');
+        }
+    }
+
+    // ===== INPUT HANDLING =====
+
+    inputNumber(cell, number) {
+        if (cell.given) return;
+
+        // Pencil mode: toggle notes (small numbers) in cell
+        // Normal mode: set main value (large number), clears notes
+        if (this.pencilMode) {
+            this.toggleNote(cell, number);
+        } else {
+            this.setValue(cell, number);
+        }
     }
 }
