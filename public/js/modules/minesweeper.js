@@ -368,9 +368,14 @@ export class MinesweeperGame {
             this.updateFlagUI(data.flagged);
         }
 
-        // Handle game over
-        if (data.gameOver) {
+        // Handle game over (loss)
+        if (data.gameOver && !data.won) {
             this.handleGameOver();
+        }
+
+        // Handle win condition
+        if (data.won) {
+            this.handleGameWin({ won: true });
         }
     }
 
@@ -408,15 +413,20 @@ export class MinesweeperGame {
                         console.log('✅ Minesweeper result submitted successfully');
                         message += '\n🎯 Kết quả đã lưu!';
 
-                        // Apply rewards using rewards module
+                        // 🎁 Calculate and apply rewards using rewards module
                         try {
                             const sessionId = submitResult.data?.session_id;
                             if (sessionId) {
-                                await rewards.applyGameRewards(sessionId);
-                                message += '\n🎁 Phần thưởng đã nhận!';
+                                const rewardData = await rewards.calculateRewardsForSession(sessionId);
+
+                                // Show reward notification if rewards were given
+                                if (rewardData && (rewardData.xp_gained > 0 || rewardData.coins_gained > 0 || rewardData.gems_gained > 0)) {
+                                    this.showRewardNotification(rewardData);
+                                    message += '\n🎁 Phần thưởng đã nhận!';
+                                }
                             }
                         } catch (rewardError) {
-                            console.error('Failed to apply rewards:', rewardError);
+                            console.error('Failed to calculate rewards:', rewardError);
                         }
 
                         // Update UI with latest achievements and leaderboard
@@ -448,7 +458,8 @@ export class MinesweeperGame {
                 message += '\n💡 Đăng nhập để lưu kết quả và nhận thưởng!';
             }
 
-            this.showGameMessage(message);
+            // Skip game message popup since we have reward notification
+            // this.showGameMessage(message);
         }
     }
 
@@ -860,6 +871,43 @@ export class MinesweeperGame {
             icon.textContent = '👆';
             text.textContent = 'Mở ô';
         }
+    }
+
+    showRewardNotification(rewardData) {
+        if (!rewardData) return;
+
+        const { xp_gained = 0, coins_gained = 0, gems_gained = 0, level_up = false } = rewardData;
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'reward-notification';
+
+        // Build reward message
+        let message = '<h3>🎉 Rewards Earned!</h3>';
+        const rewards = [];
+
+        if (xp_gained > 0) rewards.push(`⭐ ${xp_gained} XP`);
+        if (coins_gained > 0) rewards.push(`🪙 ${coins_gained} Coins`);
+        if (gems_gained > 0) rewards.push(`💎 ${gems_gained} Gems`);
+        if (level_up) rewards.push(`⬆️ LEVEL UP!`);
+
+        if (rewards.length > 0) {
+            message += '<div class="reward-list">' + rewards.join('<br>') + '</div>';
+        }
+
+        message += '<button class="reward-close-btn" onclick="this.parentElement.remove()">OK</button>';
+
+        notification.innerHTML = message;
+
+        // Add to page and auto-remove after 5 seconds
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+
+        console.log('🎁 Reward notification shown:', rewardData);
     }
 
     destroy() {

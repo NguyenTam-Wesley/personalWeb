@@ -33,7 +33,8 @@ onmessage = function(event) {
             postMessage({
                 type: 'update',
                 revealed: result.revealed,
-                gameOver: result.gameOver
+                gameOver: result.gameOver,
+                won: result.won || false
             });
             break;
         }
@@ -119,6 +120,11 @@ function placeMines(firstX, firstY) {
 
 // Open cell and perform flood fill
 function openCell(x, y) {
+    // Don't allow actions after game over
+    if (gameOver) {
+        return { revealed: [], gameOver: true, won: gameWon };
+    }
+
     const cell = board[x][y];
     const revealedCells = [];
 
@@ -137,7 +143,8 @@ function openCell(x, y) {
     if (cell.isMine) {
         revealAllMines();
         gameOver = true;
-        return { revealed: getAllCells(), gameOver: true };
+        gameWon = false;
+        return { revealed: getAllCells(), gameOver: true, won: false };
     }
 
     // Flood fill using BFS (optimized queue)
@@ -175,11 +182,24 @@ function openCell(x, y) {
         }
     }
 
+    // Check for win condition after successful reveal
+    const won = checkWin();
+    if (won) {
+        gameOver = true;
+        gameWon = true;
+        return { revealed: revealedCells, gameOver: true, won: true };
+    }
+
     return { revealed: revealedCells, gameOver: false };
 }
 
 // Toggle flag on cell
 function toggleFlag(x, y) {
+    // Don't allow actions after game over
+    if (gameOver) {
+        return;
+    }
+
     const cell = board[x][y];
     if (!cell.isRevealed) {
         cell.isFlagged = !cell.isFlagged;
