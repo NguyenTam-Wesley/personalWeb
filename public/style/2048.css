@@ -215,41 +215,34 @@ body {
 
 .leaderboard-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #444;
+  color: #e0e0e0;
 }
 
 .leaderboard-rank {
-  font-weight: 700;
-  color: var(--accent-primary);
-  min-width: 30px;
+  font-weight: bold;
+  color: #4fc3f7;
+  min-width: 2rem;
   text-align: center;
-  text-shadow: var(--shadow-glow);
 }
 
 .leaderboard-username {
   flex: 1;
   font-weight: 500;
-  color: var(--text-light);
-  margin: 0 0.5rem;
 }
 
 .leaderboard-score {
-  font-weight: 600;
-  color: var(--text-dark);
   font-family: 'Inter', monospace;
-  text-shadow: var(--shadow-glow);
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .leaderboard-item.current-user {
-  background: rgba(252, 165, 165, 0.2);
-  border-color: #fca5a5;
-  box-shadow: 0 0 10px rgba(252, 165, 165, 0.3);
+  background: rgba(79, 195, 247, 0.2);
+  border-left: 3px solid #4fc3f7;
 }
 
 .game-grid {
@@ -431,21 +424,39 @@ body {
   }
 }
 
-.btn-secondary {
-  background: var(--secondary-bg);
-  color: var(--text-dark);
-  border: 1px solid var(--border-dark);
+.btn-primary, .btn-secondary {
+  padding: 0.6rem 1.2rem;
+  border: none;
   border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.2s, transform 0.2s;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background: #4fc3f7;
+  color: #1a1a1a;
+}
+
+.btn-primary:hover {
+  background: #29b6f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 195, 247, 0.3);
+}
+
+.btn-secondary {
+  background: #3d3d3d;
+  color: #e0e0e0;
+  border: 2px solid #555;
 }
 
 .btn-secondary:hover {
-  background: var(--border-dark);
-  transform: translateY(-2px);
+  background: #4d4d4d;
+  border-color: #4fc3f7;
 }
 
 /* Animation cho việc trượt */
@@ -554,6 +565,7 @@ body {
 /* Top 3 Leaderboard Styling */
 .leaderboard-item.top-3 {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #1a1a1a;
 }
 
 .leaderboard-item.top-1 {

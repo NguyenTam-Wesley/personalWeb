@@ -616,6 +616,7 @@ body.device-mobile .btn-secondary {
 /* Top 3 Leaderboard Styling */
 .leaderboard-item.top-3 {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #1a1a1a;
 }
 
 .leaderboard-item.top-1 {
