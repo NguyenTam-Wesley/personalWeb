@@ -139,16 +139,23 @@ export class MusicPlayer {
 
     try {
       this.showLoading();
-      
-      console.log("Creating playlist for user:", this.state.currentUser);
-      console.log("User ID from state:", this.state.currentUser.id);
+
+      // ✅ LẤY auth_user_id thay vì dùng id từ state
+      const { data: { user } } = await this.supabase.auth.getUser();
+
+      if (!user) {
+        this.showNotification("Phiên đăng nhập hết hạn", "warning");
+        return;
+      }
+
+      console.log("Creating playlist for auth user:", user.id);
 
       // Kiểm tra playlist đã tồn tại
       const { data: existingPlaylists, error: checkError } = await this.supabase
         .from("playlist")
         .select("id")
         .filter("name", "eq", name)
-        .filter("user_id", "eq", this.state.currentUser.id);
+        .filter("user_id", "eq", user.id); // ✅ Dùng user.id từ auth
 
       if (checkError) {
         console.error("Lỗi khi kiểm tra playlist:", checkError);
@@ -163,7 +170,7 @@ export class MusicPlayer {
       // Tạo playlist mới
       const playlistData = {
         name: name,
-        user_id: this.state.currentUser.id, // uuid từ auth.users
+        user_id: user.id, // ✅ user.id từ auth = users.auth_user_id
         created_at: new Date().toISOString()
       };
       
@@ -173,7 +180,7 @@ export class MusicPlayer {
         .from("playlist")
         .insert([playlistData])
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Lỗi khi tạo playlist:", error);
@@ -383,7 +390,7 @@ export class MusicPlayer {
         { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
         { emoji: "🎧", label: "Thể loại", type: "genre" },
         { emoji: "🌍", label: "Khu vực", type: "region" },
-        { emoji: "📂", label: "Playlist người dùng", type: "playlist" }
+        { emoji: "📂", label: "Playlist", type: "playlist" }
       ];
 
       // Phân trang
@@ -454,6 +461,14 @@ export class MusicPlayer {
           return;
         }
 
+        // ✅ LẤY auth_user_id
+        const { data: { user } } = await this.supabase.auth.getUser();
+
+        if (!user) {
+          this.showNotification("Phiên đăng nhập hết hạn", "warning");
+          return;
+        }
+
         // Tạo container cho playlist section
         const playlistSection = document.createElement("div");
         playlistSection.className = "playlist-section";
@@ -471,7 +486,7 @@ export class MusicPlayer {
         const { data, error } = await this.supabase
           .from("playlist")
           .select("id, name")
-          .eq("user_id", this.state.currentUser.id);
+          .eq("user_id", user.id); // ✅ Dùng user.id từ auth
 
         if (error) throw error;
 
@@ -694,12 +709,21 @@ export class MusicPlayer {
     if (songName && songUrl) {
       try {
         this.showLoading();
+
+        // ✅ LẤY auth_user_id
+        const { data: { user } } = await this.supabase.auth.getUser();
+
+        if (!user) {
+          this.showNotification("Phiên đăng nhập hết hạn", "warning");
+          return;
+        }
+
         const { error } = await this.supabase.from("music_data").insert([
           {
             song_name: songName,
             url: songUrl,
             playlist_id: playlistId,
-            user_id: this.state.currentUser.id
+            user_id: user.id // ✅ Dùng user.id từ auth
           }
         ]);
 
@@ -904,11 +928,19 @@ export class MusicPlayer {
       popup.remove();
     };
 
+    // ✅ LẤY auth_user_id
+    const { data: { user } } = await this.supabase.auth.getUser();
+
+    if (!user) {
+      this.showNotification("Phiên đăng nhập hết hạn", "warning");
+      return;
+    }
+
     // Lấy danh sách playlist của user
     const { data: playlists, error } = await this.supabase
       .from("playlist")
       .select("id, name")
-      .eq("user_id", this.state.currentUser.id);
+      .eq("user_id", user.id); // ✅ Dùng user.id từ auth
     const listDiv = document.getElementById("userPlaylistsList");
     listDiv.innerHTML = "";
     if (error || !playlists || playlists.length === 0) {

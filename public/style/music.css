@@ -11,7 +11,7 @@ html {
   height: 100%;
   font-family: "Segoe UI", sans-serif;
   color: var(--text-primary);
-  background: url("https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/music_bg.jpg?v=1746463585075")
+  background: url("https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/music/music_bg.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL211c2ljL211c2ljX2JnLmpwZyIsImlhdCI6MTc2ODA5NzYzNSwiZXhwIjoxMDQwODAxMTIzNX0.2SF-egOXDqUXr9ATl_Xoi46t5jWyyX3itDi3CdSglP4")
     no-repeat center center fixed;
   background-size: cover;
   scroll-behavior: smooth;

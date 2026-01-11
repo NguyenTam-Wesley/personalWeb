@@ -3,7 +3,7 @@
 /* Base styles */
 body {
   font-family: 'Inter', sans-serif;
-  background: url('https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/game.jpg?v=1749912695319') no-repeat center center fixed;
+  background: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/game-bg.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvZ2FtZS1iZy5hdmlmIiwiaWF0IjoxNzY4MDk3Mjg0LCJleHAiOjQ4OTAxNjEyODR9.f42rNPMNL4gX3N3brWdP7mlZB04Y_uXRlpGpWibHE1Q') no-repeat center center fixed;
   background-size: cover;
   color: var(--text-primary);
   line-height: 1.6;

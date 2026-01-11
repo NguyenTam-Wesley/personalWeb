@@ -3,7 +3,7 @@
 /* Base styles */
 body {
   font-family: 'Inter', sans-serif;
-  background: url('https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/study-bg.jpg?v=1750401195274') no-repeat center center fixed;
+  background: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/study/study-bg2.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL3N0dWR5L3N0dWR5LWJnMi5hdmlmIiwiaWF0IjoxNzY4MDk3NDQyLCJleHAiOjg4MTY4MDExMDQyfQ.qfFXT1Ur5YaO7u-LsoMSRPSbh6sywlsUUWJdhd8j96w') no-repeat center center fixed;
   background-size: cover;
   color: var(--text-primary);
   line-height: 1.6;

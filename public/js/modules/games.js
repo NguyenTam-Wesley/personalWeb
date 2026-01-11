@@ -5,7 +5,7 @@ export class GamesManager {
                 id: '2048',
                 name: '2048',
                 subtitle: 'Number Puzzle Game',
-                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMjAiIGZpbGw9IiMwMGZGRkYiLz4KPHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj4yMDQ4PC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjE4MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U3RyYXRlZ3kgUG96emxlPC90ZXh0Pgo8L3N2Zz4K',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/2048/2048.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvMjA0OC8yMDQ4LmF2aWYiLCJpYXQiOjE3NjgwOTU1NDYsImV4cCI6MTA0MDgwMDkxNDZ9.NI1qgVSmTl6N_BppKjYhTs8X_A75N0po3Mj5A2-lgUU',
                 detailUrl: './games/2048/2048.html',
                 description: '2048 là một game ghép số vui nhộn, kết hợp các ô có cùng số để tạo ra ô có giá trị cao hơn.'
             },
@@ -13,7 +13,7 @@ export class GamesManager {
                 id: 'sudoku',
                 name: 'Sudoku',
                 subtitle: 'Logic Number Puzzle',
-                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMjAiIGZpbGw9IiNGRjZCMkIiLz4KPHRleHQgeD0iMTUwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0MCIgZmlsbD0iIzMzMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U3Vkb2t1PC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjE4MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Mb2dpYyBQdXp6bGU8L3RleHQ+Cjwvc3ZnPgo=',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/sudoku/sudoku.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvc3Vkb2t1L3N1ZG9rdS5hdmlmIiwiaWF0IjoxNzY4MDk1NDk3LCJleHAiOjg4MTY4MDA5MDk3fQ.IG0os6rmQ1Cv46no0geNTh8nMGZwc9yE9WuxqslNksg',
                 detailUrl: './games/sudoku/sudoku.html',
                 description: 'Sudoku là một trò chơi logic điền số vui nhộn, điền các số từ 1-9 vào lưới 9x9 theo quy tắc.'
             },
@@ -21,7 +21,7 @@ export class GamesManager {
                 id: 'valorant',
                 name: 'Valorant',
                 subtitle: 'Tactical Shooter 5v5',
-                image: 'https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/valorant_bg.png?v=1746445533452',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/valorant/gameCard/supersonic-the-jett-valorant-fan-art-4k-g9.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvdmFsb3JhbnQvZ2FtZUNhcmQvc3VwZXJzb25pYy10aGUtamV0dC12YWxvcmFudC1mYW4tYXJ0LTRrLWc5LmF2aWYiLCJpYXQiOjE3NjgwOTU4MDQsImV4cCI6ODgxNjgwMDk0MDR9.vf7uUtFbI-GXQ1fQ-q5xpavL3Y9IEe1wLrKLKrJmYWE',
                 detailUrl: './games/valorant.html',
                 description: 'Valorant là một game bắn súng chiến thuật 5v5 được phát triển bởi Riot Games.'
             },
@@ -29,7 +29,7 @@ export class GamesManager {
                 id: 'arknights',
                 name: 'Arknights',
                 subtitle: 'Tower Defense Strategy RPG',
-                image: 'https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/arknight_theme.jpg?v=1749924526037',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/a9/a9.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvYTkvYTkuYXZpZiIsImlhdCI6MTc2ODA5NzEwNywiZXhwIjoxMDQwODAxMDcwN30.dJZ-EZcSXxIeNQ9-9re0-g_oz7cGjl3flTIHy4WBTqE',
                 detailUrl: './games/arknights.html',
                 description: 'Arknights là một game tower defense kết hợp với RPG, được phát triển bởi Hypergryph.'
             },
@@ -37,7 +37,7 @@ export class GamesManager {
                 id: 'hsr',
                 name: 'Honkai: Star Rail',
                 subtitle: 'Space Fantasy RPG',
-                image: 'https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/hsr_card.png?v=1749924888888',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/hsr/gameCard/hsr.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvaHNyL2dhbWVDYXJkL2hzci5hdmlmIiwiaWF0IjoxNzY4MDk2NzYzLCJleHAiOjg4MTY4MDEwMzYzfQ.MKKc_G1xI_1behSymw1JzMnQWBy4PEgN8E1_zRxSsDQ',
                 detailUrl: './games/hsr.html',
                 description: 'Honkai: Star Rail là một game nhập vai phiêu lưu không gian được phát triển bởi HoYoverse.'
             },
@@ -45,7 +45,7 @@ export class GamesManager {
                 id: 'ww',
                 name: 'Wuthering Waves',
                 subtitle: 'Open World Action RPG',
-                image: 'https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/wuthering-waves.jpg?v=1750260140246',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/ww/wuthering-waves.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvd3cvd3V0aGVyaW5nLXdhdmVzLmF2aWYiLCJpYXQiOjE3NjgwOTY1MTcsImV4cCI6NDg5MDE2MDUxN30.jA1CXjMqc8RKBqf9xsWs1cNabS7WRKUM-byQd9nJ3dU',
                 detailUrl: './games/ww.html',
                 description: 'Wuthering Waves là một game nhập vai hành động thế giới mở được phát triển bởi KURO Game.'
             },
@@ -53,7 +53,7 @@ export class GamesManager {
                 id: 'minesweeper',
                 name: 'Minesweeper',
                 subtitle: 'Classic Puzzle Game',
-                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMjAiIGZpbGw9IiMxMEI5ODEiLz4KPHN2ZyB4PSI3NSIgeT0iMTAwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiLz4KPHBhdGggZD0iTTkgMTJMMTEgMTBNMTMgMTJMMTEgMTQiLz4KPHN2Zz4KPHRleHQgeD0iMTUwIiB5PSIyMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1pbmVzd2VlcGVyPC90ZXh0Pgo8dGV4dCB4PSIxNTAiIHk9IjI0MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjQ0NDIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DbGFzc2ljIFB1enpsZTwvdGV4dD4KPC9zdmc+',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/minesweeper/minesweeper.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvbWluZXN3ZWVwZXIvbWluZXN3ZWVwZXIuYXZpZiIsImlhdCI6MTc2ODA5Njk1MywiZXhwIjo4ODE2ODAxMDU1M30.F4oZQIlCz9NdoaeghoRQeRYXF24I5fK_tP1-leVvcAE',
                 detailUrl: './games/minesweeper/minesweeper.html',
                 description: 'Minesweeper là một game giải đố cổ điển, tìm tất cả các quả mìn ẩn trong bảng mà không kích hoạt chúng.'
             }
