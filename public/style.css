@@ -15,7 +15,7 @@ body, html {
 
 /* Hero Section */
 .hero {
-  background-image: url('./assets/index_bg.png');
+  background-image: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/index_bg.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2luZGV4X2JnLmF2aWYiLCJpYXQiOjE3NjgxMDc3NjEsImV4cCI6ODgxNjgwMjEzNjF9.vbn3cyvWQneof6PFVH3jc25XTcOltiAApH6GpdVxfv4');
   height: 100vh;
   background-size: cover;
   background-attachment: fixed;
@@ -93,7 +93,6 @@ body, html {
 
 /* Container cho các trang khác */
 .container {
-  background-image: url('https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/valorant_bg.png?v=1746445533452');
   padding: 120px 20px 40px;
   text-align: center;
   height: 100vh;
