@@ -18,7 +18,7 @@ html {
 }
 
 .container.music-section {
-  padding: var(--container-padding-top) var(--spacing-lg) var(--container-padding-bottom);
+  padding: var(--container-padding-top) var(--spacing-lg) calc(var(--container-padding-bottom) + 60px);
   text-align: center;
   min-height: 100vh;
   background: transparent;
@@ -97,9 +97,11 @@ html {
 #songListContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
+  max-width: 480px;
+  width: 100%;
 }
 
 #songListContainer button {
@@ -469,7 +471,7 @@ footer a:hover {
   .filter-group select {
     width: 100%;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }
@@ -497,7 +499,15 @@ footer a:hover {
   margin-bottom: 30px;
 }
 
-@media (max-width: 600px) {
+/* Category container - logic xuống hàng chuẩn */
+.category-container {
+  flex-wrap: wrap;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+@media (max-width: var(--breakpoint-md)) {
   #mainMenu {
     flex-direction: column;
     flex-wrap: nowrap;
@@ -525,7 +535,13 @@ footer a:hover {
 }
 
 .category-item {
-  padding: 10px 20px;
+  position: relative;
+  width: 180px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   font-size: 1.1rem;
   background: rgba(0, 0, 0, 0.4);
   border: 2px solid transparent;
@@ -534,15 +550,52 @@ footer a:hover {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 180px;
   text-align: center;
   margin: 5px 0;
+
+  /* Giống game card - outer frame */
+  transform: scale(0.9);
+  transform-origin: center center;
 }
 
 .category-item:hover {
-  border-color: #00ffff;
+  transform: translateY(-3px) scale(0.9);
   box-shadow: 0 0 10px #00ffff;
+  border-color: #00ffff;
+}
+
+/* Inner wrapper giống game card */
+.category-item-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  transform: scale(1);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+
+  will-change: transform;
+}
+
+.category-item:hover .category-item-inner {
   transform: scale(1.05);
+}
+
+.category-item-inner span {
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  transition: opacity var(--transition-normal);
+  opacity: 1;
+
+  /* Text wrapping giống game cards */
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
 }
 
 .music-container {
@@ -632,7 +685,6 @@ footer a:hover {
   margin: 8px 0;
   padding: 10px 16px;
   transition: box-shadow 0.2s, transform 0.2s;
-  position: relative;
   min-height: 50px;
 }
 
@@ -648,7 +700,6 @@ footer a:hover {
   font-weight: bold;
   padding: 0;
   transition: color 0.2s;
-  margin-right: 80px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -660,8 +711,6 @@ footer a:hover {
 }
 
 .song-container .add-to-playlist-btn {
-  position: absolute;
-  right: 50px;
   background: transparent;
   border: none;
   color: var(--accent-primary);
@@ -670,7 +719,7 @@ footer a:hover {
   padding: 4px 8px;
   transition: all 0.2s;
   border-radius: 4px;
-  z-index: 1;
+  flex-shrink: 0;
 }
 
 .song-container .add-to-playlist-btn:hover {
@@ -680,21 +729,20 @@ footer a:hover {
 }
 
 .delete-song-button {
-  position: absolute;
-  right: 10px;
   background: transparent;
   border: none;
   color: #ff4444;
   font-size: 1.2rem;
   cursor: pointer;
   transition: color 0.2s;
-  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .delete-song-button:hover {
   color: #fff;
   background: #ff4444;
-  border-radius: 50%;
 }
 
 .create-playlist-button {
@@ -719,23 +767,20 @@ footer a:hover {
   border: 2px solid #00ffff;
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-sm)) {
   .song-container {
     padding: 10px 12px;
   }
-  
+
   .song-button {
     font-size: 1rem;
-    margin-right: 70px;
   }
-  
+
   .song-container .add-to-playlist-btn {
-    right: 40px;
     font-size: 1.1rem;
   }
-  
+
   .delete-song-button {
-    right: 8px;
     font-size: 1.1rem;
   }
 }

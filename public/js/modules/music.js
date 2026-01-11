@@ -26,6 +26,14 @@ export class MusicPlayer {
       currentPlaylistName: null
     };
 
+    // Infinite scroll state
+    this.infinite = {
+      page: 1,
+      pageSize: 100,
+      loading: false,
+      hasMore: true
+    };
+
     // DOM Elements
     this.elements = {
       mainMenu: document.getElementById("mainMenu"),
@@ -428,7 +436,7 @@ export class MusicPlayer {
         this.elements.mainMenu.appendChild(pagination);
       }
 
-      this.state.navigationStack = [];
+      this.state.navigationStack = [{ view: "main" }];
       this.saveNavigationState();
     } catch (error) {
       this.handleError(error, "Lỗi tải menu chính");
@@ -438,17 +446,29 @@ export class MusicPlayer {
   }
 
   // Category Loading
-  async loadCategory(type, displayTitle, page = 1, pageSize = 50) {
+  async loadCategory(type, displayTitle, fromBack = false) {
     try {
       this.showLoading();
+
       this.elements.mainMenu.innerHTML = "";
       this.elements.mainMenu.style.display = "flex";
       this.elements.playlistContainer.style.display = "none";
       this.elements.backBtn.style.display = "inline-block";
 
-      this.state.navigationStack.push({ view: "main" });
-      this.saveNavigationState();
+      if (!fromBack) {
+        this.state.navigationStack.push({ view: "category", type, displayTitle });
+        this.saveNavigationState();
+      }
 
+      // Reset infinite scroll state
+      this.infinite = {
+        page: 1,
+        pageSize: 100,
+        loading: false,
+        hasMore: true
+      };
+
+      // Special case for playlist
       if (type === "playlist") {
         // Kiểm tra đăng nhập
         if (!this.state.currentUser) {
@@ -479,104 +499,25 @@ export class MusicPlayer {
         });
         playlistSection.appendChild(createPlaylistBtn);
 
-        // Thêm container cho danh sách playlist
+        // Thêm container cho danh sách playlist với infinite scroll
         const playlistList = document.createElement("div");
-        playlistList.className = "playlist-list";
-
-        const { data, error } = await this.supabase
-          .from("playlist")
-          .select("id, name")
-          .eq("user_id", user.id); // ✅ Dùng user.id từ auth
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          const noPlaylistMsg = document.createElement("p");
-          noPlaylistMsg.className = "message";
-          noPlaylistMsg.textContent = "Bạn chưa có playlist nào.";
-          playlistList.appendChild(noPlaylistMsg);
-        } else {
-          // Phân trang cho playlist
-          const totalPages = Math.ceil(data.length / pageSize);
-          const startIdx = (page - 1) * pageSize;
-          const endIdx = startIdx + pageSize;
-          const pageData = data.slice(startIdx, endIdx);
-
-          pageData.forEach(item => {
-            const btn = this.createButton(item.name, "category-item", () => {
-              this.loadSongsByCategory("playlist", item.id, item.name);
-            });
-            playlistList.appendChild(btn);
-          });
-
-          // Nút phân trang nếu cần
-          if (totalPages > 1) {
-            const pagination = document.createElement("div");
-            pagination.style.display = "flex";
-            pagination.style.justifyContent = "center";
-            pagination.style.width = "100%";
-            pagination.style.gap = "10px";
-            pagination.style.marginTop = "10px";
-
-            if (page > 1) {
-              const prevBtn = this.createButton("← Trang trước", "main-category-button", () => this.loadCategory(type, displayTitle, page - 1, pageSize));
-              pagination.appendChild(prevBtn);
-            }
-            if (page < totalPages) {
-              const nextBtn = this.createButton("Trang sau →", "main-category-button", () => this.loadCategory(type, displayTitle, page + 1, pageSize));
-              pagination.appendChild(nextBtn);
-            }
-            playlistList.appendChild(pagination);
-          }
-        }
-
+        playlistList.className = "playlist-list category-container"; // Thêm category-container class
         playlistSection.appendChild(playlistList);
         this.elements.mainMenu.appendChild(playlistSection);
+
+        // Load first page
+        await this.loadCategoryPage(type);
+
+        // Setup infinite scroll
+        this.setupInfiniteScroll(() => this.loadCategoryPage(type));
         return;
       }
 
-      const { data, error } = await this.supabase.from(type).select("id, name");
-      if (error) throw error;
+      // For other categories (artist, genre, region) - use infinite scroll
+      await this.loadCategoryPage(type);
 
-      if (!data || data.length === 0) {
-        this.elements.mainMenu.innerHTML = this.createMessage(`Không có dữ liệu cho ${displayTitle}.`);
-        return;
-      }
-
-      // Phân trang cho category-item
-      const totalPages = Math.ceil(data.length / pageSize);
-      const startIdx = (page - 1) * pageSize;
-      const endIdx = startIdx + pageSize;
-      const pageData = data.slice(startIdx, endIdx);
-
-      const fragment = document.createDocumentFragment();
-      pageData.forEach(item => {
-        const btn = this.createButton(item.name, "category-item", () => {
-          this.loadSongsByCategory(type, item.id, item.name);
-        });
-        fragment.appendChild(btn);
-      });
-      this.elements.mainMenu.appendChild(fragment);
-
-      // Nút phân trang nếu cần
-      if (totalPages > 1) {
-        const pagination = document.createElement("div");
-        pagination.style.display = "flex";
-        pagination.style.justifyContent = "center";
-        pagination.style.width = "100%";
-        pagination.style.gap = "10px";
-        pagination.style.marginTop = "10px";
-
-        if (page > 1) {
-          const prevBtn = this.createButton("← Trang trước", "main-category-button", () => this.loadCategory(type, displayTitle, page - 1, pageSize));
-          pagination.appendChild(prevBtn);
-        }
-        if (page < totalPages) {
-          const nextBtn = this.createButton("Trang sau →", "main-category-button", () => this.loadCategory(type, displayTitle, page + 1, pageSize));
-          pagination.appendChild(nextBtn);
-        }
-        this.elements.mainMenu.appendChild(pagination);
-      }
+      // Setup infinite scroll
+      this.setupInfiniteScroll(() => this.loadCategoryPage(type));
     } catch (error) {
       this.handleError(error, `Lỗi tải dữ liệu ${displayTitle}`);
     } finally {
@@ -584,8 +525,97 @@ export class MusicPlayer {
     }
   }
 
+  // Infinite Scroll - Load one page of category items
+  async loadCategoryPage(type) {
+    if (this.infinite.loading || !this.infinite.hasMore) return;
+
+    this.infinite.loading = true;
+
+    const { page, pageSize } = this.infinite;
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    let query = this.supabase
+      .from(type)
+      .select("id, name")
+      .order("name", { ascending: true })
+      .range(from, to);
+
+    // Special case for playlist - filter by user_id and order by created_at
+    if (type === "playlist") {
+      const { data: { user } } = await this.supabase.auth.getUser();
+      if (!user) {
+        this.infinite.loading = false;
+        return;
+      }
+      query = this.supabase
+        .from("playlist")
+        .select("id, name")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .range(from, to);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      this.infinite.loading = false;
+      throw error;
+    }
+
+    if (!data || data.length < pageSize) {
+      this.infinite.hasMore = false;
+    }
+
+    const fragment = document.createDocumentFragment();
+    data.forEach(item => {
+      const btn = this.createButton(
+        item.name,
+        "category-item",
+        () => this.loadSongsByCategory(type, item.id, item.name),
+        true
+      );
+      fragment.appendChild(btn);
+    });
+
+    // Find the correct container to append to
+    if (type === "playlist") {
+      const playlistList = this.elements.mainMenu.querySelector(".playlist-list");
+      if (playlistList) {
+        playlistList.appendChild(fragment);
+      }
+    } else {
+      this.elements.mainMenu.appendChild(fragment);
+    }
+
+    this.infinite.page++;
+    this.infinite.loading = false;
+  }
+
+  // Setup infinite scroll listener
+  setupInfiniteScroll(loadMoreFn) {
+    const container = this.elements.mainMenu.querySelector(".category-container") || this.elements.mainMenu;
+
+    const onScroll = () => {
+      const nearBottom =
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight - 50;
+
+      if (nearBottom) {
+        loadMoreFn();
+      }
+    };
+
+    // Remove existing scroll listener if any
+    if (container.onscroll) {
+      container.onscroll = null;
+    }
+
+    container.onscroll = onScroll;
+  }
+
   // Song Loading
-  async loadSongsByCategory(type, id, displayName) {
+  async loadSongsByCategory(type, id, displayName, fromBack = false) {
     try {
       this.showLoading();
       this.elements.mainMenu.style.display = "none";
@@ -594,8 +624,10 @@ export class MusicPlayer {
 
       this.elements.playlistContainer.innerHTML = `<h3>${displayName} - Danh sách bài hát</h3>`;
 
-      this.state.navigationStack.push({ view: "category", type, displayTitle: displayName });
-      this.saveNavigationState();
+      if (!fromBack) {
+        this.state.navigationStack.push({ view: "songs", type, id, displayName });
+        this.saveNavigationState();
+      }
 
       // Nếu là playlist, lưu lại thông tin vào state
       if (type === "playlist") {
@@ -689,12 +721,30 @@ export class MusicPlayer {
   }
 
   // Helper Methods
-  createButton(text, className, onClick) {
-    const btn = document.createElement("button");
-    btn.textContent = text;
-    btn.className = className;
-    btn.addEventListener("click", onClick);
-    return btn;
+  createButton(text, className, onClick, useInnerWrapper = false) {
+    if (className === "category-item" && useInnerWrapper) {
+      // Tạo structure giống game card cho category-item
+      const card = document.createElement("div");
+      card.className = className;
+
+      const inner = document.createElement("div");
+      inner.className = "category-item-inner";
+
+      const span = document.createElement("span");
+      span.textContent = text;
+
+      inner.appendChild(span);
+      card.appendChild(inner);
+
+      card.addEventListener("click", onClick);
+      return card;
+    } else {
+      const btn = document.createElement("button");
+      btn.textContent = text;
+      btn.className = className;
+      btn.addEventListener("click", onClick);
+      return btn;
+    }
   }
 
   createMessage(text) {
@@ -868,14 +918,26 @@ export class MusicPlayer {
   }
 
   handleBackNavigation() {
-    const lastView = this.state.navigationStack.pop();
-    if (!lastView) return;
+    // Bỏ view hiện tại
+    this.state.navigationStack.pop();
 
-    if (lastView.view === "main") {
-      this.loadMainMenu();
-    } else if (lastView.view === "category") {
-      this.loadCategory(lastView.type, lastView.displayTitle);
+    const prev = this.state.navigationStack.at(-1);
+    if (!prev) return;
+
+    switch (prev.view) {
+      case "main":
+        this.loadMainMenu();
+        break;
+
+      case "category":
+        this.loadCategory(prev.type, prev.displayTitle, true);
+        break;
+
+      case "songs":
+        this.loadSongsByCategory(prev.type, prev.id, prev.displayName, true);
+        break;
     }
+
     this.saveNavigationState();
   }
 
