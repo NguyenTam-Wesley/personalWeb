@@ -295,10 +295,6 @@
 }
 
 /* Pet card styles are now handled by the combined .item-card, .pet-card, .shop-item rule above */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
 
 .pet-card:hover {
     transform: translateY(-5px);

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Blog System</title>
+  <link rel="stylesheet" href="../public/style/components.css" />
+  <link rel="stylesheet" href="test-blog.css" />
+  <link
+    rel="icon"
+    href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+  />
+</head>
+<body>
+  <main class="test-blog-container">
+    <div class="test-blog-header">
+      <h1>🧪 Test Blog System</h1>
+      <p>Hệ thống blog test để debug và so sánh</p>
+      <div class="test-blog-controls">
+        <button id="testLoadPostsBtn" class="btn-primary">Load Posts</button>
+        <button id="testCreatePostBtn" class="btn-secondary">Create Test Post</button>
+        <button id="testClearBtn" class="btn-danger">Clear All</button>
+      </div>
+    </div>
+
+    <div class="test-blog-content">
+      <div class="test-blog-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total Posts:</span>
+          <span class="stat-value" id="totalPosts">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Current User:</span>
+          <span class="stat-value" id="currentUser">None</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Status:</span>
+          <span class="stat-value" id="systemStatus">Initializing...</span>
+        </div>
+      </div>
+
+      <div class="test-blog-posts" id="testBlogPosts">
+        <div class="test-loading">
+          <div class="test-spinner"></div>
+          <p>Đang khởi tạo hệ thống test...</p>
+        </div>
+      </div>
+
+      <div class="test-blog-console" id="testConsole">
+        <h3>Debug Console</h3>
+        <div class="console-output" id="consoleOutput"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Test Modal -->
+  <div id="testModal" class="test-modal">
+    <div class="test-modal-content">
+      <div class="test-modal-header">
+        <h2>Test Action</h2>
+        <button class="test-close-btn" id="closeTestModal">&times;</button>
+      </div>
+      <div class="test-modal-body">
+        <div id="testModalContent">
+          <p>Modal content will appear here...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="test-blog_entry.js"></script>
+</body>
+</html>

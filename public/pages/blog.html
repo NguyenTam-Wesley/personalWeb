@@ -1,22 +1,27 @@
 <!-- pages/blog.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog</title>
   <link rel="stylesheet" href="../style/components.css" />
   <link rel="stylesheet" href="../style/blog.css" />
   <link
-      rel="icon"
-      href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
-    />
+    rel="icon"
+    href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904"
+  />
 </head>
 <body>
   <main class="blog-container">
     <div class="blog-header">
-      <h1>Blog</h1>
+      <h1>📝 Blog</h1>
       <p>Chia sẻ kiến thức và trải nghiệm</p>
       <div class="blog-controls">
+        <button id="themeToggle" class="btn-theme" title="Toggle Dark Mode">
+          <span class="theme-icon">🌙</span>
+          Dark Mode
+        </button>
         <button id="createPostBtn" class="btn-primary admin-only" style="display: none;">
           <span class="icon">✏️</span>
           Viết bài mới
@@ -31,19 +36,19 @@
           <span class="search-icon">🔍</span>
         </div>
         <div class="filter-options">
-          <select id="categoryFilter">
-            <option value="">Tất cả danh mục</option>
-            <option value="technology">Công nghệ</option>
-            <option value="gaming">Gaming</option>
-            <option value="music">Âm nhạc</option>
-            <option value="study">Học tập</option>
-            <option value="life">Cuộc sống</option>
+          <select id="topicFilter">
+            <option value="">Tất cả chủ đề</option>
+            <!-- Topics will be populated by JavaScript -->
           </select>
           <select id="sortFilter">
             <option value="newest">Mới nhất</option>
             <option value="oldest">Cũ nhất</option>
-            <option value="popular">Phổ biến</option>
+            <option value="popular">Xem nhiều</option>
+            <option value="most_liked">Thích nhiều</option>
           </select>
+        </div>
+        <div class="tag-filters" id="tagFilters">
+          <!-- Tag checkboxes will be populated by JavaScript -->
         </div>
       </div>
 
@@ -72,36 +77,45 @@
       </div>
       <div class="modal-body">
         <form id="createPostForm">
-          <div class="form-group">
-            <label for="postTitle">Tiêu đề bài viết *</label>
-            <input type="text" id="postTitle" required placeholder="Nhập tiêu đề bài viết" />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="postTitle">Tiêu đề bài viết *</label>
+              <input type="text" id="postTitle" name="postTitle" required placeholder="Nhập tiêu đề bài viết" maxlength="200" />
+            </div>
+            <div class="form-group">
+              <label for="postTopic">Chủ đề *</label>
+              <select id="postTopic" name="postTopic" required>
+                <option value="">Chọn chủ đề</option>
+                <!-- Topics will be populated by JavaScript -->
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="postCategory">Danh mục *</label>
-            <select id="postCategory" required>
-              <option value="">Chọn danh mục</option>
-              <option value="technology">Công nghệ</option>
-              <option value="gaming">Gaming</option>
-              <option value="music">Âm nhạc</option>
-              <option value="study">Học tập</option>
-              <option value="life">Cuộc sống</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="postSummary">Tóm tắt</label>
-            <textarea id="postSummary" rows="3" placeholder="Tóm tắt ngắn gọn về bài viết..."></textarea>
-          </div>
+
           <div class="form-group">
             <label for="postContent">Nội dung bài viết *</label>
-            <textarea id="postContent" rows="15" required placeholder="Viết nội dung bài viết của bạn..."></textarea>
+            <textarea id="postContent" name="postContent" rows="12" required placeholder="Viết nội dung bài viết của bạn..."></textarea>
           </div>
-          <div class="form-group">
-            <label for="postTags">Tags (phân cách bằng dấu phẩy)</label>
-            <input type="text" id="postTags" placeholder="tag1, tag2, tag3" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="postTags">Tags (phân cách bằng dấu phẩy)</label>
+              <input type="text" id="postTags" name="postTags" placeholder="javascript, react, tutorial" />
+            </div>
+            <div class="form-group">
+              <label for="postStatus">Trạng thái</label>
+              <select id="postStatus" name="postStatus">
+                <option value="published">Công khai</option>
+                <option value="draft">Bản nháp</option>
+              </select>
+            </div>
           </div>
+
           <div class="form-actions">
             <button type="button" class="btn-secondary" id="cancelCreate">Hủy</button>
-            <button type="submit" class="btn-primary">Đăng bài</button>
+            <button type="submit" class="btn-primary">
+              <span class="btn-icon">📝</span>
+              Đăng bài
+            </button>
           </div>
         </form>
       </div>
