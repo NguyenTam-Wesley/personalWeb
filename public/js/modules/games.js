@@ -80,9 +80,11 @@ export class GamesManager {
 
             gamesGrid.innerHTML = Object.values(this.games).map(game => `
                 <a href="${this.escapeHtml(game.detailUrl)}" class="game-card" data-game="${this.escapeHtml(game.id)}">
-                    <img src="${this.escapeHtml(game.image)}" alt="${this.escapeHtml(game.name)}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E';">
-                    <div class="game-info">
-                        <span>${this.escapeHtml(game.name)}</span>
+                    <div class="game-card-inner">
+                        <img src="${this.escapeHtml(game.image)}" alt="${this.escapeHtml(game.name)}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E';">
+                        <div class="game-info">
+                            <span>${this.escapeHtml(game.name)}</span>
+                        </div>
                     </div>
                 </a>
             `).join('');

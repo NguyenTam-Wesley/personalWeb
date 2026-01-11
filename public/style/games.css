@@ -1,98 +1,150 @@
 @import 'variables.css';
 
-/* Base styles */
+/* ===============================
+   BASE
+================================ */
 body {
   font-family: 'Inter', sans-serif;
-  background: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/game-bg.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvZ2FtZS1iZy5hdmlmIiwiaWF0IjoxNzY4MDk3Mjg0LCJleHAiOjQ4OTAxNjEyODR9.f42rNPMNL4gX3N3brWdP7mlZB04Y_uXRlpGpWibHE1Q') no-repeat center center fixed;
+  background: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/game-bg.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvZ2FtZS1iZy5hdmlmIiwiaWF0IjoxNzY4MTE5MzcwLCJleHAiOjg2NTc2ODAzMjk3MH0.39nl7-9dSCXY95tLwFhVFb88tgnvzjdWgF8004LCtj4')
+    no-repeat center center fixed;
   background-size: cover;
+
   color: var(--text-primary);
-  line-height: 1.6;
   margin: 0;
   padding: 0;
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* Games specific container styles */
+/* ===============================
+   CONTAINER
+================================ */
 .games-container {
   flex: 1;
-  padding: var(--container-padding-top) 0 var(--container-padding-bottom);
   width: 100%;
   margin: 0;
+
   background: var(--overlay-bg);
   backdrop-filter: blur(5px);
+
+  padding-top: var(--container-padding-top);
+  padding-bottom: calc(
+    var(--container-padding-bottom) + env(safe-area-inset-bottom)
+  );
 }
 
+/* ===============================
+   INTRO
+================================ */
 .games-intro {
   text-align: center;
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-lg);
+  margin-bottom: 32px;
+  padding: 24px;
   box-shadow: var(--shadow-md);
 }
 
 .games-intro h1 {
   font-size: 2.5rem;
   color: var(--accent-primary);
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 8px;
   font-weight: 600;
   text-shadow: var(--shadow-glow);
 }
 
 .games-intro .subtitle {
   font-size: 1.1rem;
-  color: var(--text-primary);
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* Games Grid */
+/* ===============================
+   GRID – CHUẨN GHI VỞ
+================================ */
 .games-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-sm);
-  justify-content: space-evenly;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+
+  max-width: min(1400px, 96vw);
+  margin: 0 auto;
+
+  padding: 24px 16px;
+  padding-left: calc(16px + env(safe-area-inset-left));
+  padding-right: calc(16px + env(safe-area-inset-right));
 }
 
+/* ===============================
+   GAME CARD (GIỮ LOGIC CŨ - KHUNG CỐ ĐỊNH)
+================================ */
 .game-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-left: var(--spacing-sm);
-  flex: 1 1 270px;
+
+  padding-left: 16px;
+
   background: var(--overlay-bg);
   border-radius: var(--border-radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow);
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-  backdrop-filter: blur(10px);
+
   border: 1px solid var(--border-light);
-  max-width: 540px;
-  min-width: 270px;
-  position: relative;
-  aspect-ratio: 2/1;
-  transform: scale(0.9);
-  transform-origin: center center;
+  box-shadow: var(--shadow);
+
   cursor: pointer;
   text-decoration: none;
+
+  /* GIỮ SCALE CŨ */
+  transform: scale(0.9);
+  transform-origin: center center;
+
+  /* Animation load */
+  animation: card-enter 0.4s ease-out both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+
+  transition: transform var(--transition-normal),
+              box-shadow var(--transition-normal);
 }
 
+/* ===============================
+   GAME CARD INNER (SCALE INNER - KHÔNG PHÁ LAYOUT)
+================================ */
+.game-card-inner {
+  position: absolute;
+  inset: 0;
+
+  transform: scale(1);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+
+  will-change: transform;
+}
+
+/* ===============================
+   IMAGE – GIỮ NGUYÊN
+================================ */
 .game-card img {
+  position: absolute;
+  inset: 0;
+
   width: 100%;
   height: 100%;
   object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
+
   z-index: 1;
 }
 
+/* ===============================
+   INFO – GIỮ NGUYÊN
+================================ */
 .game-info {
   position: relative;
   z-index: 2;
-  padding: 0;
+
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -101,53 +153,76 @@ body {
 
 .game-info span {
   font-size: 2rem;
-  color: var(--text-primary);
-  margin: 0;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-  display: inline-block;
-  line-height: 1.2;
   font-weight: 600;
+  line-height: 1.2;
+
+  color: var(--text-primary);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+
   opacity: 0;
   transition: opacity var(--transition-normal);
+}
+
+/* ===============================
+   HOVER – SCALE INNER (5-10% - KHÔNG PHÁ LAYOUT)
+================================ */
+.game-card:hover {
+  transform: translateY(-5px) scale(0.9);
+  box-shadow: var(--shadow-lg);
+}
+
+.game-card:hover .game-card-inner {
+  transform: scale(1.05);
 }
 
 .game-card:hover .game-info span {
   opacity: 1;
 }
 
-.game-card:hover {
-  transform: translateY(-5px) scale(0.9);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-light);
+/* ===============================
+   LOAD ANIMATION (KHÔNG ĐỤNG HOVER)
+================================ */
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(0.9);
+  }
 }
 
-/* Responsive Design */
-@media (max-width: var(--breakpoint-md)) {
-  .games-container {
-    padding: var(--container-padding-top) var(--spacing-sm) var(--container-padding-bottom);
-  }
-
-  .games-intro h1 {
-    font-size: 2rem;
-  }
-
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 1024px) {
   .games-grid {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .games-grid {
+    grid-template-columns: 1fr;
   }
 
   .game-card {
-    width: 100%;
-    max-width: 100%;
+    max-width: 92vw;
+    margin: 0 auto;
   }
-}
 
-@media (max-width: var(--breakpoint-sm)) {
   .games-intro h1 {
     font-size: 1.8rem;
   }
-  
+
   .games-intro .subtitle {
     font-size: 1rem;
   }
-} 
+}
