@@ -10,15 +10,55 @@
   <link rel="stylesheet" href="../style/novel.css">
 </head>
 <body>
+  <!-- Breathing Background Layers -->
+  <div class="novel-bg-breathing">
+    <div class="novel-bg-gradient"></div>
+    <div class="novel-bg-noise"></div>
+  </div>
+
+  <!-- Genre Atmosphere Overlay -->
+  <div class="genre-atmosphere-overlay"></div>
+
+  <!-- Preview Panel -->
+  <div class="novel-preview-panel" id="novel-preview-panel">
+    <div class="preview-panel-content">
+      <div class="preview-close-btn" id="preview-close-btn">✕</div>
+      <div class="preview-header">
+        <h3 id="preview-title"></h3>
+        <div class="preview-meta">
+          <span id="preview-author"></span>
+          <span id="preview-status"></span>
+        </div>
+      </div>
+      <div class="preview-content" id="preview-content"></div>
+      <div class="preview-actions">
+        <button class="preview-read-btn" id="preview-read-btn">Đọc truyện</button>
+        <button class="preview-bookmark-btn" id="preview-bookmark-btn">📖 Đánh dấu</button>
+      </div>
+    </div>
+  </div>
+
   <div class="novel-container">
     <section class="novel-intro">
-      <h1>Danh sách tiểu thuyết</h1>
-      <p>Khám phá, đánh dấu, và đọc các bộ tiểu thuyết hấp dẫn!</p>
+      <h1 class="novel-title-breathing">Danh sách tiểu thuyết</h1>
+      <p class="novel-subtitle-gentle">Khám phá, đánh dấu, và đọc các bộ tiểu thuyết hấp dẫn!</p>
+
+      <!-- Genre Filter Atmosphere -->
+      <div class="genre-atmosphere-filter">
+        <button class="genre-filter-btn active" data-genre="all">Tất cả</button>
+        <button class="genre-filter-btn" data-genre="fantasy">Fantasy</button>
+        <button class="genre-filter-btn" data-genre="sci-fi">Sci-Fi</button>
+        <button class="genre-filter-btn" data-genre="romance">Lãng mạn</button>
+        <button class="genre-filter-btn" data-genre="mystery">Bí ẩn</button>
+        <button class="genre-filter-btn" data-genre="slice-of-life">Đời thường</button>
+      </div>
     </section>
+
     <main>
-      <div id="novel-list" class="novel-list"></div>
+      <div id="novel-list" class="novel-list-breathing"></div>
     </main>
   </div>
+
   <script type="module" src="../js/modules/novel_entry.js"></script>
 </body>
 </html> 

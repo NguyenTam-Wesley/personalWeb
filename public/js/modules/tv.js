@@ -17,8 +17,12 @@ export class TVShow {
     this.genreFilter = document.getElementById("genreFilter");
     this.regionFilter = document.getElementById("regionFilter");
 
+    /* ===== AMBIENT AUDIO ===== */
+    this.ambientAudio = document.getElementById("ambientAudio");
+
     /* ===== STATE ===== */
     this.currentSeries = null;
+    this.isAmbientEnabled = false;
 
     this.init();
   }

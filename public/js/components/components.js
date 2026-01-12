@@ -24,7 +24,7 @@ export class Components {
         { name: 'Games', url: route('pages.games') },
         { name: 'Blog', url: route('pages.blog') },
         { name: 'Novel', url: route('pages.novel') },
-        { name: 'TV', url: route('pages.tv') },
+        { name: 'TV', url: route('pages.tv') }
       ]
     };
 
@@ -57,14 +57,16 @@ export class Components {
     this.updateLoginStatus();
   }
 
+
+
   setupHeader() {
     this.header.innerHTML = `
       <nav>
         <a href="${ROUTES.home}" class="nav-logo">ntam</a>
 
         <div class="nav-links">
-          ${this.config.navLinks.map(
-            link => `<a href="${link.url}" class="nav-link">${link.name}</a>`
+          ${this.config.navLinks.map(link =>
+            `<a href="${link.url}" class="nav-link">${link.name}</a>`
           ).join('')}
         </div>
 
