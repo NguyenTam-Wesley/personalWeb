@@ -1,0 +1,359 @@
+/* Auth Pages (Login/Signup) - Following Full Ruleset */
+
+/* Color System */
+:root {
+    --auth-primary: #4e7cff;
+    --auth-primary-hover: #3d6bff;
+    --auth-error: #ef4444;
+    --auth-error-light: #fee2e2;
+    --auth-success: #10b981;
+    --auth-success-light: #d1fae5;
+    --auth-text-primary: #1a202c;
+    --auth-text-secondary: #4a5568;
+    --auth-text-muted: #718096;
+    --auth-border: #e2e8f0;
+    --auth-border-focus: #4e7cff;
+    --auth-bg: #f8fafc;
+    --auth-card: #ffffff;
+    --auth-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Layout & Structure - 1 column, center, max width 360-420px */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    background: var(--auth-bg);
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 400px;
+    background: var(--auth-card);
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: var(--auth-shadow);
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--auth-text-primary);
+    margin: 0 0 8px 0;
+    text-align: center;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: var(--auth-text-secondary);
+    margin: 0 0 32px 0;
+    text-align: center;
+}
+
+/* Form Group - Spacing */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group:last-of-type {
+    margin-bottom: 32px;
+}
+
+/* Label - LUÔN CÓ LABEL */
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--auth-text-primary);
+    margin-bottom: 8px;
+}
+
+.form-label .required {
+    color: var(--auth-error);
+    margin-left: 4px;
+}
+
+/* Input Field - Height ≥44px, Font ≥14px */
+.form-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--auth-text-primary);
+    background: var(--auth-card);
+    border: 2px solid var(--auth-border);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--auth-border-focus);
+    box-shadow: 0 0 0 3px rgba(78, 124, 255, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--auth-text-muted);
+    font-size: 14px;
+}
+
+.form-input:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Password Field with Toggle */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--auth-text-muted);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: var(--auth-text-primary);
+}
+
+.password-toggle:focus {
+    outline: 2px solid var(--auth-border-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Error Message - Ngay dưới input */
+.error-message {
+    display: block;
+    font-size: 13px;
+    color: var(--auth-error);
+    margin-top: 8px;
+    min-height: 20px;
+}
+
+.error-message:empty {
+    display: none;
+}
+
+/* Password Rules (Signup) */
+.password-rules {
+    margin-top: 8px;
+    padding: 12px;
+    background: var(--auth-bg);
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.password-rules-title {
+    font-weight: 500;
+    color: var(--auth-text-primary);
+    margin-bottom: 8px;
+}
+
+.password-rule {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    color: var(--auth-text-secondary);
+}
+
+.password-rule:last-child {
+    margin-bottom: 0;
+}
+
+.password-rule.valid {
+    color: var(--auth-success);
+}
+
+.password-rule.invalid {
+    color: var(--auth-text-muted);
+}
+
+.password-rule-icon {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+/* CTA Button - 1 nút chính, 100% width, Height ≥44px */
+.btn-primary {
+    width: 100%;
+    height: 44px;
+    padding: 0 24px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: var(--auth-primary);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--auth-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(78, 124, 255, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Loading Spinner */
+.btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Secondary Action - Text link */
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--auth-text-secondary);
+}
+
+.auth-footer-link {
+    color: var(--auth-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.auth-footer-link:hover {
+    color: var(--auth-primary-hover);
+    text-decoration: underline;
+}
+
+/* Forgot Password Link */
+.forgot-password {
+    text-align: right;
+    margin-top: -16px;
+    margin-bottom: 24px;
+}
+
+.forgot-password-link {
+    font-size: 14px;
+    color: var(--auth-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+    color: var(--auth-primary-hover);
+    text-decoration: underline;
+}
+
+/* Trust Links (Signup) */
+.trust-links {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--auth-border);
+    text-align: center;
+    font-size: 12px;
+    color: var(--auth-text-muted);
+    line-height: 1.5;
+}
+
+.trust-links a {
+    color: var(--auth-primary);
+    text-decoration: none;
+}
+
+.trust-links a:hover {
+    text-decoration: underline;
+}
+
+/* Success Message */
+.success-message {
+    padding: 12px 16px;
+    background: var(--auth-success-light);
+    color: var(--auth-success);
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Mobile-First - Không zoom khi focus input */
+@media (max-width: 480px) {
+    .auth-form {
+        padding: 24px;
+        max-width: 100%;
+    }
+
+    .auth-title {
+        font-size: 24px;
+    }
+
+    .form-input {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
+
+/* Accessibility - Focus ring */
+.form-input:focus-visible,
+.password-toggle:focus-visible,
+.btn-primary:focus-visible {
+    outline: 2px solid var(--auth-border-focus);
+    outline-offset: 2px;
+}
+
+/* Input States */
+.form-input.error {
+    border-color: var(--auth-error);
+}
+
+.form-input.error:focus {
+    border-color: var(--auth-error);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input.success {
+    border-color: var(--auth-success);
+}
+
+.form-input.success:focus {
+    border-color: var(--auth-success);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}

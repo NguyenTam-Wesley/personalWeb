@@ -23,6 +23,9 @@ export class BlogDetailManager {
       // chỉ sync lại trạng thái login
       this.components.updateLoginStatus?.();
 
+      // Init theme toggle
+      this.initializeThemeToggle();
+
       // Init auth
       await this.initializeAuth();
 
@@ -33,6 +36,9 @@ export class BlogDetailManager {
       }
 
       await this.loadPost();
+
+      // Init reading progress
+      this.initReadingProgress();
 
     } catch (error) {
       console.error('Error initializing blog detail:', error);
@@ -240,7 +246,17 @@ export class BlogDetailManager {
       document.getElementById('articleTitle').textContent =
         this.currentPost.title;
 
-      // Remove summary as it's not in the new schema
+      // Handle summary (optional)
+      const summaryEl = document.getElementById('articleSummary');
+      if (summaryEl) {
+        if (this.currentPost.summary) {
+          summaryEl.textContent = this.currentPost.summary;
+          summaryEl.style.display = 'block';
+        } else {
+          summaryEl.style.display = 'none';
+        }
+      }
+
       document.getElementById('sidebarAuthorName').textContent =
         this.currentPost.users?.username || 'Unknown';
 
@@ -325,6 +341,114 @@ export class BlogDetailManager {
     content = content.replace(/^- (.*$)/gm, '<li>$1</li>');
 
     container.innerHTML = content;
+
+    // Generate TOC if content is long (>1500 chars) and has headings
+    const contentLength = this.currentPost.content?.length || 0;
+    const headings = container.querySelectorAll('h2, h3');
+    if (contentLength > 1500 && headings.length > 0) {
+      this.generateTOC(headings);
+    }
+
+    // Add IDs to headings for TOC links
+    this.addHeadingIds(container);
+  }
+
+  addHeadingIds(container) {
+    const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    headings.forEach((heading, index) => {
+      if (!heading.id) {
+        const text = heading.textContent.trim().toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-');
+        heading.id = `heading-${index}-${text}`;
+      }
+    });
+  }
+
+  generateTOC(headings) {
+    const contentWrapper = document.querySelector('.content-wrapper');
+    if (!contentWrapper) return;
+
+    const tocContainer = document.createElement('div');
+    tocContainer.className = 'toc-container';
+    tocContainer.innerHTML = '<div class="toc-title">Mục lục</div><ul class="toc-list" id="tocList"></ul>';
+
+    const tocList = tocContainer.querySelector('#tocList');
+    let tocLevel = 0;
+
+    headings.forEach((heading, index) => {
+      const level = parseInt(heading.tagName.charAt(1));
+      const text = heading.textContent.trim();
+      
+      if (!heading.id) {
+        heading.id = `heading-${index}-${text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')}`;
+      }
+
+      const li = document.createElement('li');
+      li.className = `toc-level-${level}`;
+      
+      const a = document.createElement('a');
+      a.href = `#${heading.id}`;
+      a.textContent = text;
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    // Insert TOC before article content
+    const articleContent = document.getElementById('articleContent');
+    if (articleContent && articleContent.parentNode) {
+      articleContent.parentNode.insertBefore(tocContainer, articleContent);
+    }
+
+    // Highlight active TOC item on scroll
+    this.initTOCScrollHighlight();
+  }
+
+  initTOCScrollHighlight() {
+    const tocLinks = document.querySelectorAll('.toc-list a');
+    if (tocLinks.length === 0) return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -70% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(link => link.classList.remove('active'));
+          const activeLink = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+          if (activeLink) {
+            activeLink.classList.add('active');
+          }
+        }
+      });
+    }, observerOptions);
+
+    const headings = document.querySelectorAll('#articleContent h2, #articleContent h3');
+    headings.forEach(heading => observer.observe(heading));
+  }
+
+  initReadingProgress() {
+    const progressBar = document.getElementById('readingProgress');
+    if (!progressBar) return;
+
+    const updateProgress = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+      progressBar.style.width = Math.min(100, Math.max(0, scrollPercent)) + '%';
+    };
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
   }
 
   /* ================= RELATED ================= */
@@ -912,6 +1036,49 @@ export class BlogDetailManager {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  /* ================= THEME TOGGLE ================= */
+
+  initializeThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => this.toggleTheme());
+      this.updateThemeToggleButton();
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('blog-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+
+  toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('blog-theme', newTheme);
+
+    this.updateThemeToggleButton();
+  }
+
+  updateThemeToggleButton() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle?.querySelector('.theme-icon');
+
+    if (themeToggle && themeIcon) {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+
+      if (currentTheme === 'dark') {
+        themeIcon.textContent = '☀️';
+        themeToggle.innerHTML = '<span class="theme-icon">☀️</span> Light Mode';
+        themeToggle.title = 'Switch to Light Mode';
+      } else {
+        themeIcon.textContent = '🌙';
+        themeToggle.innerHTML = '<span class="theme-icon">🌙</span> Dark Mode';
+        themeToggle.title = 'Switch to Dark Mode';
+      }
+    }
   }
 
   showLoading() {

@@ -107,6 +107,18 @@
     line-height: 1.5;
 }
 
+.feature-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.feature-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
 /* Modes Grid */
 .modes-grid {
     display: grid;

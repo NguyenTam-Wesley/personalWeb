@@ -1,208 +1,251 @@
+/* Crosshair Page - Following UI Rules */
+
+/* Color System */
+:root {
+    --crosshair-primary: #4e7cff;      /* Primary - Action color */
+    --crosshair-secondary: #6ee07a;    /* Secondary - Success/accent */
+    --crosshair-accent: #f093fb;       /* Accent - Highlight */
+    --crosshair-bg: #f8fafc;           /* Background */
+    --crosshair-card: #ffffff;         /* Card background */
+    --crosshair-text-primary: #1a202c; /* Primary text */
+    --crosshair-text-secondary: #4a5568; /* Secondary text */
+    --crosshair-text-muted: #718096;   /* Muted text */
+    --crosshair-border: #e2e8f0;       /* Border color */
+}
+
+/* Spacing System - multiples of 8 */
 .crosshair-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 64px 32px;
+    background: var(--crosshair-bg);
+    min-height: 100vh;
 }
 
 .crosshair-header {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 64px;
 }
 
 .crosshair-header h1 {
-    font-size: 2.5rem;
-    color: #333;
-    margin-bottom: 15px;
+    font-size: 36px;
+    color: var(--crosshair-text-primary);
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.2;
 }
 
 .crosshair-header p {
-    font-size: 1.1rem;
-    color: #666;
+    font-size: 16px;
+    color: var(--crosshair-text-secondary);
     max-width: 600px;
     margin: 0 auto;
+    line-height: 1.5;
 }
 
-/* Crosshair Filters */
+/* Crosshair Filters - Visual Hierarchy */
 .crosshair-filters {
-    margin: 30px 0;
-    padding: 25px;
-    background: white;
+    margin: 32px 0 48px 0;
+    padding: 24px;
+    background: var(--crosshair-card);
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid var(--crosshair-border);
 }
 
 .crosshair-filters .search-box {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .crosshair-filters .search-box input {
     width: 100%;
-    padding: 12px 45px 12px 15px;
-    border: 2px solid #e0e0e0;
+    padding: 12px 40px 12px 16px;
+    border: 2px solid var(--crosshair-border);
     border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: var(--crosshair-bg);
 }
 
 .crosshair-filters .search-box input:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: var(--crosshair-primary);
+    box-shadow: 0 0 0 3px rgba(78, 124, 255, 0.1);
 }
 
 .crosshair-filters .search-icon {
     position: absolute;
-    right: 15px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #666;
-    font-size: 1.1rem;
+    color: var(--crosshair-text-muted);
+    font-size: 18px;
 }
 
 .crosshair-filters .filter-options {
     display: flex;
-    gap: 15px;
+    gap: 16px;
     flex-wrap: wrap;
 }
 
 .crosshair-filters select {
-    padding: 10px 15px;
-    border: 2px solid #e0e0e0;
+    padding: 12px 16px;
+    border: 2px solid var(--crosshair-border);
     border-radius: 8px;
-    background: white;
-    font-size: 0.95rem;
+    background: var(--crosshair-card);
+    font-size: 16px;
     cursor: pointer;
-    transition: border-color 0.3s ease;
-    min-width: 150px;
+    transition: all 0.3s ease;
+    min-width: 160px;
 }
 
 .crosshair-filters select:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: var(--crosshair-primary);
+    box-shadow: 0 0 0 3px rgba(78, 124, 255, 0.1);
 }
 
 .crosshair-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-bottom: 64px;
+    justify-items: center;
 }
 
 .crosshair-card {
-    background: white;
-    border-radius: 12px;
+    background: var(--crosshair-card);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid var(--crosshair-border);
+    width: 100%;
+    max-width: 360px;
 }
 
 .crosshair-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
 }
 
 .crosshair-info {
-    padding: 25px;
+    padding: 24px;
 }
 
 .crosshair-info h3 {
-    color: #333;
-    margin: 0 0 10px;
-    font-size: 1.3rem;
+    color: var(--crosshair-text-primary);
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .crosshair-description {
-    color: #666;
-    font-size: 0.95rem;
-    margin: 0 0 15px;
+    color: var(--crosshair-text-secondary);
+    font-size: 16px;
+    margin: 0 0 16px 0;
     line-height: 1.5;
 }
 
-/* Crosshair Badges */
+/* Crosshair Badges - Typography */
 .crosshair-badges {
     display: flex;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 16px;
     flex-wrap: wrap;
 }
 
 .badge {
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 12px;
-    font-size: 0.75rem;
+    font-size: 12px;
     font-weight: 500;
     color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .category-badge {
-    background-color: #4CAF50;
+    background: var(--crosshair-secondary);
 }
 
 .difficulty-badge {
-    color: white;
+    background: var(--crosshair-accent);
 }
 
 /* Crosshair Meta */
 .crosshair-meta {
     display: flex;
-    gap: 15px;
-    margin-top: 15px;
-    font-size: 0.875rem;
-    color: #666;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--crosshair-text-muted);
     flex-wrap: wrap;
 }
 
 .crosshair-code {
     display: flex;
     align-items: center;
-    gap: 15px;
-    background: #f5f5f5;
-    padding: 15px;
+    gap: 16px;
+    background: var(--crosshair-bg);
+    padding: 16px;
     border-radius: 8px;
     font-family: 'Consolas', monospace;
+    border: 1px solid var(--crosshair-border);
+    margin-top: 16px;
 }
 
 .crosshair-code code {
     flex: 1;
-    color: #333;
-    font-size: 0.9rem;
+    color: var(--crosshair-text-primary);
+    font-size: 14px;
     word-break: break-all;
+    line-height: 1.4;
 }
 
 .copy-button {
-    background: #4CAF50;
+    background: linear-gradient(135deg, var(--crosshair-primary) 0%, var(--crosshair-accent) 100%);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
+    padding: 12px 24px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 14px;
+    font-weight: 600;
     transition: all 0.3s ease;
     white-space: nowrap;
 }
 
 .copy-button:hover {
-    background: #45a049;
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(78, 124, 255, 0.3);
 }
 
 .copy-button.copied {
-    background: #2196F3;
+    background: linear-gradient(135deg, var(--crosshair-secondary) 0%, var(--crosshair-primary) 100%);
 }
 
-/* Loading and Error States */
+/* Loading and Error States - Center alignment */
 .loading-spinner {
     text-align: center;
-    padding: 60px 20px;
+    padding: 64px 32px;
+}
+
+.loading-spinner p {
+    color: var(--crosshair-text-secondary);
+    font-size: 16px;
+    margin-top: 16px;
 }
 
 .spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #4CAF50;
+    border: 4px solid var(--crosshair-border);
+    border-top: 4px solid var(--crosshair-primary);
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+    margin: 0 auto;
 }
 
 @keyframes spin {
@@ -212,55 +255,67 @@
 
 .error-message {
     text-align: center;
-    padding: 60px 20px;
-    color: #666;
+    padding: 64px 32px;
+    color: var(--crosshair-text-secondary);
+    font-size: 16px;
 }
 
 .error-message button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #4CAF50;
+    margin-top: 24px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--crosshair-primary) 0%, var(--crosshair-accent) 100%);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.error-message button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(78, 124, 255, 0.3);
 }
 
 .no-crosshairs {
     text-align: center;
-    padding: 60px 20px;
-    color: #666;
+    padding: 64px 32px;
+    color: var(--crosshair-text-secondary);
+    font-size: 16px;
 }
 
-/* Pagination */
+/* Pagination - Visual Hierarchy */
 .crosshair-pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-top: 40px;
-    padding: 20px;
-    background: white;
+    gap: 16px;
+    margin-top: 48px;
+    padding: 24px;
+    background: var(--crosshair-card);
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid var(--crosshair-border);
 }
 
 .pagination-btn {
-    padding: 10px 20px;
-    border: 2px solid #e0e0e0;
-    background: white;
-    color: #333;
+    padding: 12px 24px;
+    border: 2px solid var(--crosshair-border);
+    background: var(--crosshair-card);
+    color: var(--crosshair-text-primary);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.95rem;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .pagination-btn:hover:not(:disabled) {
-    background: #4CAF50;
+    background: linear-gradient(135deg, var(--crosshair-primary) 0%, var(--crosshair-accent) 100%);
     color: white;
-    border-color: #4CAF50;
+    border-color: transparent;
+    transform: translateY(-2px);
 }
 
 .pagination-btn:disabled {
@@ -270,75 +325,93 @@
 
 .page-numbers {
     display: flex;
-    gap: 5px;
+    gap: 8px;
 }
 
 .page-number {
-    padding: 10px 15px;
-    border: 2px solid #e0e0e0;
-    background: white;
-    color: #333;
+    padding: 12px 16px;
+    border: 2px solid var(--crosshair-border);
+    background: var(--crosshair-card);
+    color: var(--crosshair-text-primary);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.95rem;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .page-number:hover {
-    background: #4CAF50;
+    background: linear-gradient(135deg, var(--crosshair-primary) 0%, var(--crosshair-accent) 100%);
     color: white;
-    border-color: #4CAF50;
+    border-color: transparent;
+    transform: translateY(-2px);
 }
 
 .page-number.active {
-    background: #4CAF50;
+    background: linear-gradient(135deg, var(--crosshair-primary) 0%, var(--crosshair-accent) 100%);
     color: white;
-    border-color: #4CAF50;
+    border-color: transparent;
 }
 
+/* Guide Section - Breathing room */
 .crosshair-guide {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: var(--crosshair-card);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border: 1px solid var(--crosshair-border);
+    margin-top: 64px;
 }
 
 .crosshair-guide h2 {
-    color: #333;
-    margin: 0 0 20px;
-    font-size: 1.8rem;
+    color: var(--crosshair-text-primary);
+    margin: 0 0 24px 0;
+    font-size: 28px;
+    font-weight: 600;
 }
 
 .crosshair-guide ol {
     margin: 0;
-    padding-left: 20px;
+    padding-left: 24px;
 }
 
 .crosshair-guide li {
-    color: #444;
-    margin-bottom: 10px;
-    line-height: 1.6;
+    color: var(--crosshair-text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.5;
+    font-size: 16px;
 }
 
 .crosshair-guide li:last-child {
     margin-bottom: 0;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
     .crosshair-container {
-        padding: 30px 15px;
+        padding: 32px 16px;
+    }
+
+    .crosshair-header {
+        margin-bottom: 48px;
     }
 
     .crosshair-header h1 {
-        font-size: 2rem;
+        font-size: 32px;
+    }
+
+    .crosshair-header p {
+        font-size: 16px;
     }
 
     .crosshair-filters {
-        padding: 20px;
+        padding: 24px 16px;
+        margin: 24px 0 32px 0;
     }
 
     .crosshair-filters .filter-options {
         flex-direction: column;
+        gap: 12px;
     }
 
     .crosshair-filters select {
@@ -348,31 +421,126 @@
 
     .crosshair-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 48px;
+    }
+
+    .crosshair-card {
+        max-width: none;
+    }
+
+    .crosshair-info {
+        padding: 20px;
     }
 
     .crosshair-code {
         flex-direction: column;
         align-items: stretch;
+        padding: 16px;
+        gap: 12px;
     }
 
     .copy-button {
         width: 100%;
+        padding: 16px;
     }
 
     .crosshair-meta {
         flex-direction: column;
         gap: 8px;
+        margin-top: 12px;
     }
 
     .crosshair-pagination {
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 12px;
+        padding: 20px 16px;
+        margin-top: 32px;
     }
 
     .page-numbers {
         order: 2;
         width: 100%;
         justify-content: center;
-        margin-top: 10px;
+        margin-top: 16px;
+        gap: 8px;
+    }
+
+    .crosshair-guide {
+        padding: 24px 16px;
+        margin-top: 48px;
+    }
+
+    .crosshair-guide h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .loading-spinner,
+    .error-message,
+    .no-crosshairs {
+        padding: 48px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .crosshair-container {
+        padding: 24px 16px;
+    }
+
+    .crosshair-header h1 {
+        font-size: 28px;
+    }
+
+    .crosshair-header p {
+        font-size: 14px;
+    }
+
+    .crosshair-filters {
+        padding: 20px 16px;
+        margin: 16px 0 24px 0;
+    }
+
+    .crosshair-info {
+        padding: 16px;
+    }
+
+    .crosshair-info h3 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .crosshair-description {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .crosshair-pagination {
+        padding: 16px;
+        margin-top: 24px;
+    }
+
+    .pagination-btn,
+    .page-number {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+
+    .crosshair-guide {
+        padding: 20px 16px;
+        margin-top: 32px;
+    }
+
+    .crosshair-guide h2 {
+        font-size: 22px;
+    }
+
+    .crosshair-guide ol {
+        padding-left: 20px;
+    }
+
+    .crosshair-guide li {
+        font-size: 14px;
+        margin-bottom: 8px;
     }
 } 
