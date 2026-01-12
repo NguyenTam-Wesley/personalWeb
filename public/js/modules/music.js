@@ -52,7 +52,12 @@ export class MusicPlayer {
       durationDisplay: document.getElementById("duration"),
       canvas: document.getElementById("volumeCanvas"),
       eraserBtn: document.getElementById("eraserBtn"),
-      addToPlaylistBtn: document.getElementById("addToPlaylistBtn")
+      addToPlaylistBtn: document.getElementById("addToPlaylistBtn"),
+      musicList: document.getElementById("musicList"),
+      searchInput: document.getElementById("searchInput"),
+      filterContainer: document.getElementById("filterContainer"),
+      emptyState: document.getElementById("emptyState"),
+      loadingState: document.getElementById("loadingState")
     };
 
     // Initialize canvas context
@@ -72,11 +77,14 @@ export class MusicPlayer {
       this.showNotification.bind(this),
       this.loadMainMenu.bind(this)
     );
-    
+
     // Setup auth listener trước khi init
     this.user.setupAuthListener();
-    
+
     this.init();
+
+    // Initialize theme toggle
+    this.initializeThemeToggle();
 
     // Đảm bảo progressBar là input range
     this.elements.progressBar.addEventListener("input", () => {
@@ -103,21 +111,16 @@ export class MusicPlayer {
   // Loading state
   showLoading() {
     this.state.isLoading = true;
-    // Add loading spinner to DOM
-    const spinner = document.createElement("div");
-    spinner.className = "loading-spinner";
-    spinner.innerHTML = `
-      <div class="spinner"></div>
-      <div class="spinner-text">Đang tải...</div>
-    `;
-    document.body.appendChild(spinner);
+    if (this.elements.loadingState) {
+      this.elements.loadingState.style.display = "flex";
+    }
   }
 
   hideLoading() {
     this.state.isLoading = false;
-    // Remove loading spinner
-    const spinner = document.querySelector(".loading-spinner");
-    if (spinner) spinner.remove();
+    if (this.elements.loadingState) {
+      this.elements.loadingState.style.display = "none";
+    }
   }
 
   // Notification system
@@ -297,6 +300,48 @@ export class MusicPlayer {
     }
   }
 
+  // Theme Toggle
+  initializeThemeToggle() {
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => this.toggleTheme());
+      this.updateThemeToggleButton();
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem("music-theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }
+
+  toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("music-theme", newTheme);
+
+    this.updateThemeToggleButton();
+  }
+
+  updateThemeToggleButton() {
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = themeToggle?.querySelector(".theme-icon");
+
+    if (themeToggle && themeIcon) {
+      const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+
+      if (currentTheme === "dark") {
+        themeIcon.textContent = "☀️";
+        themeToggle.innerHTML = '<span class="theme-icon">☀️</span> Light Mode';
+        themeToggle.title = "Switch to Light Mode";
+      } else {
+        themeIcon.textContent = "🌙";
+        themeToggle.innerHTML = '<span class="theme-icon">🌙</span> Dark Mode';
+        themeToggle.title = "Switch to Dark Mode";
+      }
+    }
+  }
+
   // Event listeners setup
   setupEventListeners() {
     console.log("setupEventListeners called");
@@ -314,7 +359,12 @@ export class MusicPlayer {
     if (this.elements.addToPlaylistBtn) {
       this.elements.addToPlaylistBtn.addEventListener("click", () => {
         console.log("Nút ➕ được click");
-        this.showAddToPlaylistPopup();
+        const currentSongId = this.getCurrentSongId();
+        if (currentSongId) {
+          this.showAddToPlaylistPopup(currentSongId);
+        } else {
+          this.showNotification("Chưa có bài hát nào đang phát", "warning");
+        }
       });
     }
 
@@ -344,6 +394,25 @@ export class MusicPlayer {
     // Player events
     this.elements.musicPlayer.addEventListener("ended", () => this.handleSongEnd());
     this.elements.musicPlayer.addEventListener("timeupdate", () => this.updateProgress());
+
+    // Keyboard support - Space = play/pause
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+        e.preventDefault();
+        this.togglePlayPause();
+      }
+    });
+
+    // Search input
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          searchInput.value = "";
+          searchInput.blur();
+        }
+      });
+    }
   }
 
   // UI Components
@@ -388,6 +457,24 @@ export class MusicPlayer {
       this.elements.mainMenu.style.display = "flex";
       this.elements.playlistContainer.style.display = "none";
 
+      // Clear search
+      const searchInput = document.getElementById("searchInput");
+      if (searchInput) {
+        searchInput.value = "";
+        searchInput.placeholder = "Tìm kiếm danh mục...";
+      }
+
+      // Clear music list
+      const musicList = document.getElementById("musicList");
+      if (musicList) {
+        musicList.innerHTML = "";
+      }
+
+      const emptyState = document.getElementById("emptyState");
+      if (emptyState) {
+        emptyState.style.display = "none";
+      }
+
       if (!this.state.controlsShownOnce) {
         this.elements.controlsContainer.style.display = "none";
       }
@@ -409,10 +496,22 @@ export class MusicPlayer {
 
       const fragment = document.createDocumentFragment();
       pageCategories.forEach(({ emoji, label, type }) => {
-        const btn = this.createButton(`${emoji} ${label}`, "main-category-button", () => {
+        const menuItem = document.createElement("div");
+        menuItem.className = "menu-item";
+        menuItem.textContent = `${emoji} ${label}`;
+        menuItem.setAttribute("role", "button");
+        menuItem.setAttribute("tabindex", "0");
+        menuItem.setAttribute("aria-label", label);
+        menuItem.addEventListener("click", () => {
           this.loadCategory(type, `${emoji} ${label}`);
         });
-        fragment.appendChild(btn);
+        menuItem.addEventListener("keypress", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            this.loadCategory(type, `${emoji} ${label}`);
+          }
+        });
+        fragment.appendChild(menuItem);
       });
       this.elements.mainMenu.appendChild(fragment);
 
@@ -438,6 +537,11 @@ export class MusicPlayer {
 
       this.state.navigationStack = [{ view: "main" }];
       this.saveNavigationState();
+
+      // Setup search for main menu categories only when in main view
+      if (this.state.currentView !== "category") {
+        this.setupMainMenuSearch();
+      }
     } catch (error) {
       this.handleError(error, "Lỗi tải menu chính");
     } finally {
@@ -518,6 +622,9 @@ export class MusicPlayer {
 
       // Setup infinite scroll
       this.setupInfiniteScroll(() => this.loadCategoryPage(type));
+
+      // Setup search for this category
+      this.setupCategorySearch(type);
     } catch (error) {
       this.handleError(error, `Lỗi tải dữ liệu ${displayTitle}`);
     } finally {
@@ -614,7 +721,7 @@ export class MusicPlayer {
     container.onscroll = onScroll;
   }
 
-  // Song Loading
+  // Song Loading - Updated with new UI format
   async loadSongsByCategory(type, id, displayName, fromBack = false) {
     try {
       this.showLoading();
@@ -622,7 +729,15 @@ export class MusicPlayer {
       this.elements.playlistContainer.style.display = "block";
       this.elements.backBtn.style.display = "inline-block";
 
-      this.elements.playlistContainer.innerHTML = `<h3>${displayName} - Danh sách bài hát</h3>`;
+      const musicList = document.getElementById("musicList");
+      const emptyState = document.getElementById("emptyState");
+      const loadingState = document.getElementById("loadingState");
+
+      if (musicList) musicList.innerHTML = "";
+      if (emptyState) emptyState.style.display = "none";
+      if (loadingState) loadingState.style.display = "flex";
+
+      this.elements.playlistContainer.textContent = displayName;
 
       if (!fromBack) {
         this.state.navigationStack.push({ view: "songs", type, id, displayName });
@@ -637,9 +752,7 @@ export class MusicPlayer {
       }
 
       let data = [];
-      let error = null;
       if (type === "playlist") {
-        // Lấy danh sách song_id từ playlist_song
         const { data: playlistSongs, error: psError } = await this.supabase
           .from("playlist_song")
           .select("song_id")
@@ -653,8 +766,6 @@ export class MusicPlayer {
             .in("id", songIds);
           if (songError) throw songError;
           data = songs;
-        } else {
-          data = [];
         }
       } else {
         const columnMap = {
@@ -672,52 +783,453 @@ export class MusicPlayer {
         data = songs;
       }
 
-      // Log để xác nhận luôn lấy dữ liệu mới nhất từ Supabase
-      console.log(`[Supabase] Fetched songs for ${type} ${id}:`, data);
+      this.state.currentPlaylist = data;
+      this.state.currentIndex = -1;
 
       if (!data || data.length === 0) {
-        this.elements.playlistContainer.innerHTML += this.createMessage("Không có bài hát nào trong mục này.");
+        if (emptyState) emptyState.style.display = "block";
+        if (loadingState) loadingState.style.display = "none";
         return;
       }
 
-      this.state.currentPlaylist = data;
-      this.state.currentIndex = 0;
-
-      const fragment = document.createDocumentFragment();
-      data.forEach((song, index) => {
-        const songContainer = document.createElement("div");
-        songContainer.className = "song-container";
-
-        const btn = this.createButton(song.song_name, "song-button", () => {
-          this.state.currentIndex = index;
-          this.playSong(index);
-        });
-
-        if (type === "playlist" && this.state.currentUserRole !== "guest") {
-          const deleteBtn = this.createButton("❌", "delete-song-button", async (e) => {
-            e.stopPropagation();
-            await this.deleteSongFromPlaylist(song.id, id, displayName);
-          });
-          songContainer.appendChild(deleteBtn);
-        }
-
-        if (["artist", "genre", "region"].includes(type) && this.state.currentUserRole !== "guest") {
-          const addBtn = this.createButton("➕", "add-to-playlist-btn", (e) => {
-            e.stopPropagation();
-            this.showAddToPlaylistPopup(song.id);
-          });
-          songContainer.appendChild(addBtn);
-        }
-
-        songContainer.appendChild(btn);
-        fragment.appendChild(songContainer);
-      });
-      this.elements.playlistContainer.appendChild(fragment);
+      this.renderMusicList(data, type, id);
+      this.setupSearchAndFilter(data, type, id);
     } catch (error) {
       this.handleError(error, "Lỗi tải bài hát");
     } finally {
       this.hideLoading();
+      const loadingState = document.getElementById("loadingState");
+      if (loadingState) loadingState.style.display = "none";
     }
+  }
+
+  // Render music list with new UI format
+  renderMusicList(songs, type, categoryId) {
+    const musicList = document.getElementById("musicList");
+    if (!musicList) return;
+
+    musicList.innerHTML = "";
+    const fragment = document.createDocumentFragment();
+
+    songs.forEach((song, index) => {
+      const item = this.createMusicItem(song, index, type, categoryId);
+      fragment.appendChild(item);
+    });
+
+    musicList.appendChild(fragment);
+    this.elements.controlsContainer.style.display = "block";
+    this.state.controlsShownOnce = true;
+  }
+
+  // Create music item with new format
+  createMusicItem(song, index, type, categoryId) {
+    const item = document.createElement("div");
+    item.className = "music-item";
+    item.setAttribute("data-song-id", song.id);
+    item.setAttribute("data-index", index);
+    item.setAttribute("tabindex", "0");
+    item.setAttribute("role", "button");
+    item.setAttribute("aria-label", `Phát ${song.song_name} - ${song.artist?.name || "Unknown"}`);
+
+    // Thumbnail placeholder
+    const thumbnail = document.createElement("div");
+    thumbnail.className = "music-thumbnail";
+    thumbnail.style.background = "linear-gradient(135deg, #4e7cff 0%, #f093fb 100%)";
+    thumbnail.textContent = "🎵";
+
+    // Song info
+    const info = document.createElement("div");
+    info.className = "music-info";
+    
+    const name = document.createElement("div");
+    name.className = "music-name";
+    name.textContent = song.song_name || "Unknown";
+    
+    const artist = document.createElement("div");
+    artist.className = "music-artist";
+    artist.textContent = song.artist?.name || song.genre?.name || song.region?.name || "Unknown";
+    
+    info.appendChild(name);
+    info.appendChild(artist);
+
+    // Actions (Add to playlist button)
+    const actions = document.createElement("div");
+    actions.className = "music-item-actions";
+    
+    // Add to playlist button (only show if user is logged in and not viewing own playlist)
+    if (this.state.currentUserRole !== "guest" && type !== "playlist") {
+      const addBtn = document.createElement("button");
+      addBtn.className = "add-to-playlist-btn";
+      addBtn.setAttribute("aria-label", `Thêm ${song.song_name} vào playlist`);
+      addBtn.textContent = "➕";
+      addBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.showAddToPlaylistPopup(song.id);
+      });
+      actions.appendChild(addBtn);
+    }
+
+    // Duration placeholder (would need to fetch from audio metadata)
+    const duration = document.createElement("div");
+    duration.className = "music-duration";
+    duration.textContent = "--:--";
+
+    // Play overlay
+    const overlay = document.createElement("div");
+    overlay.className = "music-play-overlay";
+    overlay.textContent = "▶️";
+
+    item.appendChild(thumbnail);
+    item.appendChild(info);
+    item.appendChild(actions);
+    item.appendChild(duration);
+    item.appendChild(overlay);
+
+    // Click handler - 100% clickable
+    item.addEventListener("click", (e) => {
+      // Don't trigger if clicking on add button
+      if (!e.target.closest(".add-to-playlist-btn")) {
+        this.state.currentIndex = index;
+        this.playSong(index);
+      }
+    });
+
+    // Keyboard support
+    item.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        this.state.currentIndex = index;
+        this.playSong(index);
+      }
+    });
+
+    return item;
+  }
+
+  // Setup search for category items
+  setupCategorySearch(categoryType) {
+    const searchInput = document.getElementById("searchInput");
+    if (!searchInput) return;
+
+    // Remove old listeners
+    const newSearchInput = searchInput.cloneNode(true);
+
+    // Set appropriate placeholder based on category type
+    const placeholders = {
+      artist: "Tìm kiếm nghệ sĩ...",
+      genre: "Tìm kiếm thể loại...",
+      region: "Tìm kiếm khu vực...",
+      playlist: "Tìm kiếm playlist..."
+    };
+    newSearchInput.placeholder = placeholders[categoryType] || "Tìm kiếm...";
+
+    searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+    this.elements.searchInput = newSearchInput;
+
+    // Store category type for filtering
+    this.currentCategoryType = categoryType;
+
+    let searchTimeout;
+    const handleSearch = (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const query = e.target.value.toLowerCase().trim();
+        this.filterCategoryItems(query, categoryType);
+      }, 150);
+    };
+
+    newSearchInput.addEventListener("input", handleSearch);
+  }
+
+  // Filter category items
+  async filterCategoryItems(query, categoryType) {
+    if (!query) {
+      // Reload full category if no search query
+      this.resetCategoryView(categoryType);
+      return;
+    }
+
+    try {
+      this.showLoading();
+
+      // Query database for filtered items
+      let queryBuilder = this.supabase
+        .from(categoryType)
+        .select("id, name")
+        .order("name", { ascending: true });
+
+      // Add search filter
+      queryBuilder = queryBuilder.ilike("name", `%${query}%`);
+
+      // Special case for playlist - filter by user and order by created_at
+      if (categoryType === "playlist") {
+        const { data: { user } } = await this.supabase.auth.getUser();
+        if (!user) {
+          this.showNotification("Phiên đăng nhập hết hạn", "warning");
+          return;
+        }
+        queryBuilder = this.supabase
+          .from("playlist")
+          .select("id, name")
+          .eq("user_id", user.id)
+          .ilike("name", `%${query}%`)
+          .order("created_at", { ascending: false });
+      }
+
+      const { data, error } = await queryBuilder;
+
+      if (error) throw error;
+
+      // Clear current items
+      const mainMenu = this.elements.mainMenu;
+      if (mainMenu) {
+        // Remove pagination if exists
+        const pagination = mainMenu.querySelector('.pagination');
+        if (pagination) pagination.remove();
+
+        // Clear category items but keep the section structure for playlist
+        if (categoryType === "playlist") {
+          const playlistList = mainMenu.querySelector(".playlist-list");
+          if (playlistList) playlistList.innerHTML = "";
+        } else {
+          mainMenu.innerHTML = "";
+        }
+      }
+
+      // Render filtered items
+      if (data && data.length > 0) {
+        const fragment = document.createDocumentFragment();
+        data.forEach(item => {
+          const btn = this.createButton(
+            item.name,
+            "category-item",
+            () => this.loadSongsByCategory(categoryType, item.id, item.name),
+            true
+          );
+          fragment.appendChild(btn);
+        });
+
+        // Append to appropriate container
+        if (categoryType === "playlist") {
+          const playlistList = this.elements.mainMenu.querySelector(".playlist-list");
+          if (playlistList) {
+            playlistList.appendChild(fragment);
+          }
+        } else {
+          this.elements.mainMenu.appendChild(fragment);
+        }
+      } else {
+        // Show no results message
+        const noResults = document.createElement("div");
+        noResults.className = "no-results";
+        noResults.textContent = `Không tìm thấy ${this.getCategoryDisplayName(categoryType)} nào`;
+        this.elements.mainMenu.appendChild(noResults);
+      }
+
+    } catch (error) {
+      this.handleError(error, "Lỗi tìm kiếm");
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  // Reset category view to show all items
+  resetCategoryView(categoryType) {
+    // Reset infinite scroll state
+    this.infinite = {
+      page: 1,
+      pageSize: 100,
+      loading: false,
+      hasMore: true
+    };
+
+    // Clear current content
+    if (categoryType === "playlist") {
+      const playlistList = this.elements.mainMenu.querySelector(".playlist-list");
+      if (playlistList) playlistList.innerHTML = "";
+    } else {
+      this.elements.mainMenu.innerHTML = "";
+    }
+
+    // Reload first page
+    this.loadCategoryPage(categoryType);
+  }
+
+  // Get display name for category type
+  getCategoryDisplayName(categoryType) {
+    const names = {
+      artist: "nghệ sĩ",
+      genre: "thể loại",
+      region: "khu vực",
+      playlist: "playlist"
+    };
+    return names[categoryType] || categoryType;
+  }
+
+  // Setup search for main menu categories
+  setupMainMenuSearch() {
+    const searchInput = document.getElementById("searchInput");
+    if (!searchInput) return;
+
+    // Remove old listeners
+    const newSearchInput = searchInput.cloneNode(true);
+    newSearchInput.placeholder = "Tìm kiếm danh mục...";
+    searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+    this.elements.searchInput = newSearchInput;
+
+    // Store original categories
+    this.originalCategories = [
+      { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
+      { emoji: "🎧", label: "Thể loại", type: "genre" },
+      { emoji: "🌍", label: "Khu vực", type: "region" },
+      { emoji: "📂", label: "Playlist", type: "playlist" }
+    ];
+
+    let searchTimeout;
+    const handleSearch = (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const query = e.target.value.toLowerCase().trim();
+        this.filterMainMenuCategories(query);
+      }, 150);
+    };
+
+    newSearchInput.addEventListener("input", handleSearch);
+  }
+
+  // Render main menu categories
+  renderMainMenuCategories(categories) {
+    const mainMenu = this.elements.mainMenu;
+    mainMenu.innerHTML = "";
+
+    const fragment = document.createDocumentFragment();
+    categories.forEach(({ emoji, label, type }) => {
+      const menuItem = document.createElement("div");
+      menuItem.className = "menu-item";
+      menuItem.textContent = `${emoji} ${label}`;
+      menuItem.setAttribute("role", "button");
+      menuItem.setAttribute("tabindex", "0");
+      menuItem.setAttribute("aria-label", label);
+      menuItem.addEventListener("click", () => {
+        this.loadCategory(type, `${emoji} ${label}`);
+      });
+      menuItem.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          this.loadCategory(type, `${emoji} ${label}`);
+        }
+      });
+      fragment.appendChild(menuItem);
+    });
+    mainMenu.appendChild(fragment);
+  }
+
+  // Filter main menu categories
+  filterMainMenuCategories(query) {
+    const mainMenu = this.elements.mainMenu;
+    if (!mainMenu) return;
+
+    // Clear current menu
+    mainMenu.innerHTML = "";
+
+    if (!query) {
+      // Show all categories if no search query
+      this.renderMainMenuCategories(this.originalCategories);
+      return;
+    }
+
+    // Filter categories
+    const filteredCategories = this.originalCategories.filter(category =>
+      category.label.toLowerCase().includes(query) ||
+      category.emoji.includes(query) ||
+      category.type.toLowerCase().includes(query)
+    );
+
+    if (filteredCategories.length === 0) {
+      mainMenu.innerHTML = '<div class="no-results">Không tìm thấy danh mục nào</div>';
+      return;
+    }
+
+    // Render filtered categories
+    this.renderMainMenuCategories(filteredCategories);
+  }
+
+  // Setup search and filter
+  setupSearchAndFilter(songs, type, categoryId) {
+    const searchInput = document.getElementById("searchInput");
+    const filterContainer = document.getElementById("filterContainer");
+
+    if (!searchInput) return;
+
+    // Update placeholder for song search
+    searchInput.placeholder = "Tìm kiếm bài hát, nghệ sĩ...";
+
+    // Store songs for filtering
+    this.currentFilterSongs = songs;
+    this.currentFilterType = type;
+    this.currentFilterCategoryId = categoryId;
+
+    // Remove old listeners by storing value and replacing
+    const currentValue = searchInput.value;
+    const newSearchInput = searchInput.cloneNode(true);
+    newSearchInput.value = currentValue;
+    searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+
+    // Update element reference
+    this.elements.searchInput = newSearchInput;
+
+    // Search functionality
+    let searchTimeout;
+    const handleSearch = (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const query = e.target.value.toLowerCase().trim();
+        if (query) {
+          this.filterSongs(query, this.currentFilterSongs || songs, type, categoryId);
+        } else {
+          // Show all songs if search is empty
+          this.renderMusicList(this.currentFilterSongs || songs, type, categoryId);
+        }
+      }, 150);
+    };
+
+    newSearchInput.addEventListener("input", handleSearch);
+
+    // Clear search button (optional)
+    if (currentValue) {
+      handleSearch({ target: newSearchInput });
+    }
+  }
+
+  // Filter songs by search query
+  filterSongs(query, allSongs, type, categoryId) {
+    if (!query) {
+      this.renderMusicList(allSongs, type, categoryId);
+      return;
+    }
+
+    const filtered = allSongs.filter(song => {
+      const name = (song.song_name || "").toLowerCase();
+      const artist = (song.artist?.name || "").toLowerCase();
+      const genre = (song.genre?.name || "").toLowerCase();
+      return name.includes(query) || artist.includes(query) || genre.includes(query);
+    });
+
+    this.renderMusicList(filtered, type, categoryId);
+  }
+
+  // Update playing state
+  updatePlayingState() {
+    const items = document.querySelectorAll(".music-item");
+    items.forEach((item, index) => {
+      if (index === this.state.currentIndex) {
+        item.classList.add("playing");
+        item.setAttribute("aria-current", "true");
+      } else {
+        item.classList.remove("playing");
+        item.removeAttribute("aria-current");
+      }
+    });
   }
 
   // Helper Methods
@@ -820,17 +1332,20 @@ export class MusicPlayer {
     const song = this.state.currentPlaylist[index];
     if (!song) return;
 
+    this.state.currentIndex = index;
     this.elements.musicPlayer.src = song.url;
     const artistName = song.artist?.name || "Không rõ nghệ sĩ";
     this.elements.currentSongTitle.textContent = `${song.song_name} - ${artistName}`;
 
     this.elements.musicPlayer.play().then(() => {
       console.log("play() trong playSong thành công");
+      this.updatePlayingState();
     }).catch(error => {
       this.handleError(error, "Không thể phát bài hát này");
     });
 
     this.elements.pauseResumeBtn.textContent = "⏸";
+    this.elements.pauseResumeBtn.setAttribute("aria-label", "Tạm dừng");
 
     // Luôn hiển thị controls khi phát bài hát
     this.elements.controlsContainer.style.display = "block";
@@ -843,13 +1358,15 @@ export class MusicPlayer {
     if (audio.paused) {
       audio.play().then(() => {
         console.log("Gọi play() thành công");
+        this.elements.pauseResumeBtn.textContent = "⏸";
+        this.elements.pauseResumeBtn.setAttribute("aria-label", "Tạm dừng");
       }).catch(e => {
         console.error("Lỗi khi play:", e);
       });
-      this.elements.pauseResumeBtn.textContent = "⏸";
     } else {
       audio.pause();
       this.elements.pauseResumeBtn.textContent = "▶";
+      this.elements.pauseResumeBtn.setAttribute("aria-label", "Phát");
       console.log("Gọi pause()");
     }
   }
@@ -966,28 +1483,64 @@ export class MusicPlayer {
     const oldPopup = document.getElementById("add-to-playlist-popup");
     if (oldPopup) oldPopup.remove();
 
-    // Tạo popup
+    // Tạo popup với theme support
     const popup = document.createElement("div");
     popup.id = "add-to-playlist-popup";
     popup.className = "custom-popup";
     popup.innerHTML = `
       <div class="popup-content">
         <h3>Thêm bài hát vào playlist</h3>
-        <button id="createNewPlaylistBtn">Tạo playlist mới</button>
-        <div style="margin: 10px 0;">Hoặc chọn playlist đã có:</div>
+        <button id="createNewPlaylistBtn">➕ Tạo playlist mới</button>
+        <div style="margin: 16px 0 8px 0; color: var(--music-text-secondary); font-size: 14px;">Hoặc chọn playlist đã có:</div>
         <div id="userPlaylistsList">Đang tải...</div>
-        <button id="closePopupBtn" style="margin-top:10px;">Đóng</button>
+        <div class="popup-actions">
+          <button id="closePopupBtn" class="btn-secondary">Đóng</button>
+        </div>
       </div>
     `;
     document.body.appendChild(popup);
 
+    // Escape to close
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        popup.remove();
+        document.removeEventListener("keydown", handleEscape);
+        document.removeEventListener("click", handleClickOutside);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+
+    // Click outside to close
+    const handleClickOutside = (e) => {
+      if (e.target === popup) {
+        popup.remove();
+        document.removeEventListener("keydown", handleEscape);
+        popup.removeEventListener("click", handleClickOutside);
+      }
+    };
+    popup.addEventListener("click", handleClickOutside);
+    
+    // Prevent closing when clicking inside popup content
+    const popupContent = popup.querySelector(".popup-content");
+    if (popupContent) {
+      popupContent.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    }
+
     // Đóng popup
-    document.getElementById("closePopupBtn").onclick = () => popup.remove();
+    document.getElementById("closePopupBtn").onclick = () => {
+      popup.remove();
+      document.removeEventListener("keydown", handleEscape);
+      popup.removeEventListener("click", handleClickOutside);
+    };
 
     // Xử lý tạo playlist mới
     document.getElementById("createNewPlaylistBtn").onclick = async () => {
-      this.showCreatePlaylistPopup(songId ?? this.getCurrentSongId());
       popup.remove();
+      document.removeEventListener("keydown", handleEscape);
+      popup.removeEventListener("click", handleClickOutside);
+      this.showCreatePlaylistPopup(songId ?? this.getCurrentSongId());
     };
 
     // ✅ LẤY auth_user_id
@@ -1006,15 +1559,18 @@ export class MusicPlayer {
     const listDiv = document.getElementById("userPlaylistsList");
     listDiv.innerHTML = "";
     if (error || !playlists || playlists.length === 0) {
-      listDiv.innerHTML = "<i>Bạn chưa có playlist nào.</i>";
+      listDiv.innerHTML = "<div style='text-align: center; color: var(--music-text-secondary); padding: 24px;'>Bạn chưa có playlist nào.</div>";
     } else {
       playlists.forEach(pl => {
         const btn = document.createElement("button");
         btn.textContent = pl.name;
+        btn.setAttribute("aria-label", `Thêm vào ${pl.name}`);
         btn.onclick = async () => {
           await this.addSongToPlaylist(songId ?? this.getCurrentSongId(), pl.id);
           this.showNotification("Đã thêm vào playlist!", "success");
           popup.remove();
+          document.removeEventListener("keydown", handleEscape);
+          popup.removeEventListener("click", handleClickOutside);
         };
         listDiv.appendChild(btn);
       });
@@ -1033,29 +1589,81 @@ export class MusicPlayer {
     const oldPopup = document.getElementById("create-playlist-popup");
     if (oldPopup) oldPopup.remove();
 
-    // Tạo popup
+    // Tạo popup với theme support
     const popup = document.createElement("div");
     popup.id = "create-playlist-popup";
     popup.className = "custom-popup";
     popup.innerHTML = `
       <div class="popup-content">
         <h3>Tạo playlist mới</h3>
-        <input id="newPlaylistName" type="text" placeholder="Nhập tên playlist..." style="width:90%;padding:8px;margin-bottom:12px;border-radius:6px;border:1px solid #00ffff;background:#111;color:#fff;" />
-        <div style="text-align:right;">
-          <button id="cancelCreatePlaylistBtn">Hủy</button>
-          <button id="confirmCreatePlaylistBtn" style="margin-left:8px;">Tạo</button>
+        <input 
+          id="newPlaylistName" 
+          type="text" 
+          placeholder="Nhập tên playlist..." 
+          autocomplete="off"
+          aria-label="Tên playlist"
+        />
+        <div class="popup-actions">
+          <button id="cancelCreatePlaylistBtn" class="btn-secondary">Hủy</button>
+          <button id="confirmCreatePlaylistBtn" class="btn-primary">Tạo</button>
         </div>
       </div>
     `;
     document.body.appendChild(popup);
 
-    document.getElementById("cancelCreatePlaylistBtn").onclick = () => popup.remove();
+    // Focus input
+    const input = document.getElementById("newPlaylistName");
+    setTimeout(() => input.focus(), 100);
+
+    // Enter key to submit
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        document.getElementById("confirmCreatePlaylistBtn").click();
+      }
+    });
+
+    // Escape to close
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        popup.remove();
+        document.removeEventListener("keydown", handleEscape);
+        document.removeEventListener("click", handleClickOutside);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+
+    // Click outside to close
+    const handleClickOutside = (e) => {
+      if (e.target === popup) {
+        popup.remove();
+        document.removeEventListener("keydown", handleEscape);
+        popup.removeEventListener("click", handleClickOutside);
+      }
+    };
+    popup.addEventListener("click", handleClickOutside);
+    
+    // Prevent closing when clicking inside popup content
+    const popupContent = popup.querySelector(".popup-content");
+    if (popupContent) {
+      popupContent.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    document.getElementById("cancelCreatePlaylistBtn").onclick = () => {
+      popup.remove();
+      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("click", handleClickOutside);
+    };
+
     document.getElementById("confirmCreatePlaylistBtn").onclick = async () => {
-      const name = document.getElementById("newPlaylistName").value.trim();
+      const name = input.value.trim();
       if (!name) {
         this.showNotification("Vui lòng nhập tên playlist", "warning");
+        input.focus();
         return;
       }
+      
       const playlist = await this.createPlaylist(name);
       if (playlist && playlist.id) {
         if (songId) {
@@ -1065,6 +1673,8 @@ export class MusicPlayer {
           this.showNotification("Tạo playlist thành công!", "success");
         }
         popup.remove();
+        document.removeEventListener("keydown", handleEscape);
+        document.removeEventListener("click", handleClickOutside);
         await this.loadCategory("playlist", "Playlist của bạn");
       }
     };

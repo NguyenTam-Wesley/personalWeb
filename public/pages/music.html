@@ -14,39 +14,96 @@
   </head>
   <body>
     <main class="container music-section">
+      <!-- Header -->
       <h1 class="page-title">🎵 Danh mục</h1>
+      
+      <!-- Theme Toggle -->
+      <div class="music-controls">
+        <button id="themeToggle" class="btn-theme" title="Toggle Dark Mode">
+          <span class="theme-icon">🌙</span>
+          Dark Mode
+        </button>
+      </div>
+
+      <!-- Top Bar: Back + Search -->
       <div class="top-bar">
-        <button id="backBtn">⬅️ Quay lại</button>
+        <button id="backBtn" aria-label="Quay lại">⬅️ Quay lại</button>
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Tìm kiếm bài hát, nghệ sĩ..."
+            autocomplete="off"
+            aria-label="Tìm kiếm bài hát"
+          />
+        </div>
         <div class="volume-control-bar">
-          <canvas id="volumeCanvas" width="100" height="20"></canvas>
-          <button id="eraserBtn">🧹</button>
+          <canvas id="volumeCanvas" width="100" height="20" aria-label="Điều chỉnh âm lượng"></canvas>
+          <button id="eraserBtn" aria-label="Xóa bản vẽ">🧹</button>
         </div>
       </div>
-      <div id="controlsContainer" class="controls-container">
-        <div class="player-controls">
-          <div class="song-info">
-            <span id="currentSongTitle">Chưa chọn bài hát</span>
-          </div>
-          <div class="control-buttons">
-            <button id="prevBtn">⏮️</button>
-            <button id="pauseResumeBtn">▶️</button>
-            <button id="nextBtn">⏭️</button>
-            <button id="repeatBtn">🔁</button>
-            <button id="shuffleBtn">🔀</button>
-            <button id="addToPlaylistBtn" class="add-to-playlist-btn">➕</button>
-          </div>
-          <div class="progress-container">
-            <span id="currentTime">0:00</span>
-            <input type="range" id="progressBar" min="0" value="0" step="1" />
-            <span id="duration">0:00</span>
-          </div>
-        </div>
+
+      <!-- Filter / Category -->
+      <div class="filter-container" id="filterContainer">
+        <!-- Filters will be dynamically added -->
       </div>
+
+      <!-- Main Menu -->
       <div id="mainMenu"></div>
+      
+      <!-- Playlist Container -->
       <div id="playlistContainer"></div>
+
+      <!-- Music List -->
+      <div class="music-list" id="musicList">
+        <!-- Music items will be dynamically added -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-state-icon">🎵</div>
+        <div class="empty-state-text">Chưa có bài hát</div>
+        <div class="empty-state-hint">Chọn playlist để bắt đầu nghe nhạc</div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" id="loadingState" style="display: none;">
+        <div>Đang tải...</div>
+      </div>
     </main>
 
-    <audio id="musicPlayer" style="width:0;height:0;opacity:0;position:absolute;left:-9999px;"></audio>
+    <!-- Player - Sticky Bottom -->
+    <div id="controlsContainer" class="controls-container">
+      <div class="player-controls">
+        <div class="song-info">
+          <span id="currentSongTitle">Chưa chọn bài hát</span>
+        </div>
+        <div class="control-buttons">
+          <button id="shuffleBtn" aria-label="Bật/tắt phát ngẫu nhiên">🔀</button>
+          <button id="prevBtn" aria-label="Bài trước">⏮️</button>
+          <button id="pauseResumeBtn" aria-label="Phát/Tạm dừng">▶️</button>
+          <button id="nextBtn" aria-label="Bài tiếp">⏭️</button>
+          <button id="repeatBtn" aria-label="Bật/tắt lặp lại">🔁</button>
+          <button id="addToPlaylistBtn" class="add-to-playlist-btn" aria-label="Thêm bài hát vào playlist">➕</button>
+        </div>
+        <div class="progress-container">
+          <span id="currentTime" aria-label="Thời gian hiện tại">0:00</span>
+          <input 
+            type="range" 
+            id="progressBar" 
+            min="0" 
+            value="0" 
+            step="1" 
+            aria-label="Thanh tiến trình phát nhạc"
+          />
+          <span id="duration" aria-label="Tổng thời gian">0:00</span>
+        </div>
+      </div>
+    </div>
+
+    <audio id="musicPlayer" style="width:0;height:0;opacity:0;position:absolute;left:-9999px;" preload="metadata"></audio>
 
     <script type="module" src="../js/modules/music_entry.js"></script>
   </body>
