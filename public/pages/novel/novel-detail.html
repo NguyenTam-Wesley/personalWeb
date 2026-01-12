@@ -9,6 +9,15 @@
   <link rel="stylesheet" href="../../style/novel.css">
 </head>
 <body>
+  <!-- Breathing Background Layers -->
+  <div class="novel-bg-breathing">
+    <div class="novel-bg-gradient"></div>
+    <div class="novel-bg-noise"></div>
+  </div>
+
+  <!-- Genre Atmosphere Overlay -->
+  <div class="genre-atmosphere-overlay" id="genre-overlay"></div>
+
   <div class="novel-detail-container">
     <section class="novel-detail-intro">
       <h1 id="novel-title">Tiểu thuyết</h1>
@@ -17,7 +26,7 @@
     </section>
     <main>
       <section id="volume-list"></section>
-      <section id="chapter-list"></section>
+      <section id="chapter-list" class="chapter-list-flow"></section>
     </main>
   </div>
   <script type="module" src="../../js/modules/novel-detail_entry.js"></script>

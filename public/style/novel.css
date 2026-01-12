@@ -1001,4 +1001,366 @@ button#favorite-btn:hover {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== CHAPTER LIST FLOW DESIGN SYSTEM ===== */
+
+/* === IDLE STATE - QUIET SHELF === */
+.chapter-list-flow {
+  position: relative;
+  margin-top: 3rem;
+  padding: 2rem;
+  background: rgba(15, 15, 15, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(243, 241, 204, 0.1);
+  backdrop-filter: blur(10px);
+  animation: chapter-list-breathing 90s ease-in-out infinite;
+  overflow: hidden;
+}
+
+@keyframes chapter-list-breathing {
+  0%, 100% {
+    background: rgba(15, 15, 15, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    background: rgba(15, 15, 15, 0.35);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* === ORIENTATION FLOW - WHERE AM I === */
+.chapter-list-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.chapter-list-title {
+  font-family: 'Times New Roman', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #F3F1CC;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 15px rgba(243, 241, 204, 0.1);
+  animation: title-breathing 60s ease-in-out infinite;
+}
+
+.reader-position-indicator {
+  color: #B8B5B5;
+  font-size: 1rem;
+  font-family: 'Segoe UI', sans-serif;
+  opacity: 0.8;
+  animation: subtitle-gentle 45s ease-in-out infinite;
+  padding: 0.5rem 1rem;
+  background: rgba(243, 241, 204, 0.05);
+  border-radius: 20px;
+  display: inline-block;
+  border: 1px solid rgba(243, 241, 204, 0.1);
+}
+
+/* === PROGRESS MAPPING - VISUAL JOURNEY === */
+.chapter-progress-container {
+  position: relative;
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 241, 204, 0.3) transparent;
+}
+
+.chapter-progress-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chapter-progress-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chapter-progress-container::-webkit-scrollbar-thumb {
+  background: rgba(243, 241, 204, 0.3);
+  border-radius: 3px;
+}
+
+.chapter-progress-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(243, 241, 204, 0.5);
+}
+
+.chapter-item {
+  position: relative;
+  margin: 0.5rem 0;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(.22,.61,.36,1);
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+/* Chapter States */
+.chapter-item.unread {
+  opacity: 0.7;
+  border-color: rgba(243, 241, 204, 0.1);
+}
+
+.chapter-item.read {
+  opacity: 0.5;
+  border-color: rgba(138, 43, 226, 0.2);
+  background: rgba(138, 43, 226, 0.05);
+}
+
+.chapter-item.reading {
+  opacity: 1;
+  border-color: rgba(138, 43, 226, 0.4);
+  background: rgba(138, 43, 226, 0.1);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+  animation: reading-glow 4s ease-in-out infinite;
+}
+
+@keyframes reading-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
+  }
+}
+
+/* === FOCUS FLOW - SINGLE CHAPTER DECISION === */
+.chapter-item:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(243, 241, 204, 0.3);
+  background: rgba(243, 241, 204, 0.05);
+  box-shadow: 0 8px 25px rgba(243, 241, 204, 0.1);
+}
+
+.chapter-item:hover ~ .chapter-item {
+  opacity: 0.6;
+  transform: translateY(1px);
+}
+
+.chapter-title {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #F3F1CC;
+  line-height: 1.4;
+  margin-bottom: 0.3rem;
+}
+
+.chapter-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #B8B5B5;
+  opacity: 0.7;
+}
+
+.chapter-number {
+  font-weight: 600;
+  color: rgba(243, 241, 204, 0.8);
+}
+
+.chapter-duration {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* === DWELL FOCUS - DEEPER ENGAGEMENT === */
+.chapter-item.dwell-focus {
+  transform: translateY(-4px) scale(1.03);
+  border-color: rgba(243, 241, 204, 0.5);
+  background: rgba(243, 241, 204, 0.08);
+  box-shadow: 0 12px 35px rgba(243, 241, 204, 0.15);
+}
+
+.chapter-summary {
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  background: rgba(15, 15, 15, 0.5);
+  border-radius: 6px;
+  border-left: 3px solid rgba(243, 241, 204, 0.3);
+  font-size: 0.95rem;
+  color: #B8B5B5;
+  line-height: 1.5;
+  opacity: 0;
+  animation: summary-fade-in 400ms ease-out forwards;
+}
+
+@keyframes summary-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chapter-mood-tags {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mood-tag {
+  padding: 0.2rem 0.6rem;
+  background: rgba(138, 43, 226, 0.2);
+  color: #F3F1CC;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(138, 43, 226, 0.3);
+}
+
+/* === INTENT FLOW - READINESS CUES === */
+.continue-reading-hint {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  background: rgba(138, 43, 226, 0.9);
+  color: #F3F1CC;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(.22,.61,.36,1);
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(138, 43, 226, 0.3);
+}
+
+.continue-reading-hint.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.continue-reading-hint:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(138, 43, 226, 0.4);
+}
+
+/* === COMMIT FLOW - SMOOTH TRANSITION === */
+.chapter-item.committing {
+  animation: commit-transition 500ms cubic-bezier(.22,.61,.36,1) forwards;
+}
+
+@keyframes commit-transition {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.commit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease-out;
+}
+
+.commit-overlay.active {
+  opacity: 1;
+}
+
+/* === MEMORY FLOW - REMEMBERING THE READER === */
+.chapter-item.recently-read {
+  animation: recently-read-glow 2s ease-out;
+}
+
+@keyframes recently-read-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(138, 43, 226, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(138, 43, 226, 0);
+  }
+}
+
+.reading-progress {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(15, 15, 15, 0.8);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #B8B5B5;
+  border: 1px solid rgba(243, 241, 204, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* === LOADING & ERROR STATES === */
+.chapter-loading {
+  text-align: center;
+  padding: 3rem;
+  color: #B8B5B5;
+  font-style: italic;
+  animation: loading-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loading-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.chapter-error {
+  text-align: center;
+  padding: 2rem;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  margin: 1rem 0;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .chapter-list-flow {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .chapter-item {
+    padding: 0.8rem 1rem;
+  }
+
+  .chapter-title {
+    font-size: 1rem;
+  }
+
+  .chapter-meta {
+    font-size: 0.85rem;
+  }
+
+  .continue-reading-hint {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
 } 
