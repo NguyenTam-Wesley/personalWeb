@@ -1,39 +1,4 @@
-/* Music Player Page - Following UX Rules */
-
-/* Color System */
-:root {
-    --music-primary: #4e7cff;
-    --music-primary-hover: #3d6bff;
-    --music-bg-light: #ffffff;
-    --music-bg-dark: #1f2937;
-    --music-card-light: #f8fafc;
-    --music-card-dark: #2d3748;
-    --music-text-light: #1a202c;
-    --music-text-dark: #e5e7eb;
-    --music-text-secondary-light: #4a5568;
-    --music-text-secondary-dark: #9ca3af;
-    --music-border-light: #e5e7eb;
-    --music-border-dark: #374151;
-    --music-playing-bg: rgba(78, 124, 255, 0.1);
-    --music-hover-bg: rgba(78, 124, 255, 0.05);
-}
-
-/* Theme Variables */
-[data-theme="light"] {
-    --music-bg: var(--music-bg-light);
-    --music-card: var(--music-card-light);
-    --music-text: var(--music-text-light);
-    --music-text-secondary: var(--music-text-secondary-light);
-    --music-border: var(--music-border-light);
-}
-
-[data-theme="dark"] {
-    --music-bg: var(--music-bg-dark);
-    --music-card: var(--music-card-dark);
-    --music-text: var(--music-text-dark);
-    --music-text-secondary: var(--music-text-secondary-dark);
-    --music-border: var(--music-border-dark);
-}
+/* Music Player Page - Using Global Theme System */
 
 /* Base Styles */
 * {
@@ -46,8 +11,8 @@ body,
 html {
     height: 100%;
     font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--music-text);
-    background: var(--music-bg);
+    color: var(--text-primary);
+    background: var(--bg-primary);
     transition: background-color 0.3s ease;
 }
 
@@ -74,7 +39,7 @@ html {
     padding: 12px 24px;
     border: none;
     border-radius: 12px;
-    background: linear-gradient(135deg, var(--music-primary) 0%, #f093fb 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #f093fb 100%);
     color: white;
     font-size: 14px;
     font-weight: 600;
@@ -93,7 +58,7 @@ html {
     font-size: 32px;
     font-weight: 600;
     margin-bottom: 24px;
-    color: var(--music-text);
+    color: var(--text-primary);
     text-align: center;
 }
 
@@ -107,10 +72,10 @@ html {
 
 #backBtn {
     padding: 10px 16px;
-    background: var(--music-card);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
-    color: var(--music-text);
+    color: var(--text-primary);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -118,12 +83,12 @@ html {
 }
 
 #backBtn:hover {
-    background: var(--music-hover-bg);
-    border-color: var(--music-primary);
+    background: var(--hover-bg);
+    border-color: var(--primary);
 }
 
 #backBtn:focus {
-    outline: 2px solid var(--music-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -139,16 +104,16 @@ html {
     height: 44px;
     padding: 0 16px 0 44px;
     font-size: 16px;
-    border: 2px solid var(--music-border);
+    border: 2px solid var(--border-light);
     border-radius: 8px;
-    background: var(--music-card);
-    color: var(--music-text);
+    background: var(--bg-card);
+    color: var(--text-primary);
     transition: all 0.15s ease;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: var(--music-primary);
+    border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(78, 124, 255, 0.1);
 }
 
@@ -158,7 +123,7 @@ html {
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
     pointer-events: none;
 }
 
@@ -172,10 +137,10 @@ html {
 
 .filter-btn {
     padding: 8px 16px;
-    background: var(--music-card);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 20px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -183,14 +148,14 @@ html {
 }
 
 .filter-btn:hover {
-    background: var(--music-hover-bg);
-    border-color: var(--music-primary);
+    background: var(--hover-bg);
+    border-color: var(--primary);
 }
 
 .filter-btn.active {
-    background: var(--music-primary);
+    background: var(--primary);
     color: white;
-    border-color: var(--music-primary);
+    border-color: var(--primary);
 }
 
 /* Music List - 70-80% attention */
@@ -208,7 +173,7 @@ html {
     gap: 12px;
     padding: 12px 16px;
     height: 64px;
-    background: var(--music-card);
+    background: var(--bg-card);
     border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
@@ -217,18 +182,18 @@ html {
 }
 
 .music-item:hover {
-    background: var(--music-hover-bg);
-    border-color: var(--music-border);
+    background: var(--hover-bg);
+    border-color: var(--border-light);
 }
 
 .music-item:focus {
-    outline: 2px solid var(--music-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
 .music-item.playing {
     background: var(--music-playing-bg);
-    border-color: var(--music-primary);
+    border-color: var(--primary);
 }
 
 .music-item.playing::before {
@@ -238,7 +203,7 @@ html {
     top: 0;
     bottom: 0;
     width: 4px;
-    background: var(--music-primary);
+    background: var(--primary);
     border-radius: 8px 0 0 8px;
 }
 
@@ -248,7 +213,7 @@ html {
     height: 48px;
     border-radius: 6px;
     object-fit: cover;
-    background: var(--music-border);
+    background: var(--border-light);
     flex-shrink: 0;
 }
 
@@ -265,7 +230,7 @@ html {
 .music-name {
     font-size: 15px;
     font-weight: 500;
-    color: var(--music-text);
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -273,7 +238,7 @@ html {
 
 .music-artist {
     font-size: 13px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -282,7 +247,7 @@ html {
 /* Duration */
 .music-duration {
     font-size: 13px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
     min-width: 50px;
     text-align: right;
     flex-shrink: 0;
@@ -322,8 +287,8 @@ html {
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--music-card);
-    border-top: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-light);
     padding: 16px;
     z-index: 1000;
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
@@ -341,7 +306,7 @@ html {
     text-align: center;
     font-size: 14px;
     font-weight: 500;
-    color: var(--music-text);
+    color: var(--text-primary);
     min-height: 20px;
 }
 
@@ -357,8 +322,8 @@ html {
     height: 44px;
     border: none;
     border-radius: 50%;
-    background: var(--music-bg);
-    color: var(--music-text);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     font-size: 20px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -369,12 +334,12 @@ html {
 }
 
 .control-buttons button:hover {
-    background: var(--music-hover-bg);
+    background: var(--hover-bg);
     transform: scale(1.1);
 }
 
 .control-buttons button:focus {
-    outline: 2px solid var(--music-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -385,7 +350,7 @@ html {
 #pauseResumeBtn {
     width: 56px;
     height: 56px;
-    background: var(--music-primary);
+    background: var(--primary);
     color: white;
     font-size: 24px;
 }
@@ -404,7 +369,7 @@ html {
 
 .progress-container span {
     font-size: 12px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
     min-width: 40px;
     text-align: center;
 }
@@ -413,7 +378,7 @@ html {
     flex: 1;
     height: 6px;
     border-radius: 3px;
-    background: var(--music-border);
+    background: var(--border-light);
     outline: none;
     cursor: pointer;
     -webkit-appearance: none;
@@ -426,7 +391,7 @@ html {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: var(--music-primary);
+    background: var(--primary);
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -439,7 +404,7 @@ html {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: var(--music-primary);
+    background: var(--primary);
     cursor: pointer;
     border: none;
     transition: all 0.15s ease;
@@ -465,8 +430,8 @@ html {
 
 #eraserBtn {
     padding: 8px 12px;
-    background: var(--music-card);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
@@ -475,15 +440,15 @@ html {
 }
 
 #eraserBtn:hover {
-    background: var(--music-hover-bg);
-    border-color: var(--music-primary);
+    background: var(--hover-bg);
+    border-color: var(--primary);
 }
 
 /* Empty State */
 .empty-state {
     text-align: center;
     padding: 64px 24px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
 }
 
 .empty-state-icon {
@@ -499,7 +464,7 @@ html {
 
 .empty-state-hint {
     font-size: 14px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
 }
 
 /* Loading State */
@@ -508,12 +473,12 @@ html {
     justify-content: center;
     align-items: center;
     padding: 48px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
 }
 
 .skeleton-item {
     height: 64px;
-    background: var(--music-card);
+    background: var(--bg-card);
     border-radius: 8px;
     margin-bottom: 4px;
     animation: skeleton-loading 1.5s ease-in-out infinite;
@@ -532,7 +497,7 @@ html {
 .error-state {
     text-align: center;
     padding: 48px 24px;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
 }
 
 .error-icon {
@@ -550,7 +515,7 @@ html {
     margin-bottom: 24px;
     font-size: 24px;
     font-weight: 600;
-    color: var(--music-text);
+    color: var(--text-primary);
     text-align: center;
 }
 
@@ -564,15 +529,15 @@ html {
 
 .menu-item {
     padding: 16px;
-    background: var(--music-card);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s ease;
     text-align: left;
     font-size: 15px;
     font-weight: 500;
-    color: var(--music-text);
+    color: var(--text-primary);
     min-height: 56px;
     display: flex;
     align-items: center;
@@ -580,22 +545,22 @@ html {
 }
 
 .menu-item:hover {
-    background: var(--music-hover-bg);
-    border-color: var(--music-primary);
+    background: var(--hover-bg);
+    border-color: var(--primary);
 }
 
 .menu-item:focus {
-    outline: 2px solid var(--music-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
 .no-results {
     padding: 32px 16px;
     text-align: center;
-    color: var(--music-text-secondary);
+    color: var(--text-secondary);
     font-size: 15px;
-    background: var(--music-card);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     margin: 16px 0;
 }
@@ -674,7 +639,7 @@ html {
 .control-buttons button:focus-visible,
 .filter-btn:focus-visible,
 .menu-item:focus-visible {
-    outline: 2px solid var(--music-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -719,8 +684,8 @@ html {
 }
 
 .popup-content {
-    background: var(--music-card);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 32px;
     max-width: 480px;
@@ -733,7 +698,7 @@ html {
 .popup-content h3 {
     font-size: 24px;
     font-weight: 600;
-    color: var(--music-text);
+    color: var(--text-primary);
     margin: 0 0 24px 0;
     text-align: center;
 }
@@ -743,10 +708,10 @@ html {
     height: 44px;
     padding: 0 16px;
     font-size: 16px;
-    border: 2px solid var(--music-border);
+    border: 2px solid var(--border-light);
     border-radius: 8px;
-    background: var(--music-bg);
-    color: var(--music-text);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     margin-bottom: 16px;
     transition: all 0.15s ease;
     box-sizing: border-box;
@@ -754,7 +719,7 @@ html {
 
 .popup-content input:focus {
     outline: none;
-    border-color: var(--music-primary);
+    border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(78, 124, 255, 0.1);
 }
 
@@ -770,7 +735,7 @@ html {
 }
 
 .popup-content .btn-primary {
-    background: var(--music-primary);
+    background: var(--primary);
     color: white;
 }
 
@@ -780,13 +745,13 @@ html {
 }
 
 .popup-content .btn-secondary {
-    background: var(--music-card);
-    color: var(--music-text);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
 }
 
 .popup-content .btn-secondary:hover {
-    background: var(--music-hover-bg);
+    background: var(--hover-bg);
 }
 
 .popup-actions {
@@ -809,23 +774,23 @@ html {
     width: 100%;
     padding: 12px 16px;
     text-align: left;
-    background: var(--music-card);
-    border: 1px solid var(--music-border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
-    color: var(--music-text);
+    color: var(--text-primary);
     cursor: pointer;
     transition: all 0.15s ease;
 }
 
 #userPlaylistsList button:hover {
-    background: var(--music-hover-bg);
-    border-color: var(--music-primary);
+    background: var(--hover-bg);
+    border-color: var(--primary);
 }
 
 #createNewPlaylistBtn {
     width: 100%;
     margin-bottom: 16px;
-    background: linear-gradient(135deg, var(--music-primary) 0%, #f093fb 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #f093fb 100%);
     color: white;
     font-weight: 600;
 }
@@ -848,8 +813,8 @@ html {
     height: 44px;
     border: none;
     border-radius: 50%;
-    background: var(--music-bg);
-    color: var(--music-text);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     font-size: 18px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -860,13 +825,13 @@ html {
 }
 
 .add-to-playlist-btn:hover {
-    background: var(--music-primary);
+    background: var(--primary);
     color: white;
     transform: scale(1.1);
 }
 
 .add-to-playlist-btn:focus {
-    outline: 2px solid var(--music-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 
@@ -879,7 +844,7 @@ html {
 /* Create Playlist Button */
 .create-playlist-button {
     padding: 12px 24px;
-    background: linear-gradient(135deg, var(--music-primary) 0%, #f093fb 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #f093fb 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -898,7 +863,7 @@ html {
 }
 
 .create-playlist-button:focus {
-    outline: 2px solid var(--music-primary);
+    outline: 2px solid var(--primary);
     outline-offset: 2px;
 }
 

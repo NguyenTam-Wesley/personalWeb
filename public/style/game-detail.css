@@ -1,7 +1,47 @@
-/* Game Detail Page Styles */
-.game-detail-container {
+/* Game Detail Page Styles - Using Global Theme System */
+
+/* ==========================================
+   PAGE WRAPPER - PRODUCTION RULE
+========================================== */
+.game-detail-page {
     min-height: 100vh;
-    background: #f5f7fa;
+    background: var(--bg-primary);
+    width: 100%;
+}
+
+/* Game Controls */
+.game-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.btn-theme {
+    background: var(--bg-card);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+    color: var(--text-primary);
+}
+
+.btn-theme:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.theme-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
 }
 
 /* Hero Section */
@@ -9,13 +49,12 @@
     position: relative;
     height: 60vh;
     min-height: 400px;
-    background-size: cover;
-    background-position: center;
+    background: var(--bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: white;
+    color: var(--text-primary);
     overflow: hidden;
 }
 
@@ -26,7 +65,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+    background: linear-gradient(to bottom, var(--primary-light), var(--primary-ultra-light));
     z-index: 1;
 }
 
@@ -34,38 +73,40 @@
     position: relative;
     z-index: 2;
     max-width: 800px;
-    padding: 0 20px;
+    padding: 0 24px;
+    color: var(--text-primary);
 }
 
 .game-hero h1 {
     font-size: 4rem;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    color: var(--text-primary);
 }
 
 .game-subtitle {
     font-size: 1.5rem;
-    margin: 10px 0 0;
-    opacity: 0.9;
+    margin: 8px 0 0;
+    color: var(--text-secondary);
 }
 
 /* Content Sections */
 .game-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 48px 24px;
 }
 
 .game-content section {
-    margin-bottom: 60px;
+    margin-bottom: 64px;
 }
 
 .game-content h2 {
     font-size: 2rem;
-    color: #333;
-    margin-bottom: 30px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #eee;
+    color: var(--text-color, #333);
+    margin-bottom: 32px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border-light);
 }
 
 /* Overview Section */
@@ -79,16 +120,20 @@
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
+    gap: 32px;
+    margin-top: 32px;
 }
 
 .feature-card {
-    background: white;
-    padding: 25px;
+    background: var(--bg-card);
+    padding: 24px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md);
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: var(--text-primary);
 }
 
 .feature-card:hover {
@@ -97,7 +142,7 @@
 
 .feature-card h3 {
     color: #333;
-    margin: 0 0 15px;
+    margin: 0 0 16px;
     font-size: 1.3rem;
 }
 
@@ -123,20 +168,24 @@
 .modes-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
+    gap: 24px;
+    margin-top: 32px;
 }
 
 .mode-card {
-    background: white;
-    padding: 20px;
+    background: var(--bg-card);
+    padding: 24px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: var(--text-primary);
 }
 
 .mode-card h3 {
     color: #333;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     font-size: 1.2rem;
 }
 
@@ -151,16 +200,20 @@
 .characters-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
+    gap: 32px;
+    margin-top: 32px;
 }
 
 .character-card {
-    background: white;
+    background: var(--bg-card);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-lg);
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: var(--text-primary);
 }
 
 .character-card:hover {
@@ -174,15 +227,15 @@
 }
 
 .character-card h3 {
-    margin: 15px 0 5px;
-    padding: 0 20px;
+    margin: 16px 0 8px;
+    padding: 0 24px;
     color: #333;
     font-size: 1.2rem;
 }
 
 .character-card p {
-    margin: 0 0 15px;
-    padding: 0 20px;
+    margin: 0 0 16px;
+    padding: 0 24px;
     color: #666;
     font-size: 0.9rem;
 }
@@ -251,20 +304,21 @@
 
 /* Crosshair Section */
 .game-crosshair {
-    margin-bottom: 60px;
+    margin-bottom: 64px;
 }
 
 .crosshair-container {
-    background: white;
+    background: var(--bg-card);
     border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
 }
 
 .crosshair-section {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
 }
 
 .crosshair-section h3 {
@@ -276,9 +330,9 @@
 .crosshair-code {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 16px;
     background: #f5f5f5;
-    padding: 15px;
+    padding: 16px;
     border-radius: 8px;
     font-family: 'Consolas', monospace;
 }
@@ -294,7 +348,7 @@
     background: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
@@ -323,7 +377,7 @@
     color: #007bff;
     text-decoration: none;
     font-weight: 500;
-    margin-top: 10px;
+    margin-top: 8px;
     transition: all 0.3s ease;
 }
 
@@ -347,7 +401,7 @@
     }
 
     .game-content {
-        padding: 30px 15px;
+        padding: 32px 16px;
     }
 
     .features-grid,
@@ -358,7 +412,7 @@
     }
 
     .crosshair-container {
-        padding: 20px;
+        padding: 24px;
     }
 
     .crosshair-code {
@@ -388,7 +442,7 @@
 @media (max-width: 700px) {
     .maps-grid {
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
     }
     .map-card img {
         width: 100%;

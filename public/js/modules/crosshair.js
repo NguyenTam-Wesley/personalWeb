@@ -1,4 +1,5 @@
 import { supabase } from '../supabase/supabase.js';
+import { themeToggle } from '../components/themeToggle.js';
 
 export class CrosshairManager {
     constructor() {
@@ -14,6 +15,9 @@ export class CrosshairManager {
     }
 
     async init() {
+        // Initialize theme toggle
+        themeToggle.initialize();
+
         await this.loadCrosshairs();
         this.setupFilters();
         this.setupEventListeners();

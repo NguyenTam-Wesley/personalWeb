@@ -1,13 +1,22 @@
 @import 'variables.css';
 
 /* ===============================
+   PAGE WRAPPER - PRODUCTION RULE
+================================ */
+.games-page {
+  min-height: 100vh;
+  background: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/game-bg.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvZ2FtZS1iZy5hdmlmIiwiaWF0IjoxNzY4MTE5MzcwLCJleHAiOjg2NTc2ODAzMjk3MH0.39nl7-9dSCXY95tLwFhVFb88tgnvzjdWgF8004LCtj4')
+    no-repeat center center fixed;
+  background-size: cover;
+  width: 100%;
+}
+
+/* ===============================
    BASE
 ================================ */
 body {
   font-family: 'Inter', sans-serif;
-  background: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/game-bg.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvZ2FtZS1iZy5hdmlmIiwiaWF0IjoxNzY4MTE5MzcwLCJleHAiOjg2NTc2ODAzMjk3MH0.39nl7-9dSCXY95tLwFhVFb88tgnvzjdWgF8004LCtj4')
-    no-repeat center center fixed;
-  background-size: cover;
+  background: var(--bg-primary);
 
   color: var(--text-primary);
   margin: 0;
@@ -25,9 +34,6 @@ body {
   flex: 1;
   width: 100%;
   margin: 0;
-
-  background: var(--overlay-bg);
-  backdrop-filter: blur(5px);
 
   padding-top: var(--container-padding-top);
   padding-bottom: calc(
