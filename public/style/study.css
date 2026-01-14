@@ -74,16 +74,43 @@ body {
   font-weight: 500;
   color: var(--text-primary);
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition:
+    transform 0.5s cubic-bezier(.22,1,.36,1),
+    box-shadow 0.5s ease,
+    filter 0.5s ease;
   text-align: left;
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.subjects-grid button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.08),
+      rgba(0,0,0,0.5)
+    );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 .subjects-grid button:hover {
   background: var(--overlay-bg);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  transform: translateY(4px) scale(0.98);
+  filter: brightness(0.85) blur(0.3px);
+  box-shadow:
+    inset 0 10px 20px rgba(0,0,0,0.35),
+    0 2px 8px rgba(0,0,0,0.15);
   border-color: var(--accent-primary);
+}
+
+.subjects-grid button:hover::after {
+  opacity: 1;
 }
 
 .subjects-grid button:focus-visible {
@@ -167,14 +194,41 @@ body {
   border: 1px solid var(--border-light);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
-  transition: all var(--transition-normal);
+  transition:
+    transform 0.5s cubic-bezier(.22,1,.36,1),
+    box-shadow 0.5s ease,
+    filter 0.5s ease;
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.document-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.08),
+      rgba(0,0,0,0.5)
+    );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 .document-item:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  transform: translateY(4px) scale(0.98);
+  filter: brightness(0.85) blur(0.3px);
+  box-shadow:
+    inset 0 10px 20px rgba(0,0,0,0.35),
+    0 2px 8px rgba(0,0,0,0.15);
   border-color: var(--accent-primary);
+}
+
+.document-item:hover::after {
+  opacity: 1;
 }
 
 .document-title {

@@ -267,12 +267,37 @@ nav {
   text-decoration: none;
   border-radius: var(--border-radius-sm);
   transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
 }
 
 .user-dropdown .dropdown-item:hover {
   background: var(--overlay-bg);
   color: var(--accent-primary);
   transform: translateX(5px);
+}
+
+/* Water Flow Effect cho Dropdown Items */
+.user-dropdown .dropdown-item::before {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,0.15),
+    transparent 70%
+  );
+  transform: translateX(-60%) translateY(10%);
+  opacity: 0;
+  transition:
+    transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.8s ease;
+}
+
+.user-dropdown .dropdown-item:hover::before {
+  transform: translateX(60%) translateY(-10%);
+  opacity: 1;
 }
 
 /* ==================== AUTH BUTTONS ==================== */
@@ -454,6 +479,15 @@ footer .socials a:hover {
     }
   }
 
+  /* Water Flow Effect - Reduce opacity on tablet */
+  .user-dropdown .dropdown-item::before {
+    opacity: 0.08;
+  }
+
+  .user-dropdown .dropdown-item:hover::before {
+    opacity: 0.8;
+  }
+
   /* Hide scrollbar on touch devices */
   @media (hover: none) and (pointer: coarse) {
     .nav-links::-webkit-scrollbar {
@@ -476,6 +510,11 @@ footer .socials a:hover {
 
   .nav-logo {
     font-size: 1.1rem;
+  }
+
+  /* Water Flow Effect - Disable on small mobile */
+  .user-dropdown .dropdown-item::before {
+    display: none;
   }
 
   footer .socials a {

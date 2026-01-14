@@ -24,13 +24,6 @@ html {
     margin: 0 auto;
 }
 
-/* Theme Toggle */
-.music-controls {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 100;
-}
 
 
 /* Header / Search */
@@ -551,10 +544,6 @@ html {
         padding: 80px 12px 160px 12px;
     }
 
-    .music-controls {
-        top: 16px;
-        right: 16px;
-    }
 
 
     .page-title {

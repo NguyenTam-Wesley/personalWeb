@@ -139,11 +139,6 @@ button:active {
 }
 
 /* Login/Signup specific styles */
-.nav-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
 
 .login-btn a {
   color: var(--text-dark);
