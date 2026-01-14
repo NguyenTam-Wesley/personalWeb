@@ -15,7 +15,7 @@
    BASE
 ================================ */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-primary);
 
   color: var(--text-primary);

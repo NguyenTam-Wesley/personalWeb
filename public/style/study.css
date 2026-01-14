@@ -1,18 +1,34 @@
-@import 'variables.css';
+/* ==========================================================================
+   STUDY PAGE STYLES - ThemeToggle Compatible
+   ========================================================================== */
 
-/* Base styles */
-body {
-  font-family: 'Inter', sans-serif;
-  background: url('https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/study/study-bg2.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL3N0dWR5L3N0dWR5LWJnMi5hdmlmIiwiaWF0IjoxNzY4MDk3NDQyLCJleHAiOjg4MTY4MDExMDQyfQ.qfFXT1Ur5YaO7u-LsoMSRPSbh6sywlsUUWJdhd8j96w') no-repeat center center fixed;
-  background-size: cover;
-  color: var(--text-primary);
-  line-height: 1.6;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
+/* Layout Variables (not theme-specific) */
+:root {
+  --header-height: 4rem;
+  --footer-height: 3.5rem;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1200px;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --transition-normal: 0.3s ease;
+  --shadow-glow: 0 0 10px var(--primary);
 }
-
+body,
+html {
+    height: 100%;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: background-color 0.3s ease;
+}
 /* Fix background-attachment fixed lag on mobile */
 @media (max-width: 768px) {
   body {
@@ -26,7 +42,7 @@ body {
   padding: var(--header-height) 0 var(--footer-height);
   width: 100%;
   margin: 0;
-  background: var(--overlay-bg);
+  background: var(--bg-overlay);
   backdrop-filter: blur(5px);
 }
 
@@ -34,13 +50,13 @@ body {
   text-align: center;
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-xl);
-  background: var(--header-bg);
+  background: var(--bg-card);
   box-shadow: var(--shadow-md);
 }
 
 .study-intro h1 {
   font-size: 2.5rem;
-  color: var(--accent-primary);
+  color: var(--primary);
   margin-bottom: var(--spacing-sm);
   font-weight: 600;
   text-shadow: var(--shadow-glow);
@@ -66,7 +82,7 @@ body {
 }
 
 .subjects-grid button {
-  background: var(--overlay-bg);
+  background: var(--bg-overlay);
   border: 1px solid var(--border-light);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
@@ -79,7 +95,7 @@ body {
     box-shadow 0.5s ease,
     filter 0.5s ease;
   text-align: left;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -100,13 +116,13 @@ body {
 }
 
 .subjects-grid button:hover {
-  background: var(--overlay-bg);
+  background: var(--bg-overlay);
   transform: translateY(4px) scale(0.98);
   filter: brightness(0.85) blur(0.3px);
   box-shadow:
     inset 0 10px 20px rgba(0,0,0,0.35),
     0 2px 8px rgba(0,0,0,0.15);
-  border-color: var(--accent-primary);
+  border-color: var(--primary);
 }
 
 .subjects-grid button:hover::after {
@@ -114,16 +130,16 @@ body {
 }
 
 .subjects-grid button:focus-visible {
-  outline: 2px solid var(--accent-primary);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 /* Controls Panel */
 .controls-panel {
-  background: var(--overlay-bg);
+  background: var(--bg-overlay);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
   border-top: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
 }
@@ -145,13 +161,13 @@ body {
   border-radius: var(--border-radius-sm);
   font-size: 1rem;
   transition: border-color var(--transition-normal);
-  background: var(--overlay-bg);
+  background: var(--bg-card);
   color: var(--text-primary);
 }
 
 #searchInput:focus {
   outline: none;
-  border-color: var(--accent-primary);
+  border-color: var(--primary);
   box-shadow: var(--shadow-glow);
 }
 
@@ -167,14 +183,14 @@ body {
   border: 1px solid var(--border-light);
   border-radius: var(--border-radius-sm);
   font-size: 1rem;
-  background: var(--overlay-bg);
+  background: var(--bg-card);
   color: var(--text-primary);
   cursor: pointer;
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: var(--accent-primary);
+  border-color: var(--primary);
   box-shadow: var(--shadow-glow);
 }
 
@@ -190,7 +206,7 @@ body {
 }
 
 .document-item {
-  background: var(--overlay-bg);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
@@ -198,7 +214,7 @@ body {
     transform 0.5s cubic-bezier(.22,1,.36,1),
     box-shadow 0.5s ease,
     filter 0.5s ease;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
@@ -224,7 +240,7 @@ body {
   box-shadow:
     inset 0 10px 20px rgba(0,0,0,0.35),
     0 2px 8px rgba(0,0,0,0.15);
-  border-color: var(--accent-primary);
+  border-color: var(--primary);
 }
 
 .document-item:hover::after {
@@ -240,19 +256,19 @@ body {
 
 .document-item a {
   display: inline-block;
-  color: var(--accent-primary);
+  color: var(--primary);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
   padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--accent-primary);
+  border: 1px solid var(--primary);
   border-radius: var(--border-radius-sm);
   transition: all var(--transition-normal);
 }
 
 .document-item a:hover {
-  background: var(--accent-primary);
-  color: var(--text-dark);
+  background: var(--primary);
+  color: var(--text-inverse);
   box-shadow: var(--shadow-glow);
 }
 
@@ -260,7 +276,7 @@ body {
 .loading {
   text-align: center;
   padding: var(--spacing-xl);
-  color: var(--accent-primary);
+  color: var(--primary);
   font-size: 1.1rem;
   animation: pulse 1.5s infinite;
 }
@@ -268,18 +284,18 @@ body {
 .error-message {
   text-align: center;
   padding: var(--spacing-lg);
-  color: #e74c3c;
-  background: rgba(231, 76, 60, 0.1);
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
   border-radius: var(--border-radius-md);
   margin: var(--spacing-sm) 0;
-  border: 1px solid #e74c3c;
+  border: 1px solid var(--error);
 }
 
 .error-message button {
   margin-top: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: #e74c3c;
-  color: #fff;
+  background: var(--error);
+  color: var(--text-inverse);
   border: none;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -288,7 +304,7 @@ body {
 }
 
 .error-message button:hover {
-  background: #c0392b;
+  background: #dc2626;
   box-shadow: var(--shadow-glow);
 }
 
