@@ -67,6 +67,33 @@
       </div>
     </main>
 
+    <!-- Queue Panel - Slide Out -->
+    <div id="queuePanel" class="queue-panel">
+      <div class="queue-panel-header">
+        <h3>📋 Hàng đợi phát</h3>
+        <div class="queue-panel-actions">
+          <button id="clearQueueBtn" class="queue-clear-btn" title="Xóa tất cả">
+            🗑️
+          </button>
+          <button id="closeQueueBtn" class="queue-close-btn" title="Đóng">
+            ✕
+          </button>
+        </div>
+      </div>
+      <div class="queue-list" id="queueList">
+        <div class="queue-empty">
+          <div class="queue-empty-icon">📭</div>
+          <div class="queue-empty-text">Hàng đợi trống</div>
+          <div class="queue-empty-hint">Thêm bài hát để tạo hàng đợi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Queue Toggle Button -->
+    <button id="queueToggleBtn" class="queue-toggle-btn" title="Hàng đợi phát">
+      📋 <span class="queue-count">0</span>
+    </button>
+
     <!-- Player - Sticky Bottom -->
     <div id="controlsContainer" class="controls-container">
       <div class="player-controls">
