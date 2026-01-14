@@ -8,17 +8,25 @@
     <link rel="stylesheet" href="../../../../style/games.css" />
     <link rel="stylesheet" href="../../../../style/game-detail.css" />
     <link rel="stylesheet" href="../../../../style/hsr-mode.css" />
+    <link rel="stylesheet" href="../../../../style/themes.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
 </head>
 <body>
     <div class="game-detail-page">
         <div class="game-detail-container hsr-mode-container">
-        <div class="game-hero" style="background-image: url('https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/hsr_card.png?v=1749924888888')">
+        <div class="game-hero">
             <div class="game-hero-content">
                 <h1>Ảo ảnh tận thế (Apocalyptic Shadow - AS)</h1>
                 <p class="game-subtitle">Endgame Content in Honkai: Star Rail</p>
             </div>
+        </div>
+
+        <!-- Theme Toggle -->
+        <div class="game-controls">
+            <button id="themeToggle" class="theme-toggle-btn" title="Toggle Dark Mode">
+                <span class="theme-icon">🌙</span>
+            </button>
         </div>
 
         <div class="game-content">
@@ -55,10 +63,14 @@
 
     <script type="module">
         import components from '../../../../js/components/components.js';
+        import { themeToggle } from '../../../../js/components/themeToggle.js';
         import { HsrModeManager } from '../../../../js/modules/hsr-mode.js';
-        
+
         // Initialize components
         components.init();
+
+        // Initialize theme toggle
+        themeToggle.initialize();
 
         // Initialize page specific functionality
         new HsrModeManager().init();

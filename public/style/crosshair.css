@@ -45,41 +45,15 @@
     z-index: 1000;
 }
 
-.btn-theme {
-    background: var(--bg-card);
-    border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    color: var(--text-primary);
-}
-
-.btn-theme:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.theme-icon {
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
 
 /* Crosshair Filters - Visual Hierarchy */
 .crosshair-filters {
-    margin: 32px 0 48px 0;
-    padding: 24px;
-    background: var(--bg-card);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border: 1px solid var(--border-light);
+    margin: 32px 0 48px 0 !important;
+    padding: 24px !important;
+    background: var(--bg-primary) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid var(--border-light) !important;
 }
 
 .crosshair-filters .search-box {
@@ -95,6 +69,7 @@
     font-size: 16px;
     transition: all 0.3s ease;
     background: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 .crosshair-filters .search-box input:focus {
@@ -122,7 +97,8 @@
     padding: 12px 16px;
     border: 2px solid var(--border-light);
     border-radius: 8px;
-    background: var(--bg-card);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     font-size: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -144,10 +120,10 @@
 }
 
 .crosshair-card {
-    background: var(--bg-card);
+    background: var(--bg-primary);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
     border: 1px solid var(--border-light);
     width: 100%;
@@ -156,7 +132,7 @@
 
 .crosshair-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    box-shadow: var(--shadow-lg);
 }
 
 .crosshair-info {
@@ -190,7 +166,7 @@
     border-radius: 12px;
     font-size: 12px;
     font-weight: 500;
-    color: white;
+    color: var(--text-inverse);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -235,7 +211,7 @@
 
 .copy-button {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
-    color: white;
+    color: var(--text-inverse);
     border: none;
     padding: 12px 24px;
     border-radius: 8px;
@@ -293,7 +269,7 @@
     margin-top: 24px;
     padding: 12px 24px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
-    color: white;
+    color: var(--text-inverse);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -322,16 +298,16 @@
     gap: 16px;
     margin-top: 48px;
     padding: 24px;
-    background: var(--bg-card);
+    background: var(--bg-primary);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-light);
 }
 
 .pagination-btn {
     padding: 12px 24px;
     border: 2px solid var(--border-light);
-    background: var(--bg-card);
+    background: var(--bg-primary);
     color: var(--text-primary);
     border-radius: 8px;
     cursor: pointer;
@@ -342,7 +318,7 @@
 
 .pagination-btn:hover:not(:disabled) {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
-    color: white;
+    color: var(--text-inverse);
     border-color: transparent;
     transform: translateY(-2px);
 }
@@ -360,7 +336,7 @@
 .page-number {
     padding: 12px 16px;
     border: 2px solid var(--border-light);
-    background: var(--bg-card);
+    background: var(--bg-primary);
     color: var(--text-primary);
     border-radius: 8px;
     cursor: pointer;
@@ -371,23 +347,23 @@
 
 .page-number:hover {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
-    color: white;
+    color: var(--text-inverse);
     border-color: transparent;
     transform: translateY(-2px);
 }
 
 .page-number.active {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
-    color: white;
+    color: var(--text-inverse);
     border-color: transparent;
 }
 
 /* Guide Section - Breathing room */
 .crosshair-guide {
-    background: var(--bg-card);
+    background: var(--bg-primary);
     border-radius: 16px;
     padding: 32px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-md);
     border: 1px solid var(--border-light);
     margin-top: 64px;
 }

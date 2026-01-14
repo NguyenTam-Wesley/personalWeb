@@ -26,7 +26,6 @@ class HomePage {
     this.setupCursorRecognition();
     this.setupLivingFeatures();
     this.setupCtaReaction();
-    this.setupNewsletter();
   }
 
   setupSmoothScroll() {
@@ -222,27 +221,6 @@ class HomePage {
     });
   }
 
-  setupNewsletter() {
-    const newsletterForm = document.querySelector('.newsletter-signup');
-    const newsletterInput = document.querySelector('.newsletter-input');
-
-    if (newsletterForm && newsletterInput) {
-      newsletterForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const email = newsletterInput.value.trim();
-        if (email) {
-          // Simulate successful subscription
-          newsletterInput.value = '';
-          newsletterInput.placeholder = 'Cảm ơn bạn đã đăng ký!';
-
-          setTimeout(() => {
-            newsletterInput.placeholder = 'Nhập email của bạn';
-          }, 3000);
-        }
-      });
-    }
-  }
 
   setupCursorRecognition() {
     // Create cursor trail system
@@ -307,7 +285,7 @@ class HomePage {
       }
 
       // Check if hovering over interactive elements for halo effect
-      const interactiveElements = document.querySelectorAll('.feature-card, .testimonial-card, .post-card');
+      const interactiveElements = document.querySelectorAll('.feature-card');
       const ctaButton = document.querySelector('.cta-button.primary');
       const isHoveringInteractive = Array.from(interactiveElements).some(el => {
         const rect = el.getBoundingClientRect();

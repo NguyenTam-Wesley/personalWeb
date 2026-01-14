@@ -1,7 +1,7 @@
 /* Styling for Honkai: Star Rail game mode pages */
 
 .hsr-mode-container .game-content {
-    background-color: #121212;
+    background-color: var(--bg-primary);
 }
 
 .mode-mechanics,
@@ -12,10 +12,10 @@
 .mode-mechanics h2,
 .recommended-teams h2 {
     font-size: 2rem;
-    color: var(--text-color-light);
+    color: var(--text-primary);
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent-color);
+    border-bottom: 2px solid var(--primary);
 }
 
 .teams-grid {
@@ -25,28 +25,28 @@
 }
 
 .team-card {
-    background-color: #1E1E1E;
-    border: 1px solid #333;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-md);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .team-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(45, 212, 191, 0.2);
-    border-color: var(--accent-color-light);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
 }
 
 .team-card h3 {
     font-size: 1.5rem;
-    color: var(--text-color-light);
+    color: var(--text-primary);
     margin-bottom: 10px;
 }
 
 .team-card p {
     font-size: 1rem;
-    color: var(--text-color);
+    color: var(--text-secondary);
     line-height: 1.6;
 } 

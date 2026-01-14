@@ -160,33 +160,6 @@ body {
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
-.btn-theme {
-  background: var(--blog-card-bg);
-  color: var(--blog-text);
-  border: 2px solid var(--blog-border);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  font-size: 1rem; /* 16px */
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  transition: var(--blog-transition);
-  margin-right: var(--space-2);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.btn-theme:hover {
-  background: var(--blog-bg);
-  border-color: var(--blog-primary);
-  color: var(--blog-primary);
-  transform: translateY(-1px);
-}
-
-.theme-icon {
-  font-size: 16px;
   transition: var(--blog-transition);
 }
 

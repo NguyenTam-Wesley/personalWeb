@@ -1,6 +1,7 @@
 import components from '../components/components.js';
 import { getCurrentUserWithRetry } from '../supabase/auth.js';
 import { supabase } from '../supabase/supabase.js';
+import { themeToggle } from '../components/themeToggle.js';
 
 export class BlogDetailManager {
   constructor() {
@@ -24,7 +25,7 @@ export class BlogDetailManager {
       this.components.updateLoginStatus?.();
 
       // Init theme toggle
-      this.initializeThemeToggle();
+      themeToggle.initialize();
 
       // Init auth
       await this.initializeAuth();
@@ -1038,48 +1039,6 @@ export class BlogDetailManager {
     });
   }
 
-  /* ================= THEME TOGGLE ================= */
-
-  initializeThemeToggle() {
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => this.toggleTheme());
-      this.updateThemeToggleButton();
-    }
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('blog-theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-  }
-
-  toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('blog-theme', newTheme);
-
-    this.updateThemeToggleButton();
-  }
-
-  updateThemeToggleButton() {
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = themeToggle?.querySelector('.theme-icon');
-
-    if (themeToggle && themeIcon) {
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-
-      if (currentTheme === 'dark') {
-        themeIcon.textContent = '☀️';
-        themeToggle.innerHTML = '<span class="theme-icon">☀️</span> Light Mode';
-        themeToggle.title = 'Switch to Light Mode';
-      } else {
-        themeIcon.textContent = '🌙';
-        themeToggle.innerHTML = '<span class="theme-icon">🌙</span> Dark Mode';
-        themeToggle.title = 'Switch to Dark Mode';
-      }
-    }
-  }
 
   showLoading() {
     document.getElementById('loadingState').style.display = 'block';
