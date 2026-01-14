@@ -92,14 +92,6 @@ export class BlogManager {
   /* ================= EVENT LISTENERS ================= */
 
   setupEventListeners() {
-    // Theme toggle
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => this.toggleTheme());
-    }
-
-    // Load saved theme
-    this.loadSavedTheme();
 
     // Search input
     const searchInput = document.getElementById('searchInput');
@@ -853,48 +845,6 @@ export class BlogManager {
     return div.innerHTML;
   }
 
-  /* ================= THEME TOGGLE ================= */
-
-  toggleTheme() {
-    const currentTheme = this.getCurrentTheme();
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    this.setTheme(newTheme);
-    this.saveTheme(newTheme);
-    this.updateThemeButton(newTheme);
-  }
-
-  getCurrentTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'light';
-  }
-
-  setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('blog-theme', theme);
-  }
-
-  loadSavedTheme() {
-    const savedTheme = localStorage.getItem('blog-theme') || 'light';
-    this.setTheme(savedTheme);
-    this.updateThemeButton(savedTheme);
-  }
-
-  saveTheme(theme) {
-    localStorage.setItem('blog-theme', theme);
-  }
-
-  updateThemeButton(theme) {
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = themeToggle?.querySelector('.theme-icon');
-
-    if (theme === 'dark') {
-      themeToggle.innerHTML = '<span class="theme-icon">☀️</span> Light Mode';
-      themeToggle.title = 'Switch to Light Mode';
-    } else {
-      themeToggle.innerHTML = '<span class="theme-icon">🌙</span> Dark Mode';
-      themeToggle.title = 'Switch to Dark Mode';
-    }
-  }
 
   /* ================= FILTER RENDERING ================= */
 

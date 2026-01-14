@@ -1,6 +1,5 @@
 import { supabase } from "../supabase/supabase.js";
 import { User } from "../supabase/user.js";
-import { themeToggle } from "../components/themeToggle.js";
 
 export class MusicPlayer {
   constructor() {
@@ -83,9 +82,6 @@ export class MusicPlayer {
     this.user.setupAuthListener();
 
     this.init();
-
-    // Initialize theme toggle
-    themeToggle.initialize();
 
     // Đảm bảo progressBar là input range
     this.elements.progressBar.addEventListener("input", () => {

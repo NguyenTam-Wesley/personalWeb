@@ -1,4 +1,3 @@
-import { themeToggle } from '../components/themeToggle.js';
 
 export class GameDetailManager {
     constructor(gameId) {
@@ -45,9 +44,6 @@ export class GameDetailManager {
 
 
     init() {
-        // Initialize theme toggle
-        themeToggle.initialize();
-
         // Add event listeners for interactive elements
         this.setupEventListeners();
 

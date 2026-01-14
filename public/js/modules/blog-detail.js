@@ -1,7 +1,6 @@
 import components from '../components/components.js';
 import { getCurrentUserWithRetry } from '../supabase/auth.js';
 import { supabase } from '../supabase/supabase.js';
-import { themeToggle } from '../components/themeToggle.js';
 
 export class BlogDetailManager {
   constructor() {
@@ -23,9 +22,6 @@ export class BlogDetailManager {
       // Header / footer đã init sẵn
       // chỉ sync lại trạng thái login
       this.components.updateLoginStatus?.();
-
-      // Init theme toggle
-      themeToggle.initialize();
 
       // Init auth
       await this.initializeAuth();

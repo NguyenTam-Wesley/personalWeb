@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/style/components.css" />
     <link rel="stylesheet" href="/style/games.css" />
     <link rel="stylesheet" href="/style/theory_hsr.css" />
+    <link rel="stylesheet" href="/style/themes.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
 </head>
@@ -17,6 +18,7 @@
             <p class="theory-subtitle">Cơ chế tốc độ, thứ tự hành động và tối ưu hóa lượt</p>
         </div>
     </div>
+
     <div class="theory-content">
         <section class="theory-section">
             <h2>Tổng quan về tốc độ trong HSR</h2>
@@ -133,8 +135,13 @@
     <script type="module">
         import components from '/js/components/components.js';
         import theoryHSR from '/js/modules/theory_hsr.js';
+        import { themeToggle } from '/js/components/themeToggle.js';
+
         components.init();
         theoryHSR.init();
+
+        // Initialize theme toggle
+        themeToggle.initialize();
     </script>
 </body>
 </html> 

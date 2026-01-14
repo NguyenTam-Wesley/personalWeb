@@ -1,5 +1,6 @@
 import { getCurrentUserWithRetry, logoutUser } from '../supabase/auth.js';
 import { ROUTES, route } from '../routes/routes.js';
+import { themeToggle } from './themeToggle.js';
 
 export class Components {
   constructor() {
@@ -55,6 +56,7 @@ export class Components {
     this.setupHeader();
     document.body.prepend(this.header);
     this.updateLoginStatus();
+    // Note: initThemeToggle is called after updateLoginStatus to ensure it's initialized after any header re-renders
   }
 
 
@@ -72,6 +74,9 @@ export class Components {
 
         <div class="nav-controls">
           ${this.renderAuthSection()}
+          <button id="themeToggle" class="theme-toggle-btn" title="Toggle Dark Mode">
+            <span class="theme-icon">🌙</span>
+          </button>
         </div>
       </nav>
     `;
@@ -127,6 +132,17 @@ export class Components {
 
     if (prevState !== this.isLoggedIn) {
       this.setupHeader();
+      // Re-initialize theme toggle after header re-render
+      setTimeout(() => {
+        // Destroy existing theme toggle before re-initializing
+        if (themeToggle.isReady()) {
+          themeToggle.destroy();
+        }
+        this.initThemeToggle();
+      }, 100);
+    } else {
+      // Initialize theme toggle for the first time
+      this.initThemeToggle();
     }
 
     const logoutLink = document.getElementById('logoutLink');
@@ -147,6 +163,11 @@ export class Components {
       const linkPath = new URL(link.href).pathname;
       link.classList.toggle('active', linkPath === currentPath);
     });
+  }
+
+  initThemeToggle() {
+    // Initialize theme toggle after header is added to DOM
+    themeToggle.initialize("#themeToggle");
   }
 
   /* ================= FOOTER ================= */

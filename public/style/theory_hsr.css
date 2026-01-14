@@ -1,24 +1,13 @@
 /* HSR Theory Speed Page - Following UI Rules */
 
-/* Color System */
-:root {
-    --hsr-primary: #4e7cff;      /* Primary - Action color */
-    --hsr-secondary: #6ee07a;    /* Secondary - Success/accent */
-    --hsr-accent: #f093fb;       /* Accent - Highlight */
-    --hsr-bg: #f8fafc;           /* Background */
-    --hsr-card: #ffffff;         /* Card background */
-    --hsr-text-primary: #1a202c; /* Primary text */
-    --hsr-text-secondary: #4a5568; /* Secondary text */
-    --hsr-text-muted: #718096;   /* Muted text */
-    --hsr-border: #e2e8f0;       /* Border color */
-}
+/* Color System - Now using theme variables for dark mode support */
 
 /* Typography System */
 body {
     font-family: 'Inter', Arial, sans-serif;
     line-height: 1.5;
-    color: var(--hsr-text-primary);
-    background: var(--hsr-bg);
+    color: var(--text-primary);
+    background: var(--bg-primary);
 }
 
 /* Hero Section - Spacing multiples of 8 */
@@ -82,16 +71,16 @@ body {
 
 .theory-section h2 {
     font-size: 28px;
-    color: var(--hsr-text-primary);
+    color: var(--text-primary);
     margin-bottom: 24px;
     padding-bottom: 12px;
-    border-bottom: 2px solid var(--hsr-border);
+    border-bottom: 2px solid var(--border-light);
     font-weight: 600;
 }
 
 .theory-section h3 {
     font-size: 20px;
-    color: var(--hsr-text-primary);
+    color: var(--text-primary);
     margin: 32px 0 16px 0;
     font-weight: 600;
 }
@@ -99,7 +88,7 @@ body {
 .theory-section p {
     font-size: 16px;
     line-height: 1.5;
-    color: var(--hsr-text-secondary);
+    color: var(--text-secondary);
     margin: 0 0 16px 0;
     text-align: left;
 }
@@ -112,7 +101,7 @@ body {
 .theory-section li {
     font-size: 16px;
     line-height: 1.5;
-    color: var(--hsr-text-secondary);
+    color: var(--text-secondary);
     margin-bottom: 8px;
 }
 
@@ -122,14 +111,14 @@ body {
 
 /* Math Formulas - Visual Hierarchy */
 .theory-math {
-    background: #f7fafc;
-    border: 1px solid var(--hsr-border);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 16px 24px;
     margin: 16px 0;
     font-family: 'Times New Roman', serif;
     font-size: 18px;
-    color: var(--hsr-text-primary);
+    color: var(--text-primary);
     text-align: center;
     display: block;
     font-weight: 500;
@@ -145,30 +134,30 @@ body {
 }
 
 .theory-card {
-    background: var(--hsr-card);
+    background: var(--bg-card);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-sm);
     padding: 24px;
     transition: all 0.3s ease;
-    border: 1px solid var(--hsr-border);
+    border: 1px solid var(--border-light);
     width: 100%;
     max-width: 320px;
 }
 
 .theory-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    box-shadow: var(--shadow-lg);
 }
 
 .theory-card h3 {
-    color: var(--hsr-text-primary);
+    color: var(--text-primary);
     margin: 0 0 12px 0;
     font-size: 20px;
     font-weight: 600;
 }
 
 .theory-card p {
-    color: var(--hsr-text-secondary);
+    color: var(--text-secondary);
     font-size: 16px;
     margin: 0;
     line-height: 1.5;
@@ -179,30 +168,30 @@ body {
     overflow-x: auto;
     margin: 24px 0;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-md);
 }
 
 .theory-table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--hsr-card);
-    color: var(--hsr-text-primary);
+    background: var(--bg-card);
+    color: var(--text-primary);
     font-size: 14px;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid var(--hsr-border);
+    border: 1px solid var(--border-light);
 }
 
 .theory-table th, .theory-table td {
     padding: 16px 20px;
-    border-bottom: 1px solid var(--hsr-border);
+    border-bottom: 1px solid var(--border-light);
     text-align: left;
     vertical-align: top;
 }
 
 .theory-table th {
-    background: #f8fafc;
-    color: var(--hsr-text-primary);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
@@ -214,7 +203,7 @@ body {
 }
 
 .theory-green {
-    color: var(--hsr-secondary);
+    color: var(--success);
     font-weight: 500;
 }
 
@@ -311,5 +300,23 @@ body {
 
     .theory-table-wrapper {
         margin: 16px 0;
+    }
+}
+
+/* Theme Controls - Positioned for easy access */
+.theory-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 16px;
+}
+
+/* Responsive theme controls */
+@media (max-width: 768px) {
+    .theory-controls {
+        top: 16px;
+        right: 16px;
     }
 } 

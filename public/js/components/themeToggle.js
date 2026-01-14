@@ -7,6 +7,7 @@ export class ThemeToggle {
     this.currentTheme = "light";
     this.themeToggleButton = null;
     this.isInitialized = false;
+    this.boundToggleTheme = this.toggleTheme.bind(this);
   }
 
   /**
@@ -26,7 +27,7 @@ export class ThemeToggle {
     }
 
     this.themeToggleButton = themeToggle;
-    this.themeToggleButton.addEventListener("click", () => this.toggleTheme());
+    this.themeToggleButton.addEventListener("click", this.boundToggleTheme);
     this.loadSavedTheme();
     this.updateButtonDisplay();
     this.isInitialized = true;
@@ -72,7 +73,7 @@ export class ThemeToggle {
    */
   saveTheme(theme) {
     try {
-      localStorage.setItem("music-theme", theme);
+      localStorage.setItem("globalTheme", theme);
     } catch (error) {
       console.warn("Failed to save theme to localStorage:", error);
     }
@@ -83,7 +84,7 @@ export class ThemeToggle {
    */
   loadSavedTheme() {
     try {
-      const savedTheme = localStorage.getItem("music-theme") || "light";
+      const savedTheme = localStorage.getItem("globalTheme") || "light";
       this.setTheme(savedTheme);
     } catch (error) {
       console.warn("Failed to load theme from localStorage:", error);
@@ -134,7 +135,7 @@ export class ThemeToggle {
    */
   destroy() {
     if (this.themeToggleButton) {
-      this.themeToggleButton.removeEventListener("click", () => this.toggleTheme());
+      this.themeToggleButton.removeEventListener("click", this.boundToggleTheme);
       this.themeToggleButton = null;
     }
     this.isInitialized = false;

@@ -310,6 +310,50 @@ nav {
   box-shadow: var(--shadow-glow);
 }
 
+/* ==================== NAV CONTROLS ==================== */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-left: auto;
+}
+
+/* ==================== THEME TOGGLE BUTTON ==================== */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-normal);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--overlay-bg);
+  transform: translateY(-1px);
+  color: var(--accent-primary);
+}
+
+.theme-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.theme-icon {
+  display: inline-block;
+  transition: transform var(--transition-normal);
+}
+
+.theme-toggle-btn:hover .theme-icon {
+  transform: scale(1.1);
+}
+
 /* ==================== FOOTER ==================== */
 footer {
   position: fixed;
@@ -356,12 +400,22 @@ footer .socials a:hover {
 
   .nav-links {
     -webkit-overflow-scrolling: touch;
-    max-width: calc(100vw - 120px);
+    max-width: calc(100vw - 160px); /* Adjusted for theme toggle button */
   }
 
   .nav-logo {
     font-size: 1.25rem;
     flex-shrink: 0;
+  }
+
+  .nav-controls {
+    gap: var(--spacing-xs);
+  }
+
+  .theme-toggle-btn {
+    min-width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
   }
 
   /* Mobile dropdown positioning */
