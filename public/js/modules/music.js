@@ -81,6 +81,9 @@ export class MusicPlayer {
     // Setup auth listener trước khi init
     this.user.setupAuthListener();
 
+    // Initialize button states
+    this.updateButtons();
+
     this.init();
 
     // Đảm bảo progressBar là input range
@@ -1360,8 +1363,13 @@ export class MusicPlayer {
   }
 
   updateButtons() {
+    // Update repeat button
     this.elements.repeatBtn.classList.toggle("active", this.state.isRepeat);
+    this.elements.repeatBtn.textContent = this.state.isRepeat ? "🔁" : "🔂";
+
+    // Update shuffle button
     this.elements.shuffleBtn.classList.toggle("active", this.state.isShuffle);
+    this.elements.shuffleBtn.textContent = this.state.isShuffle ? "🔀" : "➡️";
   }
 
   updateProgress() {

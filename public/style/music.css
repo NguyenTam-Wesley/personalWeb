@@ -332,6 +332,91 @@ html {
     background: var(--music-primary-hover);
 }
 
+/* Repeat and Shuffle Button States */
+#repeatBtn, #shuffleBtn {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+#repeatBtn.active {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    transform: scale(1.05);
+}
+
+#repeatBtn.active::after {
+    content: "🔄";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff6b6b;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite;
+}
+
+#shuffleBtn.active {
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+    transform: scale(1.05);
+}
+
+#shuffleBtn.active::after {
+    content: "🎲";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #4ecdc4;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite;
+}
+
+#repeatBtn:not(.active) {
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+#shuffleBtn:not(.active) {
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+#repeatBtn:not(.active):hover,
+#shuffleBtn:not(.active):hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
 /* Progress Container */
 .progress-container {
     display: flex;
