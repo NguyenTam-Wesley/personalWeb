@@ -19,7 +19,6 @@ export class Components {
       ],
 
       navLinks: [
-        { name: 'Home', url: ROUTES.home },
         { name: 'Music', url: route('pages.music') },
         { name: 'Study', url: route('pages.study') },
         { name: 'Games', url: route('pages.games') },

@@ -51,11 +51,14 @@ nav {
   display: flex;
   gap: var(--spacing-md);
   align-items: center;
+  justify-content: center;
+  flex: 1;
   flex-wrap: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: thin;
   scrollbar-color: var(--accent-primary) transparent;
+  min-width: 0; /* Prevent flex item from overflowing */
 }
 
 .nav-links::-webkit-scrollbar {
@@ -400,6 +403,8 @@ footer .socials a:hover {
 
   .nav-links {
     -webkit-overflow-scrolling: touch;
+    justify-content: flex-start; /* Keep left-aligned on mobile for better UX */
+    flex: none; /* Remove flex: 1 on mobile to prevent overflow */
     max-width: calc(100vw - 160px); /* Adjusted for theme toggle button */
   }
 
