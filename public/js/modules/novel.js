@@ -169,8 +169,11 @@ export class NovelListPage {
   commitToRead() {
     if (!this.currentPreviewNovel) return;
 
+    // Store novel ID before closing panel
+    const novelId = this.currentPreviewNovel.id;
+
     // Add commit transition class
-    const card = document.querySelector(`[data-novel-id="${this.currentPreviewNovel.id}"]`);
+    const card = document.querySelector(`[data-novel-id="${novelId}"]`);
     if (card) {
       card.classList.add('commit-transition');
     }
@@ -178,8 +181,9 @@ export class NovelListPage {
     // Close preview and navigate after animation
     this.closePreviewPanel();
     setTimeout(() => {
-      window.location.href = `novel/novel-detail.html?id=${this.currentPreviewNovel.id}`;
-    }, 800);
+      console.log('Navigating to:', `novel/novel-detail.html?id=${novelId}`);
+      window.location.href = `novel/novel-detail.html?id=${novelId}`;
+    }, 100);
   }
 
   toggleBookmark() {
