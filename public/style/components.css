@@ -19,14 +19,12 @@ header.hidden {
 }
 
 nav {
-  max-width: var(--breakpoint-xl);
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg);
+  width: 100%;
   height: 100%;
+  padding: 0 var(--spacing-sm);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   box-sizing: border-box;
 }
 
@@ -342,7 +340,7 @@ nav {
 .nav-controls {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 2px;
   margin-left: auto;
 }
 
@@ -430,7 +428,7 @@ footer .socials a:hover {
     -webkit-overflow-scrolling: touch;
     justify-content: flex-start; /* Keep left-aligned on mobile for better UX */
     flex: none; /* Remove flex: 1 on mobile to prevent overflow */
-    max-width: calc(100vw - 160px); /* Adjusted for theme toggle button */
+    max-width: calc(100vw - 100px); /* Reduced space allocation for nav-controls to maximize nav-links area */
   }
 
   .nav-logo {
