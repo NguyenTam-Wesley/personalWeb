@@ -372,5 +372,26 @@ html {
   .documents-grid {
     padding: 0 var(--spacing-sm);
   }
+
+  /* Disable complex animations on mobile */
+  .subjects-grid button,
+  .document-item {
+    transition: none !important;
+  }
+
+  .subjects-grid button:hover,
+  .subjects-grid button:active,
+  .document-item:hover,
+  .document-item:active {
+    transform: none !important;
+    filter: none !important;
+    box-shadow: var(--shadow-md) !important;
+    border-color: var(--primary) !important;
+  }
+
+  .subjects-grid button:hover::after,
+  .document-item:hover::after {
+    opacity: 1 !important;
+  }
 }
 
