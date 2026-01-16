@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSR - Lý thuyết Sát thương</title>
+    <link rel="stylesheet" href="/style/components.css" />
+    <link rel="stylesheet" href="/style/games.css" />
+    <link rel="stylesheet" href="/style/theory_hsr.css" />
+    <link rel="stylesheet" href="/style/themes.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn.glitch.global/d1dee37d-172b-4e0c-969a-6ea2f7f1b378/avt_libai.jpg?v=1682409879904" />
+</head>
+<body>
+    <div class="theory-hero">
+        <div>
+            <h1>HSR: Lý thuyết Sát thương</h1>
+            <p class="theory-subtitle">Cơ chế tính sát thương, DoT và Break Damage</p>
+        </div>
+    </div>
+
+    <div class="theory-content">
+        <section class="theory-section">
+            <h2>Sát thương cơ bản</h2>
+            <p>Là sát thương được tính dựa trên bộ kỹ năng của nhân vật (sát thương gốc) kết hợp với các bội số sát thương khác nhau.</p>
+            <p><b>Ví dụ:</b></p>
+            <div class="theory-math">[Sát thương gây ra] = Sát thương gốc × Bội Số STBK × Bội Số ST + thêm của bản thân × Bội Số Phòng Thủ × Kháng sát thương × Sát thương nhận vào × Sức bền của kẻ địch</div>
+            <p><b>Lưu ý:</b> Có thêm một loại đó là Sát Thương Chuẩn mới xuất hiện từ Main Ký Ức buff cho, loại Sát Thương này thì không cần phải tính như ví dụ trên.</p>
+        </section>
+
+        <section class="theory-section">
+            <h2>Chi tiết về các bội số sát thương</h2>
+            <ul>
+                <li><b>Sát thương gốc:</b>
+                    <div class="theory-math">Sát thương gốc = [Bội số kỹ năng + Bội số cộng thêm] × Chỉ số nhân vật + Chỉ số cố định</div>
+                </li>
+                <li><b>Bội số bạo kích:</b>
+                    <ul>
+                        <li>Nếu đòn đánh bạo kích: <span class="theory-math">Bội số bạo kích = 1 + % STBK</span></li>
+                        <li>Nếu không bạo kích: <span class="theory-math">Bội số bạo kích = 1</span></li>
+                    </ul>
+                </li>
+                <li><b>Bội số sức bền:</b>
+                    <ul>
+                        <li>Nếu kẻ địch đang trong trạng thái bị phá vỡ điểm yếu: <span class="theory-math">Bội số sức bền = 1</span></li>
+                        <li>Nếu kẻ địch không trong trạng thái phá vỡ điểm yếu: <span class="theory-math">Bội số sức bền = 0.9</span></li>
+                    </ul>
+                </li>
+                <li><b>Bội số sát thương:</b>
+                    <div class="theory-math">Bội số sát thương = 1 + % Sát Thương Nguyên Tố + % Sát thương gây ra + % Sát thương gây ra có điều kiện</div>
+                    <p>Kiểu như các bạn có thể tính ST Nguyên Tố = Cái Cầu Vị Diện buff thêm hay đến từ vết tích.<br>
+                    Sát thương gây ra nhờ cộng thêm từ các Hòa Hợp buff cho.</p>
+                </li>
+                <li><b>Bội số phòng thủ:</b>
+                    <div class="theory-math">Bội số phòng thủ = [Cấp độ nhân vật + 20] / [Cấp độ địch + 20] × [1 - % Giảm Phòng Thủ] + Cấp độ nhân vật + 20</div>
+                </li>
+                <li><b>Bội số kháng sát thương:</b>
+                    <div class="theory-math">Bội số kháng sát thương = 1 - (Kháng của địch - % Xuyên kháng của nhân vật)</div>
+                    <p>Xuyên kháng thường đến từ các hòa hợp như Ruan Mei, Tribbie, và các tinh hồn của các nhân vật Hòa Hợp như tinh hồn 1 của Robin.</p>
+                </li>
+                <li><b>Bội số sát thương nhận vào:</b>
+                    <div class="theory-math">Bội số sát thương nhận vào = 1 + % Sát thương nhận vào + % Sát thương nhận vào tùy điều kiện</div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="theory-section">
+            <h2>Sát thương duy trì DoT</h2>
+            <p>Sát thương duy trì DoT còn hay được biết đến là dạng Sát thương theo thời gian như việc gây ra Bào Mòn, Sốc Điện, Chảy máu, Thiếu Đốt và những loại DoT đặc biệt khác như Dấu tích bí ẩn của Black Swan hay Nướng Tro của Jiaoqiu.</p>
+            <p>Công thức tính Sát Thương Duy Trì khác với công thức thông thường, và tần suất gây damage cũng như kiểu gây damage cũng khác, nó hoàn toàn là một lối chơi khác biệt.</p>
+            <p>Sát thương duy trì gây sát thương bằng lượng %Attack với Sát thương cộng thêm chứ không giống như Crit Rate, Crit Damage. Thường thì khi gắn DoT lên địch thì phải đến lượt địch thì nó mới nổ, trừ khi có Kafka kích hoạt được DoT thì có thể gây damage khi tới lượt của mình.</p>
+            <p>Có 2 loại gây Sát thương duy trì đó là gây khi phá vỡ điểm yếu như Luka, hay gây nhờ Chính Xác Hiệu Ứng như Sampo.</p>
+            <p>Sát thương duy trì còn được coi là một Hiệu Ứng Xấu.</p>
+
+            <h3>Các nhân vật gây sát thương duy trì hiện có</h3>
+            <ul>
+                <li><b>4 sao:</b> Sampo, Serval, Guinaifen, Luka</li>
+                <li><b>5 sao:</b> Kafka, Black Swan, Jiaoqiu (tương lai chắc sẽ có thêm các nhân vật DoT 5 sao khác mạnh mẽ hơn để phù hợp với meta hiện tại)</li>
+            </ul>
+        </section>
+
+        <section class="theory-section">
+            <h2>Cách tính tỷ lệ áp đặt DoT lên địch</h2>
+            <p>Mỗi loại quái vật đều có các tỉ lệ kháng khác nhau nên để tính chuẩn 100% gán DoT lên địch thì được tính theo phương trình như sau:</p>
+            <div class="theory-math">[Tỉ Lệ thật] = [Tỉ Lệ cơ bản] × [100% + Chính Xác Hiệu Ứng] × [100% - Kháng Hiệu Ứng] × [100% - Kháng Hiệu Ứng Xấu]</div>
+            <ul>
+                <li><b>Tỉ lệ cơ bản:</b> Hiện trên thông tin kỹ năng của từng nhân vật</li>
+                <li><b>Chính xác hiệu ứng:</b> Do các bạn build thế nào thì sẽ hiện từng đó ở thông tin nhân vật</li>
+                <li><b>Kháng hiệu ứng:</b> Xác xuất kháng hiệu ứng xấu</li>
+                <li><b>Kháng hiệu ứng xấu:</b> Thêm một lượng kháng hiệu ứng xấu tùy vào thông tin của đối phương</li>
+            </ul>
+        </section>
+
+        <section class="theory-section">
+            <h2>Sát thương phá vỡ trong Honkai Star Rail</h2>
+            <p>Sát thương phá vỡ còn hay gọi là BREAK được tính dựa trên Tấn Công Kích Phá của bản thân cũng như % Kích Phá trong bộ kỹ năng của từng nhân vật.</p>
+            <p>Sát thương phá vỡ còn có thêm 1 loại là Siêu Phá Vỡ dễ thấy nhất thì nó đến từ Tuyệt Kỹ của Main Hòa Hợp mới đây thì có Fugue.</p>
+            <p>Chỉ số Siêu Phá Vỡ được tính như sau:</p>
+            <div class="theory-math">[Chỉ số Kích Phá cơ bản] × [1 + Tấn công kích phá] × [Chỉ số kích phá cuối cùng của Kỹ Năng / 10] × [1 + Sát thương bổ sung của Siêu Phá Vỡ] × [Trọng thương] × [Phòng Thủ của đối phương] × [Kháng hiệu ứng của đối phương] × [Giảm sát thương nhận được của đối phương]</div>
+            <p>Nói nôm na thì Sát Thương Phá Vỡ gây ra chủ yếu đến từ ST cộng thêm, ST thuộc tính, Tấn Công Kích Phá của nhân vật.</p>
+
+            <h3>Các nhân vật gây Sát Thương Phá Vỡ hiện nay trong Honkai Star Rail</h3>
+            <ul>
+                <li><b>4 sao:</b> Luka hoặc bất kỳ con nào bào điểm yếu nhanh thì có thể build Tấn công kích phá</li>
+                <li><b>5 sao:</b> Boothill, Firefly, Himeko và các 5 sao khác buff cho team Break là Ruan Mei, Main Hòa Hợp, Fugue</li>
+            </ul>
+        </section>
+    </div>
+
+    <script type="module">
+        import components from '/js/components/components.js';
+        import theoryHSR from '/js/modules/theory_hsr.js';
+        import { themeToggle } from '/js/components/themeToggle.js';
+
+        components.init();
+        theoryHSR.init();
+
+        // Initialize theme toggle
+        themeToggle.initialize();
+    </script>
+</body>
+</html>
