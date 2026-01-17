@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIF Pet FSM Test</title>
+    <link href="https://fonts.googleapis.com/css?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow: hidden;
+            color: #e94560;
+        }
+
+        .main-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background:
+                radial-gradient(circle at 25% 25%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(46, 196, 182, 0.1) 0%, transparent 50%);
+        }
+
+        #pet-gif {
+            position: absolute;
+            width: 25.6px;  /* 128px * 0.2 */
+            height: 25.6px; /* 128px * 0.2 */
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.3)); /* Scale shadow down */
+        }
+
+        #pet-gif:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 30px rgba(233, 69, 96, 0.5));
+        }
+
+        .fsm-ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #e94560;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #e94560;
+            box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+            min-width: 300px;
+        }
+
+        .fsm-ui h3 {
+            color: #2ec4b6;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #2ec4b6;
+            font-size: 14px;
+        }
+
+        .state-indicator {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .state-btn {
+            padding: 8px 12px;
+            border: 2px solid #666;
+            background: rgba(0, 0, 0, 0.5);
+            color: #666;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+
+        .state-btn.active {
+            border-color: #2ec4b6;
+            background: rgba(46, 196, 182, 0.2);
+            color: #2ec4b6;
+            box-shadow: 0 0 15px rgba(46, 196, 182, 0.5);
+        }
+
+        .state-btn:hover {
+            border-color: #e94560;
+            color: #e94560;
+        }
+
+        .speed-control {
+            margin-bottom: 15px;
+        }
+
+        .speed-control label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 10px;
+        }
+
+        .speed-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Also define the standard property 'appearance' for compatibility */
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #e94560;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.8);
+        }
+
+        .speed-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #e94560;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.8);
+        }
+
+        .stats-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border: 1px solid #666;
+            margin-bottom: 15px;
+        }
+
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 9px;
+        }
+
+        .stat-value {
+            color: #2ec4b6;
+            font-weight: bold;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 6px 10px;
+            border: 1px solid #666;
+            background: rgba(0, 0, 0, 0.5);
+            color: #e94560;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.2);
+        }
+
+        .debug-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #2ec4b6;
+            font-size: 8px;
+            color: #2ec4b6;
+        }
+
+        .floating-text {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 1000;
+            animation: float-up 1.5s ease-out forwards;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(1.2);
+            }
+        }
+
+        .target-indicator {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(233, 69, 96, 0.8);
+            border: 2px solid #e94560;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 500;
+        }
+
+        .target-indicator.active {
+            opacity: 1;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div id="pet-gif"></div>
+        <div id="target-indicator" class="target-indicator"></div>
+    </div>
+
+    <div class="fsm-ui">
+        <h3>FSM PET CONTROLLER</h3>
+        <div style="font-size: 8px; color: #666; margin-bottom: 10px;">
+            <a href="test_gif_only.html" target="_blank" style="color: #2ec4b6; text-decoration: none;">🧪 Test GIF Loading</a>
+        </div>
+
+        <div class="state-indicator">
+            <button class="state-btn" id="idle-btn" onclick="setTargetState('idle')">IDLE</button>
+            <button class="state-btn" id="walk-btn" onclick="setTargetState('walk')">WALK</button>
+            <button class="state-btn" id="run-btn" onclick="setTargetState('run')">RUN</button>
+        </div>
+
+        <div class="speed-control">
+            <label for="speed-slider">TARGET SPEED: <span id="target-speed-display">0.00</span></label>
+            <input type="range" id="speed-slider" class="speed-slider" min="0" max="2" step="0.1" value="0" oninput="setTargetSpeed(this.value)">
+        </div>
+
+        <div class="stats-display">
+            <div class="stat-line">
+                <span>CURRENT SPEED:</span>
+                <span class="stat-value" id="current-speed">0.00</span>
+            </div>
+            <div class="stat-line">
+                <span>CURRENT STATE:</span>
+                <span class="stat-value" id="current-state">IDLE</span>
+            </div>
+            <div class="stat-line">
+                <span>POSITION X:</span>
+                <span class="stat-value" id="pos-x">400</span>
+            </div>
+            <div class="stat-line">
+                <span>POSITION Y:</span>
+                <span class="stat-value" id="pos-y">300</span>
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <button class="control-btn" onclick="randomWalk()">RANDOM WALK</button>
+            <button class="control-btn" onclick="stopMovement()">STOP</button>
+            <button class="control-btn" onclick="followMouse()">FOLLOW MOUSE</button>
+            <button class="control-btn" onclick="toggleAutoMode()">AUTO MODE</button>
+            <button class="control-btn" onclick="testGifLoading()">TEST GIF</button>
+        </div>
+
+        <div class="debug-info" id="debug-info">
+            DEBUG: System initialized<br>
+            STATE: IDLE | SPEED: 0.00<br>
+            TARGET: 0.00 | MODE: MANUAL
+        </div>
+    </div>
+
+    <script>
+        // FSM States and Assets
+        const PET_STATES = {
+            IDLE: 'idle',
+            WALK: 'walk',
+            RUN: 'run'
+        };
+
+        // GIF assets - prioritize local copies for reliability
+        const PET_ASSETS = {
+            idle: ['black_idle_8fps.gif', '../pet/cat_black_gif/black_idle_8fps.gif'],
+            walk: ['black_walk_8fps.gif', '../pet/cat_black_gif/black_walk_8fps.gif'],
+            run: ['black_run_8fps.gif', '../pet/cat_black_gif/black_run_8fps.gif']
+        };
+
+        // FSM Variables
+        let currentState = PET_STATES.IDLE;
+        let speed = 0;           // Current speed (px/frame)
+        let targetSpeed = 0;     // Target speed to approach
+        let direction = 1;       // 1 = right, -1 = left
+        let petX = 400;          // Current X position
+        let petY = 300;          // Current Y position
+        let targetX = 400;       // Target X position
+        let targetY = 300;       // Target Y position
+
+        // Movement variables
+        let isMoving = false;
+        let followMouseMode = false;
+        let autoMode = false;
+        let autoModeInterval;
+
+        // DOM Elements
+        const petGif = document.getElementById('pet-gif');
+        const targetIndicator = document.getElementById('target-indicator');
+        const speedSlider = document.getElementById('speed-slider');
+        const targetSpeedDisplay = document.getElementById('target-speed-display');
+        const currentSpeedDisplay = document.getElementById('current-speed');
+        const currentStateDisplay = document.getElementById('current-state');
+        const posXDisplay = document.getElementById('pos-x');
+        const posYDisplay = document.getElementById('pos-y');
+        const debugInfo = document.getElementById('debug-info');
+
+        // State buttons
+        const idleBtn = document.getElementById('idle-btn');
+        const walkBtn = document.getElementById('walk-btn');
+        const runBtn = document.getElementById('run-btn');
+
+        // Initialize pet
+        function initPet() {
+            console.log('🚀 Initializing GIF Pet FSM...');
+            console.log('📁 GIF Assets (prioritizing local copies):', PET_ASSETS);
+            console.log('💡 Local GIFs should be in same directory as this HTML file');
+
+            petGif.style.left = petX + 'px';
+            petGif.style.top = petY + 'px';
+            setState(PET_STATES.IDLE);
+            updateUI();
+            startGameLoop();
+
+            console.log('✅ GIF Pet FSM initialized successfully');
+        }
+
+        // Core FSM Logic - Set state based on speed with hysteresis
+        function updateStateFromSpeed() {
+            const hysteresis = 0.05; // Ngưỡng để tránh rung state
+            let newState;
+
+            if (speed < 0.05) {
+                newState = PET_STATES.IDLE;
+            } else if (speed < 0.8 - hysteresis) {
+                newState = PET_STATES.WALK;
+            } else {
+                newState = PET_STATES.RUN;
+            }
+
+            if (newState !== currentState) {
+                setState(newState);
+            }
+        }
+
+        // Set pet state and update visual
+        function setState(newState) {
+            if (currentState === newState) return;
+
+            const oldState = currentState;
+            currentState = newState;
+
+            // Load GIF with error handling (try multiple paths)
+            const gifUrls = PET_ASSETS[newState];
+            let currentUrlIndex = 0;
+
+            function tryLoadGif() {
+                if (currentUrlIndex >= gifUrls.length) {
+                    console.error(`❌ All GIF paths failed for ${newState}`);
+                    petGif.onerror();
+                    return;
+                }
+
+                const gifUrl = gifUrls[currentUrlIndex];
+                console.log(`🔄 Trying to load ${newState}: ${gifUrl}`);
+                petGif.src = gifUrl;
+            }
+
+            petGif.onload = () => {
+                petGif.style.opacity = '1';
+                console.log(`✅ GIF loaded: ${newState} - ${gifUrls[currentUrlIndex]}`);
+            };
+            petGif.onerror = () => {
+                console.warn(`⚠️ Failed to load: ${gifUrls[currentUrlIndex]}, trying next...`);
+                currentUrlIndex++;
+                if (currentUrlIndex < gifUrls.length) {
+                    tryLoadGif();
+                } else {
+                    console.error(`❌ All paths failed for ${newState}`);
+                    // Fallback to text indicator
+                    petGif.style.background = 'rgba(233, 69, 96, 0.8)';
+                    petGif.style.color = 'white';
+                    petGif.style.display = 'flex';
+                    petGif.style.alignItems = 'center';
+                    petGif.style.justifyContent = 'center';
+                    petGif.style.fontSize = '24px';
+                    petGif.textContent = newState.toUpperCase();
+                    showFloatingText('❌', petX + 64, petY - 20);
+                }
+            };
+
+            tryLoadGif();
+
+            // Add loading indicator
+            petGif.style.opacity = '0.5';
+            petGif.onload = () => {
+                petGif.style.opacity = '1';
+                console.log(`✅ GIF loaded: ${newState} - ${gifUrl}`);
+            };
+            petGif.onerror = () => {
+                console.error(`❌ Failed to load GIF: ${newState} - ${gifUrl}`);
+                showFloatingText('❌', petX + 64, petY - 20);
+                // Fallback to text indicator
+                petGif.style.background = 'rgba(233, 69, 96, 0.8)';
+                petGif.style.color = 'white';
+                petGif.style.display = 'flex';
+                petGif.style.alignItems = 'center';
+                petGif.style.justifyContent = 'center';
+                petGif.style.fontSize = '24px';
+                petGif.textContent = newState.toUpperCase();
+            };
+
+            // Update UI buttons
+            idleBtn.classList.toggle('active', newState === PET_STATES.IDLE);
+            walkBtn.classList.toggle('active', newState === PET_STATES.WALK);
+            runBtn.classList.toggle('active', newState === PET_STATES.RUN);
+
+            console.log(`🔄 State changed: ${oldState} → ${newState}`);
+            updateDebugInfo();
+        }
+
+        // Set target state (sets targetSpeed accordingly)
+        function setTargetState(state) {
+            switch(state) {
+                case 'idle':
+                    targetSpeed = 0;
+                    break;
+                case 'walk':
+                    targetSpeed = 0.4;
+                    break;
+                case 'run':
+                    targetSpeed = 1.2;
+                    break;
+            }
+            updateUI();
+            showFloatingText('🎯', petX + 64, petY - 20);
+        }
+
+        // Set target speed directly
+        function setTargetSpeed(value) {
+            targetSpeed = parseFloat(value);
+            updateUI();
+        }
+
+        // Main game loop - Core FSM update
+        function startGameLoop() {
+            function update() {
+                // 1. Approach target speed (tiệm cận)
+                const acceleration = 0.1;
+                speed += (targetSpeed - speed) * acceleration;
+
+                // 2. Update state based on current speed
+                updateStateFromSpeed();
+
+                // 3. Move towards target if moving
+                if (isMoving && (Math.abs(petX - targetX) > 5 || Math.abs(petY - targetY) > 5)) {
+                    const dx = targetX - petX;
+                    const dy = targetY - petY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance > 0) {
+                        // Update direction based on movement
+                        direction = dx > 0 ? 1 : -1;
+
+                        // Move towards target
+                        const moveSpeed = Math.min(speed, distance);
+                        petX += (dx / distance) * moveSpeed;
+                        petY += (dy / distance) * moveSpeed;
+
+                        // Flip sprite based on direction
+                        petGif.style.transform = direction < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+                    }
+                } else if (isMoving) {
+                    // Reached target
+                    isMoving = false;
+                    targetSpeed = 0;
+                    targetIndicator.classList.remove('active');
+                    showFloatingText('🏁', petX + 64, petY - 20);
+                }
+
+                // Update position
+                petGif.style.left = petX + 'px';
+                petGif.style.top = petY + 'px';
+
+                // Update UI
+                updateUI();
+
+                requestAnimationFrame(update);
+            }
+
+            update();
+        }
+
+        // Movement functions
+        function randomWalk() {
+            const margin = 100;
+            targetX = margin + Math.random() * (window.innerWidth - 200 - margin * 2);
+            targetY = margin + Math.random() * (window.innerHeight - 200 - margin * 2);
+
+            isMoving = true;
+            targetIndicator.style.left = targetX + 'px';
+            targetIndicator.style.top = targetY + 'px';
+            targetIndicator.classList.add('active');
+
+            // Auto-set appropriate speed
+            const distance = Math.sqrt(Math.pow(targetX - petX, 2) + Math.pow(targetY - petY, 2));
+            if (distance > 300) {
+                targetSpeed = 1.2; // RUN for long distances
+            } else {
+                targetSpeed = 0.4; // WALK for short distances
+            }
+
+            showFloatingText('🎲', petX + 64, petY - 20);
+        }
+
+        function stopMovement() {
+            isMoving = false;
+            targetSpeed = 0;
+            followMouseMode = false;
+            targetIndicator.classList.remove('active');
+            showFloatingText('⏹️', petX + 64, petY - 20);
+        }
+
+        function followMouse() {
+            followMouseMode = !followMouseMode;
+            if (followMouseMode) {
+                showFloatingText('👆', petX + 64, petY - 20);
+            } else {
+                stopMovement();
+            }
+        }
+
+        function toggleAutoMode() {
+            autoMode = !autoMode;
+            if (autoMode) {
+                autoModeInterval = setInterval(() => {
+                    if (!isMoving && Math.random() < 0.3) { // 30% chance every 3 seconds
+                        randomWalk();
+                    }
+                }, 3000);
+                showFloatingText('🤖', petX + 64, petY - 20);
+            } else {
+                clearInterval(autoModeInterval);
+                stopMovement();
+                showFloatingText('👤', petX + 64, petY - 20);
+            }
+        }
+
+        function testGifLoading() {
+            console.log('🧪 Testing GIF loading...');
+
+            Object.keys(PET_ASSETS).forEach(state => {
+                const urls = PET_ASSETS[state];
+                urls.forEach(url => {
+                    const img = new Image();
+                    img.onload = () => {
+                        console.log(`✅ ${state}: ${url} - LOADED (${img.width}x${img.height})`);
+                        showFloatingText('✅', petX + 64, petY - 20);
+                    };
+                    img.onerror = () => {
+                        console.warn(`⚠️ ${state}: ${url} - FAILED`);
+                    };
+                    img.src = url;
+                });
+            });
+        }
+
+        // UI functions
+        function updateUI() {
+            speedSlider.value = targetSpeed;
+            targetSpeedDisplay.textContent = targetSpeed.toFixed(2);
+            currentSpeedDisplay.textContent = speed.toFixed(2);
+            currentStateDisplay.textContent = currentState.toUpperCase();
+            posXDisplay.textContent = Math.round(petX);
+            posYDisplay.textContent = Math.round(petY);
+        }
+
+        function updateDebugInfo() {
+            const mode = followMouseMode ? 'FOLLOW' : (autoMode ? 'AUTO' : 'MANUAL');
+            debugInfo.innerHTML = `
+                DEBUG: Frame ${Date.now() % 1000}<br>
+                STATE: ${currentState.toUpperCase()} | SPEED: ${speed.toFixed(2)}<br>
+                TARGET: ${targetSpeed.toFixed(2)} | MODE: ${mode}
+            `;
+        }
+
+        function showFloatingText(text, x, y) {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = text;
+            floatingText.style.left = x + 'px';
+            floatingText.style.top = y + 'px';
+            floatingText.style.color = '#e94560';
+            document.body.appendChild(floatingText);
+
+            setTimeout(() => floatingText.remove(), 1500);
+        }
+
+        // Mouse tracking for follow mode
+        document.addEventListener('mousemove', (e) => {
+            if (followMouseMode) {
+                targetX = e.clientX - 64; // Center on cursor
+                targetY = e.clientY - 64;
+                isMoving = true;
+
+                // Update target speed based on distance
+                const distance = Math.sqrt(Math.pow(targetX - petX, 2) + Math.pow(targetY - petY, 2));
+                if (distance > 200) {
+                    targetSpeed = 1.2; // RUN
+                } else if (distance > 50) {
+                    targetSpeed = 0.4; // WALK
+                } else {
+                    targetSpeed = 0; // STOP when close
+                }
+            }
+        });
+
+        // Click to set target
+        document.addEventListener('click', (e) => {
+            if (!followMouseMode && e.target !== petGif && !e.target.closest('.fsm-ui')) {
+                targetX = e.clientX - 64;
+                targetY = e.clientY - 64;
+                isMoving = true;
+
+                targetIndicator.style.left = targetX + 'px';
+                targetIndicator.style.top = targetY + 'px';
+                targetIndicator.classList.add('active');
+
+                // Set appropriate speed based on distance
+                const distance = Math.sqrt(Math.pow(targetX - petX, 2) + Math.pow(targetY - petY, 2));
+                if (distance > 300) {
+                    targetSpeed = 1.2;
+                } else {
+                    targetSpeed = 0.4;
+                }
+
+                showFloatingText('📍', e.clientX, e.clientY);
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key.toLowerCase()) {
+                case '1': setTargetState('idle'); break;
+                case '2': setTargetState('walk'); break;
+                case '3': setTargetState('run'); break;
+                case 'r': randomWalk(); break;
+                case 's': stopMovement(); break;
+                case 'f': followMouse(); break;
+                case 'a': toggleAutoMode(); break;
+                case 't': testGifLoading(); break;
+            }
+        });
+
+        // Initialize when DOM ready
+        window.addEventListener('DOMContentLoaded', initPet);
+
+        // Periodic debug update
+        setInterval(updateDebugInfo, 100);
+    </script>
+</body>
+</html>

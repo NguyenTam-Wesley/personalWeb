@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Pet Test</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .main-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 255, 198, 0.2) 0%, transparent 50%);
+        }
+
+        #pixel-pet {
+            position: absolute;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            transform: scale(1);
+            transition: transform 0.1s ease;
+        }
+
+        #pixel-pet:hover {
+            transform: scale(1.1);
+        }
+
+        .pixel-ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            padding: 20px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .pixel-ui h3 {
+            color: #ffff00;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .pixel-button {
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .pixel-button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+        }
+
+        .pixel-stats {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ffff00;
+        }
+
+        .stat-bar {
+            width: 100px;
+            height: 8px;
+            background: #333;
+            border: 1px solid #666;
+            margin: 2px 0;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .hunger-fill {
+            background: linear-gradient(90deg, #ff4444, #ffaa44, #44ff44);
+        }
+
+        .sleep-fill {
+            background: linear-gradient(90deg, #4444ff, #aaaa44, #44ff44);
+        }
+
+        .pixel-notifications {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            padding: 20px;
+            font-size: 14px;
+            color: #ff0000;
+            display: none;
+            z-index: 2000;
+            text-align: center;
+        }
+
+        .floating-text {
+            position: absolute;
+            font-size: 16px;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 1500;
+            animation: float-up 1s ease-out forwards;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        .pixel-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body>
+    <div class="pixel-grid"></div>
+
+    <div class="main-container">
+        <div id="pixel-pet"></div>
+
+        <div id="notification" class="pixel-notifications"></div>
+
+        <div class="pixel-ui">
+            <h3>PIXEL PET</h3>
+
+            <div class="pixel-stats">
+                <div>Hunger: <div class="stat-bar"><div class="stat-fill hunger-fill" id="hungerBar"></div></div></div>
+                <div>Sleep: <div class="stat-bar"><div class="stat-fill sleep-fill" id="sleepBar"></div></div></div>
+                <div>State: <span id="currentState">IDLE</span></div>
+            </div>
+
+            <br>
+
+            <button class="pixel-button" onclick="feedPixelPet()">FEED</button>
+            <button class="pixel-button" onclick="petPixelPet()">PET</button>
+            <button class="pixel-button" onclick="triggerPixelFollow()">FOLLOW</button>
+            <button class="pixel-button" onclick="triggerPixelRaid()">RAID</button>
+            <button class="pixel-button" onclick="togglePixelMovement()" id="movementBtn">STOP MOVE</button>
+
+            <br><br>
+            <div style="font-size: 8px; color: #aaa;">
+                CONTROLS: F/E/P/R/M or CLICK
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pixel Art Sprite Data (8x8 pixel character)
+        const PIXEL_SPRITE_DATA = {
+            idle: [
+                "00011000",
+                "00111100",
+                "01111110",
+                "11111111",
+                "11111111",
+                "01111110",
+                "00111100",
+                "00011000"
+            ],
+            walk1: [
+                "00011000",
+                "00111100",
+                "01111110",
+                "11111111",
+                "11111111",
+                "01111110",
+                "00111000",
+                "00010000"
+            ],
+            walk2: [
+                "00011000",
+                "00111100",
+                "01111110",
+                "11111111",
+                "11111111",
+                "01111110",
+                "00011100",
+                "00001100"
+            ],
+            hungry: [
+                "00011000",
+                "00100100",
+                "01000010",
+                "10000001",
+                "10000001",
+                "01000010",
+                "00100100",
+                "00011000"
+            ],
+            sleep: [
+                "00000000",
+                "00011000",
+                "00111100",
+                "01111110",
+                "11111111",
+                "01111110",
+                "00111100",
+                "00011000"
+            ],
+            eat: [
+                "00011000",
+                "00111100",
+                "01111110",
+                "11111111",
+                "11111111",
+                "01111110",
+                "00111100",
+                "00011000"
+            ],
+            happy: [
+                "00011000",
+                "00111100",
+                "01111110",
+                "11111111",
+                "11111111",
+                "01111110",
+                "00111100",
+                "00011000"
+            ]
+        };
+
+        let pixelPet = document.getElementById('pixel-pet');
+        let animation_queue = [];
+        let tl, currentAnimation = 'idle', frameIndex = 0;
+        let hungerLevel = 0, sleepLevel = 0, needyTime = 120, needyTimeTotal = 120;
+        let pozx = 400, pozy = 300, isMoving = false, movementInterval;
+        let animationImportant = false, timeBetweenIdle = 6, animationRepeat = 6;
+
+        // Create pixel art canvas
+        function createPixelSprite(data, color = '#00ff00') {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const size = 8;
+            canvas.width = size;
+            canvas.height = size;
+
+            ctx.fillStyle = color;
+            for (let y = 0; y < size; y++) {
+                for (let x = 0; x < size; x++) {
+                    if (data[y][x] === '1') {
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+
+            return canvas.toDataURL();
+        }
+
+        function initPixelPet() {
+            pixelPet.style.position = 'absolute';
+            pixelPet.style.left = pozx + 'px';
+            pixelPet.style.top = pozy + 'px';
+            pixelPet.style.width = '64px';
+            pixelPet.style.height = '64px';
+            pixelPet.style.imageRendering = 'pixelated';
+
+            startPixelAnimation();
+            startRandomMovement();
+            updateStats();
+        }
+
+        function startPixelAnimation() {
+            tl = gsap.timeline();
+
+            // Animate pixel sprite
+            animatePixelFrame();
+        }
+
+        function animatePixelFrame() {
+            const frames = ['idle', 'walk1', 'idle', 'walk2'];
+            const currentFrame = frames[frameIndex % frames.length];
+
+            // Update sprite
+            const spriteData = PIXEL_SPRITE_DATA[currentFrame] || PIXEL_SPRITE_DATA.idle;
+            pixelPet.style.backgroundImage = `url('${createPixelSprite(spriteData)}')`;
+            pixelPet.style.backgroundSize = '64px 64px';
+
+            frameIndex++;
+            gsap.delayedCall(0.2, animatePixelFrame);
+        }
+
+        function startRandomMovement() {
+            if (movementInterval) clearInterval(movementInterval);
+
+            movementInterval = setInterval(() => {
+                if (!isMoving && !animationImportant && hungerLevel === 0 && sleepLevel === 0) {
+                    moveToRandomPosition();
+                }
+            }, Math.random() * 8000 + 7000); // 7-15 seconds
+        }
+
+        function moveToRandomPosition() {
+            if (isMoving || animationImportant || hungerLevel > 0 || sleepLevel > 0) return;
+
+            isMoving = true;
+            const margin = 100;
+            const newX = Math.random() * (window.innerWidth - 200 - margin * 2) + margin;
+            const newY = Math.random() * (window.innerHeight - 200 - margin * 2) + margin;
+
+            showFloatingText('🏃', pozx + 32, pozy - 20);
+
+            gsap.to(pixelPet, {
+                x: newX - pozx,
+                y: newY - pozy,
+                duration: 2 + Math.random() * 3,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    pozx = newX;
+                    pozy = newY;
+                    pixelPet.style.left = pozx + 'px';
+                    pixelPet.style.top = pozy + 'px';
+                    gsap.set(pixelPet, { x: 0, y: 0 });
+                    isMoving = false;
+                    showFloatingText('😌', pozx + 32, pozy - 20);
+                }
+            });
+        }
+
+        function showFloatingText(text, x, y) {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = text;
+            floatingText.style.left = x + 'px';
+            floatingText.style.top = y + 'px';
+            floatingText.style.color = '#ffff00';
+            floatingText.style.textShadow = '0 0 10px #ffff00';
+            document.body.appendChild(floatingText);
+
+            setTimeout(() => floatingText.remove(), 1000);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const colors = {
+                hungry: '#ff4444',
+                sleepy: '#4444ff',
+                happy: '#44ff44',
+                info: '#ffff00'
+            };
+
+            notification.textContent = message;
+            notification.style.borderColor = colors[type] || colors.info;
+            notification.style.color = colors[type] || colors.info;
+            notification.style.display = 'block';
+
+            gsap.fromTo(notification,
+                { scale: 0, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+            );
+
+            setTimeout(() => {
+                gsap.to(notification, {
+                    scale: 0,
+                    opacity: 0,
+                    duration: 0.3,
+                    onComplete: () => notification.style.display = 'none'
+                });
+            }, 2000);
+        }
+
+        function updateStats() {
+            const hungerBar = document.getElementById('hungerBar');
+            const sleepBar = document.getElementById('sleepBar');
+            const stateDisplay = document.getElementById('currentState');
+
+            const hungerPercent = Math.max(0, 100 - (hungerLevel * 25));
+            const sleepPercent = Math.max(0, 100 - (sleepLevel * 33));
+
+            hungerBar.style.width = hungerPercent + '%';
+            sleepBar.style.width = sleepPercent + '%';
+
+            let state = 'IDLE';
+            if (hungerLevel > 0) state = 'HUNGRY';
+            if (sleepLevel > 0) state = 'SLEEPY';
+            if (isMoving) state = 'MOVING';
+            stateDisplay.textContent = state;
+
+            setTimeout(updateStats, 100);
+        }
+
+        function handlePixelAnimation() {
+            animationImportant = true;
+            const event = animation_queue.shift();
+
+            switch(event) {
+                case 'eat':
+                    showNotification('NOM NOM 🍖', 'happy');
+                    showFloatingText('🍖', pozx + 32, pozy - 20);
+                    hungerLevel = 0;
+                    needyTime = needyTimeTotal;
+                    sleepLevel = 0;
+                    gsap.delayedCall(2, () => animationImportant = false);
+                    break;
+                case 'pet':
+                    showNotification('HAPPY! 🐾', 'happy');
+                    showFloatingText('💕', pozx + 32, pozy - 20);
+                    if (hungerLevel <= 1) {
+                        sleepLevel = 0;
+                        needyTime = needyTimeTotal;
+                    }
+                    gsap.delayedCall(1, () => animationImportant = false);
+                    break;
+                case 'follow':
+                    showNotification('HELLO! 👋', 'happy');
+                    showFloatingText('👋', pozx + 32, pozy - 20);
+                    sleepLevel = 0;
+                    needyTime = needyTimeTotal;
+                    gsap.delayedCall(3, () => animationImportant = false);
+                    break;
+                case 'raid':
+                    showNotification('WOW! ⚡', 'happy');
+                    showFloatingText('⚡', pozx + 32, pozy - 20);
+                    sleepLevel = 0;
+                    needyTime = needyTimeTotal;
+                    gsap.delayedCall(2, () => animationImportant = false);
+                    break;
+            }
+        }
+
+        function handleNotImportantAnimation() {
+            animationImportant = false;
+
+            if (needyTime <= 0) {
+                if (Math.random() > 0.5) {
+                    hungerLevel = Math.min(4, hungerLevel + 1);
+                    if (hungerLevel === 1) showNotification('I\'M HUNGRY! 🍽️', 'hungry');
+                } else {
+                    sleepLevel = Math.min(3, sleepLevel + 1);
+                    if (sleepLevel === 1) showNotification('I\'M SLEEPY! 😴', 'sleepy');
+                }
+                needyTime = needyTimeTotal;
+            }
+
+            if (animationRepeat <= 0 && hungerLevel === 0 && sleepLevel === 0 && !isMoving) {
+                animationRepeat = timeBetweenIdle;
+            }
+        }
+
+        // Game loop
+        function gameLoop() {
+            needyTime -= 0.1;
+
+            if (animation_queue.length > 0 && !animationImportant) {
+                handlePixelAnimation();
+            } else if (!animationImportant) {
+                handleNotImportantAnimation();
+            }
+
+            if (animationRepeat > 0) animationRepeat -= 0.1;
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Event handlers
+        window.feedPixelPet = () => {
+            animation_queue.push('eat');
+            console.log('Pixel pet fed!');
+        };
+
+        window.petPixelPet = () => {
+            animation_queue.push('pet');
+            console.log('Pixel pet petted!');
+        };
+
+        window.triggerPixelFollow = () => {
+            animation_queue.push('follow');
+            console.log('Pixel follow triggered!');
+        };
+
+        window.triggerPixelRaid = () => {
+            animation_queue.push('raid');
+            console.log('Pixel raid triggered!');
+        };
+
+        window.togglePixelMovement = () => {
+            const btn = document.getElementById('movementBtn');
+            if (movementInterval) {
+                clearInterval(movementInterval);
+                movementInterval = null;
+                btn.textContent = 'START MOVE';
+                console.log('Pixel movement stopped');
+            } else {
+                startRandomMovement();
+                btn.textContent = 'STOP MOVE';
+                console.log('Pixel movement started');
+            }
+        };
+
+        // Mouse events
+        pixelPet.addEventListener('click', () => {
+            animation_queue.push('eat');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!pixelPet.contains(e.target) && !e.target.closest('.pixel-ui')) {
+                const rect = pixelPet.getBoundingClientRect();
+                const distance = Math.sqrt(
+                    Math.pow(e.clientX - (rect.left + rect.width/2), 2) +
+                    Math.pow(e.clientY - (rect.top + rect.height/2), 2)
+                );
+
+                if (distance < 100) {
+                    animation_queue.push('pet');
+                }
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key.toLowerCase()) {
+                case 'f': animation_queue.push('follow'); break;
+                case 'e': animation_queue.push('eat'); break;
+                case 'p': animation_queue.push('pet'); break;
+                case 'r': animation_queue.push('raid'); break;
+                case 'm': togglePixelMovement(); break;
+            }
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            initPixelPet();
+            gameLoop();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (pozx + 100 > window.innerWidth) pozx = window.innerWidth - 200;
+            if (pozy + 100 > window.innerHeight) pozy = window.innerHeight - 200;
+            pixelPet.style.left = pozx + 'px';
+            pixelPet.style.top = pozy + 'px';
+        });
+    </script>
+</body>
+</html>

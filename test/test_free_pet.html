@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Moving Pet</title>
+    <link href="https://fonts.googleapis.com/css?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="test_free_pet.css" rel="stylesheet">
+</head>
+<body>
+    <div class="fullscreen-overlay">
+        <img id="free-pet" src="black_idle_8fps.gif" alt="Free Pet">
+    </div>
+
+    <div class="control-panel">
+        <h3>🎯 FREE PET CONTROLS</h3>
+
+        <div class="state-display">
+            <div id="state-dot" class="state-dot idle"></div>
+            <span>State: <strong id="state-text">IDLE</strong></span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item">Speed: <span class="stat-value" id="speed">0.00</span></div>
+            <div class="stat-item">Changes: <span class="stat-value" id="changes">0</span></div>
+            <div class="stat-item">X: <span class="stat-value" id="pos-x">400</span></div>
+            <div class="stat-item">Y: <span class="stat-value" id="pos-y">300</span></div>
+        </div>
+
+        <div class="control-buttons">
+            <button class="ctrl-btn active" id="auto-btn" onclick="toggleAutoMode()">🤖 AUTO</button>
+            <button class="ctrl-btn" id="manual-btn" onclick="toggleManualMode()">🎮 MANUAL</button>
+            <button class="ctrl-btn" onclick="forceRandomState()">🎲 RANDOM</button>
+            <button class="ctrl-btn" onclick="setState(STATES.WALLCLIMB)">🧗 CLIMB</button>
+            <button class="ctrl-btn" onclick="setState(STATES.SWIPE)">👋 SWIPE</button>
+            <button class="ctrl-btn" onclick="teleportRandom()">⚡ TELEPORT</button>
+            <button class="ctrl-btn" onclick="moveToRandomPosition()">🎯 MOVE</button>
+            <button class="ctrl-btn" onclick="forceContinuousMove()">🔄 FORCE MOVE</button>
+            <button class="ctrl-btn" onclick="debugMovementStatus()">🔍 DEBUG</button>
+            <button class="ctrl-btn" onclick="triggerImmediateMove()">⚡ NOW</button>
+            <button class="ctrl-btn" onclick="forcePositionUpdate()">📍 FIX POS</button>
+            <button class="ctrl-btn" onclick="reloadManifest()">🔄 RELOAD</button>
+        </div>
+    </div>
+
+    <div class="wrap-mode">
+        <h4>🔄 WRAP MODE</h4>
+        <div class="wrap-toggle">
+            <input type="checkbox" id="wrap-x" checked onchange="toggleWrapX()">
+            <label for="wrap-x">Wrap X-axis</label>
+        </div>
+        <div class="wrap-toggle">
+            <input type="checkbox" id="wrap-y" onchange="toggleWrapY()">
+            <label for="wrap-y">Wrap Y-axis</label>
+        </div>
+        <div class="wrap-toggle">
+            <input type="checkbox" id="bounce" onchange="toggleBounce()">
+            <label for="bounce">Bounce edges</label>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h4>🎮 CONTROLS</h4>
+        <div><strong>A/M:</strong> Toggle Auto/Manual mode</div>
+        <div><strong>R:</strong> Force random state</div>
+        <div><strong>V:</strong> Move to random position</div>
+        <div><strong>N:</strong> Move immediately (NOW)</div>
+        <div><strong>P:</strong> Force position update test</div>
+        <div><strong>F:</strong> Force continuous movement test</div>
+        <div><strong>T:</strong> Teleport instantly</div>
+        <div><strong>D:</strong> Debug movement status</div>
+        <div><strong>L:</strong> Reload manifest</div>
+        <div><strong>S:</strong> Stop movement</div>
+        <div><strong>Click anywhere:</strong> Move to position</div>
+        <div><strong>Wrap/Bounce:</strong> Boundary modes</div>
+    </div>
+
+    <div class="debug-info">
+        <h4>🔍 DEBUG INFO</h4>
+        <div>Mode: <span id="debug-mode">AUTO</span></div>
+        <div>Target: <span id="debug-target">NONE</span></div>
+        <div>Direction: <span id="debug-direction">NONE</span></div>
+        <div class="coordinates">
+            Screen: <span id="screen-size">1920x1080</span><br>
+            Pet: <span id="pet-coords">400, 300</span>
+        </div>
+    </div>
+
+    <script src="test_free_pet.js"></script>
+</body>
+</html>

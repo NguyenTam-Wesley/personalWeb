@@ -1,0 +1,266 @@
+let box = document.getElementById('box') 
+let fieldData, size, pozx, pozy, sprite, animation_queue, box_width, box_height, backgroundImageWidth, backgroundImageHeight, animationRepeat, animationImportant, timeBetweenIdle, hungerLevel, sleepLevel, isHunger, isSleep, needyTime, needyTimeTotal, currentAnimation, followEventDuration, cheerEventDuration, raidEventDuration, subEventDuration, specialRedemptionName, specialRedemptionDuration, eatingDuration, pettingDuration
+let tl, reverb
+animation_queue = []
+window.addEventListener('onWidgetLoad', function (obj){
+    
+    
+    fieldData = obj.detail.fieldData
+    size = fieldData["size"]
+    pozx = fieldData["pozx"]
+    pozy = fieldData["pozy"]
+    timeBetweenIdle = fieldData["time-between-random-idle"]
+    needyTimeTotal = fieldData["needy-time"]
+    isSleep = fieldData["is-sleepy"]
+    isHunger = fieldData["is-hunger"]
+    followEventDuration = fieldData["follow-event-duration"]
+    cheerEventDuration = fieldData["cheer-event-duration"]
+    raidEventDuration = fieldData["raid-event-duration"]
+    subEventDuration = fieldData["sub-event-duration"]
+    specialRedemptionName = fieldData["special-rademption-name"]
+    specialRedemptionDuration = fieldData["special-rademption-duration"]
+    eatingDuration = fieldData["eating-duration"]
+    pettingDuration = fieldData["petting-duration"]
+
+    model_name = fieldData["model"]
+    model = fieldData[model_name]
+
+    sprite = model["sprite"]
+    backgroundImageWidth = model["image_width"]
+    backgroundImageHeight = model["image_height"]
+    box_width = model["sprite_width"] * size/100;
+    box_height = model["sprite_height"] * size/100;
+
+
+    box.style.left = pozx + "px"
+    box.style.top = pozy + "px"
+    box.style.width = box_width + "px"
+    box.style.height = box_height + "px"
+    box.style.backgroundImage = "url('"+sprite+"')"
+    box.style.backgroundSize = backgroundImageWidth * size/100 + "px " + backgroundImageHeight * size/100 + "px"
+    
+    startAnimating()
+});
+
+window.addEventListener('onEventReceived', function (obj){
+    if(obj.detail.listener == "follower-latest"){
+        animation_queue.push("follow")
+    }
+    if(obj.detail.listener == "subscriber-latest"){
+        animation_queue.push("sub")
+    }
+    if(obj.detail.listener == "cheer-latest"){
+        animation_queue.push("cheer")
+    }
+    if(obj.detail.listener == "raid-latest"){
+        animation_queue.push("raid")
+    }
+    if(obj.detail.event.type == "channelPointsRedemption"){
+        if(obj.detail.event.data.redemption == specialRedemptionName){
+            animation_queue.push("special")
+        }
+    }
+    if(obj.detail.listener == "message" && obj.detail.event.data.text.includes("!feed")){
+        animation_queue.push("eat")
+    }
+    if(obj.detail.listener == "message" && obj.detail.event.data.text.includes("!pet")){
+        animation_queue.push("pet")
+    }
+});
+
+function startAnimating(){
+    tl = gsap.timeline()
+
+    hungerLevel = 0
+    sleepLevel = 0
+    animationImportant = false;
+    currentAnimation = "idle1";
+    needyTime = needyTimeTotal
+    animationRepeat = timeBetweenIdle
+
+    animate(currentAnimation)
+}
+function animate(animation){
+    var duration = model[ animation + "_duration"]
+    animationRepeat = animationRepeat - duration
+    needyTime = needyTime - duration
+    var steps = model[ animation + "_frames"] - 1
+    var topPosition = -((model[ animation + "_position"] - 1) * box_height);
+    var final_position = -((steps) * box_width)
+    if (reverb){
+        box.style.backgroundPosition = final_position + "px " + topPosition + "px"
+        tl.to("#box",{ backgroundPosition: "0px " + topPosition + "px", ease: "steps(" + steps + ")", duration: duration})
+        animationRepeat = animationRepeat - duration
+        needyTime = needyTime - duration
+    } else{
+    box.style.backgroundPosition = "0px " + topPosition + "px"
+    }
+    tl.to("#box",{ backgroundPosition: final_position + "px " + topPosition + "px", ease: "steps(" + steps + ")", duration: duration, onComplete: tlComplete})
+}
+function handleImportantAnimation(){
+    animationImportant = true
+    var current_event = animation_queue.shift()
+    switch (current_event){
+        case "follow":
+            if(followEventDuration!=0){
+                currentAnimation = "follow"
+                animationRepeat = followEventDuration
+                sleepLevel = 0
+                needyTime = needyTimeTotal
+            }else{
+                handleNotImportantAnimation()
+            }
+        break;
+        case "sub":
+            if(subEventDuration!=0){
+                currentAnimation = "follow"
+                animationRepeat = subEventDuration
+                sleepLevel = 0
+                needyTime = needyTimeTotal
+            }else{
+                handleNotImportantAnimation()
+            }
+        break;
+        case "cheer":
+            if(cheerEventDuration!=0){
+                currentAnimation = "follow"
+                animationRepeat = cheerEventDuration
+                sleepLevel = 0
+                needyTime = needyTimeTotal
+            }else{
+                handleNotImportantAnimation()
+            }
+        break;
+        case "raid":
+            if(raidEventDuration!=0){
+                currentAnimation = "raid"
+                animationRepeat = raidEventDuration
+                sleepLevel = 0
+                needyTime = needyTimeTotal
+            }else{
+                handleNotImportantAnimation()
+            }
+        break;
+        case "special":
+            if(specialRedemptionDuration!=0){
+                if(hungerLevel <= 1){
+                    currentAnimation = "special"
+                    animationRepeat = specialRedemptionDuration
+                    sleepLevel = 0
+                    needyTime = needyTimeTotal
+                }else{
+                    currentAnimation = "refusing"
+                    animationRepeat = 6
+                    needyTime = needyTimeTotal
+                }
+            }else{
+                handleNotImportantAnimation()
+            }
+        break;
+        case "eat":
+            if(eatingDuration!=0){
+                currentAnimation = "eating"
+                animationRepeat = eatingDuration
+                sleepLevel = 0
+                hungerLevel = 0
+                needyTime = needyTimeTotal
+            }else{
+                handleNotImportantAnimation()
+            }
+        break;
+        case "pet":
+            if(pettingDuration!=0){
+                if(hungerLevel <= 1){
+                    currentAnimation = "petting"
+                    animationRepeat = pettingDuration
+                    sleepLevel = 0
+                    needyTime = needyTimeTotal
+                }else{
+                    currentAnimation = "refusing"
+                    animationRepeat = 6
+                    needyTime = needyTimeTotal
+                }
+            }else{
+                handleNotImportantAnimation()
+            }
+        break;
+        default:
+    }
+}
+function handleNotImportantAnimation(){
+    animationImportant = false
+    if (needyTime <= 0 && (isSleep || isHunger)){
+        if(hungerLevel == 0 && sleepLevel == 0){
+            if (isSleep && isHunger){
+                var rand = Math.floor(Math.random() * 3)
+                if (rand == 1){
+                    hungerLevel = 1
+                }else{
+                    sleepLevel = 1
+                }
+            }else{
+                if (isHunger){
+                    hungerLevel = 1
+                }
+                if (isSleep){
+                    sleepLevel = 1
+                }
+            }
+        }else{
+            if(hungerLevel > 0){
+                if(hungerLevel < 4){
+                    hungerLevel = hungerLevel + 1
+                }
+            }
+            if(sleepLevel > 0){
+                if(sleepLevel < 3){
+                    sleepLevel = sleepLevel + 1
+                }else{
+                    sleepLevel = 0
+                    currentAnimation = "idle1"
+                    animationRepeat = timeBetweenIdle;
+                }
+            }
+        }
+        needyTime = needyTimeTotal
+    }
+    if (hungerLevel != 0){
+        currentAnimation = "hungry" + hungerLevel
+    }
+    if (sleepLevel != 0){
+        if (sleepLevel == 1){
+            if(animationRepeat <= 0){
+                currentAnimation = "yawn"
+                animationRepeat = 10
+            }else{
+                currentAnimation = "idle1"
+            }
+        }else{
+            currentAnimation = "sleepy" + (sleepLevel-1)
+        }
+    }
+    if (animationRepeat <= 0 && needyTime >= 0 && hungerLevel == 0 && sleepLevel == 0){
+        currentAnimation = "idle" + (Math.floor(Math.random() * 3)+1);
+        if(currentAnimation == 'idle3'){
+            animationRepeat = timeBetweenIdle/2;
+        }else{
+            animationRepeat = timeBetweenIdle;
+        }
+    }
+}
+function tlComplete(){
+    
+    if (animationRepeat <= 0 || !animationImportant){
+        if(animation_queue.length > 0){
+            handleImportantAnimation()
+        }else{
+            handleNotImportantAnimation()
+        }
+    }
+    if (currentAnimation == "yawn"){
+        reverb = true   
+    }else{
+        reverb = false
+    }
+    animate(currentAnimation)
+}

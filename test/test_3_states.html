@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 States GIF Test</title>
+    <link href="https://fonts.googleapis.com/css?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e94560;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #e94560;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2ec4b6;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-shadow: 0 0 10px #2ec4b6;
+        }
+
+        .subtitle {
+            color: #e94560;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .pet-display {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        #pet-gif {
+            width: 40px;  /* 200px * 0.2 */
+            height: 40px; /* 200px * 0.2 */
+            border-radius: 2px;
+            border: 1px solid #666; /* Scale border down proportionally */
+            transition: all 0.3s ease;
+        }
+
+        #pet-gif.idle {
+            border-color: #2ec4b6;
+            box-shadow: 0 0 20px rgba(46, 196, 182, 0.5);
+        }
+
+        #pet-gif.walk {
+            border-color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+        }
+
+        #pet-gif.run {
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        .state-info {
+            margin-top: 20px;
+            font-size: 1.2em;
+            padding: 15px;
+            border-radius: 8px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .state-info.idle {
+            background: rgba(46, 196, 182, 0.2);
+            border: 2px solid #2ec4b6;
+            color: #2ec4b6;
+        }
+
+        .state-info.walk {
+            background: rgba(255, 255, 0, 0.2);
+            border: 2px solid #ffff00;
+            color: #ffff00;
+        }
+
+        .state-info.run {
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .state-btn {
+            padding: 15px 25px;
+            border: 2px solid #666;
+            background: rgba(0, 0, 0, 0.5);
+            color: #666;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1em;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .state-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .state-btn.active {
+            border-color: currentColor;
+            background: rgba(255, 255, 255, 0.1);
+            color: currentColor;
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .idle-btn { color: #2ec4b6; }
+        .walk-btn { color: #ffff00; }
+        .run-btn { color: #ff4444; }
+
+        .state-details {
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #666;
+        }
+
+        .state-details h3 {
+            color: #2ec4b6;
+            margin-bottom: 15px;
+        }
+
+        .state-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .state-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+
+        .state-card h4 {
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .state-card p {
+            font-size: 0.8em;
+            line-height: 1.4;
+            color: #ccc;
+        }
+
+        .current-speed {
+            margin-top: 20px;
+            font-size: 1.1em;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            border: 1px solid #666;
+        }
+
+        .speed-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .speed-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ec4b6, #ffff00, #ff4444);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #2ec4b6;
+            border-radius: 5px;
+            font-size: 0.7em;
+            color: #2ec4b6;
+            text-align: left;
+        }
+
+        .floating-text {
+            position: fixed;
+            font-size: 24px;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 1000;
+            animation: float-up 1s ease-out forwards;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 3 STATES GIF TEST</h1>
+        <p class="subtitle">Demonstrate IDLE → WALK → RUN state machine</p>
+
+        <div class="pet-display">
+            <img id="pet-gif" src="black_idle_8fps.gif" alt="Pet">
+        </div>
+
+        <div id="state-info" class="state-info idle">
+            <div>
+                <strong>🟢 IDLE STATE</strong><br>
+                <small>Speed: 0.00 | Standing still</small>
+            </div>
+        </div>
+
+        <div class="current-speed">
+            <div>Current Speed: <span id="speed-value">0.00</span></div>
+            <div class="speed-bar">
+                <div class="speed-fill" id="speed-fill"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="state-btn idle-btn active" id="idle-btn" onclick="setState('idle')">
+                🟢 IDLE<br><small>speed = 0</small>
+            </button>
+            <button class="state-btn walk-btn" id="walk-btn" onclick="setState('walk')">
+                🟡 WALK<br><small>speed = 0.4</small>
+            </button>
+            <button class="state-btn run-btn" id="run-btn" onclick="setState('run')">
+                🔴 RUN<br><small>speed = 1.2</small>
+            </button>
+            <button class="state-btn" id="wallclimb-btn" onclick="setState('wallclimb')" style="background: rgba(155, 89, 182, 0.8); color: #9b59b6;">
+                🧗 CLIMB<br><small>speed = 0.2</small>
+            </button>
+            <button class="state-btn" id="swipe-btn" onclick="setState('swipe')" style="background: rgba(243, 156, 18, 0.8); color: #f39c12;">
+                👋 SWIPE<br><small>speed = 0.8</small>
+            </button>
+        </div>
+
+        <div class="state-details">
+            <h3>📊 State Machine Logic</h3>
+            <div class="state-grid">
+                <div class="state-card">
+                    <h4 style="color: #2ec4b6;">🟢 IDLE</h4>
+                    <p><strong>Speed:</strong> 0.00<br><strong>Condition:</strong> speed < 0.05<br><strong>Animation:</strong> black_idle_8fps.gif</p>
+                </div>
+                <div class="state-card">
+                    <h4 style="color: #ffff00;">🟡 WALK</h4>
+                    <p><strong>Speed:</strong> 0.40<br><strong>Condition:</strong> 0.05 ≤ speed < 0.8<br><strong>Animation:</strong> black_walk_8fps.gif</p>
+                </div>
+                <div class="state-card">
+                    <h4 style="color: #ff4444;">🔴 RUN</h4>
+                    <p><strong>Speed:</strong> 1.20<br><strong>Condition:</strong> speed ≥ 0.8<br><strong>Animation:</strong> black_run_8fps.gif</p>
+                </div>
+                <div class="state-card">
+                    <h4 style="color: #9b59b6;">🧗 WALLCLIMB</h4>
+                    <p><strong>Speed:</strong> 0.20<br><strong>Trigger:</strong> Hit screen edge<br><strong>Animation:</strong> black_wallclimb_8fps.gif</p>
+                </div>
+                <div class="state-card">
+                    <h4 style="color: #f39c12;">👋 SWIPE</h4>
+                    <p><strong>Speed:</strong> 0.80<br><strong>Trigger:</strong> Manual/Random<br><strong>Animation:</strong> black_swipe_8fps.gif</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="debug-info">
+            <strong>DEBUG:</strong><br>
+            <span id="debug-state">Current State: IDLE</span><br>
+            <span id="debug-speed">Current Speed: 0.00</span><br>
+            <span id="debug-gif">Current GIF: black_idle_8fps.gif</span><br>
+            <span id="debug-time">Last Change: Page Load</span>
+        </div>
+    </div>
+
+    <script>
+        // State definitions
+        const STATES = {
+            IDLE: { name: 'idle', speed: 0, gif: 'black_idle_8fps.gif', color: '#2ec4b6', emoji: '🟢' },
+            WALK: { name: 'walk', speed: 0.4, gif: 'black_walk_8fps.gif', color: '#ffff00', emoji: '🟡' },
+            RUN: { name: 'run', speed: 1.2, gif: 'black_run_8fps.gif', color: '#ff4444', emoji: '🔴' },
+            WALLCLIMB: { name: 'wallclimb', speed: 0.2, gif: 'black_wallclimb_8fps.gif', color: '#9b59b6', emoji: '🧗' },
+            SWIPE: { name: 'swipe', speed: 0.8, gif: 'black_swipe_8fps.gif', color: '#f39c12', emoji: '👋' }
+        };
+
+        let currentState = STATES.IDLE;
+        let currentSpeed = 0;
+
+        // DOM elements
+        const petGif = document.getElementById('pet-gif');
+        const stateInfo = document.getElementById('state-info');
+        const speedValue = document.getElementById('speed-value');
+        const speedFill = document.getElementById('speed-fill');
+
+        // Button elements
+        const idleBtn = document.getElementById('idle-btn');
+        const walkBtn = document.getElementById('walk-btn');
+        const runBtn = document.getElementById('run-btn');
+
+        // Debug elements
+        const debugState = document.getElementById('debug-state');
+        const debugSpeed = document.getElementById('debug-speed');
+        const debugGif = document.getElementById('debug-gif');
+        const debugTime = document.getElementById('debug-time');
+
+        function setState(stateName) {
+            if (!STATES[stateName]) return;
+
+            const newState = STATES[stateName];
+            const oldState = currentState;
+
+            // Update state
+            currentState = newState;
+            currentSpeed = newState.speed;
+
+            // Update visual
+            petGif.src = newState.gif;
+            petGif.className = newState.name;
+
+            // Update state info
+            stateInfo.className = `state-info ${newState.name}`;
+            stateInfo.innerHTML = `
+                <div>
+                    <strong>${newState.emoji} ${newState.name.toUpperCase()} STATE</strong><br>
+                    <small>Speed: ${newState.speed.toFixed(2)} | ${getStateDescription(newState.name)}</small>
+                </div>
+            `;
+
+            // Update buttons
+            idleBtn.classList.toggle('active', stateName === 'idle');
+            walkBtn.classList.toggle('active', stateName === 'walk');
+            runBtn.classList.toggle('active', stateName === 'run');
+
+            // Update speed display
+            speedValue.textContent = currentSpeed.toFixed(2);
+            speedFill.style.width = `${(currentSpeed / 2) * 100}%`; // Max speed is 2.0
+
+            // Update debug info
+            debugState.textContent = `Current State: ${newState.name.toUpperCase()}`;
+            debugSpeed.textContent = `Current Speed: ${currentSpeed.toFixed(2)}`;
+            debugGif.textContent = `Current GIF: ${newState.gif}`;
+            debugTime.textContent = `Last Change: ${new Date().toLocaleTimeString()}`;
+
+            // Show floating text
+            showFloatingText(`${newState.emoji} ${newState.name.toUpperCase()}`, 50, 50);
+
+            console.log(`🔄 State changed: ${oldState.name} → ${newState.name} (Speed: ${currentSpeed})`);
+        }
+
+        function getStateDescription(stateName) {
+            switch(stateName) {
+                case 'idle': return 'Standing still';
+                case 'walk': return 'Moving slowly';
+                case 'run': return 'Moving fast';
+                default: return 'Unknown';
+            }
+        }
+
+        function showFloatingText(text, x, y) {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = text;
+            floatingText.style.left = x + '%';
+            floatingText.style.top = y + '%';
+            floatingText.style.color = currentState.color;
+            document.body.appendChild(floatingText);
+
+            setTimeout(() => floatingText.remove(), 1000);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key.toLowerCase()) {
+                case '1':
+                case 'i':
+                    setState('idle');
+                    break;
+                case '2':
+                case 'w':
+                    setState('walk');
+                    break;
+                case '3':
+                case 'r':
+                    setState('run');
+                    break;
+            }
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🎬 3 States GIF Test Loaded');
+            console.log('🎮 Controls: Click buttons or press 1/I (Idle), 2/W (Walk), 3/R (Run)');
+            console.log('📊 FSM Logic: Speed determines state with hysteresis');
+
+            // Set initial state
+            setState('idle');
+        });
+
+        // Add click animation to pet
+        petGif.addEventListener('click', () => {
+            petGif.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                petGif.style.transform = 'scale(1)';
+            }, 150);
+            showFloatingText('🐾', 80, 20);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.main-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+#box {
+    position: absolute;
+    background-position: 0px 0px;
+}
+

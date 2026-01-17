@@ -1,0 +1,94 @@
+{
+  "pozy": {
+    "type": "slider",
+    "label": "Position Y",
+    "value": 0,
+    "min": 0,
+    "max": 1080,
+    "step": 1
+  },
+  "pozx": {
+    "type": "slider",
+    "label": "Position X",
+    "value": 0,
+    "min": 0,
+    "max": 1920,
+    "step": 1
+  },
+  "size": {
+    "type": "slider",
+    "label": "Size",
+    "value": 100,
+    "min": 0,
+    "max": 1000,
+    "step": 10
+  },
+  "model": {
+    "type": "dropdown",
+    "label": "Choose an animal:",
+    "value": "cat",
+    "options": {
+      "cat": "Cat"
+    }
+  },
+  "time-between-random-idle": {
+    "type": "number",
+    "label": "Time between idle animation change (s)",
+    "value": 6
+  },
+  "is-hunger": {
+    "type": "checkbox",
+    "label": "Hunger",
+    "value": true
+  },
+  "is-sleepy": {
+    "type": "checkbox",
+    "label": "Sleep",
+    "value": true
+  },
+  "needy-time": {
+    "type": "number",
+    "label": "How fast animal gets sleepy or hungry (s)",
+    "value": 120
+  },
+  "special-rademption-name": {
+    "type": "text",
+    "label": "The name of channel point redeem that puts cat in a box",
+    "value": "PUT THE CAT IN A BOX"
+  },
+  "special-rademption-duration": {
+    "type": "number",
+    "label": "How long will the cat sit in the box (s)",
+    "value": 60
+  },
+  "follow-event-duration": {
+    "type": "number",
+    "label": "How long will the cat react to a follow (s)",
+    "value": 6
+  },
+  "sub-event-duration": {
+    "type": "number",
+    "label": "How long will the cat react to a sub (s)",
+    "value": 6
+  },
+  "cheer-event-duration": {
+    "type": "number",
+    "label": "How long will the cat react to a cheer (s)",
+    "value": 6
+  },
+  "raid-event-duration": {
+    "type": "number",
+    "label": "How long will the cat react to a raid (s)",
+    "value": 20
+  },
+  "eating-duration": {
+    "type": "number",
+    "label": "How long will the cat eat (s)",
+    "value": 4
+  },
+  "petting-duration": {
+    "type": "number",
+    "label": "How long will the petting last (s)",
+    "value": 4
+  }
+}

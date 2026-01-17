@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer Pet Test</title>
+    <link href="https://fonts.googleapis.com/css?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="../public/style/style.css" rel="stylesheet">
+    <link href="../public/style/themes.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .content-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .content-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .footer-pet-area {
+            position: fixed;
+            bottom: 80px; /* Above footer */
+            left: 20px;
+            right: 20px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            border: 2px solid #e94560;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        #footer-pet {
+            position: absolute;
+            width: 24px;  /* Even smaller for footer */
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            filter: drop-shadow(0 0 6px rgba(233, 69, 96, 0.4));
+        }
+
+        #footer-pet:hover {
+            transform: scale(1.2);
+        }
+
+        #footer-pet.idle {
+            filter: drop-shadow(0 0 8px rgba(46, 196, 182, 0.6));
+        }
+
+        #footer-pet.walk {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 0, 0.6));
+        }
+
+        #footer-pet.run {
+            filter: drop-shadow(0 0 8px rgba(255, 68, 68, 0.6));
+        }
+
+        .footer-pet-ui {
+            position: fixed;
+            bottom: 150px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #2ec4b6;
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 200px;
+            font-size: 11px;
+            color: #e94560;
+            z-index: 101;
+        }
+
+        .footer-pet-ui h4 {
+            color: #2ec4b6;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .pet-state-display {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .state-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #666;
+        }
+
+        .state-dot.idle { background: #2ec4b6; border-color: #2ec4b6; }
+        .state-dot.walk { background: #ffff00; border-color: #ffff00; }
+        .state-dot.run { background: #ff4444; border-color: #ff4444; }
+
+        .floating-text {
+            position: fixed;
+            font-size: 16px;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 102;
+            animation: float-up 1.5s ease-out forwards;
+            text-shadow: 0 0 8px currentColor;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px) scale(1.1);
+            }
+        }
+
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: currentColor;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 1.5s ease-out forwards;
+            z-index: 103;
+        }
+
+        @keyframes particle-float {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0);
+            }
+        }
+
+        .footer-note {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #2ec4b6;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            border: 1px solid #2ec4b6;
+            z-index: 104;
+        }
+    </style>
+</head>
+<body>
+    <!-- Components will be loaded here -->
+
+    <main>
+        <section class="hero-section">
+            <h1>🎮 Footer Pet Demo</h1>
+            <p>Experience the random state pet system integrated into a website footer area</p>
+        </section>
+
+        <section class="content-grid">
+            <div class="content-card">
+                <h3>🎲 Random States</h3>
+                <p>The pet automatically switches between IDLE, WALK, and RUN states with smooth transitions and visual effects.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🏃 Movement System</h3>
+                <p>Pet moves randomly within the footer area, with speed based on current state and direction changes.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>✨ Visual Effects</h3>
+                <p>Floating text notifications, particle effects, and state-based visual feedback enhance the experience.</p>
+            </div>
+
+            <div class="content-card">
+                <h3>🎯 Footer Integration</h3>
+                <p>Seamlessly integrated into website footer area, providing subtle background animation and interaction.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Pet Area -->
+    <div class="footer-pet-area">
+        <img id="footer-pet" src="black_idle_8fps.gif" alt="Footer Pet">
+    </div>
+
+    <!-- Footer Pet UI -->
+    <div class="footer-pet-ui">
+        <h4>🐾 Footer Pet</h4>
+        <div class="pet-state-display">
+            <div id="pet-state-dot" class="state-dot idle"></div>
+            <span>State: <strong id="pet-state-text">IDLE</strong></span>
+        </div>
+        <div>Speed: <strong id="pet-speed">0.00</strong></div>
+        <div>Changes: <strong id="pet-changes">0</strong></div>
+    </div>
+
+    <!-- Footer Note -->
+    <div class="footer-note">
+        🎮 Pet is active in footer area • Click to interact
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        // Import components
+        import { Components } from '../public/js/components/components.js';
+        import { themeToggle } from '../public/js/components/themeToggle.js';
+
+        // Initialize components
+        const components = new Components();
+        components.init();
+
+        console.log('🎯 Footer Pet Test Page Loaded');
+        console.log('🐾 Components imported successfully');
+    </script>
+
+    <script>
+        // Footer Pet Logic - Adapted from test_random_states.html
+        const STATES = {
+            IDLE: { name: 'idle', speed: 0, gif: 'black_idle_8fps.gif', color: '#2ec4b6', emoji: '🟢' },
+            WALK: { name: 'walk', speed: 0.3, gif: 'black_walk_8fps.gif', color: '#ffff00', emoji: '🟡' },
+            RUN: { name: 'run', speed: 0.8, gif: 'black_run_8fps.gif', color: '#ff4444', emoji: '🔴' },
+            WALLCLIMB: { name: 'wallclimb', speed: 0.2, gif: 'black_wallclimb_8fps.gif', color: '#9b59b6', emoji: '🧗' },
+            SWIPE: { name: 'swipe', speed: 0.8, gif: 'black_swipe_8fps.gif', color: '#f39c12', emoji: '👋' }
+        };
+
+        let currentState = STATES.IDLE;
+        let currentSpeed = 0;
+        let petX = 50;
+        let petY = 30;
+        let direction = 1;
+        let isMoving = false;
+        let targetX = 50;
+        let targetY = 30;
+        let autoMode = true;
+        let changeCount = 0;
+        let autoInterval;
+        let movementInterval;
+
+        // DOM elements
+        const footerPet = document.getElementById('footer-pet');
+        const stateDot = document.getElementById('pet-state-dot');
+        const stateText = document.getElementById('pet-state-text');
+        const speedDisplay = document.getElementById('pet-speed');
+        const changesDisplay = document.getElementById('pet-changes');
+
+        // Initialize footer pet
+        function initFooterPet() {
+            footerPet.style.left = petX + 'px';
+            footerPet.style.top = petY + 'px';
+            setState(STATES.IDLE);
+
+            // Start auto mode
+            startAutoMode();
+
+            console.log('🐾 Footer pet initialized');
+        }
+
+        // Set pet state
+        function setState(newState) {
+            if (currentState === newState) return;
+
+            const oldState = currentState;
+            currentState = newState;
+            currentSpeed = newState.speed;
+
+            // Update visual
+            footerPet.src = newState.gif;
+            footerPet.className = newState.name;
+
+            // Update UI
+            stateDot.className = `state-dot ${newState.name}`;
+            stateText.textContent = newState.name.toUpperCase();
+            speedDisplay.textContent = currentSpeed.toFixed(2);
+            changeCount++;
+            changesDisplay.textContent = changeCount;
+
+            // Create particles effect
+            createParticles(newState.color);
+
+            console.log(`🔄 Footer pet: ${oldState.name} → ${newState.name} (${currentSpeed})`);
+        }
+
+        // Random state selection
+        function getRandomState() {
+            const states = Object.values(STATES);
+            return states[Math.floor(Math.random() * states.length)];
+        }
+
+        // Auto mode - random state changes
+        function startAutoMode() {
+            autoMode = true;
+
+            // Random state changes every 4-9 seconds (slower for footer)
+            autoInterval = setInterval(() => {
+                if (autoMode) {
+                    const randomState = getRandomState();
+                    setState(randomState);
+
+                    // 60% chance to move when changing state
+                    if (Math.random() < 0.6) {
+                        moveToRandomPosition();
+                    }
+                }
+            }, Math.random() * 5000 + 4000); // 4-9 seconds
+
+            // Start movement cycle
+            startMovementCycle();
+        }
+
+        // Movement cycle
+        function startMovementCycle() {
+            movementInterval = setInterval(() => {
+                if (autoMode && !isMoving) {
+                    moveToRandomPosition();
+                }
+            }, Math.random() * 6000 + 3000); // 3-9 seconds
+        }
+
+        // Move to random position within footer area
+        function moveToRandomPosition() {
+            if (isMoving) return;
+
+            isMoving = true;
+            const footerArea = document.querySelector('.footer-pet-area');
+            const areaRect = footerArea.getBoundingClientRect();
+
+            // Keep pet within footer area bounds (accounting for pet size)
+            const margin = 10;
+            targetX = Math.random() * (areaRect.width - 24 - margin * 2) + margin;
+            targetY = Math.random() * (areaRect.height - 24 - margin * 2) + margin;
+        }
+
+        // Game loop for movement
+        function gameLoop() {
+            if (isMoving) {
+                const dx = targetX - petX;
+                const dy = targetY - petY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > 3) { // Smaller threshold for footer
+                    const moveSpeed = Math.min(currentSpeed * 1.5, distance);
+                    petX += (dx / distance) * moveSpeed;
+                    petY += (dy / distance) * moveSpeed;
+
+                    // Update direction based on movement
+                    direction = dx > 0 ? 1 : -1;
+                    footerPet.style.transform = direction < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+                } else {
+                    isMoving = false;
+                }
+            }
+
+            footerPet.style.left = petX + 'px';
+            footerPet.style.top = petY + 'px';
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Create particle effects
+        function createParticles(color) {
+            for (let i = 0; i < 5; i++) { // Fewer particles for footer
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = (petX + 12 + Math.random() * 8 - 4) + 'px';
+                particle.style.top = (petY + 12 + Math.random() * 8 - 4) + 'px';
+                particle.style.color = color;
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1500);
+            }
+        }
+
+        // Floating text
+        function showFloatingText(text, x, y) {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = text;
+            floatingText.style.left = x + 'px';
+            floatingText.style.top = y + 'px';
+            floatingText.style.color = currentState.color;
+            document.body.appendChild(floatingText);
+
+            setTimeout(() => floatingText.remove(), 1500);
+        }
+
+        // Event handlers
+        footerPet.addEventListener('click', () => {
+            const randomState = getRandomState();
+            setState(randomState);
+            showFloatingText('🐾', petX + 12, petY - 10);
+            createParticles(currentState.color);
+        });
+
+        // Initialize when DOM ready
+        window.addEventListener('DOMContentLoaded', () => {
+            initFooterPet();
+            gameLoop();
+        });
+    </script>
+</body>
+</html>

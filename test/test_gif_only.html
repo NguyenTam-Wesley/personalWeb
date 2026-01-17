@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIF Loading Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .gif-test {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background: white;
+        }
+        .gif-container {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        img {
+            width: 128px;
+            height: 128px;
+            object-fit: contain;
+            border: 1px solid #999;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🧪 GIF Loading Test</h1>
+
+    <button onclick="testAllGifs()">Test All GIFs</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <div class="gif-test">
+        <h2>🎯 Local GIFs (test/ directory)</h2>
+        <div class="gif-container">
+            <h3>IDLE</h3>
+            <img id="local-idle" src="black_idle_8fps.gif" alt="idle" onload="onGifLoad('local-idle')" onerror="onGifError('local-idle')">
+            <div id="local-idle-status" class="status loading">Loading...</div>
+        </div>
+        <div class="gif-container">
+            <h3>WALK</h3>
+            <img id="local-walk" src="black_walk_8fps.gif" alt="walk" onload="onGifLoad('local-walk')" onerror="onGifError('local-walk')">
+            <div id="local-walk-status" class="status loading">Loading...</div>
+        </div>
+        <div class="gif-container">
+            <h3>RUN</h3>
+            <img id="local-run" src="black_run_8fps.gif" alt="run" onload="onGifLoad('local-run')" onerror="onGifError('local-run')">
+            <div id="local-run-status" class="status loading">Loading...</div>
+        </div>
+    </div>
+
+    <div class="gif-test">
+        <h2>🌐 Remote GIFs (pet/cat_black_gif/ directory)</h2>
+        <div class="gif-container">
+            <h3>IDLE</h3>
+            <img id="remote-idle" src="../pet/cat_black_gif/black_idle_8fps.gif" alt="idle" onload="onGifLoad('remote-idle')" onerror="onGifError('remote-idle')">
+            <div id="remote-idle-status" class="status loading">Loading...</div>
+        </div>
+        <div class="gif-container">
+            <h3>WALK</h3>
+            <img id="remote-walk" src="../pet/cat_black_gif/black_walk_8fps.gif" alt="walk" onload="onGifLoad('remote-walk')" onerror="onGifError('remote-walk')">
+            <div id="remote-walk-status" class="status loading">Loading...</div>
+        </div>
+        <div class="gif-container">
+            <h3>RUN</h3>
+            <img id="remote-run" src="../pet/cat_black_gif/black_run_8fps.gif" alt="run" onload="onGifLoad('remote-run')" onerror="onGifError('remote-run')">
+            <div id="remote-run-status" class="status loading">Loading...</div>
+        </div>
+    </div>
+
+    <div class="gif-test">
+        <h2>📊 Test Results</h2>
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        const results = {};
+
+        function onGifLoad(id) {
+            const statusEl = document.getElementById(id + '-status');
+            const imgEl = document.getElementById(id);
+
+            statusEl.className = 'status success';
+            statusEl.textContent = `✅ LOADED (${imgEl.naturalWidth}x${imgEl.naturalHeight})`;
+
+            results[id] = { status: 'success', size: `${imgEl.naturalWidth}x${imgEl.naturalHeight}` };
+            console.log(`✅ ${id}: LOADED - ${imgEl.naturalWidth}x${imgEl.naturalHeight}`);
+        }
+
+        function onGifError(id) {
+            const statusEl = document.getElementById(id + '-status');
+            statusEl.className = 'status error';
+            statusEl.textContent = '❌ FAILED TO LOAD';
+
+            results[id] = { status: 'error' };
+            console.error(`❌ ${id}: FAILED TO LOAD`);
+        }
+
+        function testAllGifs() {
+            console.log('🧪 Starting comprehensive GIF test...');
+
+            const testUrls = [
+                { id: 'local-idle', url: 'black_idle_8fps.gif' },
+                { id: 'local-walk', url: 'black_walk_8fps.gif' },
+                { id: 'local-run', url: 'black_run_8fps.gif' },
+                { id: 'remote-idle', url: '../pet/cat_black_gif/black_idle_8fps.gif' },
+                { id: 'remote-walk', url: '../pet/cat_black_gif/black_walk_8fps.gif' },
+                { id: 'remote-run', url: '../pet/cat_black_gif/black_run_8fps.gif' }
+            ];
+
+            let completed = 0;
+            const total = testUrls.length;
+
+            testUrls.forEach(({ id, url }) => {
+                const img = new Image();
+                img.onload = () => {
+                    completed++;
+                    console.log(`✅ ${id}: ${url} - SUCCESS (${img.naturalWidth}x${img.naturalHeight})`);
+                    if (completed === total) showTestResults();
+                };
+                img.onerror = () => {
+                    completed++;
+                    console.error(`❌ ${id}: ${url} - FAILED`);
+                    if (completed === total) showTestResults();
+                };
+                img.src = url;
+            });
+        }
+
+        function showTestResults() {
+            const resultsDiv = document.getElementById('test-results');
+            let html = '<h3>Test Summary:</h3>';
+
+            const localSuccess = ['local-idle', 'local-walk', 'local-run'].every(id => results[id]?.status === 'success');
+            const remoteSuccess = ['remote-idle', 'remote-walk', 'remote-run'].every(id => results[id]?.status === 'success');
+
+            html += `<p><strong>Local GIFs (test/):</strong> ${localSuccess ? '✅ ALL OK' : '❌ SOME FAILED'}</p>`;
+            html += `<p><strong>Remote GIFs (pet/):</strong> ${remoteSuccess ? '✅ ALL OK' : '❌ SOME FAILED'}</p>`;
+
+            html += '<h4>Detailed Results:</h4><ul>';
+            Object.entries(results).forEach(([id, result]) => {
+                const status = result.status === 'success' ? '✅' : '❌';
+                const size = result.size ? ` (${result.size})` : '';
+                html += `<li>${status} ${id}: ${result.status}${size}</li>`;
+            });
+            html += '</ul>';
+
+            if (localSuccess) {
+                html += '<p style="color: green; font-weight: bold;">🎉 Local GIFs working! Use these for the pet.</p>';
+            } else if (remoteSuccess) {
+                html += '<p style="color: blue; font-weight: bold;">📁 Remote GIFs working! Path configuration OK.</p>';
+            } else {
+                html += '<p style="color: red; font-weight: bold;">⚠️ All GIF loading failed. Check server configuration or file paths.</p>';
+            }
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function clearResults() {
+            Object.keys(results).forEach(id => {
+                const statusEl = document.getElementById(id + '-status');
+                if (statusEl) {
+                    statusEl.className = 'status loading';
+                    statusEl.textContent = 'Loading...';
+                }
+            });
+            document.getElementById('test-results').innerHTML = '';
+            console.clear();
+        }
+
+        // Auto test on load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🎯 GIF Test Page Loaded');
+            console.log('📁 Current directory should contain: black_idle_8fps.gif, black_walk_8fps.gif, black_run_8fps.gif');
+            console.log('🔗 Testing both local (./) and remote (../pet/) paths');
+        });
+    </script>
+</body>
+</html>
