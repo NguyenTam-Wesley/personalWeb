@@ -520,3 +520,60 @@ footer .socials a:hover {
     font-size: 0.9rem;
   }
 }
+
+/* ================= PET COMPONENT ================= */
+
+#pet-component {
+  filter: drop-shadow(0 0 15px rgba(233, 69, 96, 0.4));
+  transition: transform 0.2s ease;
+}
+
+#pet-component:hover {
+  transform: scale(1.1);
+}
+
+/* Pet control panel */
+#pet-controls {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border: 2px solid #e94560 !important;
+  border-radius: 15px !important;
+  box-shadow: 0 0 30px rgba(233, 69, 96, 0.4) !important;
+}
+
+#pet-controls h4 {
+  color: #2ec4b6 !important;
+  margin-bottom: 15px !important;
+  text-shadow: 0 0 10px #2ec4b6 !important;
+}
+
+#pet-controls button {
+  padding: 8px 12px !important;
+  border: 1px solid #666 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: #e94560 !important;
+  cursor: pointer !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 10px !important;
+  border-radius: 6px !important;
+  margin: 5px !important;
+  transition: all 0.2s ease !important;
+}
+
+#pet-controls button:hover {
+  border-color: #e94560 !important;
+  background: rgba(233, 69, 96, 0.2) !important;
+}
+
+/* Pet debug panel */
+#pet-debug {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border: 2px solid #2ec4b6 !important;
+  border-radius: 10px !important;
+  font-size: 11px !important;
+  color: #ccc !important;
+}
+
+#pet-debug h4 {
+  color: #2ec4b6 !important;
+  margin-bottom: 8px !important;
+}

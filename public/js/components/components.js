@@ -1,6 +1,7 @@
 import { getCurrentUserWithRetry, logoutUser } from '../supabase/auth.js';
 import { ROUTES, route } from '../routes/routes.js';
 import { themeToggle } from './themeToggle.js';
+import { Pet } from './pet.js';
 
 export class Components {
   constructor() {
@@ -10,6 +11,7 @@ export class Components {
     this.isLoggedIn = false;
     this.userName = '';
     this.userRole = '';
+    this.pet = null;
 
     this.config = {
       socialLinks: [
@@ -210,9 +212,104 @@ export class Components {
   getFooter() {
     return this.footer;
   }
+
+  /* ================= PET ================= */
+
+  initPet(options = {}) {
+    if (this.pet) {
+      console.log('🐾 Pet component already initialized');
+      return this.pet;
+    }
+
+    try {
+      // Get user preferences
+      const userPrefs = this.getPetPreferences();
+
+      // Default options based on user preferences or page context
+      const defaultOptions = {
+        container: document.body,
+        size: userPrefs.size,                    // From user prefs
+        theme: userPrefs.theme,                  // From user prefs
+        position: { x: window.innerWidth - 150, y: window.innerHeight - 150 },
+        autoStart: userPrefs.enabled,            // From user prefs
+        showControls: false,                     // Page-specific, not from user prefs
+        showDebug: false,                        // Page-specific, not from user prefs
+        boundaryMode: 'wrap',
+        persistence: true,
+        ...options                               // Page-specific options override all
+      };
+
+      // Only initialize if enabled
+      if (!defaultOptions.autoStart) {
+        console.log('🐾 Pet disabled by user preferences');
+        return null;
+      }
+
+      this.pet = new Pet(defaultOptions);
+
+      // Global reference for controls
+      window.petComponent = this.pet;
+
+      console.log('🐾 Pet component initialized in Components system');
+      return this.pet;
+
+    } catch (error) {
+      console.error('❌ Failed to initialize pet component:', error);
+      return null;
+    }
+  }
+
+  // Pet preferences management
+  getPetPreferences() {
+    try {
+      const prefs = localStorage.getItem('ntam_pet_preferences');
+      return prefs ? JSON.parse(prefs) : {
+        enabled: true,
+        size: 'medium',
+        theme: 'default'
+        // Note: showControls and showDebug are page-specific, not user preferences
+      };
+    } catch (error) {
+      console.warn('Failed to load pet preferences:', error);
+      return { enabled: true, size: 'medium', theme: 'default' };
+    }
+  }
+
+  savePetPreferences(prefs) {
+    try {
+      localStorage.setItem('ntam_pet_preferences', JSON.stringify(prefs));
+      console.log('💾 Pet preferences saved');
+    } catch (error) {
+      console.error('Failed to save pet preferences:', error);
+    }
+  }
+
+  togglePet(enabled = null) {
+    const currentPrefs = this.getPetPreferences();
+
+    if (enabled === null) {
+      enabled = !currentPrefs.enabled;
+    }
+
+    const newPrefs = { ...currentPrefs, enabled };
+    this.savePetPreferences(newPrefs);
+
+    if (enabled && !this.pet) {
+      // Enable pet
+      this.initPet();
+    } else if (!enabled && this.pet) {
+      // Disable pet
+      this.pet.destroy();
+      this.pet = null;
+    }
+
+    console.log(`🐾 Pet ${enabled ? 'enabled' : 'disabled'}`);
+    return enabled;
+  }
 }
 
 /* ============ SINGLETON EXPORT ============ */
 
 const components = new Components();
+
 export default components;

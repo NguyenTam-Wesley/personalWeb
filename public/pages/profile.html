@@ -127,13 +127,70 @@
 
                     <!-- Pets Tab -->
                     <div class="tab-pane" id="pets-tab">
-                        <div class="pets-grid" id="pets-grid">
-                            <!-- Pets will be loaded here -->
+                        <!-- Pet Settings -->
+                        <div class="pet-settings-section">
+                            <h3>🐾 Pet Settings</h3>
+                            <div class="settings-grid">
+                                <div class="setting-item">
+                                    <label class="setting-label">
+                                        <input type="checkbox" id="pet-enabled" onchange="togglePetEnabled()">
+                                        <span>Enable Pet</span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <label class="setting-label">Pet Size:</label>
+                                    <select id="pet-size" onchange="updatePetSize()">
+                                        <option value="small">Small</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="large">Large</option>
+                                    </select>
+                                </div>
+
+                                <div class="setting-item">
+                                    <label class="setting-label">Pet Theme:</label>
+                                    <select id="pet-theme" onchange="updatePetTheme()">
+                                        <option value="default" selected>Default</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="light">Light</option>
+                                    </select>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="action-buttons">
+                                        <button onclick="resetPetPosition()" class="reset-btn">📍 Reset Position</button>
+                                        <button onclick="testPet()" class="test-btn">🎮 Test Pet</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pet-info-note">
+                                <small>💡 <strong>Note:</strong> Control panels are page-specific and can be enabled per page for gaming or testing.</small>
+                            </div>
+
+                            <div class="pet-info">
+                                <div class="info-item">
+                                    <strong>Current Status:</strong>
+                                    <span id="pet-status">Checking...</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Current Page:</strong>
+                                    <span id="current-page">Loading...</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="empty-state" id="empty-pets">
-                            <div class="empty-icon">🐾</div>
-                            <div class="empty-text">No pets yet</div>
-                            <div class="empty-subtext">Visit the shop to buy pets!</div>
+
+                        <!-- Future: Multiple Pets Collection -->
+                        <div class="pets-collection-section" style="margin-top: 30px;">
+                            <h3>🦴 Pet Collection</h3>
+                            <div class="pets-grid" id="pets-grid">
+                                <!-- Future pets will be loaded here -->
+                            </div>
+                            <div class="empty-state" id="empty-pets">
+                                <div class="empty-icon">🐾</div>
+                                <div class="empty-text">More pets coming soon!</div>
+                                <div class="empty-subtext">Stay tuned for new pet types and customization options!</div>
+                            </div>
                         </div>
                     </div>
 

@@ -1,5 +1,49 @@
 import components from '../components/components.js';
 
+// Initialize components and pet
+components.init();
+
+// Page-specific pet configuration
+const pageConfigs = {
+  'index': {  // Homepage
+    size: 'small',
+    position: { x: window.innerWidth - 120, y: window.innerHeight - 120 },
+    showControls: false,
+    showDebug: false,
+    boundaryMode: 'wrap',
+    theme: 'default'
+  },
+  'games': {  // Games page
+    size: 'medium',
+    position: { x: window.innerWidth - 150, y: window.innerHeight - 150 },
+    showControls: true,
+    showDebug: false,
+    boundaryMode: 'bounce',
+    theme: 'dark'
+  },
+  'music': {  // Music page
+    size: 'small',
+    position: { x: 100, y: window.innerHeight - 120 },
+    showControls: false,
+    showDebug: false,
+    boundaryMode: 'wrap',
+    theme: 'default'
+  }
+};
+
+// Get current page config
+const currentPath = window.location.pathname;
+const pageName = currentPath.split('/').pop().replace('.html', '') || 'index';
+const pageConfig = pageConfigs[pageName] || pageConfigs['index'];
+
+// Add pet with page-specific configuration
+components.initPet({
+  container: document.body,
+  autoStart: true,
+  persistence: true,
+  ...pageConfig
+});
+
 // Home page specific functionality
 class HomePage {
   constructor() {

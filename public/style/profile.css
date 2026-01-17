@@ -2092,4 +2092,172 @@ p {
 
 .dark-theme .error-message {
   color: #ef4444;
+}
+
+/* ================= PET SETTINGS ================= */
+
+.pet-settings-section {
+  background: var(--profile-card-dark);
+  border: 2px solid var(--profile-border-dark);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.pet-settings-section h3 {
+  color: var(--profile-primary);
+  margin-bottom: 15px;
+  font-size: 1.4em;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: var(--profile-text-primary);
+  cursor: pointer;
+}
+
+.setting-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--profile-primary);
+}
+
+.setting-label select {
+  padding: 8px 12px;
+  border: 1px solid var(--profile-border-dark);
+  border-radius: 6px;
+  background: var(--profile-bg-dark);
+  color: var(--profile-text-primary);
+  font-size: 14px;
+  min-width: 120px;
+}
+
+.setting-item button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reset-btn {
+  background: var(--profile-accent);
+  color: white;
+}
+
+.reset-btn:hover {
+  background: #e67efa;
+  transform: translateY(-1px);
+}
+
+.test-btn {
+  background: var(--profile-secondary);
+  color: white;
+}
+
+.test-btn:hover {
+  background: #5bd75b;
+  transform: translateY(-1px);
+}
+
+.pet-info {
+  background: rgba(78, 124, 255, 0.1);
+  border: 1px solid rgba(78, 124, 255, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-item strong {
+  color: var(--profile-primary);
+}
+
+.info-item span {
+  color: var(--profile-text-secondary);
+}
+
+/* Light theme overrides */
+[data-theme="light"] .pet-settings-section {
+  background: var(--profile-card-light);
+  border-color: var(--profile-border-light);
+}
+
+[data-theme="light"] .pet-settings-section h3 {
+  color: var(--profile-primary);
+}
+
+[data-theme="light"] .setting-label {
+  color: var(--profile-text-primary);
+}
+
+[data-theme="light"] .setting-label select {
+  background: var(--profile-bg-light);
+  border-color: var(--profile-border-light);
+  color: var(--profile-text-primary);
+}
+
+[data-theme="light"] .pet-info {
+  background: rgba(78, 124, 255, 0.05);
+  border-color: rgba(78, 124, 255, 0.2);
+}
+
+[data-theme="light"] .info-item span {
+  color: var(--profile-text-secondary);
+}
+
+.pet-info-note {
+  margin-top: 15px;
+  padding: 12px;
+  background: rgba(78, 124, 255, 0.05);
+  border: 1px solid rgba(78, 124, 255, 0.2);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.pet-info-note small {
+  color: var(--profile-text-secondary);
+}
+
+.pet-info-note strong {
+  color: var(--profile-primary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+[data-theme="light"] .pet-info-note {
+  background: rgba(78, 124, 255, 0.03);
+  border-color: rgba(78, 124, 255, 0.15);
 } 
