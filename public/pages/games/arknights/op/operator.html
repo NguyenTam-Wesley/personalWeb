@@ -32,160 +32,91 @@
                 <p class="description">Từ các chiến binh cận chiến mạnh mẽ đến những xạ thủ tầm xa chính xác, hệ thống Operator mang đến trải nghiệm chiến thuật sâu sắc và đa dạng.</p>
             </section>
 
-            <!-- Classes Section -->
-            <section class="operator-classes">
-                <h2>Các Lớp Operator</h2>
-                <div class="classes-grid">
-                    <div class="class-card">
-                        <div class="class-icon">⚔️</div>
-                        <h3>Guard</h3>
-                        <p>Chiến binh cận chiến chủ lực với khả năng phòng thủ và sát thương cao.</p>
-                        <p class="description">Đứng đầu đội hình, chịu sát thương và gây ra lượng lớn damage.</p>
+            <!-- Filters Section -->
+            <section class="operator-filters">
+                <h2>Lọc Operators</h2>
+                <div class="filters-container">
+                    <!-- Keyword Search -->
+                    <div class="filter-group">
+                        <label for="keywordFilter">Tìm kiếm</label>
+                        <input type="text" id="keywordFilter" placeholder="Nhập tên operator..." class="filter-input">
                     </div>
-                    <div class="class-card">
-                        <div class="class-icon">🏹</div>
-                        <h3>Sniper</h3>
-                        <p>Xạ thủ tầm xa với khả năng tấn công chính xác và sát thương cao.</p>
-                        <p class="description">Kiểm soát khu vực từ xa, loại bỏ mục tiêu ưu tiên.</p>
+
+                    <!-- Class Filter -->
+                    <div class="filter-group">
+                        <label>Lớp</label>
+                        <div class="filter-options" id="classFilters">
+                            <div class="loading-spinner">Đang tải...</div>
+                        </div>
                     </div>
-                    <div class="class-card">
-                        <div class="class-icon">🔮</div>
-                        <h3>Caster</h3>
-                        <p>Phù thủy sử dụng ma thuật để gây sát thương diện rộng.</p>
-                        <p class="description">Kỹ năng phép thuật mạnh mẽ, hiệu quả chống đám đông.</p>
+
+                    <!-- Archetype Filter -->
+                    <div class="filter-group">
+                        <label>Archetype</label>
+                        <div class="filter-options" id="archetypeFilters">
+                            <div class="loading-spinner">Đang tải...</div>
+                        </div>
                     </div>
-                    <div class="class-card">
-                        <div class="class-icon">🛡️</div>
-                        <h3>Defender</h3>
-                        <p>Chiến binh phòng thủ với khả năng chặn đòn và bảo vệ đồng đội.</p>
-                        <p class="description">Tạo lá chắn, giảm sát thương và kiểm soát kẻ địch.</p>
+
+                    <!-- Rarity Filter -->
+                    <div class="filter-group">
+                        <label>Độ hiếm</label>
+                        <div class="filter-options" id="rarityFilters">
+                            <div class="loading-spinner">Đang tải...</div>
+                        </div>
                     </div>
-                    <div class="class-card">
-                        <div class="class-icon">💊</div>
-                        <h3>Medic</h3>
-                        <p>Y tá chuyên cung cấp khả năng hồi phục và hỗ trợ.</p>
-                        <p class="description">Hồi máu, tăng khả năng sống sót cho đội hình.</p>
-                    </div>
-                    <div class="class-card">
-                        <div class="class-icon">🔧</div>
-                        <h3>Specialist</h3>
-                        <p>Chuyên gia với khả năng đặc biệt và kỹ năng hỗ trợ độc đáo.</p>
-                        <p class="description">Di chuyển nhanh, đánh lạc hướng, hoặc kỹ năng đặc biệt khác.</p>
-                    </div>
-                    <div class="class-card">
-                        <div class="class-icon">🚀</div>
-                        <h3>Vanguard</h3>
-                        <p>Tiền vệ cung cấp cost và dẫn dắt đội hình.</p>
-                        <p class="description">Tạo tài nguyên, mở đường cho đội hình chính.</p>
-                    </div>
-                    <div class="class-card">
-                        <div class="class-icon">🔥</div>
-                        <h3>Supporter</h3>
-                        <p>Hỗ trợ viên cung cấp buff và debuff cho đồng đội.</p>
-                        <p class="description">Tăng sức mạnh đội hình, làm yếu kẻ địch.</p>
+
+                    <!-- Clear Filters -->
+                    <div class="filter-group">
+                        <button id="clearFilters" class="clear-filters-btn">Xóa bộ lọc</button>
                     </div>
                 </div>
             </section>
 
-            <!-- Featured Operators -->
-            <section class="featured-operators">
-                <h2>Operator Tiêu Biểu</h2>
-                <div class="operators-grid">
-                    <div class="operator-card">
-                        <img src="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/game/arknights/Amiya_icon.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vZ2FtZS9hcmtuaWdodHMvQW1peWFfaWNvbi53ZWJwIiwiaWF0IjoxNzY4NzIwMTk5LCJleHAiOjg2NTc2ODYzMzc5OX0.Qk9kSReml-eNM2uAcBjl-Z-pb_u820Z0Uyqoc31XbXk" alt="Amiya" class="operator-image">
-                        <div class="operator-info">
-                            <h3>Amiya</h3>
-                            <p>Lãnh đạo của Rhodes Island, một Caster với khả năng ma thuật mạnh mẽ và tầm nhìn chiến lược.</p>
-                            <div class="operator-stats">
-                                <div class="stat-item">
-                                    <span class="stat-label">Class</span>
-                                    <span class="stat-value">Caster</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Rarity</span>
-                                    <span class="stat-value">★★★★★★</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">DP Cost</span>
-                                    <span class="stat-value">18</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Redeploy</span>
-                                    <span class="stat-value">70s</span>
-                                </div>
-                            </div>
-                            <a href="#" class="cta-button">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-
-                    <div class="operator-card">
-                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/arknights_silverash.jpg?v=1749924526037" alt="SilverAsh" class="operator-image">
-                        <div class="operator-info">
-                            <h3>SilverAsh</h3>
-                            <p>Một chiến binh Sarkaz với khả năng cận chiến vượt trội và khả năng chỉ huy đội hình.</p>
-                            <div class="operator-stats">
-                                <div class="stat-item">
-                                    <span class="stat-label">Class</span>
-                                    <span class="stat-value">Guard</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Rarity</span>
-                                    <span class="stat-value">★★★★★★</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">DP Cost</span>
-                                    <span class="stat-value">19</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Redeploy</span>
-                                    <span class="stat-value">70s</span>
-                                </div>
-                            </div>
-                            <a href="#" class="cta-button">Xem Chi Tiết</a>
-                        </div>
-                    </div>
-
-                    <div class="operator-card">
-                        <img src="https://cdn.glitch.global/7f69b45e-2121-41b3-ab25-3a1b9061b040/arknights_exusiai.jpg?v=1749924526037" alt="Exusiai" class="operator-image">
-                        <div class="operator-info">
-                            <h3>Exusiai</h3>
-                            <p>Xạ thủ Cautus với khả năng bắn tỉa chính xác và sát thương tầm xa đáng gờm.</p>
-                            <div class="operator-stats">
-                                <div class="stat-item">
-                                    <span class="stat-label">Class</span>
-                                    <span class="stat-value">Sniper</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Rarity</span>
-                                    <span class="stat-value">★★★★★★</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">DP Cost</span>
-                                    <span class="stat-value">21</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Redeploy</span>
-                                    <span class="stat-value">20s</span>
-                                </div>
-                            </div>
-                            <a href="#" class="cta-button">Xem Chi Tiết</a>
-                        </div>
-                    </div>
+            <!-- Operators Grid -->
+            <section class="operators-section">
+                <div class="operators-header">
+                    <h2>Danh sách Operators</h2>
+                    <div class="operators-count" id="operatorsCount">Đang tải...</div>
                 </div>
-            </section>
-
-            <!-- Recruitment Section -->
-            <section class="operator-recruitment">
-                <h2>Tuyển Dụng Operators</h2>
-                <p>Hệ thống tuyển dụng Operators thông qua việc sử dụng Recruitment Voucher hoặc Orundum. Mỗi lần tuyển dụng có cơ hội nhận được Operators với độ hiếm khác nhau.</p>
-                <div class="recruitment-card">
-                    <h3>Bắt Đầu Tuyển Dụng</h3>
-                    <p>Sử dụng Recruitment Voucher để có cơ hội nhận được các Operators mới. Hệ thống đảm bảo công bằng và ngẫu nhiên.</p>
-                    <a href="#" class="cta-button secondary">Tuyển Dụng Ngay</a>
+                <div class="operators-grid" id="operatorsGrid">
+                    <div class="loading-spinner">Đang tải danh sách operators...</div>
                 </div>
             </section>
         </div>
     </div>
+    </div>
+
+    <!-- Operator Detail Modal -->
+    <div id="operatorModal" class="modal-overlay">
+        <div class="modal-content operator-modal">
+            <div class="modal-header">
+                <h2 id="modalOperatorTitle">Chi Tiết Operator</h2>
+                <button class="modal-close" id="closeOperatorModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="operator-detail-header">
+                    <div class="operator-detail-avatar">
+                        <img id="modalOperatorAvatar" src="" alt="Operator Avatar">
+                    </div>
+                    <div class="operator-detail-info">
+                        <h3 id="modalOperatorName"></h3>
+                        <div class="operator-detail-meta">
+                            <span id="modalOperatorClass"></span>
+                            <span id="modalOperatorArchetype"></span>
+                            <span id="modalOperatorRarity"></span>
+                        </div>
+                        <p id="modalOperatorDescription"></p>
+                    </div>
+                </div>
+                <div class="operator-detail-stats">
+                    <h4>Thông số</h4>
+                    <div class="stats-grid" id="modalOperatorStats">
+                        <!-- Stats will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="../../../../js/modules/operator_entry.js"></script>

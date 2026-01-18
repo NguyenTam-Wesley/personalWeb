@@ -28,7 +28,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: var(--text-primary);
+    color: white;
     overflow: hidden;
 }
 
@@ -48,20 +48,20 @@
     z-index: 2;
     max-width: 800px;
     padding: 0 24px;
-    color: var(--text-primary);
+    color: white;
 }
 
 .game-hero h1 {
     font-size: 4rem;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    color: var(--text-primary);
+    color: white;
 }
 
 .game-subtitle {
     font-size: 1.5rem;
     margin: 8px 0 0;
-    color: var(--text-secondary);
+    color: white;
 }
 
 /* Content Sections */

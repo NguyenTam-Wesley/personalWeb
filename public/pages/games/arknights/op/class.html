@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes - Arknights</title>
+    <link rel="stylesheet" href="../../../../style/components.css" />
+    <link rel="stylesheet" href="../../../../style/games.css" />
+    <link rel="stylesheet" href="../../../../style/game-detail.css" />
+    <link rel="stylesheet" href="../../../../style/operator.css" />
+    <link rel="stylesheet" href="../../../../style/themes.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
+</head>
+<body>
+    <div class="game-detail-page">
+        <div class="game-detail-container">
+        <!-- Hero Section -->
+        <div class="game-hero class-hero">
+            <div class="game-hero-content">
+                <h1>Operator Classes</h1>
+                <p class="class-subtitle">Khám phá 8 lớp chiến binh với khả năng đặc trưng</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="class-content">
+            <!-- Overview Section -->
+            <section class="class-overview">
+                <h2>Tổng quan về Classes</h2>
+                <p>Mỗi Operator thuộc về một trong 8 lớp chính, mỗi lớp có vai trò và khả năng đặc trưng trên chiến trường. Bên trong mỗi lớp còn có các Archetype với phong cách chiến đấu khác nhau.</p>
+                <p class="description">Hiểu rõ đặc điểm của từng lớp sẽ giúp bạn xây dựng đội hình hiệu quả và tối ưu hóa chiến thuật.</p>
+            </section>
+
+            <!-- Classes Grid -->
+            <section class="classes-section">
+                <h2>Các Lớp Operator</h2>
+                <div class="classes-grid" id="classesGrid">
+                    <!-- Classes will be loaded dynamically -->
+                    <div class="loading-spinner">Đang tải danh sách lớp...</div>
+                </div>
+            </section>
+        </div>
+    </div>
+    </div>
+
+    <!-- Class Detail Modal -->
+    <div id="classModal" class="modal-overlay">
+        <div class="modal-content class-modal">
+            <div class="modal-header">
+                <h2 id="modalClassTitle">Chi Tiết Lớp</h2>
+                <button class="modal-close" id="closeClassModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="class-detail-header">
+                    <div class="class-detail-icon" id="modalClassIcon"></div>
+                    <div class="class-detail-info">
+                        <h3 id="modalClassName"></h3>
+                        <p id="modalClassDescription"></p>
+                    </div>
+                </div>
+                <div class="archetypes-section">
+                    <h4>Archetypes</h4>
+                    <div class="archetypes-grid" id="modalArchetypesGrid">
+                        <!-- Archetypes will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../../../js/modules/class_entry.js"></script>
+</body>
+</html>
