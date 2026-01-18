@@ -6,7 +6,7 @@
 }
 
 body, html {
-  height: 100%;
+  min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
   scroll-behavior: smooth;
   background: #0a0a0a;
@@ -952,74 +952,6 @@ body:hover .hero-light-layer {
 
 
 
-/* ================= AFTERGLOW FOOTER ================= */
-.footer {
-  padding: 60px 0;
-  background: #0f0f0f;
-  color: #666666;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  /* Afterglow emergence */
-  opacity: 0;
-  animation: afterglowFade 1000ms ease forwards;
-}
-
-.footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="afterglowNoise" width="150" height="150" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="75" cy="75" r="0.3" fill="rgba(255,255,255,0.01)"/><circle cx="10" cy="90" r="0.2" fill="rgba(0,255,255,0.005)"/><circle cx="90" cy="10" r="0.4" fill="rgba(0,255,255,0.003)"/><circle cx="50" cy="50" r="0.1" fill="rgba(255,255,255,0.008)"/></pattern></defs><rect width="100" height="100" fill="url(%23afterglowNoise)"/></svg>');
-  animation: afterglowDrift 40s linear infinite;
-  z-index: 1;
-}
-
-@keyframes afterglowFade {
-  0% {
-    opacity: 0;
-    filter: blur(2px);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-@keyframes afterglowDrift {
-  0% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-  33% {
-    transform: translateX(-5px) translateY(-3px) rotate(1deg);
-  }
-  66% {
-    transform: translateX(3px) translateY(-5px) rotate(-0.5deg);
-  }
-  100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-}
-
-.footer-text {
-  font-size: 0.9rem;
-  margin: 0;
-  position: relative;
-  z-index: 2;
-  /* Subtle breathing */
-  animation: footerBreathing 8s ease-in-out infinite;
-}
-
-@keyframes footerBreathing {
-  0%, 100% {
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 0.9;
-  }
-}
 
 /* ================= RESPONSIVE DESIGN ================= */
 @media (max-width: 768px) {

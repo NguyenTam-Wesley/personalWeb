@@ -41,13 +41,11 @@ export class Components {
     if (this.initialized) return;
     this.initialized = true;
 
-    console.log('🎯 Components initializing...');
 
     this.initHeader();
     this.initFooter();
     this.setupScrollHandlers();
 
-    console.log('✅ Components initialized successfully!');
   }
 
   /* ================= HEADER ================= */
@@ -123,13 +121,6 @@ export class Components {
     this.userName = userData?.profile?.username || userData?.user?.user_metadata?.username || '';
     this.userRole = userData?.profile?.role || 'guest'; // App role, fallback to 'guest' when no profile
 
-    // Log comprehensive user status
-    if (this.isLoggedIn) {
-      const authRole = userData?.user?.role || 'unknown';
-      console.log(`🔐 User status updated: ${this.userName} | Auth Role: ${authRole} | App Role: ${this.userRole}`);
-    } else {
-      console.log(`🚪 User not logged in (guest mode)`);
-    }
 
     if (prevState !== this.isLoggedIn) {
       this.setupHeader();
@@ -190,17 +181,34 @@ export class Components {
 
   setupScrollHandlers() {
     let lastScroll = 0;
+    let ticking = false;
 
-    window.addEventListener('scroll', () => {
+    const updateScrollVisibility = () => {
       const currentScroll = window.pageYOffset;
       const scrollingDown = currentScroll > lastScroll;
 
+      // Only update if significant scroll change (5px threshold)
       if (Math.abs(currentScroll - lastScroll) > 5) {
-        this.header?.classList.toggle('hidden', scrollingDown);
-        this.footer?.classList.toggle('hidden', scrollingDown);
+        if (scrollingDown) {
+          this.header?.classList.add('hidden');
+          this.footer?.classList.add('hidden');
+        } else {
+          this.header?.classList.remove('hidden');
+          this.footer?.classList.remove('hidden');
+        }
+
         lastScroll = currentScroll;
       }
-    });
+
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScrollVisibility);
+        ticking = true;
+      }
+    }, { passive: true });
   }
 
   /* ================= GETTERS ================= */
@@ -217,7 +225,6 @@ export class Components {
 
   initPet(options = {}) {
     if (this.pet) {
-      console.log('🐾 Pet component already initialized');
       return this.pet;
     }
 
@@ -241,7 +248,6 @@ export class Components {
 
       // Only initialize if enabled
       if (!defaultOptions.autoStart) {
-        console.log('🐾 Pet disabled by user preferences');
         return null;
       }
 
@@ -250,7 +256,6 @@ export class Components {
       // Global reference for controls
       window.petComponent = this.pet;
 
-      console.log('🐾 Pet component initialized in Components system');
       return this.pet;
 
     } catch (error) {
@@ -278,7 +283,6 @@ export class Components {
   savePetPreferences(prefs) {
     try {
       localStorage.setItem('ntam_pet_preferences', JSON.stringify(prefs));
-      console.log('💾 Pet preferences saved');
     } catch (error) {
       console.error('Failed to save pet preferences:', error);
     }
@@ -303,7 +307,6 @@ export class Components {
       this.pet = null;
     }
 
-    console.log(`🐾 Pet ${enabled ? 'enabled' : 'disabled'}`);
     return enabled;
   }
 }

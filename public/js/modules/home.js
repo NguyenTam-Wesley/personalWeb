@@ -1,7 +1,160 @@
 import components from '../components/components.js';
 
-// Initialize components and pet
-components.init();
+// NTAM UI Flow - Detailed Implementation
+// Theme: tech · green · dark · chill · art
+// Concept: "Một thực thể số thức tỉnh → dẫn dắt → nhập vai → lựa chọn"
+
+// ================= MODE DETECTION SYSTEM =================
+class ModeManager {
+  constructor() {
+    this.mode = this.detectMode();
+    this.isReducedMotion = this.checkReducedMotion();
+    this.devicePerformance = this.detectPerformance();
+    this.setupModeChangeListener();
+  }
+
+  detectMode() {
+    // Default: PC → CINEMATIC, Mobile → LITE
+    const isMobile = window.innerWidth <= 768 ||
+                    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    // Override: prefers-reduced-motion → LITE
+    if (this.checkReducedMotion()) {
+      return 'LITE';
+    }
+
+    return isMobile ? 'LITE' : 'CINEMATIC';
+  }
+
+  checkReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  detectPerformance() {
+    // Check for low-end devices
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const isSlowConnection = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
+
+    // Check battery status if available
+    const isLowBattery = 'getBattery' in navigator &&
+      navigator.getBattery().then(battery => battery.level < 0.2 && !battery.charging);
+
+    return {
+      isLowEnd: isSlowConnection || isLowBattery,
+      isMobile: window.innerWidth <= 768
+    };
+  }
+
+  setupModeChangeListener() {
+    // Listen for orientation changes
+    window.addEventListener('resize', () => {
+      const newMode = this.detectMode();
+      if (newMode !== this.mode) {
+        this.mode = newMode;
+        this.onModeChange(newMode);
+      }
+    });
+
+    // Listen for reduced motion preference changes
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+      this.isReducedMotion = e.matches;
+      this.mode = this.detectMode();
+      this.onModeChange(this.mode);
+    });
+  }
+
+  onModeChange(newMode) {
+    // Dispatch custom event for components to react
+    window.dispatchEvent(new CustomEvent('modeChange', {
+      detail: { mode: newMode, isReducedMotion: this.isReducedMotion }
+    }));
+  }
+
+  getMode() {
+    return this.mode;
+  }
+
+  isCinematic() {
+    return this.mode === 'CINEMATIC' && !this.isReducedMotion;
+  }
+
+  isLite() {
+    return this.mode === 'LITE' || this.isReducedMotion;
+  }
+}
+
+// ================= STATE MANAGEMENT =================
+class StateManager {
+  constructor() {
+    this.states = {
+      idle: 'idle',        // Page chưa load
+      awakening: 'awakening', // Hero xuất hiện
+      flowing: 'flowing',     // User scroll
+      immersion: 'immersion', // User chậm lại
+      decision: 'decision'    // CTA
+    };
+    this.currentState = this.states.idle;
+    this.stateTimeouts = new Map();
+  }
+
+  setState(newState, duration = 0) {
+    // Clear previous timeout if exists
+    if (this.stateTimeouts.has(this.currentState)) {
+      clearTimeout(this.stateTimeouts.get(this.currentState));
+      this.stateTimeouts.delete(this.currentState);
+    }
+
+    this.currentState = newState;
+
+    // Dispatch state change event
+    window.dispatchEvent(new CustomEvent('stateChange', {
+      detail: { state: newState, previousState: this.currentState }
+    }));
+
+    // Auto-transition after duration if specified
+    if (duration > 0) {
+      const timeout = setTimeout(() => {
+        this.setState(this.getNextState(newState));
+      }, duration);
+      this.stateTimeouts.set(newState, timeout);
+    }
+  }
+
+  getCurrentState() {
+    return this.currentState;
+  }
+
+  getNextState(currentState) {
+    const flow = {
+      [this.states.idle]: this.states.awakening,
+      [this.states.awakening]: this.states.flowing,
+      [this.states.flowing]: this.states.immersion,
+      [this.states.immersion]: this.states.decision,
+      [this.states.decision]: this.states.flowing
+    };
+    return flow[currentState] || this.states.idle;
+  }
+
+  transitionToAwakening() {
+    this.setState(this.states.awakening, 3000); // 3s awakening
+  }
+
+  transitionToFlowing() {
+    this.setState(this.states.flowing);
+  }
+
+  transitionToImmersion() {
+    this.setState(this.states.immersion, 8000); // 8s immersion
+  }
+
+  transitionToDecision() {
+    this.setState(this.states.decision);
+  }
+}
+
+// Initialize managers
+const modeManager = new ModeManager();
+const stateManager = new StateManager();
 
 // Page-specific pet configuration
 const pageConfigs = {
@@ -53,23 +206,120 @@ class HomePage {
     this.scrollHint = document.querySelector('.scroll-hint');
     this.lightLayer = document.querySelector('.hero-light-layer');
     this.glowLayer = document.querySelector('.hero-glow-layer');
+
+    // Additional elements
+    this.introSection = document.querySelector('.intro');
+    this.introLines = document.querySelectorAll('.intro-line');
+    this.featuresSection = document.querySelector('.features');
+    this.featureCards = document.querySelectorAll('.feature-card');
+    this.immersionSection = document.querySelector('.immersion');
+    this.immersionText = document.querySelector('.immersion-text');
+    this.timelineSection = document.querySelector('.timeline');
+    this.timelineItems = document.querySelectorAll('.timeline-item');
+    this.ctaSection = document.querySelector('.cta-section');
+    this.ctaButton = document.querySelector('.cta-button.primary');
+
+    // Animation state
     this.mouseX = 0;
     this.mouseY = 0;
     this.lastScrollY = 0;
     this.scrollVelocity = 0;
     this.scrollTimeout = null;
+    this.isInitialized = false;
+
+    // Bind methods
+    this.handleModeChange = this.handleModeChange.bind(this);
+    this.handleStateChange = this.handleStateChange.bind(this);
+
     this.init();
   }
 
   init() {
-    this.setupSmoothScroll();
-    this.setupEnergyScroll();
-    this.setupHeroScrollTransition();
-    this.setupTimelineReveal();
-    this.setupImmersionZone();
-    this.setupCursorRecognition();
-    this.setupLivingFeatures();
-    this.setupCtaReaction();
+    // Listen for mode and state changes
+    window.addEventListener('modeChange', this.handleModeChange);
+    window.addEventListener('stateChange', this.handleStateChange);
+
+    // Start awakening flow
+    this.startAwakeningFlow();
+
+    // Setup interactions based on current mode
+    this.setupModeBasedFeatures();
+
+    // Setup scroll detection for state transitions
+    this.setupScrollStateDetection();
+  }
+
+  handleModeChange(event) {
+    const { mode } = event.detail;
+    console.log(`Mode changed to: ${mode}`);
+    // Re-setup features based on new mode
+    this.setupModeBasedFeatures();
+  }
+
+  handleStateChange(event) {
+    const { state } = event.detail;
+    console.log(`State changed to: ${state}`);
+    // Handle state-specific behaviors
+    this.handleStateTransition(state);
+  }
+
+  startAwakeningFlow() {
+    // DOMContentLoaded trigger - start awakening
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        stateManager.transitionToAwakening();
+      });
+    } else {
+      stateManager.transitionToAwakening();
+    }
+  }
+
+  handleStateTransition(state) {
+    switch(state) {
+      case 'awakening':
+        this.playHeroAwakening();
+        break;
+      case 'flowing':
+        this.enableScrollFlow();
+        break;
+      case 'immersion':
+        this.playImmersionSequence();
+        break;
+      case 'decision':
+        this.enableDecisionMode();
+        break;
+    }
+  }
+
+  setupModeBasedFeatures() {
+    if (modeManager.isCinematic()) {
+      this.setupCinematicFeatures();
+    } else {
+      this.setupLiteFeatures();
+    }
+  }
+
+  setupScrollStateDetection() {
+    let scrollTimeout;
+
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout);
+
+      // User is scrolling - transition to flowing
+      if (stateManager.getCurrentState() === 'awakening') {
+        stateManager.transitionToFlowing();
+      }
+
+      // Detect when user stops scrolling
+      scrollTimeout = setTimeout(() => {
+        const currentState = stateManager.getCurrentState();
+        if (currentState === 'flowing') {
+          stateManager.transitionToImmersion();
+        }
+      }, 150); // Wait 150ms after scroll stops
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
   }
 
   setupSmoothScroll() {
