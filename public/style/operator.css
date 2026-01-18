@@ -1,21 +1,21 @@
 /* Operator Page Styles - Following UI Rules */
 
 /* Typography System */
-.operator-hero h1 {
+.operator-hero h1, .class-hero h1 {
     font-size: 36px;
     font-weight: 600;
     margin: 0 0 16px 0;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.operator-subtitle {
+.operator-subtitle, .class-subtitle {
     font-size: 20px;
     margin: 0;
     opacity: 0.9;
     font-weight: 400;
 }
 
-.operator-content h2 {
+.operator-content h2, .class-content h2 {
     font-size: 28px;
     color: var(--text-primary);
     margin-bottom: 24px;
@@ -24,21 +24,21 @@
     font-weight: 600;
 }
 
-.operator-content h3 {
+.operator-content h3, .class-content h3 {
     font-size: 20px;
     color: var(--text-primary);
     margin: 0 0 12px 0;
     font-weight: 600;
 }
 
-.operator-content p {
+.operator-content p, .class-content p {
     font-size: 16px;
     line-height: 1.5;
     color: var(--text-secondary);
     margin: 0 0 16px 0;
 }
 
-.operator-content .description {
+.operator-content .description, .class-content .description {
     font-size: 14px;
     line-height: 1.5;
     color: var(--text-muted);
@@ -46,13 +46,13 @@
 }
 
 /* Spacing System - multiples of 8 */
-.operator-content {
+.operator-content, .class-content, .archetype-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 64px 32px;
 }
 
-.operator-content section {
+.operator-content section, .class-content section, .archetype-content section {
     margin-bottom: 64px;
 }
 
@@ -92,65 +92,86 @@
 }
 
 /* Featured Operators */
-.operators-grid {
+.operators-grid,
+.archetype-operators .operators-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 32px;
-    margin-top: 32px;
+    grid-template-columns: repeat(auto-fill, 160px);
+    gap: 16px;
+    margin-top: 16px;
+    justify-content: center;
 }
 
 .operator-card {
     background: var(--bg-card);
-    border-radius: 16px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
     transition: all 0.3s ease;
     border: 1px solid var(--border-light);
 }
 
 .operator-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
 }
 
 .operator-image {
     width: 100%;
-    height: 240px;
+    height: 120px;
     object-fit: cover;
     background: var(--bg-tertiary);
 }
 
 .operator-info {
-    padding: 24px;
+    padding: 12px;
+}
+
+.operator-info h3 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.operator-info p {
+    margin: 0 0 8px 0;
+    font-size: 0.8rem;
+    line-height: 1.3;
 }
 
 .operator-stats {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 16px;
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .stat-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 4px 0;
     border-bottom: 1px solid var(--border-light);
 }
 
 .stat-label {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--text-muted);
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
 .stat-value {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-primary);
     font-weight: 600;
+}
+
+.view-operator-btn {
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
 }
 
 /* CTA Button */
@@ -205,30 +226,33 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .operator-hero h1 {
+    .operator-hero h1, .class-hero h1, .archetype-hero h1 {
         font-size: 32px;
     }
 
-    .operator-subtitle {
+    .operator-subtitle, .class-subtitle, .archetype-subtitle {
         font-size: 18px;
     }
 
-    .operator-content {
+    .operator-content, .class-content, .archetype-content {
         padding: 32px 16px;
     }
 
-    .operator-content section {
+    .operator-content section, .class-content section, .archetype-content section {
         margin-bottom: 48px;
     }
 
-    .operator-content h2 {
+    .operator-content h2, .class-content h2, .archetype-content h2 {
         font-size: 24px;
     }
 
     .classes-grid,
-    .operators-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
+    .operators-grid,
+    .archetype-operators .operators-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+        justify-content: center;
     }
 
     .operator-card {
@@ -241,11 +265,11 @@
 }
 
 @media (max-width: 480px) {
-    .operator-hero h1 {
+    .operator-hero h1, .class-hero h1 {
         font-size: 28px;
     }
 
-    .operator-content h2 {
+    .operator-content h2, .class-content h2, .archetype-content h2 {
         font-size: 22px;
     }
 
@@ -256,8 +280,17 @@
 
 /* Filter Styles */
 .operator-filters {
-    margin-bottom: 48px;
+    margin-bottom: 32px;
 }
+
+/* Archetype filter initially hidden */
+.filter-group:has(#archetypeFilters) {
+    display: none;
+    padding-left: 12px;
+    border-left: 2px solid var(--border-light);
+    margin-top: 8px;
+}
+
 
 .filters-container {
     background: var(--bg-card);
@@ -265,11 +298,15 @@
     border-radius: 12px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-light);
-    margin-top: 24px;
+    margin-top: 20px;
 }
 
 .filter-group {
     margin-bottom: 24px;
+}
+
+.filter-group:first-child {
+    margin-bottom: 32px;
 }
 
 .filter-group:last-child {
@@ -278,18 +315,19 @@
 
 .filter-group label {
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .filter-input {
-    width: 100%;
-    padding: 12px 16px;
+    width: calc(100% - 8px);
+    margin: 0 4px;
+    padding: 8px 12px;
     border: 2px solid var(--border-light);
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 5px;
+    font-size: 14px;
     background: var(--bg-primary);
     color: var(--text-primary);
     transition: all 0.3s ease;
@@ -303,16 +341,16 @@
 
 .filter-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
 }
 
 .filter-option {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     cursor: pointer;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 6px;
     transition: all 0.2s ease;
 }
@@ -323,24 +361,36 @@
 
 .filter-option input[type="checkbox"] {
     margin: 0;
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     accent-color: var(--accent-primary);
 }
 
 .filter-label {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--text-secondary);
     user-select: none;
+}
+
+.filters-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.operators-section,
+.classes-section,
+.archetype-operators {
+    margin-bottom: 32px;
 }
 
 .clear-filters-btn {
     background: var(--bg-tertiary);
     color: var(--text-secondary);
     border: 1px solid var(--border-light);
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -651,6 +701,15 @@
     gap: 12px;
 }
 
+.stat-link {
+    transition: opacity 0.2s ease;
+}
+
+.stat-link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+}
+
 /* Responsive Modal */
 @media (max-width: 768px) {
     .modal-content {
@@ -667,7 +726,8 @@
     }
 
     .class-detail-header,
-    .operator-detail-header {
+    .operator-detail-header,
+    .archetype-header {
         flex-direction: column;
         text-align: center;
         gap: 16px;
@@ -678,7 +738,17 @@
     }
 
     .filters-container {
-        padding: 20px;
+        padding: 16px;
+    }
+
+    .filters-footer {
+        margin-top: 16px;
+    }
+
+    .operators-section,
+    .classes-section,
+    .archetype-operators {
+        margin-bottom: 24px;
     }
 
     .filter-options {
@@ -691,18 +761,6 @@
     align-items: flex-start;
 }
 
-/* Archetype Page Styles */
-.archetype-hero h1 {
-    font-size: 32px;
-    margin: 16px 0;
-}
-
-.archetype-subtitle {
-    font-size: 18px;
-    margin: 0;
-    opacity: 0.9;
-    font-weight: 400;
-}
 
 .breadcrumb {
     font-size: 14px;
@@ -719,11 +777,6 @@
     text-decoration: underline;
 }
 
-.archetype-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 64px 32px;
-}
 
 .archetype-overview {
     margin-bottom: 64px;
@@ -773,19 +826,15 @@
 }
 
 /* Responsive Archetype */
-@media (max-width: 768px) {
-    .archetype-header {
-        flex-direction: column;
-        text-align: center;
-        gap: 24px;
-    }
-
+@media (max-width: 480px) {
     .archetype-hero h1 {
         font-size: 28px;
     }
 
-    .archetype-content {
-        padding: 32px 16px;
+    .operators-grid,
+    .archetype-operators .operators-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
     }
 }
 }

@@ -18,7 +18,17 @@ export class ClassManager {
     async init() {
         this.cacheElements();
         this.bindEvents();
-        await this.loadClasses();
+
+        // Check for class ID parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const classId = urlParams.get('id');
+
+        if (classId) {
+            await this.loadClassById(classId);
+        } else {
+            await this.loadClasses();
+        }
+
         console.log('ClassManager initialized');
     }
 
@@ -84,6 +94,41 @@ export class ClassManager {
         } catch (error) {
             console.error('Error loading classes:', error);
             this.showError('Lỗi kết nối');
+        }
+    }
+
+    /**
+     * Load specific class by ID and show modal
+     */
+    async loadClassById(classId) {
+        try {
+            const { data, error } = await supabase
+                .from('classes')
+                .select(`
+                    id,
+                    name,
+                    description,
+                    icon_url,
+                    archetypes(id, name)
+                `)
+                .eq('id', classId)
+                .single();
+
+            if (error) {
+                console.error('Error loading class:', error);
+                // Fallback to loading all classes
+                await this.loadClasses();
+                return;
+            }
+
+            this.currentClass = data;
+            this.renderClassModal();
+            this.classModal.classList.add('active');
+
+        } catch (error) {
+            console.error('Error loading class by ID:', error);
+            // Fallback to loading all classes
+            await this.loadClasses();
         }
     }
 

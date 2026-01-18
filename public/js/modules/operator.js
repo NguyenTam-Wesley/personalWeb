@@ -111,34 +111,55 @@ export class OperatorManager {
                 this.renderClassFilters();
             }
 
-            // Load archetypes
-            const { data: archetypesData, error: archetypesError } = await supabase
-                .from('archetypes')
-                .select('id, name, class_id')
-                .order('name');
+            // Archetypes will be loaded dynamically when classes are selected
+            // So we don't load them initially here
 
-            if (archetypesError) {
-                console.error('Error loading archetypes:', archetypesError);
-            } else {
-                this.filterMetadata.archetypes = archetypesData || [];
-                this.renderArchetypeFilters();
-            }
-
-            // Load rarities
-            const { data: raritiesData, error: raritiesError } = await supabase
-                .from('rarities')
-                .select('id, label')
-                .order('id');
-
-            if (raritiesError) {
-                console.error('Error loading rarities:', raritiesError);
-            } else {
-                this.filterMetadata.rarities = raritiesData || [];
-                this.renderRarityFilters();
-            }
+            // Load rarities - temporary hardcoded until table is set up
+            this.filterMetadata.rarities = [
+                { id: 1, label: '1' },
+                { id: 2, label: '2' },
+                { id: 3, label: '3' },
+                { id: 4, label: '4' },
+                { id: 5, label: '5' },
+                { id: 6, label: '6' }
+            ];
+            this.renderRarityFilters();
 
         } catch (error) {
             console.error('Error loading filter metadata:', error);
+        }
+    }
+
+    /**
+     * Load archetypes filtered by selected classes
+     */
+    async loadArchetypesByClasses(classIds) {
+        try {
+            if (classIds.length === 0) {
+                this.filterMetadata.archetypes = [];
+                this.renderArchetypeFilters();
+                return;
+            }
+
+            const { data: archetypesData, error: archetypesError } = await supabase
+                .from('archetypes')
+                .select('id, name, class_id')
+                .in('class_id', classIds)
+                .order('name');
+
+            if (archetypesError) {
+                console.error('Error loading archetypes by classes:', archetypesError);
+                this.filterMetadata.archetypes = [];
+            } else {
+                this.filterMetadata.archetypes = archetypesData || [];
+            }
+
+            this.renderArchetypeFilters();
+
+        } catch (error) {
+            console.error('Error loading archetypes by classes:', error);
+            this.filterMetadata.archetypes = [];
+            this.renderArchetypeFilters();
         }
     }
 
@@ -217,12 +238,21 @@ export class OperatorManager {
     /**
      * Update class filter
      */
-    updateClassFilter(classId, checked) {
+    async updateClassFilter(classId, checked) {
         if (checked) {
             this.filters.classIds.push(classId);
         } else {
             this.filters.classIds = this.filters.classIds.filter(id => id !== classId);
         }
+
+        // Show/hide archetype filter based on class selection
+        if (this.filters.classIds.length > 0) {
+            this.showArchetypeFilter();
+            await this.loadArchetypesByClasses(this.filters.classIds);
+        } else {
+            this.hideArchetypeFilter();
+        }
+
         this.loadOperators();
     }
 
@@ -273,7 +303,37 @@ export class OperatorManager {
                 checkbox.checked = false;
             });
 
+        // Hide archetype filter when no classes selected
+        this.hideArchetypeFilter();
+
         this.loadOperators();
+    }
+
+    /**
+     * Show archetype filter
+     */
+    showArchetypeFilter() {
+        const archetypeFilterGroup = document.querySelector('.filter-group:has(#archetypeFilters)');
+        if (archetypeFilterGroup) {
+            archetypeFilterGroup.style.display = 'block';
+        }
+    }
+
+    /**
+     * Hide archetype filter
+     */
+    hideArchetypeFilter() {
+        const archetypeFilterGroup = document.querySelector('.filter-group:has(#archetypeFilters)');
+        if (archetypeFilterGroup) {
+            archetypeFilterGroup.style.display = 'none';
+        }
+
+        // Clear archetype selections when hiding
+        this.filters.archetypeIds = [];
+        document.querySelectorAll('.archetype-filter-checkbox')
+            .forEach(checkbox => {
+                checkbox.checked = false;
+            });
     }
 
     /**
@@ -289,7 +349,7 @@ export class OperatorManager {
                     id,
                     name,
                     avatar_url,
-                    rarity:rarities(label),
+                    rarity_id,
                     class:classes(id, name),
                     archetype:archetypes(id, name)
                 `)
@@ -365,7 +425,7 @@ export class OperatorManager {
         }
 
         const operatorsHTML = this.operators.map((operator, index) => {
-            const rarityStars = operator.rarity?.label ? operator.rarity.label.repeat('★') : '★★★★★★';
+            const rarityStars = '★'.repeat(operator.rarity_id || 6);
             const avatarUrl = operator.avatar_url || 'https://via.placeholder.com/300x240?text=No+Image';
 
             return `
@@ -431,9 +491,9 @@ export class OperatorManager {
                     name,
                     description,
                     avatar_url,
-                    rarity:rarities(label),
-                    class:classes(name, description),
-                    archetype:archetypes(name, description)
+                    rarity_id,
+                    class:classes(id, name, description),
+                    archetype:archetypes(id, name, description)
                 `)
                 .eq('id', operatorId)
                 .single();
@@ -458,15 +518,40 @@ export class OperatorManager {
     renderOperatorModal() {
         if (!this.currentOperator) return;
 
-        const rarityStars = this.currentOperator.rarity?.label ? this.currentOperator.rarity.label.repeat('★') : '★★★★★★';
+        const rarityStars = '★'.repeat(this.currentOperator.rarity_id || 6);
         const avatarUrl = this.currentOperator.avatar_url || 'https://via.placeholder.com/300x240?text=No+Image';
 
         // Update modal content
         document.getElementById('modalOperatorTitle').textContent = this.currentOperator.name;
         document.getElementById('modalOperatorAvatar').src = avatarUrl;
         document.getElementById('modalOperatorName').textContent = this.currentOperator.name;
-        document.getElementById('modalOperatorClass').textContent = this.currentOperator.class?.name || 'Unknown';
-        document.getElementById('modalOperatorArchetype').textContent = this.currentOperator.archetype?.name || 'Unknown';
+
+        // Make class and archetype clickable links
+        const classElement = document.getElementById('modalOperatorClass');
+        const archetypeElement = document.getElementById('modalOperatorArchetype');
+
+        if (classElement) {
+            classElement.innerHTML = this.currentOperator.class?.name || 'Unknown';
+            classElement.style.cursor = 'pointer';
+            classElement.style.color = 'var(--accent-primary)';
+            classElement.addEventListener('click', () => {
+                if (this.currentOperator.class?.id) {
+                    window.location.href = `class.html?id=${this.currentOperator.class.id}`;
+                }
+            });
+        }
+
+        if (archetypeElement) {
+            archetypeElement.innerHTML = this.currentOperator.archetype?.name || 'Unknown';
+            archetypeElement.style.cursor = 'pointer';
+            archetypeElement.style.color = 'var(--accent-primary)';
+            archetypeElement.addEventListener('click', () => {
+                if (this.currentOperator.archetype?.id) {
+                    window.location.href = `archetype.html?id=${this.currentOperator.archetype.id}`;
+                }
+            });
+        }
+
         document.getElementById('modalOperatorRarity').textContent = rarityStars;
         document.getElementById('modalOperatorDescription').textContent =
             this.currentOperator.description || 'Chưa có mô tả chi tiết';
@@ -476,17 +561,33 @@ export class OperatorManager {
         statsGrid.innerHTML = `
             <div class="stat-item">
                 <span class="stat-label">Lớp</span>
-                <span class="stat-value">${this.currentOperator.class?.name || 'Unknown'}</span>
+                <span class="stat-value stat-link" data-class-id="${this.currentOperator.class?.id || ''}">${this.currentOperator.class?.name || 'Unknown'}</span>
             </div>
             <div class="stat-item">
                 <span class="stat-label">Archetype</span>
-                <span class="stat-value">${this.currentOperator.archetype?.name || 'Unknown'}</span>
+                <span class="stat-value stat-link" data-archetype-id="${this.currentOperator.archetype?.id || ''}">${this.currentOperator.archetype?.name || 'Unknown'}</span>
             </div>
             <div class="stat-item">
                 <span class="stat-label">Độ hiếm</span>
                 <span class="stat-value">${rarityStars}</span>
             </div>
         `;
+
+        // Bind click events for stat links
+        statsGrid.querySelectorAll('.stat-link').forEach(link => {
+            link.style.cursor = 'pointer';
+            link.style.color = 'var(--accent-primary)';
+            link.addEventListener('click', (e) => {
+                const classId = e.target.getAttribute('data-class-id');
+                const archetypeId = e.target.getAttribute('data-archetype-id');
+
+                if (classId) {
+                    window.location.href = `class.html?id=${classId}`;
+                } else if (archetypeId) {
+                    window.location.href = `archetype.html?id=${archetypeId}`;
+                }
+            });
+        });
     }
 
     /**

@@ -77,14 +77,7 @@ export class ArchetypeManager {
     renderArchetypeInfo() {
         if (!this.archetypeData) return;
 
-        // Update hero section
-        document.getElementById('archetypeTitle').textContent = this.archetypeData.name;
-        document.getElementById('archetypeDescription').textContent =
-            this.archetypeData.description || 'Chưa có mô tả chi tiết';
-
-        // Update breadcrumb
-        document.getElementById('breadcrumbClass').textContent = this.archetypeData.class?.name || 'Unknown';
-        document.getElementById('breadcrumbArchetype').textContent = this.archetypeData.name;
+        // Update hero section - kept static for consistent layout
 
         // Update overview section
         const iconEmoji = this.getArchetypeIcon(this.archetypeData.name);
