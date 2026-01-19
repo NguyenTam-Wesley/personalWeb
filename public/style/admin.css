@@ -1,13 +1,15 @@
-@import 'variables.css';
-
 /* Admin Container */
 .admin-container {
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
-  max-width: var(--breakpoint-xl);
-  margin: 0 auto;
-  padding-left: var(--spacing-lg);
-  padding-right: var(--spacing-lg);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg-primary);
+  overflow-y: auto;
+  padding: 5rem 2rem 2rem 2rem; /* Top padding for header, bottom padding for content */
+  margin: 0;
+  z-index: 1;
 }
 
 /* Admin Dashboard */
@@ -15,15 +17,15 @@
   max-width: 900px;
   margin: 40px auto;
   padding: 40px 20px;
-  background: var(--card-bg);
+  background: var(--bg-card);
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-lg);
 }
 
 .admin-dashboard h1 {
   text-align: center;
   margin-bottom: 32px;
-  color: var(--text-dark);
+  color: var(--text-primary);
 }
 
 .admin-modules {
@@ -33,39 +35,39 @@
 }
 
 .admin-module-card {
-  background: var(--secondary-bg);
+  background: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-sm);
   padding: 32px 20px;
   text-align: center;
   transition: box-shadow 0.2s, transform 0.2s;
   cursor: pointer;
-  border: 1px solid var(--border-dark);
+  border: 1px solid var(--border-light);
   text-decoration: none;
   display: block;
   color: inherit;
 }
 
 .admin-module-card:hover {
-  box-shadow: 0 6px 24px rgba(0, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
   transform: translateY(-4px) scale(1.03);
-  border-color: var(--accent-primary);
+  border-color: var(--primary);
 }
 
 .admin-module-card .icon {
   font-size: 2.5rem;
   margin-bottom: 12px;
-  color: var(--accent-primary);
+  color: var(--primary);
 }
 
 .admin-module-card h2 {
   margin: 0 0 8px 0;
   font-size: 1.2rem;
-  color: var(--text-dark);
+  color: var(--text-primary);
 }
 
 .admin-module-card p {
-  color: var(--text-light);
+  color: var(--text-secondary);
   font-size: 0.98rem;
   margin: 0;
 }
@@ -82,19 +84,19 @@
 /* Admin Table */
 .admin-table th,
 .admin-table td {
-    padding: var(--spacing-md);
+    padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid var(--border-dark);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .admin-table th {
-    background: var(--secondary-bg);
+    background: var(--bg-secondary);
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--text-primary);
 }
 
 .admin-table tr:hover {
-    background: var(--secondary-bg);
+    background: var(--bg-secondary);
 }
 
 .crosshair-info-cell {
@@ -104,56 +106,149 @@
 }
 
 .crosshair-info-cell strong {
-    color: var(--text-dark);
+    color: var(--text-primary);
 }
 
 .crosshair-info-cell small {
-    color: var(--text-light);
+    color: var(--text-secondary);
     font-size: 0.875rem;
+}
+
+/* Operator Avatar */
+.operator-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid var(--border-light);
+    transition: border-color 0.2s;
+}
+
+.operator-avatar:hover {
+    border-color: var(--primary);
+}
+
+/* Description cell */
+.description-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Action buttons */
+.btn-edit, .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin: 0 2px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn-edit:hover {
+    background: rgba(78, 124, 255, 0.1);
+    color: var(--primary);
+}
+
+.btn-delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+}
+
+/* No data state */
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Loading and error states */
+.loading, .error {
+    text-align: center;
+    padding: 40px;
+}
+
+.error {
+    color: var(--error);
+}
+
+/* Pagination */
+.page-numbers {
+    display: flex;
+    gap: 4px;
+}
+
+.page-number {
+    padding: 8px 12px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.page-number:hover {
+    background: var(--bg-secondary);
+}
+
+.page-number.active {
+    background: var(--primary);
+    color: var(--text-inverse);
+    border-color: var(--primary);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Admin Header */
 .admin-header {
   text-align: center;
-  margin-bottom: var(--spacing-lg);
-  padding: var(--spacing-lg);
-  background: var(--card-bg);
-  border-radius: var(--border-radius-lg);
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--bg-card);
+  border-radius: 12px;
   box-shadow: var(--shadow-sm);
 }
 
 .admin-header h1 {
   font-size: 2.5rem;
-  color: var(--text-dark);
-  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+  margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .admin-header p {
-  color: var(--text-light);
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin: 0;
 }
 
 /* Admin Form */
 .admin-form {
-  background: var(--card-bg);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
   box-shadow: var(--shadow-sm);
 }
 
 .admin-form hr {
   margin: 2.5rem 0;
   border: none;
-  border-top: 1px solid var(--border-dark);
+  border-top: 1px solid var(--border-light);
 }
 
 .form-message {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 4px;
   font-weight: 500;
 }
 
@@ -185,9 +280,9 @@
     display: flex;
 }
 .modal-content {
-    background: var(--card-bg);
+    background: var(--bg-card);
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1.5px 8px rgba(0,0,0,0.04);
+    box-shadow: var(--shadow-lg);
     max-width: 480px;
     width: 95%;
     margin: auto;
@@ -196,8 +291,8 @@
     flex-direction: column;
 }
 .modal-header {
-    background: var(--accent-primary);
-    color: var(--text-dark);
+    background: var(--primary);
+    color: var(--text-inverse);
     padding: 20px 28px 12px 28px;
     border-radius: 16px 16px 0 0;
     display: flex;
@@ -210,7 +305,7 @@
     font-weight: 600;
 }
 .close-btn {
-    color: var(--text-dark);
+    color: var(--text-inverse);
     background: none;
     border: none;
     font-size: 1.7rem;
@@ -228,13 +323,13 @@
 }
 .modal-body {
     padding: 24px 28px 28px 28px;
-    background: var(--card-bg);
+    background: var(--bg-card);
 }
 .form-group {
     margin-bottom: 16px;
 }
 .form-group label {
-    color: var(--text-dark);
+    color: var(--text-primary);
     font-weight: 500;
     margin-bottom: 6px;
     display: block;
@@ -245,25 +340,25 @@ textarea,
 select {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid var(--border-dark);
+    border: 1.5px solid var(--border-light);
     border-radius: 8px;
     font-size: 1rem;
     margin-bottom: 4px;
-    background: var(--secondary-bg);
+    background: var(--bg-primary);
     transition: border-color 0.2s;
-    color: var(--text-dark);
+    color: var(--text-primary);
 }
 input[type="text"]:focus,
 input[type="number"]:focus,
 textarea:focus,
 select:focus {
-    border-color: var(--accent-primary);
+    border-color: var(--primary);
     outline: none;
-    background: var(--primary-bg);
+    background: var(--bg-primary);
 }
 select {
     appearance: none;
-    background: var(--secondary-bg) url('data:image/svg+xml;utf8,<svg fill="%2300ffff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px 18px;
+    background: var(--bg-secondary) url('data:image/svg+xml;utf8,<svg fill="%234e7cff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px 18px;
     font-weight: 500;
 }
 textarea {
@@ -276,11 +371,11 @@ textarea {
     justify-content: flex-end;
     margin-top: 18px;
     padding-top: 12px;
-    border-top: 1px solid var(--border-dark);
+    border-top: 1px solid var(--border-light);
 }
 .btn-primary {
-    background: var(--accent-primary);
-    color: var(--text-dark);
+    background: var(--primary);
+    color: var(--text-inverse);
     font-weight: 600;
     border: none;
     border-radius: 8px;
@@ -290,14 +385,14 @@ textarea {
     cursor: pointer;
 }
 .btn-primary:hover {
-    background: var(--accent-hover);
+    background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
+    box-shadow: var(--shadow-lg);
 }
 .btn-secondary {
-    background: var(--secondary-bg);
-    color: var(--text-dark);
-    border: 1px solid var(--border-dark);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 10px 22px;
     font-size: 1rem;
@@ -306,7 +401,7 @@ textarea {
     cursor: pointer;
 }
 .btn-secondary:hover {
-    background: var(--border-dark);
+    background: var(--border-light);
     transform: translateY(-2px);
 }
 .checkbox-label {
@@ -325,12 +420,12 @@ textarea {
     width: 18px;
     height: 18px;
     border-radius: 4px;
-    background: var(--border-dark);
+    background: var(--border-light);
     display: inline-block;
     position: relative;
 }
 .checkbox-label input[type="checkbox"]:checked + .checkmark {
-    background: var(--accent-primary);
+    background: var(--primary);
 }
 .checkbox-label .checkmark::after {
     content: "";
@@ -343,7 +438,7 @@ textarea {
     top: 2px;
     width: 4px;
     height: 9px;
-    border: solid var(--text-dark);
+    border: solid var(--text-primary);
     border-width: 0 2.5px 2.5px 0;
     transform: rotate(45deg);
 }
@@ -360,7 +455,7 @@ textarea {
 }
 
 .modern-modal {
-    background: var(--card-bg);
+    background: var(--bg-card);
     border-radius: 18px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1.5px 8px rgba(0,0,0,0.04);
     padding: 0;
@@ -376,8 +471,8 @@ textarea {
 }
 
 .modern-modal .modal-header {
-    background: var(--accent-primary);
-    color: var(--text-dark);
+    background: var(--primary);
+    color: var(--text-primary);
     padding: 24px 32px 16px 32px;
     border-radius: 18px 18px 0 0;
     display: flex;
@@ -392,7 +487,7 @@ textarea {
 }
 
 .modern-modal .close-btn {
-    color: var(--text-dark);
+    color: var(--text-primary);
     background: none;
     border: none;
     font-size: 1.7rem;
@@ -411,12 +506,12 @@ textarea {
 
 .modern-modal .modal-body {
     padding: 28px 32px 32px 32px;
-    background: var(--card-bg);
+    background: var(--bg-card);
 }
 
 .modern-modal .form-group label,
 .modern-modal .form-row label {
-    color: var(--text-dark);
+    color: var(--text-primary);
     font-weight: 500;
     margin-bottom: 6px;
     display: block;
@@ -427,25 +522,25 @@ textarea {
 .modern-modal select {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid var(--border-dark);
+    border: 1.5px solid var(--border-light);
     border-radius: 8px;
     font-size: 1rem;
     margin-bottom: 10px;
-    background: var(--secondary-bg);
+    background: var(--bg-secondary);
     transition: border-color 0.2s;
-    color: var(--text-dark);
+    color: var(--text-primary);
 }
 .modern-modal input[type="text"]:focus,
 .modern-modal textarea:focus,
 .modern-modal select:focus {
-    border-color: var(--accent-primary);
+    border-color: var(--primary);
     outline: none;
-    background: var(--primary-bg);
+    background: var(--bg-primary);
 }
 
 .modern-modal select {
     appearance: none;
-    background: var(--secondary-bg) url('data:image/svg+xml;utf8,<svg fill="%2300ffff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px 18px;
+    background: var(--bg-secondary) url('data:image/svg+xml;utf8,<svg fill="%234e7cff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px 18px;
     font-weight: 500;
 }
 
@@ -477,12 +572,12 @@ textarea {
     justify-content: flex-end;
     margin-top: 18px;
     padding-top: 12px;
-    border-top: 1px solid var(--border-dark);
+    border-top: 1px solid var(--border-light);
 }
 
 .modern-modal .btn-primary {
-    background: var(--accent-primary);
-    color: var(--text-dark);
+    background: var(--primary);
+    color: var(--text-primary);
     font-weight: 600;
     border: none;
     border-radius: 8px;
@@ -498,9 +593,9 @@ textarea {
 }
 
 .modern-modal .btn-secondary {
-    background: var(--secondary-bg);
-    color: var(--text-dark);
-    border: 1px solid var(--border-dark);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 10px 22px;
     font-size: 1rem;
@@ -509,7 +604,7 @@ textarea {
     cursor: pointer;
 }
 .modern-modal .btn-secondary:hover {
-    background: var(--border-dark);
+    background: var(--border-light);
     transform: translateY(-2px);
 }
 
@@ -528,14 +623,14 @@ textarea {
 .modern-modal .checkmark {
     width: 18px;
     height: 18px;
-    border: 2px solid var(--border-dark);
+    border: 2px solid var(--border-light);
     border-radius: 3px;
     position: relative;
     transition: all 0.2s;
 }
 .modern-modal .checkbox-label input[type="checkbox"]:checked + .checkmark {
-    background: var(--accent-primary);
-    border-color: var(--accent-primary);
+    background: var(--primary);
+    border-color: var(--primary);
 }
 .modern-modal .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
     content: '✓';
@@ -543,7 +638,26 @@ textarea {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: var(--text-dark);
+    color: var(--text-primary);
     font-size: 12px;
     font-weight: bold;
+}
+
+/* Danger button for delete actions */
+.btn-danger {
+    background: var(--error);
+    color: var(--text-inverse);
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 } 

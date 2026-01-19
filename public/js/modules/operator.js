@@ -441,7 +441,7 @@ export class OperatorManager {
                             </div>
                         </div>
                         <button class="cta-button view-operator-btn" data-operator-id="${operator.id}">
-                            Xem Chi Tiết
+                            Detail
                         </button>
                     </div>
                 </div>

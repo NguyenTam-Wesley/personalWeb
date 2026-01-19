@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arknights Operator Manager - Admin</title>
+    <link rel="stylesheet" href="../../style/components.css" />
+    <link rel="stylesheet" href="../../style/style.css" />
+    <link rel="stylesheet" href="../../style/admin.css" />
+    <link rel="stylesheet" href="../../style/themes.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+      rel="icon"
+      href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
+    />
+</head>
+<body>
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1>Arknights Operator Manager</h1>
+            <p>Quản lý danh sách Operators</p>
+        </div>
+
+        <div class="admin-content">
+            <div class="admin-filters">
+                <div class="search-box">
+                    <input type="text" id="adminSearch" placeholder="Tìm kiếm operator..." />
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-options">
+                    <select id="adminClassFilter">
+                        <option value="">Tất cả Class</option>
+                    </select>
+                    <select id="adminArchetypeFilter">
+                        <option value="">Tất cả Archetype</option>
+                    </select>
+                    <select id="adminRarityFilter">
+                        <option value="">Tất cả Rarity</option>
+                        <option value="1">★</option>
+                        <option value="2">★★</option>
+                        <option value="3">★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="5">★★★★★</option>
+                        <option value="6">★★★★★★</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-table-header">
+                <button id="addOperatorBtn" class="btn-primary">
+                    <span class="icon">➕</span>
+                    Thêm Operator Mới
+                </button>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Avatar</th>
+                            <th>Tên</th>
+                            <th>Class</th>
+                            <th>Archetype</th>
+                            <th>Rarity</th>
+                            <th>Mô tả</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="operatorTableBody">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="admin-pagination" id="adminPagination" style="display: none;">
+                <button class="pagination-btn" id="adminPrevPage">← Trước</button>
+                <div class="page-numbers" id="adminPageNumbers"></div>
+                <button class="pagination-btn" id="adminNextPage">Sau →</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Operator Modal -->
+    <div id="operatorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Thêm Operator Mới</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="operatorForm">
+                    <input type="hidden" id="operatorId" />
+
+                    <div class="form-group">
+                        <label for="operatorName">Tên Operator *</label>
+                        <input type="text" id="operatorName" required placeholder="Nhập tên operator" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="operatorClass">Class *</label>
+                            <select id="operatorClass" required>
+                                <option value="">Chọn Class</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="operatorArchetype">Archetype *</label>
+                            <select id="operatorArchetype" required>
+                                <option value="">Chọn Archetype</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="operatorRarity">Rarity *</label>
+                            <select id="operatorRarity" required>
+                                <option value="">Chọn Rarity</option>
+                                <option value="1">★</option>
+                                <option value="2">★★</option>
+                                <option value="3">★★★</option>
+                                <option value="4">★★★★</option>
+                                <option value="5">★★★★★</option>
+                                <option value="6">★★★★★★</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="operatorAvatar">Avatar URL</label>
+                        <input type="url" id="operatorAvatar" placeholder="https://example.com/avatar.jpg" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="operatorDescription">Mô tả</label>
+                        <textarea id="operatorDescription" rows="4" placeholder="Mô tả về operator này..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelBtn">Hủy</button>
+                        <button type="submit" class="btn-primary" id="saveBtn">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Xác nhận xóa</h2>
+                <button class="close-btn" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa operator "<span id="deleteOperatorName"></span>"?</p>
+                <p class="warning">Hành động này không thể hoàn tác!</p>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelDelete">Hủy</button>
+                    <button type="button" class="btn-danger" id="confirmDelete">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../js/modules/arknights-op-admin_entry.js"></script>
+</body>
+</html>
