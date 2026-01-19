@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/supabase.js';
-import { getCurrentUser } from '../supabase/auth.js';
+import { getCurrentUserWithRetry } from '../supabase/auth.js';
 import { userProfile } from './user_profile.js';
 
 export class ProfileManager {
@@ -11,7 +11,7 @@ export class ProfileManager {
   /* ================= INIT ================= */
 
   async init() {
-    const user = await getCurrentUser();
+    const user = await getCurrentUserWithRetry();
 
     if (!user) {
       this.redirectToLogin();
@@ -31,7 +31,7 @@ export class ProfileManager {
       const { data: userData, error } = await supabase
         .from('user_profiles')
         .select('*')
-        .eq('id', this.currentUser.id)
+        .eq('id', this.currentUser.user.id)
         .single();
 
       if (error) {
@@ -40,17 +40,11 @@ export class ProfileManager {
         return;
       }
 
-      // Also get username from users table
-      const { data: userInfo } = await supabase
-        .from('users')
-        .select('username')
-        .eq('id', this.currentUser.id)
-        .single();
-
-      // Merge data
+      // Merge with profile data from auth (has username, email, etc.)
       const profileData = {
         ...userData,
-        username: userInfo?.username || userData.username
+        username: this.currentUser.profile?.username || userData.username,
+        email: this.currentUser.profile?.email || userData.email
       };
 
       this.fillProfileForm(profileData);
@@ -66,11 +60,17 @@ export class ProfileManager {
     const emailInput = document.getElementById('email');
     const fullNameInput = document.getElementById('fullName');
     const bioInput = document.getElementById('bio');
+    const avatarPreview = document.getElementById('avatarPreview');
 
     if (usernameInput) usernameInput.value = userData.username || '';
     if (emailInput) emailInput.value = userData.email || '';
     if (fullNameInput) fullNameInput.value = userData.full_name || '';
     if (bioInput) bioInput.value = userData.bio || '';
+
+    // Update avatar preview
+    if (avatarPreview) {
+      avatarPreview.src = userData.avatar_url || '/default-avatar.png';
+    }
 
     this.updatePageTitle(userData.username);
   }
@@ -142,6 +142,7 @@ export class ProfileManager {
   setupEventListeners() {
     const saveBtn = document.getElementById('saveProfileBtn');
     const changePasswordBtn = document.getElementById('changePasswordBtn');
+    const avatarInput = document.getElementById('userAvatarInput');
 
     if (saveBtn) {
       saveBtn.addEventListener('click', () => this.saveProfile());
@@ -149,6 +150,10 @@ export class ProfileManager {
 
     if (changePasswordBtn) {
       changePasswordBtn.addEventListener('click', () => this.changePassword());
+    }
+
+    if (avatarInput) {
+      avatarInput.addEventListener('change', (e) => this.handleAvatarUpload(e));
     }
   }
 
@@ -181,7 +186,7 @@ export class ProfileManager {
           bio,
           updated_at: new Date().toISOString()
         })
-        .eq('id', this.currentUser.id);
+        .eq('id', this.currentUser.user.id);
 
       if (error) {
         console.error(error);
@@ -254,6 +259,89 @@ export class ProfileManager {
         changeBtn.disabled = false;
       }
     }
+  }
+
+  /* ================= AVATAR UPLOAD ================= */
+
+  async handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      this.showMessage("Chỉ được upload ảnh!", "error");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      this.showMessage("Ảnh không được quá 5MB!", "error");
+      return;
+    }
+
+    try {
+      this.showMessage("Đang upload avatar...", "info");
+      const avatarUrl = await this.uploadUserAvatar(file);
+
+      // Update preview immediately
+      const avatarPreview = document.getElementById('avatarPreview');
+      if (avatarPreview) {
+        avatarPreview.src = avatarUrl;
+      }
+
+      this.showMessage("Upload avatar thành công!", "success");
+
+      // Reload profile to reflect changes
+      await this.loadUserProfile();
+    } catch (err) {
+      console.error("Avatar upload error:", err);
+      this.showMessage("Lỗi khi upload avatar!", "error");
+    }
+  }
+
+  async uploadUserAvatar(file) {
+    if (!this.currentUser) {
+      throw new Error("Chưa đăng nhập");
+    }
+
+    const fileExt = file.name.split('.').pop().toLowerCase();
+    const filePath = `${this.currentUser.user.id}.${fileExt}`;
+
+    // 1️⃣ Upload ảnh
+    const { error: uploadError } = await supabase.storage
+      .from('user-avatar')
+      .upload(filePath, file, {
+        upsert: true,
+        contentType: file.type
+      });
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      throw new Error("Không thể upload ảnh: " + uploadError.message);
+    }
+
+    // 2️⃣ Lấy public URL
+    const { data } = supabase.storage
+      .from('user-avatar')
+      .getPublicUrl(filePath);
+
+    const avatarUrl = data.publicUrl;
+
+    if (!avatarUrl) {
+      throw new Error("Không thể lấy URL của ảnh");
+    }
+
+    // 3️⃣ Update profile
+    const { error: updateError } = await supabase
+      .from('user_profiles')
+      .update({ avatar_url: avatarUrl })
+      .eq('id', this.currentUser.user.id);
+
+    if (updateError) {
+      console.error("Profile update error:", updateError);
+      throw new Error("Không thể cập nhật profile: " + updateError.message);
+    }
+
+    return avatarUrl;
   }
 
   /* ================= HELPERS ================= */

@@ -11,6 +11,7 @@ export const ROUTES = {
       novel: '/pages/novel.html',
       login: '/pages/login.html',
       profile: '/pages/profile.html',
+      profileManager: '/pages/profile-manager.html',
       tv: '/pages/tv.html',
     },
   

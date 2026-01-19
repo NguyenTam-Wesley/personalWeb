@@ -117,17 +117,21 @@ p {
 .profile-avatar {
     width: 120px;
     height: 120px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--profile-primary) 0%, var(--profile-accent) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 48px;
-    box-shadow: 0 8px 24px rgba(78, 124, 255, 0.2);
+    overflow: hidden;
 }
 
-.avatar-placeholder {
-    font-size: 48px;
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.avatar-image:hover {
+    transform: scale(1.1);
 }
 
 .profile-info {
@@ -318,8 +322,8 @@ p {
 .dark-theme .currency-icon,
 .dark-theme .stat-icon,
 .dark-theme .streak-icon,
-.dark-theme .avatar-placeholder {
-  color: var(--accent-primary) !important;
+.dark-theme .avatar-image:hover {
+  transform: scale(1.1);
 }
 
 .dark-theme .xp-bar {
@@ -489,21 +493,21 @@ p {
   flex-shrink: 0;
 }
 
-.avatar-placeholder {
+.avatar-image {
   width: 60px;
   height: 60px;
-  background: var(--overlay-bg);
-  border: 2px solid var(--accent-primary);
-  border-radius: var(--border-radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.avatar-image:hover {
+  transform: scale(1.1);
+}
   color: var(--accent-primary);
   transition: all var(--transition-normal);
 }
 
-.avatar-placeholder:hover {
+.avatar-image:hover {
   transform: scale(1.05);
   box-shadow: var(--shadow-glow);
 }
@@ -1199,10 +1203,14 @@ p {
     font-size: 0.9rem;
   }
 
-  .avatar-placeholder {
+  .avatar-image {
     width: 50px;
     height: 50px;
-    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .avatar-image:hover {
+    transform: scale(1.1);
   }
 
   .profile-left {

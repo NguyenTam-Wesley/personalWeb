@@ -492,6 +492,12 @@ class ProfilePage {
         this.updateElement('coins-amount', userProfile.formatNumber(profile.coins));
         this.updateElement('gems-amount', userProfile.formatNumber(profile.gems));
 
+        // Update avatar
+        const avatarImg = document.getElementById('profile-avatar-img');
+        if (avatarImg) {
+            avatarImg.src = profile.avatar_url || '/default-avatar.png';
+        }
+
         const xpInfo = userProfile.getXPInfo(profile);
         const xpFill = document.getElementById('xp-fill');
         if (xpFill) xpFill.style.width = `${xpInfo.percent}%`;

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Profile - NTAM</title>
+  <link rel="stylesheet" href="../style/themes.css">
+  <link rel="stylesheet" href="../style/components.css">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../style/profile-manager.css">
+  <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
+</head>
+<body>
+  <div class="profile-container">
+    <div class="profile-header">
+      <h1>Quản lý Profile</h1>
+      <p>Thay đổi thông tin cá nhân và avatar của bạn</p>
+    </div>
+
+    <div class="profile-content">
+      <!-- Avatar Section -->
+      <section class="profile-section avatar-section">
+        <h2>Avatar</h2>
+        <div class="avatar-upload-container">
+          <div class="avatar-preview-wrapper">
+            <img id="avatarPreview" src="/default-avatar.png" alt="Avatar Preview" class="avatar-preview">
+          </div>
+          <div class="avatar-upload-controls">
+            <label for="userAvatarInput" class="upload-btn">
+              <span>Chọn ảnh</span>
+              <input type="file" id="userAvatarInput" accept="image/*" style="display: none;">
+            </label>
+            <p class="upload-hint">Ảnh tối đa 5MB, định dạng JPG/PNG</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Information -->
+      <section class="profile-section">
+        <h2>Thông tin cá nhân</h2>
+        <form class="profile-form">
+          <div class="form-group">
+            <label for="username">Tên hiển thị</label>
+            <input type="text" id="username" readonly>
+            <small class="form-hint">Tên hiển thị không thể thay đổi</small>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Nhập email của bạn">
+          </div>
+
+          <div class="form-group">
+            <label for="fullName">Họ và tên</label>
+            <input type="text" id="fullName" placeholder="Nhập họ và tên đầy đủ">
+          </div>
+
+          <div class="form-group">
+            <label for="bio">Tiểu sử</label>
+            <textarea id="bio" placeholder="Viết gì đó về bạn..." rows="4"></textarea>
+          </div>
+
+          <button type="button" id="saveProfileBtn" class="btn-primary">Lưu thay đổi</button>
+        </form>
+      </section>
+
+      <!-- Password Section -->
+      <section class="profile-section">
+        <h2>Đổi mật khẩu</h2>
+        <form class="password-form">
+          <div class="form-group">
+            <label for="newPassword">Mật khẩu mới</label>
+            <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới">
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu</label>
+            <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu mới">
+          </div>
+
+          <button type="button" id="changePasswordBtn" class="btn-secondary">Đổi mật khẩu</button>
+        </form>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="profile-section stats-section">
+        <h2>Thống kê</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Cấp độ</div>
+            <div class="stat-value" id="level-badge">Lv. 1</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-label">XP</div>
+            <div class="stat-value" id="xp-text">0 / 1000 XP</div>
+            <div class="xp-bar">
+              <div class="xp-fill" id="xp-fill"></div>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-label">Coins</div>
+            <div class="stat-value" id="coins-amount">0</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-label">Gems</div>
+            <div class="stat-value" id="gems-amount">0</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-label">Lần đăng nhập</div>
+            <div class="stat-value" id="loginCount">0</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-label">Ngày tham gia</div>
+            <div class="stat-value" id="joinDate">-</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-label">Vai trò</div>
+            <div class="stat-value" id="userRole">User</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script type="module" src="../js/modules/profile_manager_entry.js"></script>
+</body>
+</html>

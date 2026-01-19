@@ -97,6 +97,7 @@ export class Components {
         <span class="user-name">${this.userName}</span>
         <div class="user-dropdown">
           <a href="${route('pages.profile')}" class="dropdown-item">Profile</a>
+          <a href="${route('pages.profileManager')}" class="dropdown-item">Edit Profile</a>
           ${this.userRole === 'admin'
             ? `<a href="${route('admin.dashboard')}" class="dropdown-item">Admin</a>`
             : ''
