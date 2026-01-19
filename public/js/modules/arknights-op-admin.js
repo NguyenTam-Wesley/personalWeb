@@ -33,6 +33,9 @@ export class ArknightsOperatorAdminManager {
         this.currentPage = 1;
         this.pageSize = 10;
         this.totalRecords = 0;
+
+        // Ensure operators array is always initialized
+        this.operators = this.operators || [];
     }
 
     /**
@@ -109,6 +112,15 @@ export class ArknightsOperatorAdminManager {
             if (e.target === this.deleteModal) this.closeDeleteModal();
         });
 
+        // Avatar upload events
+        document.getElementById('operatorAvatarFile')?.addEventListener('change', (e) => {
+            this.handleAvatarFileSelect(e);
+        });
+
+        document.getElementById('removeAvatarBtn')?.addEventListener('click', () => {
+            this.removeAvatar();
+        });
+
         // ESC key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -127,6 +139,47 @@ export class ArknightsOperatorAdminManager {
             this.currentPage = 1;
             this.loadOperators();
         }, 300);
+    }
+
+    /**
+     * Upload operator avatar to Supabase Storage
+     */
+    async uploadOperatorAvatar(file, operatorId) {
+        if (!file) return null;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            throw new Error('Chỉ được upload file ảnh');
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            throw new Error('File ảnh không được vượt quá 5MB');
+        }
+
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${operatorId}.${fileExt}`;
+
+        // Upload to Supabase Storage
+        const { error: uploadError } = await supabase.storage
+            .from('operators-avatar')
+            .upload(fileName, file, {
+                upsert: true,
+                contentType: file.type
+            });
+
+        if (uploadError) {
+            console.error('Upload error:', uploadError);
+            throw new Error('Lỗi khi upload ảnh: ' + uploadError.message);
+        }
+
+        // Get public URL
+        const { data } = supabase.storage
+            .from('operators-avatar')
+            .getPublicUrl(fileName);
+
+        return data.publicUrl;
     }
 
     /**
@@ -297,8 +350,76 @@ export class ArknightsOperatorAdminManager {
             if (error) throw error;
 
             this.totalRecords = count || 0;
-            this.renderOperators(data || []);
-            this.renderPagination();
+            this.operators = data || [];
+
+            // Use requestAnimationFrame to batch DOM updates and prevent thrashing
+            requestAnimationFrame(() => {
+                this.renderOperators(data || []);
+                this.renderPagination();
+            });
+
+        } catch (error) {
+            console.error('Error loading operators:', error);
+            this.showError('Không thể tải danh sách operators');
+        }
+    }
+
+    /**
+     * Optimized load operators - minimizes DOM thrashing
+     */
+    async loadOperatorsOptimized() {
+        try {
+            // Show subtle loading indicator instead of full loading state
+            this.showSubtleLoading();
+
+            let query = supabase
+                .from('operators')
+                .select(`
+                    id,
+                    name,
+                    avatar_url,
+                    description,
+                    rarity_id,
+                    created_at,
+                    class:classes(id, name),
+                    archetype:archetypes(id, name)
+                `, { count: 'exact' })
+                .order('created_at', { ascending: false });
+
+            // Apply filters
+            if (this.filters.search) {
+                query = query.ilike('name', `%${this.filters.search}%`);
+            }
+
+            if (this.filters.classId) {
+                query = query.eq('class_id', this.filters.classId);
+            }
+
+            if (this.filters.archetypeId) {
+                query = query.eq('archetype_id', this.filters.archetypeId);
+            }
+
+            if (this.filters.rarityId) {
+                query = query.eq('rarity_id', parseInt(this.filters.rarityId));
+            }
+
+            // Pagination
+            const from = (this.currentPage - 1) * this.pageSize;
+            const to = from + this.pageSize - 1;
+            query = query.range(from, to);
+
+            const { data, error, count } = await query;
+
+            if (error) throw error;
+
+            this.totalRecords = count || 0;
+            this.operators = data || [];
+
+            // Use requestAnimationFrame to batch DOM updates and prevent thrashing
+            requestAnimationFrame(() => {
+                this.renderOperators(data || []);
+                this.renderPagination();
+            });
 
         } catch (error) {
             console.error('Error loading operators:', error);
@@ -321,31 +442,35 @@ export class ArknightsOperatorAdminManager {
             return;
         }
 
-        this.tableBody.innerHTML = operators.map(op => `
-            <tr>
-                <td>
-                    <img src="${op.avatar_url || '/placeholder-avatar.png'}"
-                         alt="${op.name}"
-                         class="operator-avatar"
-                         onerror="this.src='/placeholder-avatar.png'">
-                </td>
-                <td>${op.name}</td>
-                <td>${op.class?.name || 'N/A'}</td>
-                <td>${op.archetype?.name || 'N/A'}</td>
-                <td>${this.getRarityStars(op.rarity_id)}</td>
-                <td class="description-cell">${op.description || ''}</td>
-                <td>${this.formatDate(op.created_at)}</td>
-                <td>
-                    <button class="btn-edit" onclick="window.operatorAdmin.editOperator('${op.id}')">
-                        ✏️ Sửa
-                    </button>
-                    <button class="btn-delete" onclick="window.operatorAdmin.confirmDelete('${op.id}', '${op.name}')">
-                        🗑️ Xóa
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        // Use requestAnimationFrame to batch DOM updates and prevent thrashing
+        requestAnimationFrame(() => {
+            this.tableBody.innerHTML = operators.map(op => `
+                <tr>
+                    <td>
+                        <img src="${op.avatar_url || '/placeholder-avatar.png'}"
+                             alt="${op.name}"
+                             class="operator-avatar"
+                             onerror="this.src='/placeholder-avatar.png'">
+                    </td>
+                    <td>${op.name}</td>
+                    <td>${op.class?.name || 'N/A'}</td>
+                    <td>${op.archetype?.name || 'N/A'}</td>
+                    <td>${this.getRarityStars(op.rarity_id)}</td>
+                    <td class="description-cell">${op.description || ''}</td>
+                    <td>${this.formatDate(op.created_at)}</td>
+                    <td>
+                        <button class="btn-edit" onclick="window.operatorAdmin.editOperator('${op.id}')">
+                            ✏️ Sửa
+                        </button>
+                        <button class="btn-delete" onclick="window.operatorAdmin.confirmDelete('${op.id}', '${op.name}')">
+                            🗑️ Xóa
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        });
     }
+
 
     /**
      * Render pagination
@@ -400,6 +525,44 @@ export class ArknightsOperatorAdminManager {
     }
 
     /**
+     * Show subtle loading state (for updates)
+     */
+    showSubtleLoading() {
+        // Add a subtle loading overlay instead of replacing entire content
+        if (this.tableBody) {
+            const existingOverlay = this.tableBody.querySelector('.loading-overlay');
+            if (!existingOverlay) {
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.innerHTML = '<div class="loading-spinner-small">Đang cập nhật...</div>';
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(255, 255, 255, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10;
+                    font-size: 14px;
+                    color: var(--text-secondary);
+                `;
+                this.tableBody.style.position = 'relative';
+                this.tableBody.appendChild(overlay);
+
+                // Auto remove after 2 seconds
+                setTimeout(() => {
+                    if (overlay.parentNode) {
+                        overlay.remove();
+                    }
+                }, 2000);
+            }
+        }
+    }
+
+    /**
      * Show error state
      */
     showError(message) {
@@ -447,12 +610,63 @@ export class ArknightsOperatorAdminManager {
     }
 
     /**
+     * Handle avatar file selection
+     */
+    handleAvatarFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            this.showMessage('Chỉ được chọn file ảnh', 'error');
+            event.target.value = '';
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            this.showMessage('File ảnh không được vượt quá 5MB', 'error');
+            event.target.value = '';
+            return;
+        }
+
+        // Preview image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const preview = document.getElementById('avatarPreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+
+            // Show remove button
+            document.getElementById('removeAvatarBtn').style.display = 'inline-block';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Remove avatar
+     */
+    removeAvatar() {
+        const fileInput = document.getElementById('operatorAvatarFile');
+        const preview = document.getElementById('avatarPreview');
+        const hiddenInput = document.getElementById('operatorAvatar');
+        const removeBtn = document.getElementById('removeAvatarBtn');
+
+        fileInput.value = '';
+        preview.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MCAyNUMzMi40IDE5IDI1IDI2LjQgMTkgNDBIMjFDMjYuNCAyNi40IDMyLjQgMjAgNDAgMjBaTTQwIDUwQzQ1LjUgNTAgNDAgNDQuNSA0MCA0MFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHN2Zy8+';
+        hiddenInput.value = '';
+        removeBtn.style.display = 'none';
+    }
+
+    /**
      * Reset form
      */
     resetForm() {
         this.form.reset();
         document.getElementById('operatorId').value = '';
         this.updateFormArchetypeSelect();
+        this.removeAvatar();
     }
 
     /**
@@ -465,6 +679,23 @@ export class ArknightsOperatorAdminManager {
         document.getElementById('operatorRarity').value = operator.rarity_id;
         document.getElementById('operatorAvatar').value = operator.avatar_url || '';
         document.getElementById('operatorDescription').value = operator.description || '';
+
+        // Set avatar preview
+        const avatarPreview = document.getElementById('avatarPreview');
+        const removeBtn = document.getElementById('removeAvatarBtn');
+
+        if (operator.avatar_url) {
+            avatarPreview.src = operator.avatar_url;
+            avatarPreview.style.display = 'block';
+            removeBtn.style.display = 'inline-block';
+        } else {
+            avatarPreview.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MCAyNUMzMi40IDE5IDI1IDI2LjQgMTkgNDBIMjFDMjYuNCAyNi40IDMyLjQgMjAgNDAgMjBaTTQwIDUwQzQ1LjUgNTAgNDAgNDQuNSA0MCA0MFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHN2Zy8+';
+            avatarPreview.style.display = 'block';
+            removeBtn.style.display = 'none';
+        }
+
+        // Clear file input
+        document.getElementById('operatorAvatarFile').value = '';
 
         // Trigger class change to load archetypes
         document.getElementById('operatorClass').dispatchEvent(new Event('change'));
@@ -486,7 +717,6 @@ export class ArknightsOperatorAdminManager {
             class_id: document.getElementById('operatorClass').value,
             archetype_id: document.getElementById('operatorArchetype').value,
             rarity_id: parseInt(document.getElementById('operatorRarity').value),
-            avatar_url: document.getElementById('operatorAvatar').value.trim() || null,
             description: document.getElementById('operatorDescription').value.trim() || null
         };
 
@@ -500,18 +730,106 @@ export class ArknightsOperatorAdminManager {
             document.getElementById('saveBtn').disabled = true;
             document.getElementById('saveBtn').textContent = 'Đang lưu...';
 
+            // Check if there's a new avatar file to upload
+            const avatarFileInput = document.getElementById('operatorAvatarFile');
+            const avatarFile = avatarFileInput.files[0];
+
+            let avatarUrl = null;
+
+            if (avatarFile) {
+                // Upload avatar first
+                document.getElementById('saveBtn').textContent = 'Đang upload ảnh...';
+                avatarUrl = await this.uploadOperatorAvatar(avatarFile, this.currentOperatorId || 'temp');
+                formData.avatar_url = avatarUrl;
+            } else {
+                // Check if there's an existing avatar URL (for updates)
+                const existingAvatarUrl = document.getElementById('operatorAvatar').value.trim();
+                if (existingAvatarUrl) {
+                    formData.avatar_url = existingAvatarUrl;
+                }
+            }
+
             let result;
             if (this.currentOperatorId) {
-                // Update
+                // Update existing operator
                 result = await supabase
                     .from('operators')
                     .update(formData)
-                    .eq('id', this.currentOperatorId);
+                    .eq('id', this.currentOperatorId)
+                    .select(`
+                        id,
+                        name,
+                        avatar_url,
+                        description,
+                        rarity_id,
+                        created_at,
+                        class:classes(id, name),
+                        archetype:archetypes(id, name)
+                    `)
+                    .single();
             } else {
-                // Create
-                result = await supabase
-                    .from('operators')
-                    .insert([formData]);
+                // Create new operator
+                // If we uploaded a temp avatar, we need to rename it with the actual operator ID
+                if (avatarUrl && avatarUrl.includes('temp')) {
+                    // First create the operator to get the ID
+                    const tempFormData = { ...formData };
+                    delete tempFormData.avatar_url; // Don't include avatar_url yet
+
+                    result = await supabase
+                        .from('operators')
+                        .insert([tempFormData])
+                        .select(`
+                            id,
+                            name,
+                            avatar_url,
+                            description,
+                            rarity_id,
+                            created_at,
+                            class:classes(id, name),
+                            archetype:archetypes(id, name)
+                        `)
+                        .single();
+
+                    if (result.error) throw result.error;
+
+                    // Now rename the avatar file with the actual operator ID
+                    const actualAvatarUrl = await this.uploadOperatorAvatar(avatarFile, result.data.id);
+
+                    // Update with correct avatar URL
+                    const updateResult = await supabase
+                        .from('operators')
+                        .update({ avatar_url: actualAvatarUrl })
+                        .eq('id', result.data.id)
+                        .select(`
+                            id,
+                            name,
+                            avatar_url,
+                            description,
+                            rarity_id,
+                            created_at,
+                            class:classes(id, name),
+                            archetype:archetypes(id, name)
+                        `)
+                        .single();
+
+                    result = updateResult;
+                } else {
+                    // No avatar upload, proceed normally
+                    result = await supabase
+                        .from('operators')
+                        .insert([formData])
+                        .select(`
+                            id,
+                            name,
+                            avatar_url,
+                            description,
+                            rarity_id,
+                            created_at,
+                            class:classes(id, name),
+                            archetype:archetypes(id, name)
+                        `)
+                        .single();
+                }
             }
 
             if (result.error) throw result.error;
@@ -522,14 +840,16 @@ export class ArknightsOperatorAdminManager {
             );
 
             this.closeModal();
-            await this.loadOperators();
+
+            // Reload operators to show updated data (optimized)
+            await this.loadOperatorsOptimized();
 
         } catch (error) {
             console.error('Error saving operator:', error);
             if (error.code === '23505') {
                 this.showMessage('Tên operator đã tồn tại', 'error');
             } else {
-                this.showMessage('Lỗi khi lưu operator', 'error');
+                this.showMessage(error.message || 'Lỗi khi lưu operator', 'error');
             }
         } finally {
             document.getElementById('saveBtn').disabled = false;
@@ -562,13 +882,16 @@ export class ArknightsOperatorAdminManager {
 
             this.showMessage('Operator đã được xóa', 'success');
             this.closeDeleteModal();
-            await this.loadOperators();
+
+            // Reload operators to show updated data (optimized)
+            await this.loadOperatorsOptimized();
 
         } catch (error) {
             console.error('Error deleting operator:', error);
             this.showMessage('Lỗi khi xóa operator', 'error');
         }
     }
+
 
     /**
      * Close modal
@@ -608,6 +931,7 @@ export class ArknightsOperatorAdminManager {
         this.currentPage = page;
         this.loadOperators();
     }
+
 
     /**
      * Utility methods

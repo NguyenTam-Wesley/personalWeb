@@ -127,8 +127,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="operatorAvatar">Avatar URL</label>
-                        <input type="url" id="operatorAvatar" placeholder="https://example.com/avatar.jpg" />
+                        <label>Avatar</label>
+                        <div class="avatar-upload-container">
+                            <div class="avatar-preview">
+                                <img id="avatarPreview" src="/placeholder-avatar.png" alt="Avatar preview" />
+                            </div>
+                            <div class="avatar-upload-controls">
+                                <input type="file" id="operatorAvatarFile" accept="image/*" />
+                                <input type="hidden" id="operatorAvatar" />
+                                <button type="button" class="btn-secondary btn-small" id="removeAvatarBtn" style="display: none;">Xóa ảnh</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
