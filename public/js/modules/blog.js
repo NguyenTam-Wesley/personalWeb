@@ -661,7 +661,7 @@ export class BlogManager {
         return;
       }
 
-      const gameUserId = userData.profile.id; // ✅ public.users.id for foreign key
+      const userId = userData.profile.id; // ✅ public.users.id for foreign key
 
       // Generate unique slug from title
       let slug = this.generateSlug(title);
@@ -691,7 +691,7 @@ export class BlogManager {
         content,
         topic_id: parseInt(topicId),
         slug: finalSlug,
-        author_id: gameUserId, // ✅ public.users.id for foreign key
+        author_id: userId, // ✅ public.users.id for foreign key
         status
       };
 
