@@ -49,7 +49,7 @@ nav {
   display: flex;
   gap: var(--spacing-md);
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex: 1;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -57,6 +57,10 @@ nav {
   scrollbar-width: thin;
   scrollbar-color: var(--accent-primary) transparent;
   min-width: 0; /* Prevent flex item from overflowing */
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain; /* Prevent scroll beyond content boundaries */
+  scroll-padding-left: 120px; /* Align first nav-link with nav-logo right edge */
 }
 
 .nav-links::-webkit-scrollbar {
@@ -85,6 +89,7 @@ nav {
   transition: all var(--transition-normal);
   position: relative;
   white-space: nowrap;
+  scroll-snap-align: start;
 }
 
 .nav-link::after {
@@ -427,8 +432,23 @@ footer .socials a:hover {
   .nav-links {
     -webkit-overflow-scrolling: touch;
     justify-content: flex-start; /* Keep left-aligned on mobile for better UX */
-    flex: none; /* Remove flex: 1 on mobile to prevent overflow */
-    max-width: calc(100vw - 100px); /* Reduced space allocation for nav-controls to maximize nav-links area */
+    flex: 0 1 auto; /* Allow flexible width instead of none */
+    max-width: calc(100vw - 140px); /* Better space allocation: logo (~60px) + controls (~80px) */
+    scroll-behavior: smooth;
+    touch-action: pan-x; /* Explicitly allow horizontal touch scrolling */
+    scroll-padding-left: 80px; /* Align first nav-link with nav-logo right edge on mobile */
+    scroll-padding-right: 60px; /* Use scroll-padding for proper end zone */
+    scroll-snap-type: x proximity; /* Keep snap on mobile for proper alignment */
+    overscroll-behavior-x: contain; /* Prevent scroll beyond content boundaries */
+  }
+
+  .nav-link {
+    flex-shrink: 0; /* Prevent links from shrinking */
+  }
+
+  /* Remove scroll snap on mobile to prevent stuck feeling */
+  .nav-links .nav-link {
+    scroll-snap-align: none;
   }
 
   .nav-logo {
@@ -486,13 +506,23 @@ footer .socials a:hover {
     opacity: 0.8;
   }
 
-  /* Hide scrollbar on touch devices */
-  @media (hover: none) and (pointer: coarse) {
-    .nav-links::-webkit-scrollbar {
-      display: none;
-    }
-    .nav-links {
-      scrollbar-width: none;
+  /* Enhanced scroll behavior for better UX */
+  .nav-links {
+    /* Ensure scroll momentum on iOS */
+    -webkit-overflow-scrolling: touch;
+    /* Hide scrollbar on touch devices for cleaner look */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Alternative: Show subtle scrollbar on hover for desktop mobile testing */
+  @media (hover: hover) {
+    .nav-links:hover::-webkit-scrollbar {
+      display: block;
     }
   }
 
@@ -508,6 +538,12 @@ footer .socials a:hover {
 
   .nav-logo {
     font-size: 1.1rem;
+  }
+
+  .nav-links {
+    max-width: calc(100vw - 120px); /* Adjust for smaller screens */
+    scroll-padding-left: 60px; /* Align first nav-link with nav-logo right edge on small mobile */
+    scroll-padding-right: 40px; /* Reduced scroll padding for smaller screens */
   }
 
   /* Water Flow Effect - Disable on small mobile */

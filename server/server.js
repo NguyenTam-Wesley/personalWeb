@@ -38,7 +38,8 @@ app.use(
       scriptSrc: [
         "'self'",
         "'unsafe-inline'",
-        "https://cdn.jsdelivr.net"
+        "https://cdn.jsdelivr.net",
+        "https://cdn.quilljs.com",
       ],
 
       scriptSrcAttr: ["'unsafe-inline'"],

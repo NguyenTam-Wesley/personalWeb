@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quill Load Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        #editor { height: 200px; border: 1px solid #ccc; border-radius: 4px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Quill Load Test</h1>
+
+    <div id="status-container"></div>
+
+    <div id="editor"></div>
+
+    <button onclick="testQuill()">Test Quill</button>
+
+    <!-- Quill CSS & JS with load detection -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script>
+        // Set global flag
+        window.QuillLoaded = false;
+        console.log('⏳ Loading Quill...');
+
+        var quillScript = document.createElement('script');
+        quillScript.src = 'https://cdn.quilljs.com/1.3.6/quill.js';
+        quillScript.onload = function() {
+            window.QuillLoaded = true;
+            console.log('✅ Quill script loaded');
+            showStatus('✅ Quill script loaded successfully!', 'success');
+
+            // Try to initialize immediately
+            setTimeout(initQuill, 100);
+        };
+        quillScript.onerror = function() {
+            console.error('❌ Failed to load Quill script');
+            showStatus('❌ Failed to load Quill script!', 'error');
+        };
+        document.head.appendChild(quillScript);
+    </script>
+
+    <script>
+        let quill;
+
+        function showStatus(message, type = 'info') {
+            const container = document.getElementById('status-container');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            container.appendChild(statusDiv);
+        }
+
+        function initQuill() {
+            console.log('🔄 Attempting to initialize Quill...');
+
+            if (typeof Quill === 'undefined') {
+                console.error('❌ Quill not available');
+                showStatus('❌ Quill not available for initialization', 'error');
+                return;
+            }
+
+            try {
+                const editorElement = document.getElementById('editor');
+                if (!editorElement) {
+                    console.error('❌ Editor element not found');
+                    showStatus('❌ Editor element not found', 'error');
+                    return;
+                }
+
+                quill = new Quill('#editor', {
+                    theme: 'snow',
+                    placeholder: 'Test editor...'
+                });
+
+                console.log('✅ Quill initialized successfully');
+                showStatus('✅ Quill initialized successfully!', 'success');
+            } catch (error) {
+                console.error('❌ Quill initialization failed:', error);
+                showStatus('❌ Quill initialization failed: ' + error.message, 'error');
+            }
+        }
+
+        function testQuill() {
+            console.log('🧪 Testing Quill...');
+
+            if (!quill) {
+                console.error('❌ Quill not initialized');
+                showStatus('❌ Quill not initialized', 'error');
+                return;
+            }
+
+            const content = quill.root.innerHTML;
+            const text = quill.getText();
+
+            showStatus(`✅ Quill working! HTML: ${content.includes('<')}, Text length: ${text.length}`, 'success');
+            console.log('✅ Quill test passed:', { content, text });
+        }
+
+        // Auto test after 2 seconds
+        setTimeout(() => {
+            if (window.QuillLoaded) {
+                testQuill();
+            } else {
+                showStatus('❌ Quill still not loaded after 2 seconds', 'warning');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -18,4 +18,14 @@ components.initPet({
 });
 
 // Initialize page specific functionality
-new BlogManager();
+function initBlogManager() {
+  if (typeof Quill !== 'undefined') {
+    console.log('✅ Quill ready, initializing BlogManager...');
+    new BlogManager();
+  } else {
+    console.log('⏳ Waiting for Quill before initializing BlogManager...');
+    setTimeout(initBlogManager, 100);
+  }
+}
+
+initBlogManager();

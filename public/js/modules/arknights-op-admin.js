@@ -667,6 +667,11 @@ export class ArknightsOperatorAdminManager {
         document.getElementById('operatorId').value = '';
         this.updateFormArchetypeSelect();
         this.removeAvatar();
+
+        // Reset Quill editor
+        if (window.descriptionEditor) {
+            window.descriptionEditor.reset();
+        }
     }
 
     /**
@@ -678,7 +683,12 @@ export class ArknightsOperatorAdminManager {
         document.getElementById('operatorClass').value = operator.class_id;
         document.getElementById('operatorRarity').value = operator.rarity_id;
         document.getElementById('operatorAvatar').value = operator.avatar_url || '';
-        document.getElementById('operatorDescription').value = operator.description || '';
+        // Set description in Quill editor
+        if (window.descriptionEditor) {
+            window.descriptionEditor.setHTML(operator.description || '');
+        } else {
+            document.getElementById('operatorDescription').value = operator.description || '';
+        }
 
         // Set avatar preview
         const avatarPreview = document.getElementById('avatarPreview');

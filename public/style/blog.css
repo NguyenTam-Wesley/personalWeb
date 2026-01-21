@@ -746,6 +746,87 @@ body {
   line-height: 1.5;
 }
 
+/* Quill Editor Styles */
+#postContent {
+  background: var(--blog-card-bg);
+  border: 1px solid var(--blog-border);
+  border-radius: var(--radius-md);
+}
+
+.ql-toolbar {
+  border: 1px solid var(--blog-border);
+  border-bottom: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: var(--blog-card-bg);
+}
+
+.ql-container {
+  border: 1px solid var(--blog-border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: var(--blog-card-bg);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.ql-editor {
+  min-height: 300px;
+  color: var(--blog-text);
+  padding: var(--space-3);
+}
+
+.ql-editor.ql-blank::before {
+  color: var(--blog-text-light);
+  font-style: normal;
+}
+
+.ql-toolbar .ql-stroke {
+  stroke: var(--blog-text-light);
+}
+
+.ql-toolbar .ql-fill {
+  fill: var(--blog-text-light);
+}
+
+.ql-toolbar button:hover .ql-stroke {
+  stroke: var(--blog-primary);
+}
+
+.ql-toolbar button:hover .ql-fill {
+  fill: var(--blog-primary);
+}
+
+.ql-toolbar button.ql-active .ql-stroke {
+  stroke: var(--blog-primary);
+}
+
+.ql-toolbar button.ql-active .ql-fill {
+  fill: var(--blog-primary);
+}
+
+/* Dark theme support for Quill */
+[data-theme="dark"] .ql-toolbar,
+[data-theme="dark"] .ql-container {
+  border-color: var(--blog-border);
+  background: var(--blog-card-bg);
+}
+
+[data-theme="dark"] .ql-editor {
+  color: var(--blog-text);
+}
+
+[data-theme="dark"] .ql-editor.ql-blank::before {
+  color: var(--blog-text-light);
+}
+
+[data-theme="dark"] .ql-toolbar .ql-stroke {
+  stroke: var(--blog-text-light);
+}
+
+[data-theme="dark"] .ql-toolbar .ql-fill {
+  fill: var(--blog-text-light);
+}
+
 .form-actions {
   display: flex;
   gap: var(--space-2);
@@ -865,4 +946,232 @@ body {
     padding-inline: var(--space-1);
     padding-block: var(--space-2);
   }
+}
+
+/* Rich Text Content Styles */
+.content-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  color: var(--blog-text);
+}
+
+.content-body h1,
+.content-body h2,
+.content-body h3,
+.content-body h4,
+.content-body h5,
+.content-body h6 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--blog-text);
+}
+
+.content-body h1 {
+  font-size: 2.25rem;
+  border-bottom: 2px solid var(--blog-primary);
+  padding-bottom: 0.5rem;
+}
+
+.content-body h2 {
+  font-size: 1.875rem;
+  border-bottom: 1px solid var(--blog-border);
+  padding-bottom: 0.25rem;
+}
+
+.content-body h3 {
+  font-size: 1.5rem;
+}
+
+.content-body h4 {
+  font-size: 1.25rem;
+}
+
+.content-body h5 {
+  font-size: 1.125rem;
+}
+
+.content-body h6 {
+  font-size: 1rem;
+}
+
+.content-body p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.content-body blockquote {
+  border-left: 4px solid var(--blog-primary);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  background: var(--blog-bg);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+}
+
+.content-body ul,
+.content-body ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.content-body li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.content-body ul {
+  list-style-type: disc;
+}
+
+.content-body ol {
+  list-style-type: decimal;
+}
+
+.content-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: var(--blog-card-bg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--blog-shadow);
+}
+
+.content-body th,
+.content-body td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--blog-border);
+}
+
+.content-body th {
+  background: var(--blog-primary);
+  color: white;
+  font-weight: 600;
+}
+
+.content-body tr:nth-child(even) {
+  background: var(--blog-bg);
+}
+
+.content-body a {
+  color: var(--blog-primary);
+  text-decoration: none;
+  transition: var(--blog-transition);
+}
+
+.content-body a:hover {
+  color: var(--blog-secondary);
+  text-decoration: underline;
+}
+
+.content-body code {
+  background: var(--blog-bg);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+  border: 1px solid var(--blog-border);
+}
+
+.content-body pre {
+  background: var(--blog-bg);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  border: 1px solid var(--blog-border);
+  margin: 1.5rem 0;
+}
+
+.content-body pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.content-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: 1rem 0;
+  box-shadow: var(--blog-shadow);
+}
+
+.content-body hr {
+  border: none;
+  border-top: 1px solid var(--blog-border);
+  margin: 2rem 0;
+}
+
+.content-body strong,
+.content-body b {
+  font-weight: 600;
+  color: var(--blog-text);
+}
+
+.content-body em,
+.content-body i {
+  font-style: italic;
+}
+
+.content-body u {
+  text-decoration: underline;
+}
+
+.content-body s,
+.content-body strike {
+  text-decoration: line-through;
+}
+
+/* Dark theme adjustments for rich text */
+[data-theme="dark"] .content-body,
+.dark-theme .content-body {
+  color: var(--blog-text);
+}
+
+[data-theme="dark"] .content-body h1,
+[data-theme="dark"] .content-body h2,
+[data-theme="dark"] .content-body h3,
+[data-theme="dark"] .content-body h4,
+[data-theme="dark"] .content-body h5,
+[data-theme="dark"] .content-body h6,
+.dark-theme .content-body h1,
+.dark-theme .content-body h2,
+.dark-theme .content-body h3,
+.dark-theme .content-body h4,
+.dark-theme .content-body h5,
+.dark-theme .content-body h6 {
+  color: var(--blog-text);
+}
+
+[data-theme="dark"] .content-body blockquote,
+.dark-theme .content-body blockquote {
+  background: var(--blog-card-bg);
+  border-left-color: var(--blog-primary);
+}
+
+[data-theme="dark"] .content-body table,
+.dark-theme .content-body table {
+  background: var(--blog-card-bg);
+}
+
+[data-theme="dark"] .content-body tr:nth-child(even),
+.dark-theme .content-body tr:nth-child(even) {
+  background: var(--blog-bg);
+}
+
+[data-theme="dark"] .content-body code,
+.dark-theme .content-body code {
+  background: var(--blog-card-bg);
+  border-color: var(--blog-border);
+}
+
+[data-theme="dark"] .content-body pre,
+.dark-theme .content-body pre {
+  background: var(--blog-card-bg);
+  border-color: var(--blog-border);
 }

@@ -2,6 +2,7 @@
 import components from '../components/components.js';
 import { getCurrentUserWithRetry } from '../supabase/auth.js';
 import { supabase } from '../supabase/supabase.js';
+import { QuillEditor } from '../components/quillEditor.js';
 
 export class BlogManager {
   constructor() {
@@ -20,6 +21,9 @@ export class BlogManager {
     // Cache for topics and tags
     this.topics = [];
     this.allTags = [];
+
+    // Quill editor instance
+    this.quillEditor = null;
 
     // dùng singleton components
     this.components = components;
@@ -49,6 +53,9 @@ export class BlogManager {
 
       // Setup form enhancements
       this.setupFormEnhancements();
+
+      // Setup Quill editor
+      this.setupQuillEditor();
 
       // Load posts
       await this.loadPosts();
@@ -387,7 +394,7 @@ export class BlogManager {
         </div>
 
         <h3>${this.escapeHtml(post.title)}</h3>
-        <p class="post-excerpt">${this.escapeHtml(post.content?.substring(0, 150) || '')}...</p>
+        <p class="post-excerpt">${this.stripHtml(post.content || '').substring(0, 150)}...</p>
 
         <div class="post-stats">
           <div class="stat-item">
@@ -597,6 +604,15 @@ export class BlogManager {
     setTimeout(() => {
       document.getElementById('postTitle')?.focus();
     }, 100);
+
+    // Ensure Quill editor is ready after modal is shown
+    setTimeout(() => {
+      // QuillEditor is already initialized in setupQuillEditor()
+      // Just make sure it has focus
+      if (this.quillEditor) {
+        this.quillEditor.focus();
+      }
+    }, 200);
   }
 
   closeCreateModal() {
@@ -607,11 +623,8 @@ export class BlogManager {
     if (form) {
       form.reset();
 
-      // Reset textarea height
-      const textarea = form.querySelector('#postContent');
-      if (textarea) {
-        textarea.style.height = 'auto';
-      }
+      // Reset Quill content
+      this.resetQuillContent();
 
       // Reset status to default
       const statusSelect = form.querySelector('#postStatus');
@@ -623,6 +636,8 @@ export class BlogManager {
       const inputs = form.querySelectorAll('input, textarea, select');
       inputs.forEach(input => input.setCustomValidity(''));
     }
+
+    // Quill editor remains available
   }
 
   async handleCreatePost(e) {
@@ -631,7 +646,8 @@ export class BlogManager {
     const formData = new FormData(e.target);
     const title = formData.get('postTitle')?.trim();
     const topicId = formData.get('postTopic');
-    const content = formData.get('postContent')?.trim();
+    // Get content from Quill editor
+    const content = this.getQuillContent();
     const tagInput = formData.get('postTags')?.trim();
     const status = formData.get('postStatus') || 'published';
 
@@ -648,7 +664,9 @@ export class BlogManager {
       alert('Vui lòng chọn chủ đề cho bài viết');
       return;
     }
-    if (!content || content.length < 50) {
+    // Check content length (strip HTML tags for counting)
+    const plainTextContent = content.replace(/<[^>]*>/g, '').trim();
+    if (!plainTextContent || plainTextContent.length < 50) {
       alert('Nội dung bài viết phải có ít nhất 50 ký tự');
       return;
     }
@@ -793,6 +811,45 @@ export class BlogManager {
       .trim();
   }
 
+  /* ================= QUILL EDITOR ================= */
+
+  setupQuillEditor() {
+    // Don't reinitialize if already exists
+    if (this.quillEditor) {
+      console.log('ℹ️ QuillEditor already initialized');
+      return;
+    }
+
+    try {
+      this.quillEditor = new QuillEditor({
+        container: '#postContent',
+        hiddenInput: '#postContentHidden',
+        height: 300,
+        placeholder: 'Viết nội dung bài viết của bạn...'
+      });
+
+      console.log('✅ QuillEditor initialized successfully');
+    } catch (error) {
+      console.error('❌ Failed to initialize QuillEditor:', error);
+    }
+  }
+
+  getQuillContent() {
+    // Get content from QuillEditor
+    if (this.quillEditor) {
+      return this.quillEditor.getHTML();
+    }
+    // Fallback
+    return '';
+  }
+
+  resetQuillContent() {
+    // Reset QuillEditor content
+    if (this.quillEditor) {
+      this.quillEditor.reset();
+    }
+  }
+
   /* ================= FORM ENHANCEMENTS ================= */
 
   setupFormEnhancements() {
@@ -811,14 +868,7 @@ export class BlogManager {
       updateCounter(); // Initial call
     }
 
-    // Auto-resize textarea
-    const contentTextarea = document.getElementById('postContent');
-    if (contentTextarea) {
-      contentTextarea.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
-      });
-    }
+    // Quill editor handles its own sizing
 
     // Tag input validation
     const tagsInput = document.getElementById('postTags');
@@ -843,6 +893,12 @@ export class BlogManager {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  stripHtml(html) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
   }
 
 

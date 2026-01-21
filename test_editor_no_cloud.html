@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Cloud Editor Test</title>
+    <!-- TinyMCE Self-hosted (no API key required) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" integrity="sha512-6JR4ZJZt3r9PJrRMLGrEiVrXG9HziY5Jv4zr5xWLKQqU4dH1y8vO2HKtKF1H7L4+5I5j5Q5K5j5j5j5j5j5j5j5j5" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .editor-container { margin: 20px 0; }
+        #editor { width: 100%; height: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { margin: 5px; padding: 10px 20px; background: #4e7cff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .output { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 4px; }
+        .raw-output { background: #f0f0f0; padding: 10px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+        .rendered-output { border: 1px solid #ddd; padding: 15px; background: white; border-radius: 4px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 TinyMCE Test (No Cloud)</h1>
+
+    <div id="status"></div>
+
+    <div class="editor-container">
+        <h2>Editor:</h2>
+        <div id="editor">
+            <h1>Test Heading</h1>
+            <p>This is <strong>bold</strong> and <em>italic</em> text.</p>
+            <ul><li>List item 1</li><li>List item 2</li></ul>
+        </div>
+    </div>
+
+    <button onclick="getEditorContent()">Get Content</button>
+    <button onclick="clearEditor()">Clear</button>
+    <button onclick="testEditorMode()">Test Edit Mode</button>
+
+    <div class="output" id="output" style="display: none;">
+        <h2>Output:</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let editor;
+
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#editor',
+            height: 300,
+            menubar: false,
+            plugins: 'lists link',
+            toolbar: 'bold italic | bullist numlist | link',
+            readonly: false,
+            inline: false,
+            setup: function(ed) {
+                editor = ed;
+                ed.on('init', function() {
+                    console.log('Editor initialized successfully');
+                    showStatus('✅ Editor initialized successfully!', 'success');
+                });
+                ed.on('change', function() {
+                    console.log('Content changed');
+                });
+            },
+            init_instance_callback: function(ed) {
+                console.log('Instance callback');
+                // Force design mode
+                ed.setMode('design');
+            }
+        });
+
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function getEditorContent() {
+            if (!editor) {
+                showStatus('❌ Editor not initialized!', 'error');
+                return;
+            }
+
+            try {
+                const htmlContent = editor.getContent();
+                const textContent = editor.getContent({format: 'text'});
+                const isReadOnly = editor.mode.get() === 'readonly';
+
+                const results = document.getElementById('results');
+                results.innerHTML = `
+                    <p><strong>Editor Mode:</strong> ${isReadOnly ? '❌ READONLY' : '✅ EDITABLE'}</p>
+                    <p><strong>Is HTML:</strong> ${htmlContent.includes('<') ? '✅ YES' : '❌ NO'}</p>
+                    <p><strong>HTML Length:</strong> ${htmlContent.length} chars</p>
+                    <p><strong>Text Length:</strong> ${textContent.length} chars</p>
+                    <h3>Raw HTML:</h3>
+                    <div class="raw-output">${htmlContent}</div>
+                    <h3>Rendered:</h3>
+                    <div class="rendered-output">${htmlContent}</div>
+                    <h3>Plain Text:</h3>
+                    <div class="raw-output">${textContent}</div>
+                `;
+
+                document.getElementById('output').style.display = 'block';
+                showStatus('✅ Content retrieved successfully!', 'success');
+            } catch (error) {
+                showStatus('❌ Error getting content: ' + error.message, 'error');
+            }
+        }
+
+        function clearEditor() {
+            if (editor) {
+                editor.setContent('');
+                document.getElementById('output').style.display = 'none';
+                showStatus('🧹 Editor cleared', 'success');
+            }
+        }
+
+        function testEditorMode() {
+            if (!editor) {
+                showStatus('❌ Editor not initialized!', 'error');
+                return;
+            }
+
+            const currentMode = editor.mode.get();
+            showStatus(`📝 Current mode: ${currentMode}`, 'success');
+
+            // Try to set design mode
+            editor.setMode('design');
+            setTimeout(() => {
+                const newMode = editor.mode.get();
+                showStatus(`🔄 After setMode('design'): ${newMode}`, newMode === 'design' ? 'success' : 'error');
+            }, 100);
+        }
+
+        // Check if TinyMCE loaded
+        setTimeout(() => {
+            if (typeof tinymce === 'undefined') {
+                showStatus('❌ TinyMCE failed to load!', 'error');
+            } else {
+                showStatus('✅ TinyMCE loaded successfully', 'success');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

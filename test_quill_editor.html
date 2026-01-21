@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quill Editor Test</title>
+    <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .editor-container { margin: 20px 0; }
+        #editor { height: 300px; border: 1px solid #ccc; border-radius: 4px; }
+        .ql-toolbar { border-top-left-radius: 4px; border-top-right-radius: 4px; }
+        .ql-container { border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        button { margin: 5px; padding: 10px 20px; background: #4e7cff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .output { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 4px; }
+        .raw-output { background: #f0f0f0; padding: 10px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+        .rendered-output { border: 1px solid #ddd; padding: 15px; background: white; border-radius: 4px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>🪶 Quill Editor Test</h1>
+
+    <div id="status"></div>
+
+    <div class="editor-container">
+        <h2>Editor:</h2>
+        <div id="editor">
+            <h1>Test Heading</h1>
+            <p>This is <strong>bold</strong> and <em>italic</em> text.</p>
+            <ul><li>List item 1</li><li>List item 2</li></ul>
+        </div>
+    </div>
+
+    <button onclick="getEditorContent()">Get Content</button>
+    <button onclick="clearEditor()">Clear</button>
+    <button onclick="setTestContent()">Set Test Content</button>
+
+    <div class="output" id="output" style="display: none;">
+        <h2>Output:</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let quill;
+
+        // Initialize Quill
+        const toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'font': [] }],
+            [{ 'align': [] }],
+            ['clean']
+        ];
+
+        quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions
+            },
+            placeholder: 'Start writing...',
+            readOnly: false
+        });
+
+        // Event listeners
+        quill.on('text-change', function() {
+            console.log('Content changed');
+        });
+
+        quill.on('selection-change', function() {
+            console.log('Selection changed');
+        });
+
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function getEditorContent() {
+            if (!quill) {
+                showStatus('❌ Quill not initialized!', 'error');
+                return;
+            }
+
+            try {
+                // Get content in different formats
+                const htmlContent = quill.root.innerHTML;
+                const deltaContent = quill.getContents();
+                const textContent = quill.getText();
+
+                const results = document.getElementById('results');
+                results.innerHTML = `
+                    <p><strong>Editor ReadOnly:</strong> ${quill.options.readOnly ? '❌ YES' : '✅ NO'}</p>
+                    <p><strong>Is HTML:</strong> ${htmlContent.includes('<') ? '✅ YES' : '❌ NO'}</p>
+                    <p><strong>HTML Length:</strong> ${htmlContent.length} chars</p>
+                    <p><strong>Text Length:</strong> ${textContent.length} chars</p>
+                    <h3>Raw HTML:</h3>
+                    <div class="raw-output">${htmlContent}</div>
+                    <h3>Rendered:</h3>
+                    <div class="rendered-output">${htmlContent}</div>
+                    <h3>Plain Text:</h3>
+                    <div class="raw-output">${textContent}</div>
+                    <h3>Delta (JSON):</h3>
+                    <div class="raw-output">${JSON.stringify(deltaContent, null, 2)}</div>
+                `;
+
+                document.getElementById('output').style.display = 'block';
+                showStatus('✅ Content retrieved successfully!', 'success');
+            } catch (error) {
+                showStatus('❌ Error getting content: ' + error.message, 'error');
+            }
+        }
+
+        function clearEditor() {
+            if (quill) {
+                quill.setContents([]);
+                document.getElementById('output').style.display = 'none';
+                showStatus('🧹 Editor cleared', 'success');
+            }
+        }
+
+        function setTestContent() {
+            if (quill) {
+                const delta = {
+                    ops: [
+                        { insert: 'Test Heading' },
+                        { insert: '\n', attributes: { header: 1 } },
+                        { insert: 'This is ' },
+                        { insert: 'bold', attributes: { bold: true } },
+                        { insert: ' and ' },
+                        { insert: 'italic', attributes: { italic: true } },
+                        { insert: ' text.' },
+                        { insert: '\n' },
+                        { insert: 'List item 1', attributes: { list: 'bullet' } },
+                        { insert: '\n' },
+                        { insert: 'List item 2', attributes: { list: 'bullet' } },
+                        { insert: '\n' }
+                    ]
+                };
+                quill.setContents(delta);
+                showStatus('📝 Test content set', 'success');
+            }
+        }
+
+        // Check if Quill loaded
+        setTimeout(() => {
+            if (typeof Quill === 'undefined') {
+                showStatus('❌ Quill failed to load!', 'error');
+            } else {
+                showStatus('✅ Quill loaded successfully', 'success');
+            }
+        }, 500);
+
+        showStatus('✅ Quill editor initialized!', 'success');
+    </script>
+</body>
+</html>

@@ -317,30 +317,14 @@ export class BlogDetailManager {
     const container = document.getElementById('articleContent');
     let content = this.currentPost.content || '';
 
-    content = content.replace(/\n\n/g, '</p><p>');
-    content = `<p>${content}</p>`;
-    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    content = content.replace(/`(.*?)`/g, '<code>$1</code>');
-    content = content.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-    content = content.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" target="_blank">$1</a>'
-    );
-
-    content = content.replace(/^###### (.*$)/gm, '<h6>$1</h6>');
-    content = content.replace(/^##### (.*$)/gm, '<h5>$1</h5>');
-    content = content.replace(/^#### (.*$)/gm, '<h4>$1</h4>');
-    content = content.replace(/^### (.*$)/gm, '<h3>$1</h3>');
-    content = content.replace(/^## (.*$)/gm, '<h2>$1</h2>');
-    content = content.replace(/^# (.*$)/gm, '<h1>$1</h1>');
-
-    content = content.replace(/^- (.*$)/gm, '<li>$1</li>');
+    // Since content is now stored as HTML, we can render it directly
+    // But we should sanitize it to prevent XSS attacks
+    content = this.sanitizeHtml(content);
 
     container.innerHTML = content;
 
     // Generate TOC if content is long (>1500 chars) and has headings
-    const contentLength = this.currentPost.content?.length || 0;
+    const contentLength = content.length;
     const headings = container.querySelectorAll('h2, h3');
     if (contentLength > 1500 && headings.length > 0) {
       this.generateTOC(headings);
@@ -522,6 +506,32 @@ export class BlogDetailManager {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  sanitizeHtml(html) {
+    // Create a temporary container to parse HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+
+    // Remove potentially dangerous elements and attributes
+    const dangerousElements = ['script', 'iframe', 'object', 'embed', 'form', 'input', 'button'];
+    const dangerousAttributes = ['onclick', 'onload', 'onerror', 'onmouseover', 'onmouseout', 'onkeydown', 'onkeyup', 'onkeypress'];
+
+    // Remove dangerous elements
+    dangerousElements.forEach(tag => {
+      const elements = tempDiv.querySelectorAll(tag);
+      elements.forEach(el => el.remove());
+    });
+
+    // Remove dangerous attributes from all elements
+    const allElements = tempDiv.querySelectorAll('*');
+    allElements.forEach(el => {
+      dangerousAttributes.forEach(attr => {
+        el.removeAttribute(attr);
+      });
+    });
+
+    return tempDiv.innerHTML;
   }
 
 
