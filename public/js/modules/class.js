@@ -146,7 +146,6 @@ export class ClassManager {
                 <div class="class-card" data-class-id="${classData.id}" style="animation-delay: ${index * 0.1}s">
                     <div class="class-icon">${iconEmoji}</div>
                     <h3>${classData.name}</h3>
-                    <p>${classData.description || 'Chưa có mô tả'}</p>
                     <div class="class-stats">
                         <span class="archetype-count">${archetypeCount} Archetypes</span>
                     </div>

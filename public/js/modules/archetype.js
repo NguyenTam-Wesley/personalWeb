@@ -51,7 +51,7 @@ export class ArchetypeManager {
                     name,
                     description,
                     icon_url,
-                    class:classes(name)
+                    class:classes(id, name)
                 `)
                 .eq('id', this.archetypeId)
                 .single();
@@ -85,8 +85,17 @@ export class ArchetypeManager {
         document.getElementById('archetypeName').textContent = this.archetypeData.name;
         document.getElementById('archetypeDetailDescription').textContent =
             this.archetypeData.description || 'Chưa có mô tả chi tiết';
-        document.getElementById('archetypeClass').textContent =
-            `Thuộc lớp: ${this.archetypeData.class?.name || 'Unknown'}`;
+
+        // Make class name clickable and link to class page
+        const archetypeClassElement = document.getElementById('archetypeClass');
+        const classId = this.archetypeData.class?.id;
+        const className = this.archetypeData.class?.name || 'Unknown';
+
+        if (classId) {
+            archetypeClassElement.innerHTML = `Thuộc lớp: <a href="class.html?id=${classId}" class="class-link">${className}</a>`;
+        } else {
+            archetypeClassElement.textContent = `Thuộc lớp: ${className}`;
+        }
     }
 
     /**

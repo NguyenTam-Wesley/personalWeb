@@ -825,6 +825,18 @@
     font-weight: 500;
 }
 
+.archetype-class .class-link {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.archetype-class .class-link:hover {
+    color: var(--accent-secondary);
+    text-decoration: underline;
+}
+
 /* Responsive Archetype */
 @media (max-width: 480px) {
     .archetype-hero h1 {

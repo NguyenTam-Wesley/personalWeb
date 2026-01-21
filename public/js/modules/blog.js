@@ -654,14 +654,14 @@ export class BlogManager {
     }
 
     try {
-      // Get auth user ID for RLS policy
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
+      // Get current user profile for correct user ID
+      const userData = await getCurrentUserWithRetry();
+      if (!userData || !userData.profile) {
         alert('Không thể xác định thông tin người dùng. Vui lòng đăng nhập lại.');
         return;
       }
 
-      const authUserId = user.id; // ✅ auth.users.id for RLS
+      const gameUserId = userData.profile.id; // ✅ public.users.id for foreign key
 
       // Generate unique slug from title
       let slug = this.generateSlug(title);
@@ -691,7 +691,7 @@ export class BlogManager {
         content,
         topic_id: parseInt(topicId),
         slug: finalSlug,
-        author_id: authUserId, // ✅ auth.users.id for RLS policy
+        author_id: gameUserId, // ✅ public.users.id for foreign key
         status
       };
 
