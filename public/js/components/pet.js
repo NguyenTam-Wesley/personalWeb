@@ -49,7 +49,6 @@ export class Pet {
 
     async init() {
         try {
-            console.log('🐾 Initializing Pet Component...');
 
             // Load manifest
             await this.loadManifest();
@@ -201,7 +200,6 @@ export class Pet {
             this.debugPanel.querySelector('#debug-speed').textContent = this.speed.toFixed(2);
         }
 
-        console.log(`🔄 Pet state: ${state.name} (speed: ${this.speed})`);
     }
 
     randomState() {
@@ -234,8 +232,6 @@ export class Pet {
         if (this.options.persistence) {
             this.startAutoSave();
         }
-
-        console.log('▶️ Pet component started');
     }
 
     stop() {
@@ -246,7 +242,6 @@ export class Pet {
         this.intervals.forEach(interval => clearInterval(interval));
         this.intervals.clear();
 
-        console.log('⏹️ Pet component stopped');
     }
 
     startMovementLoop() {
@@ -347,7 +342,6 @@ export class Pet {
             this.debugPanel.remove();
         }
 
-        console.log('🗑️ Pet component destroyed');
     }
 
     getState() {
@@ -368,12 +362,10 @@ export class Pet {
 
     setTheme(theme) {
         // Future: theme-specific styling
-        console.log(`🎨 Pet theme set to: ${theme}`);
     }
 
     setBoundaryMode(mode) {
         this.options.boundaryMode = mode;
-        console.log(`🔄 Boundary mode set to: ${mode}`);
     }
 
     // Enhanced persistence for cross-page navigation
@@ -410,8 +402,6 @@ export class Pet {
                         this.setState(this.states[state.currentState.toUpperCase()]);
                     }
                 }
-
-                console.log(`📥 Pet state loaded: ${samePage ? 'same page' : 'cross-page'}, position: (${this.position.x}, ${this.position.y})`);
             }
         } catch (error) {
             console.warn('Failed to load pet state:', error);

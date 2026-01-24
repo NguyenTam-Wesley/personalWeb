@@ -56,6 +56,14 @@ export class GamesManager {
                 image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/minesweeper/minesweeper.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvbWluZXN3ZWVwZXIvbWluZXN3ZWVwZXIuYXZpZiIsImlhdCI6MTc2ODA5Njk1MywiZXhwIjo4ODE2ODAxMDU1M30.F4oZQIlCz9NdoaeghoRQeRYXF24I5fK_tP1-leVvcAE',
                 detailUrl: './games/minesweeper/minesweeper.html',
                 description: 'Minesweeper là một game giải đố cổ điển, tìm tất cả các quả mìn ẩn trong bảng mà không kích hoạt chúng.'
+            },
+            endfield: {
+                id: 'endfield',
+                name: 'Arknights Endfield',
+                subtitle: 'Tactical RPG Mobile Game',
+                image: 'https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/bg/game/endfield/image.avif?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2JnL2dhbWUvZW5kZmllbGQvaW1hZ2UuYXZpZiIsImlhdCI6MTc2OTA4NzgyNCwiZXhwIjoxMDQwOTAwMTQyNH0.Itcit03x4qNh3GwrhrrzRyfNsIADMy2gQGSNpN_U7J8',
+                detailUrl: './games/endfield.html',
+                description: 'Arknights Endfield là game nhập vai chiến thuật di động, spin-off của series Arknights với lối chơi turn-based hấp dẫn.'
             }
         };
         this.init()

@@ -399,8 +399,6 @@ export function logUserInfo(userProfile, context = '', authRole = null) {
     console.log(`${context} 👤 No user profile (Auth: ${authRole || 'unknown'})`);
     return;
   }
-
-  console.log(`${context} 👤 User: ${userProfile.username} | App Role: ${userProfile.role} | Auth Role: ${authRole || 'unknown'} | ID: ${userProfile.id}`);
 }
 
 /**
@@ -410,8 +408,6 @@ export function logUserStatus(userData, context = '') {
   const authRole = userData?.user?.role || 'unknown';
   const appRole = userData?.profile?.role || 'no-profile';
   const username = userData?.profile?.username || userData?.user?.user_metadata?.username || 'unknown';
-
-  console.log(`${context} 🔍 User Status: ${username} | Auth Role: ${authRole} | App Role: ${appRole}`);
 
   if (userData?.profile) {
     logUserInfo(userData.profile, context, authRole);

@@ -81,6 +81,12 @@ export class GameDetailManager {
             case 'hsr':
                 this.initializeHSRFeatures();
                 break;
+            case 'endfield':
+                this.initializeEndfieldFeatures();
+                break;
+            default:
+                console.log(`No specific features for game: ${this.gameId}`);
+                break;
         }
     }
 
@@ -104,6 +110,11 @@ export class GameDetailManager {
     initializeHSRFeatures() {
         // Add HSR-specific features
         console.log('Initializing HSR features');
+    }
+
+    initializeEndfieldFeatures() {
+        // Add Endfield-specific features
+        console.log('Initializing Endfield features');
     }
 
     handleCharacterClick(card) {
