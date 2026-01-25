@@ -40,6 +40,7 @@ app.use(
         "'unsafe-inline'",
         "https://cdn.jsdelivr.net",
         "https://cdn.quilljs.com",
+        "https://esm.sh"
       ],
 
       scriptSrcAttr: ["'unsafe-inline'"],
