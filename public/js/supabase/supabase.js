@@ -1,5 +1,5 @@
 // Import Supabase from CDN for browser compatibility
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 // Supabase Configuration
 const SUPABASE_URL = 'https://calwzopyjitbtahiafzw.supabase.co';
