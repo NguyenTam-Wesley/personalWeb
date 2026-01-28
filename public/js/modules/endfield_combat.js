@@ -59,6 +59,10 @@ export class EndfieldCombatManager {
   }
 
   navigateToCategory(category) {
+    if (!category) {
+      this.navigateToHome();
+      return;
+    }
     const url = new URL(window.location.href);
     url.searchParams.set('category', category || '');
     url.searchParams.delete('slug');
@@ -314,8 +318,12 @@ export class EndfieldCombatManager {
   }
 
   renderEntryList(entries, categoryFilter) {
+    const filteredEntries = categoryFilter
+      ? (entries || []).filter(e => (e.category?.name || 'Uncategorized') === categoryFilter)
+      : (entries || []);
+
     const byCategory = {};
-    for (const entry of entries) {
+    for (const entry of filteredEntries) {
       const name = entry.category?.name || 'Uncategorized';
       if (!byCategory[name]) byCategory[name] = [];
       byCategory[name].push(entry);
@@ -331,6 +339,13 @@ export class EndfieldCombatManager {
         </nav>
         <h2 class="combat-entry-title">${safeCat}</h2>
       `;
+
+      if (filteredEntries.length === 0) {
+        html += `<p class="combat-wiki-error">Không có dữ liệu trong category này.</p>`;
+        this.app.innerHTML = html;
+        this.bindAppLinks();
+        return;
+      }
     } else {
       html += '<h2 class="combat-entry-title">Endfield Combat Wiki</h2>';
       const kCount = ALL_KEYWORDS_CACHE ? ALL_KEYWORDS_CACHE.length : 0;
