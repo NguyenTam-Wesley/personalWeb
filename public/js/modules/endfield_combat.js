@@ -348,10 +348,6 @@ export class EndfieldCombatManager {
       }
     } else {
       html += '<h2 class="combat-entry-title">Endfield Combat Wiki</h2>';
-      const kCount = ALL_KEYWORDS_CACHE ? ALL_KEYWORDS_CACHE.length : 0;
-      const eCount = ALL_ENTRIES_CACHE ? ALL_ENTRIES_CACHE.length : 0;
-      const lCount = Object.keys(KEYWORD_LINK_MAP_CACHE).length;
-      html += `<div class="combat-global-stats"><small>📊 ${kCount} từ khóa, ${eCount} mục, ${lCount} liên kết</small></div>`;
     }
     for (const [catName, items] of Object.entries(byCategory)) {
       const safeCat = this.escapeHtml(catName).replace(/'/g, '&#39;');
