@@ -1,0 +1,221 @@
+/* Endfield Combat Wiki - dùng biến theme từ themes.css */
+
+.endfield-combat-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.endfield-combat-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.combat-wiki-app {
+    min-height: 200px;
+}
+
+.combat-wiki-app .loading-spinner {
+    color: var(--text-secondary);
+    padding: 2rem;
+    text-align: center;
+}
+
+.combat-wiki-error {
+    color: var(--danger, #e74c3c);
+    padding: 1rem;
+}
+
+.combat-breadcrumb {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.combat-nav-link {
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.combat-nav-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+.combat-entry-title {
+    color: var(--text-primary);
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.combat-global-stats {
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 24px;
+    border-left: 4px solid var(--primary);
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.combat-entry-content {
+    font-size: 1.06rem;
+    line-height: 1.7;
+    margin-bottom: 30px;
+    color: var(--text-secondary);
+}
+
+.combat-entry-content p {
+    margin-bottom: 16px;
+}
+
+.combat-category-title {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 8px;
+    font-weight: 600;
+}
+
+.combat-category-title:hover {
+    color: var(--text-primary);
+}
+
+.combat-count {
+    color: var(--primary);
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.combat-entry-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+.combat-entry-list li {
+    margin: 8px 0;
+}
+
+.combat-entry-link {
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 1rem;
+    display: block;
+    padding: 6px 0 6px 12px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.combat-entry-link:hover {
+    color: var(--primary-light, var(--primary));
+    border-left-color: var(--primary);
+    background: var(--bg-secondary);
+    padding-left: 15px;
+}
+
+.combat-keyword {
+    font-weight: 600;
+    position: relative;
+    padding: 0 1px;
+    border-radius: 2px;
+    transition: background-color 0.2s;
+}
+
+.combat-keyword:hover {
+    background: var(--bg-secondary);
+}
+
+.combat-keyword-linked {
+    cursor: pointer;
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+}
+
+.combat-keyword-linked:hover {
+    background: var(--primary-ultra-light, var(--bg-secondary));
+}
+
+.combat-keyword-no-tooltip {
+    cursor: default;
+}
+
+.combat-auto-link {
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: underline dotted;
+    font-weight: 500;
+    padding: 0 1px;
+    border-radius: 2px;
+}
+
+.combat-auto-link:hover {
+    background: var(--primary-ultra-light, var(--bg-secondary));
+}
+
+.combat-tooltip {
+    display: none;
+    position: absolute;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    top: calc(100% + 5px);
+    left: 0;
+    white-space: normal;
+    width: 300px;
+    max-width: 90vw;
+    font-size: 14px;
+    z-index: 100;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    line-height: 1.5;
+    pointer-events: none;
+}
+
+.combat-keyword:hover .combat-tooltip {
+    display: block;
+}
+
+.combat-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 15px;
+    width: 10px;
+    height: 10px;
+    background: var(--bg-secondary);
+    transform: rotate(45deg);
+    border-left: 1px solid var(--border-light);
+    border-top: 1px solid var(--border-light);
+}
+
+.combat-entry-meta {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .endfield-combat-content {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .combat-entry-title {
+        font-size: 1.5rem;
+    }
+    .combat-entry-content {
+        font-size: 1rem;
+    }
+    .combat-tooltip {
+        width: 250px;
+    }
+}

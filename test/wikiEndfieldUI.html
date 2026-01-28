@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Endfield Combat Wiki</title>
+
+<script type="module">
+import { supabase } from '../public/js/supabase/supabase.js';
+
+const app = document.getElementById('app');
+
+// Cache toàn bộ keywords và entries
+let ALL_KEYWORDS_CACHE = null;
+let ALL_ENTRIES_CACHE = null;
+let KEYWORD_LINK_MAP_CACHE = {}; // Map keyword -> linked slug
+
+function getSlug() {
+  return new URLSearchParams(window.location.search).get('slug');
+}
+
+function getCategory() {
+  return new URLSearchParams(window.location.search).get('category');
+}
+
+window.navigateTo = (slug) => {
+  localStorage.setItem('lastSlug', slug);
+  history.pushState({}, '', '?slug=' + slug);
+  loadEntry(slug);
+};
+
+window.navigateToCategory = (category) => {
+  history.pushState({}, '', '?category=' + encodeURIComponent(category));
+  loadEntryList(category);
+};
+
+window.navigateToHome = () => {
+  history.pushState({}, '', location.pathname);
+  loadEntryList();
+};
+
+window.onpopstate = () => {
+  const slug = getSlug();
+  const category = getCategory();
+  
+  if (slug) {
+    localStorage.setItem('lastSlug', slug);
+    loadEntry(slug);
+  } else if (category) {
+    loadEntryList(category);
+  } else {
+    loadEntryList();
+  }
+};
+
+/* ===== LOAD ALL DATA ONCE ===== */
+async function loadAllKeywords() {
+  if (ALL_KEYWORDS_CACHE) {
+    return ALL_KEYWORDS_CACHE;
+  }
+
+  console.log('Loading all keywords...');
+  
+  // Load tất cả keywords với style và tooltip
+  const { data: keywords, error } = await supabase
+    .from('endfield_keyword')
+    .select(`
+      id,
+      keyword,
+      slug,
+      endfield_keyword_style(color),
+      endfield_tooltip(description)
+    `)
+    .order('keyword', { ascending: true });
+
+  if (error) {
+    console.error('Error loading keywords:', error);
+    return [];
+  }
+
+  ALL_KEYWORDS_CACHE = keywords || [];
+  console.log(`Loaded ${ALL_KEYWORDS_CACHE.length} keywords`);
+  return ALL_KEYWORDS_CACHE;
+}
+
+async function loadAllEntries() {
+  if (ALL_ENTRIES_CACHE) {
+    return ALL_ENTRIES_CACHE;
+  }
+
+  console.log('Loading all entries...');
+  
+  const { data: entries, error } = await supabase
+    .from('endfield_combat_system')
+    .select('id, slug, title')
+    .order('title');
+
+  if (error) {
+    console.error('Error loading entries:', error);
+    return [];
+  }
+
+  ALL_ENTRIES_CACHE = entries || [];
+  console.log(`Loaded ${ALL_ENTRIES_CACHE.length} entries`);
+  return ALL_ENTRIES_CACHE;
+}
+
+async function loadAllKeywordLinks() {
+  if (Object.keys(KEYWORD_LINK_MAP_CACHE).length > 0) {
+    return KEYWORD_LINK_MAP_CACHE;
+  }
+
+  console.log('Loading all keyword links...');
+  
+  // Load tất cả keyword links
+  const { data: keywordLinks, error } = await supabase
+    .from('endfield_keyword_link')
+    .select(`
+      keyword_id,
+      target_entry_id,
+      endfield_keyword!inner(keyword),
+      endfield_combat_system!inner(slug)
+    `);
+
+  if (error) {
+    console.error('Error loading keyword links:', error);
+    return {};
+  }
+
+  // Build map: keyword -> linked slug
+  const linkMap = {};
+  if (keywordLinks) {
+    keywordLinks.forEach(link => {
+      if (link.endfield_keyword && link.endfield_combat_system) {
+        linkMap[link.endfield_keyword.keyword] = link.endfield_combat_system.slug;
+      }
+    });
+  }
+
+  KEYWORD_LINK_MAP_CACHE = linkMap;
+  console.log(`Loaded ${Object.keys(KEYWORD_LINK_MAP_CACHE).length} keyword links`);
+  return KEYWORD_LINK_MAP_CACHE;
+}
+
+/* ===== PRELOAD ALL DATA ===== */
+async function preloadAllData() {
+  try {
+    await Promise.all([
+      loadAllKeywords(),
+      loadAllEntries(),
+      loadAllKeywordLinks()
+    ]);
+    console.log('All data preloaded successfully');
+  } catch (error) {
+    console.error('Error preloading data:', error);
+  }
+}
+
+// Preload data ngay khi trang load
+preloadAllData();
+
+/* ===== DATA LOAD ===== */
+async function loadEntry(slug) {
+  if (!slug) {
+    loadEntryList();
+    return;
+  }
+
+  app.innerHTML = 'Loading...';
+
+  // Load entry từ bảng endfield_combat_system
+  const { data: entry, error } = await supabase
+    .from('endfield_combat_system')
+    .select(`
+      *,
+      category:category_id(name)
+    `)
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (error || !entry) {
+    app.innerHTML = 'Entry not found';
+    return;
+  }
+
+  // Lấy data từ cache
+  const keywords = await loadAllKeywords();
+  const allEntries = await loadAllEntries();
+  const keywordLinkMap = await loadAllKeywordLinks();
+
+  render(entry, keywords, allEntries, keywordLinkMap);
+}
+
+async function loadEntryList(categoryFilter = null) {
+  app.innerHTML = 'Loading entries...';
+
+  let query = supabase
+    .from('endfield_combat_system')
+    .select(`
+      slug, 
+      title,
+      category:category_id(name)
+    `)
+    .order('title');
+
+  const { data: entries, error } = await query;
+
+  if (error || !entries) {
+    app.innerHTML = 'Failed to load entries';
+    return;
+  }
+
+  renderEntryList(entries, categoryFilter);
+}
+
+/* ===== SAFE TEXT PARSING ===== */
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function parseTextWithKeywords(rawText, keywords, allEntries, keywordLinkMap, currentSlug) {
+  // Build complete keyword list từ tất cả keywords
+  const allKeywords = [];
+  
+  // 1. Thêm ALL keywords từ database với style và tooltip
+  for (const k of keywords) {
+    if (!k.keyword || k.keyword.trim() === '') continue;
+    
+    const linkedSlug = keywordLinkMap[k.keyword];
+    
+    allKeywords.push({
+      term: k.keyword,
+      priority: 1, // Custom keywords có priority cao nhất
+      length: k.keyword.length,
+      color: k.endfield_keyword_style?.color || '#ffffff',
+      hasTooltip: !!k.endfield_tooltip?.description,
+      tooltipText: k.endfield_tooltip?.description || '',
+      linkedSlug: linkedSlug,
+      render: (match) => {
+        const color = k.endfield_keyword_style?.color || '#ffffff';
+        const tooltip = k.endfield_tooltip?.description 
+          ? `<span class="tooltip">${escapeHtml(k.endfield_tooltip.description)}</span>`
+          : '';
+        
+        if (linkedSlug) {
+          // Keyword có link đến entry khác
+          return `<span class="keyword linked" style="color:${color}" onclick="navigateTo('${linkedSlug}')">${escapeHtml(match)}${tooltip}</span>`;
+        } else if (k.endfield_tooltip?.description) {
+          // Keyword chỉ có tooltip, không có link
+          return `<span class="keyword" style="color:${color}">${escapeHtml(match)}${tooltip}</span>`;
+        } else {
+          // Keyword không có gì (chỉ có màu)
+          return `<span class="keyword no-tooltip" style="color:${color}">${escapeHtml(match)}</span>`;
+        }
+      }
+    });
+  }
+  
+  // 2. Thêm auto-link entries (tự động link title của entry khác)
+  for (const e of allEntries) {
+    if (e.slug === currentSlug) continue; // Skip self-reference
+    
+    allKeywords.push({
+      term: e.title,
+      priority: 2, // Lower priority than custom keywords
+      length: e.title.length,
+      render: (match) => {
+        return `<span class="auto-link" onclick="navigateTo('${e.slug}')">${escapeHtml(match)}</span>`;
+      }
+    });
+  }
+  
+  // 3. Sắp xếp: priority trước, sau đó theo độ dài (dài trước)
+  allKeywords.sort((a, b) => {
+    if (a.priority !== b.priority) return a.priority - b.priority;
+    return b.length - a.length;
+  });
+  
+  console.log(`Parsing with ${allKeywords.length} keywords (${keywords.length} from DB, ${allEntries.length} auto-links)`);
+  
+  // 4. Parse text với non-overlapping keyword matching
+  const tokens = [];
+  let remaining = rawText;
+  let position = 0;
+  
+  while (remaining.length > 0) {
+    let matched = false;
+    
+    // Try to match each keyword at current position
+    for (const kw of allKeywords) {
+      // ✅ FIX: Use negative lookahead instead of \b for proper punctuation handling
+      const regex = new RegExp(
+        `^(${escapeRegex(kw.term)})(?![a-zA-Z0-9_])`,
+        'i'
+      );
+      const match = remaining.match(regex);
+      
+      if (match) {
+        // Found a match at start of remaining text
+        tokens.push({
+          type: 'keyword',
+          html: kw.render(match[1])
+        });
+        
+        remaining = remaining.slice(match[1].length);
+        position += match[1].length;
+        matched = true;
+        break;
+      }
+    }
+    
+    if (!matched) {
+      // No keyword match, consume one character as plain text
+      const char = remaining[0];
+      
+      // Merge with previous plain text token if exists
+      if (tokens.length > 0 && tokens[tokens.length - 1].type === 'text') {
+        tokens[tokens.length - 1].text += char;
+      } else {
+        tokens.push({
+          type: 'text',
+          text: char
+        });
+      }
+      
+      remaining = remaining.slice(1);
+      position += 1;
+    }
+  }
+  
+  // 5. Build final HTML from tokens
+  const result = tokens.map(token => {
+    if (token.type === 'keyword') {
+      return token.html;
+    } else {
+      return escapeHtml(token.text);
+    }
+  }).join('');
+  
+  console.log(`Parsed ${rawText.length} chars into ${tokens.length} tokens`);
+  return result;
+}
+
+/* ===== RENDER ===== */
+function render(entry, keywords, allEntries, keywordLinkMap) {
+  console.log(`Rendering entry: ${entry.title}`);
+  console.log(`Total keywords available: ${keywords.length}`);
+  
+  const processedHtml = parseTextWithKeywords(
+    entry.description || '',
+    keywords,
+    allEntries,
+    keywordLinkMap,
+    entry.slug
+  );
+
+  app.innerHTML = `
+    <nav class="breadcrumb">
+      <span onclick="navigateToHome()">Home</span>
+      › <span onclick="navigateToCategory('${escapeHtml(entry.category?.name || '')}')">${escapeHtml(entry.category?.name || '')}</span>
+      › <b>${escapeHtml(entry.title)}</b>
+    </nav>
+
+    <h1>${escapeHtml(entry.title)}</h1>
+    <div class="entry-content">${processedHtml}</div>
+    
+    <div class="entry-meta">
+      <small>Created: ${new Date(entry.created_at).toLocaleDateString()}</small>
+      <div class="debug-info">
+        <small>Keywords in DB: ${keywords.length} | Entries: ${allEntries.length} | Keyword Links: ${Object.keys(keywordLinkMap).length}</small>
+      </div>
+    </div>
+  `;
+}
+
+function renderEntryList(entries, categoryFilter = null) {
+  // Group by category
+  const byCategory = {};
+  for (const entry of entries) {
+    const categoryName = entry.category?.name || 'Uncategorized';
+    if (!byCategory[categoryName]) {
+      byCategory[categoryName] = [];
+    }
+    byCategory[categoryName].push(entry);
+  }
+
+  let html = '';
+  
+  // Breadcrumb for filtered view
+  if (categoryFilter) {
+    html += `
+      <nav class="breadcrumb">
+        <span onclick="navigateToHome()">Home</span>
+        › <b>${escapeHtml(categoryFilter)}</b>
+      </nav>
+    `;
+    html += `<h1>${escapeHtml(categoryFilter)}</h1>`;
+  } else {
+    html += '<h1>Endfield Combat Wiki</h1>';
+    
+    // Thêm stats về data đã load
+    const keywordCount = ALL_KEYWORDS_CACHE ? ALL_KEYWORDS_CACHE.length : 'Loading...';
+    const entryCount = ALL_ENTRIES_CACHE ? ALL_ENTRIES_CACHE.length : 'Loading...';
+    const linkCount = KEYWORD_LINK_MAP_CACHE ? Object.keys(KEYWORD_LINK_MAP_CACHE).length : 'Loading...';
+    
+    html += `
+      <div class="global-stats">
+        <small>📊 Data loaded: ${keywordCount} keywords, ${entryCount} entries, ${linkCount} keyword links</small>
+      </div>
+    `;
+  }
+  
+  // Hiển thị tất cả categories và entries
+  for (const [categoryName, items] of Object.entries(byCategory)) {
+    html += `
+      <h2 class="category-title" onclick="navigateToCategory('${escapeHtml(categoryName)}')" style="cursor:pointer;">
+        ${escapeHtml(categoryName)} <span class="count">(${items.length})</span>
+      </h2>`;
+    html += '<ul class="entry-list">';
+    for (const item of items) {
+      html += `
+        <li>
+          <a href="?slug=${encodeURIComponent(item.slug)}" onclick="event.preventDefault(); navigateTo('${escapeHtml(item.slug)}')">
+            ${escapeHtml(item.title)}
+          </a>
+        </li>
+      `;
+    }
+    html += '</ul>';
+  }
+
+  app.innerHTML = html;
+}
+
+/* ===== BOOT ===== */
+const slug = getSlug();
+const category = getCategory();
+
+if (slug) {
+  loadEntry(slug);
+} else if (category) {
+  loadEntryList(category);
+} else {
+  loadEntryList();
+}
+</script>
+
+<style>
+body {
+  background:#121212;
+  color:#eee;
+  font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  line-height:1.6;
+  margin:0;
+  padding:0;
+}
+
+#app {
+  max-width:800px;
+  margin:0 auto;
+  padding:20px;
+}
+
+.breadcrumb {
+  color:#aaa;
+  font-size:14px;
+  margin-bottom:20px;
+  padding-bottom:10px;
+  border-bottom:1px solid #333;
+}
+
+.breadcrumb span {
+  cursor:pointer;
+  transition: color 0.2s;
+  padding:2px 4px;
+  border-radius:3px;
+}
+
+.breadcrumb span:hover {
+  color:#fff;
+  background:rgba(255,255,255,0.1);
+}
+
+.breadcrumb b {
+  color:#eee;
+  font-weight:600;
+}
+
+h1 {
+  color:#fff;
+  margin-top:0;
+  margin-bottom:16px;
+  font-size:28px;
+  font-weight:700;
+}
+
+.global-stats {
+  background:rgba(255,255,255,0.05);
+  border-radius:6px;
+  padding:10px 15px;
+  margin-bottom:24px;
+  border-left:4px solid #5b9bd5;
+  font-size:14px;
+}
+
+.entry-content {
+  font-size:17px;
+  line-height:1.7;
+  margin-bottom:30px;
+}
+
+.entry-content p {
+  margin-bottom:16px;
+}
+
+.category-title {
+  color:#888;
+  font-size:20px;
+  margin-top:32px;
+  margin-bottom:12px;
+  border-bottom:1px solid #333;
+  padding-bottom:8px;
+  transition: color 0.2s;
+  font-weight:600;
+}
+
+.category-title:hover {
+  color:#aaa;
+  cursor:pointer;
+}
+
+.category-title .count {
+  color:#5b9bd5;
+  font-size:16px;
+  font-weight:normal;
+}
+
+.entry-list {
+  list-style:none;
+  padding:0;
+  margin:0 0 24px 0;
+}
+
+.entry-list li {
+  margin:8px 0;
+}
+
+.entry-list a {
+  color:#5b9bd5;
+  text-decoration:none;
+  font-size:16px;
+  display:block;
+  padding:6px 0;
+  border-left:3px solid transparent;
+  padding-left:12px;
+  transition: all 0.2s;
+}
+
+.entry-list a:hover {
+  color:#7bb3e8;
+  border-left-color:#5b9bd5;
+  background:rgba(91, 155, 213, 0.1);
+  padding-left:15px;
+}
+
+.keyword {
+  font-weight:600;
+  position:relative;
+  padding:0 1px;
+  border-radius:2px;
+  transition: background-color 0.2s;
+}
+
+.keyword:hover {
+  background:rgba(255,255,255,0.1);
+}
+
+.keyword.linked {
+  cursor:pointer;
+  text-decoration:underline dotted;
+  text-underline-offset:2px;
+}
+
+.keyword.linked:hover {
+  background:rgba(91, 155, 213, 0.2);
+}
+
+.keyword.no-tooltip {
+  cursor:default;
+}
+
+.auto-link {
+  color:#5b9bd5;
+  cursor:pointer;
+  text-decoration:underline dotted;
+  font-weight:500;
+  padding:0 1px;
+  border-radius:2px;
+}
+
+.auto-link:hover {
+  color:#7bb3e8;
+  background:rgba(91, 155, 213, 0.1);
+}
+
+.tooltip {
+  display:none;
+  position:absolute;
+  background:#1a1a1a;
+  color:#eee;
+  padding:8px 12px;
+  border-radius:6px;
+  top:calc(100% + 5px);
+  left:0;
+  white-space:normal;
+  width:300px;
+  max-width:90vw;
+  font-size:14px;
+  z-index:100;
+  border:1px solid #333;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  line-height:1.5;
+  pointer-events:none;
+}
+
+.keyword:hover .tooltip {
+  display:block;
+}
+
+.tooltip::before {
+  content:'';
+  position:absolute;
+  top:-5px;
+  left:15px;
+  width:10px;
+  height:10px;
+  background:#1a1a1a;
+  transform:rotate(45deg);
+  border-left:1px solid #333;
+  border-top:1px solid #333;
+}
+
+.entry-meta {
+  margin-top:30px;
+  padding-top:15px;
+  border-top:1px solid #333;
+  color:#888;
+  font-size:14px;
+}
+
+.debug-info {
+  margin-top:8px;
+  color:#666;
+  font-size:12px;
+  font-family:monospace;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  #app {
+    padding:15px;
+  }
+  
+  h1 {
+    font-size:24px;
+  }
+  
+  .entry-content {
+    font-size:16px;
+  }
+  
+  .tooltip {
+    width:250px;
+  }
+  
+  .global-stats {
+    font-size:12px;
+    padding:8px 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+  <div id="app"></div>
+</body>
+</html>

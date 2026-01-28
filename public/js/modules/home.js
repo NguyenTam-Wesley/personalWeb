@@ -1,9 +1,5 @@
 import components from '../components/components.js';
 
-// NTAM UI Flow - Detailed Implementation
-// Theme: tech · green · dark · chill · art
-// Concept: "Một thực thể số thức tỉnh → dẫn dắt → nhập vai → lựa chọn"
-
 // ================= MODE DETECTION SYSTEM =================
 class ModeManager {
   constructor() {
