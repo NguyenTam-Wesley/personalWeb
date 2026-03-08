@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant - Lineup &amp; Clip hướng dẫn</title>
+    <link rel="stylesheet" href="../../../../style/components.css" />
+    <link rel="stylesheet" href="../../../../style/style.css" />
+    <link rel="stylesheet" href="../../../../style/crosshair.css" />
+    <link rel="stylesheet" href="../../../../style/themes.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="crosshair-page lineup-page">
+        <div class="crosshair-container">
+            <section class="crosshair-header">
+                <h1>Valorant Lineups</h1>
+                <p>Danh sách lineup, setup và tip &amp; trick cho từng map / agent, được lấy từ database Supabase.</p>
+            </section>
+
+            <div class="crosshair-grid">
+                <!-- Lineups will be loaded here by LineupManager -->
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Đang tải lineups...</p>
+                </div>
+            </div>
+
+            <div class="crosshair-pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prevPage">← Trước</button>
+                <div class="page-numbers" id="pageNumbers"></div>
+                <button class="pagination-btn" id="nextPage">Sau →</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../../../js/modules/lineup_entry.js"></script>
+</body>
+</html>

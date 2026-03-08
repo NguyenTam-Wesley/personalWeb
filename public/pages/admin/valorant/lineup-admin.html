@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant Lineup Manager - Admin</title>
+    <link rel="stylesheet" href="../../../style/components.css" />
+    <link rel="stylesheet" href="../../../style/style.css" />
+    <link rel="stylesheet" href="../../../style/admin.css" />
+    <link rel="stylesheet" href="../../../style/crosshair-manager.css" />
+    <link rel="stylesheet" href="../../../style/themes.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+      rel="icon"
+      href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
+    />
+</head>
+<body>
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1>Valorant Lineup Manager</h1>
+            <p>Quản lý danh sách lineup / setup / tip &amp; trick cho Valorant</p>
+        </div>
+
+        <div class="admin-content">
+            <div class="admin-filters">
+                <div class="search-box">
+                    <input type="text" id="adminLineupSearch" placeholder="Tìm kiếm lineup theo tiêu đề, mô tả, link..." />
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-options">
+                    <select id="filterMap">
+                        <option value="">Tất cả map</option>
+                    </select>
+                    <select id="filterType">
+                        <option value="">Tất cả kiểu</option>
+                    </select>
+                    <select id="filterAgent">
+                        <option value="">Tất cả agent</option>
+                    </select>
+                    <select id="filterSite">
+                        <option value="">Tất cả site</option>
+                    </select>
+                    <select id="filterSide">
+                        <option value="">Tất cả side</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-table-header">
+                <button id="addLineupBtn" class="btn-primary">
+                    <span class="icon">➕</span>
+                    Thêm Lineup Mới
+                </button>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Map</th>
+                            <th>Kiểu</th>
+                            <th>Agents</th>
+                            <th>Sites</th>
+                            <th>Sides</th>
+                            <th>Video</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lineupTableBody">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="admin-pagination" id="lineupAdminPagination" style="display: none;">
+                <button class="pagination-btn" id="lineupAdminPrevPage">← Trước</button>
+                <div class="page-numbers" id="lineupAdminPageNumbers"></div>
+                <button class="pagination-btn" id="lineupAdminNextPage">Sau →</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Lineup Modal -->
+    <div id="lineupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="lineupModalTitle">Thêm Lineup Mới</h2>
+                <button class="close-btn" id="closeLineupModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="lineupForm">
+                    <input type="hidden" id="lineupId" />
+
+                    <div class="form-group">
+                        <label for="lineupTitle">Tiêu đề</label>
+                        <input type="text" id="lineupTitle" placeholder="Ví dụ: Ascent A site post-plant Sova" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lineupDescription">Mô tả</label>
+                        <textarea id="lineupDescription" rows="3" placeholder="Mô tả chi tiết lineup, vị trí đứng, crosshair placement..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lineupVideoUrl">Video URL *</label>
+                        <input type="text" id="lineupVideoUrl" required placeholder="Link YouTube / streamable / v.v." />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lineupMap">Map *</label>
+                        <select id="lineupMap" required>
+                            <option value="">Chọn map</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lineupType">Kiểu lineup *</label>
+                        <select id="lineupType" required>
+                            <option value="">Chọn kiểu lineup</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lineupAgents">Agents</label>
+                        <select id="lineupAgents" multiple size="5">
+                            <!-- options dynamic -->
+                        </select>
+                        <small>Giữ Ctrl/Command để chọn nhiều agent.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lineupSites">Sites</label>
+                        <select id="lineupSites" multiple size="4">
+                            <!-- options dynamic -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lineupSides">Sides</label>
+                        <select id="lineupSides" multiple size="3">
+                            <!-- options dynamic -->
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelLineupBtn">Hủy</button>
+                        <button type="submit" class="btn-primary" id="saveLineupBtn">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteLineupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Xác nhận xóa lineup</h2>
+                <button class="close-btn" id="closeDeleteLineupModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa lineup "<span id="deleteLineupTitle"></span>"?</p>
+                <p class="warning">Hành động này không thể hoàn tác!</p>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelDeleteLineup">Hủy</button>
+                    <button type="button" class="btn-danger" id="confirmDeleteLineup">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../../js/modules/lineup-admin_entry.js"></script>
+</body>
+</html>
+
