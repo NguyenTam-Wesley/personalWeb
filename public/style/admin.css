@@ -258,6 +258,22 @@
   margin: 0;
 }
 
+/* Lineup admin form: màu chữ & placeholder hợp nền trắng */
+.lineup-admin-page .form-group input,
+.lineup-admin-page .form-group textarea,
+.lineup-admin-page .form-group select {
+  color: #111827; /* đen/xám rất đậm */
+}
+
+.lineup-admin-page .form-group input::placeholder,
+.lineup-admin-page .form-group textarea::placeholder {
+  color: #9CA3AF; /* xám nhạt cho placeholder */
+}
+
+.lineup-admin-page .form-group small {
+  color: #111827; /* helper text (giữ Ctrl/Command...) màu đen rõ */
+}
+
 /* Admin Form */
 .admin-form {
   background: var(--bg-card);
