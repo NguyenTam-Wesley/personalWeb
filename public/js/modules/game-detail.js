@@ -1,8 +1,28 @@
 
 export class GameDetailManager {
     constructor(gameId) {
-        this.gameId = gameId;
+        // Tự động detect gameId nếu không truyền từ entry
+        this.gameId = gameId || this.detectGameIdFromPath();
         this.init();
+    }
+
+    detectGameIdFromPath() {
+        try {
+            const path = (typeof globalThis !== 'undefined' && globalThis.location?.pathname) || '';
+            const filename = path.split('/').filter(Boolean).pop() || '';
+            const baseName = filename.replace(/\.html$/i, '');
+
+            // Chỉ nhận các gameId đã support, fallback về valorant
+            const supportedIds = ['valorant', 'arknights', 'hsr', 'endfield', 'ww'];
+            if (supportedIds.includes(baseName)) {
+                return baseName;
+            }
+
+            return 'valorant';
+        } catch (error) {
+            console.warn('Không xác định được gameId từ path, dùng mặc định valorant:', error);
+            return 'valorant';
+        }
     }
 
 
@@ -126,7 +146,9 @@ export class GameDetailManager {
     handleMapClick(card) {
         const mapName = card.dataset.map;
         console.log(`Map clicked: ${mapName}`);
-        window.location.href = `/pages/games/valorant/map/${mapName.toLowerCase()}.html`;
+        if (typeof globalThis !== 'undefined' && globalThis.location) {
+            globalThis.location.href = `/pages/games/valorant/map/${mapName.toLowerCase()}.html`;
+        }
     }
 } 
 
