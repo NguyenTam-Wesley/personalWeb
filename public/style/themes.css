@@ -8,6 +8,29 @@
    ========================================================================== */
 
 :root {
+    /* Music terminal tokens default to light (matches app default theme) */
+    --music-terminal-bg: #e4e8ed;
+    --music-terminal-bg-secondary: #f0f3f7;
+    --music-terminal-surface: #fafbfc;
+    --music-terminal-border: #b8c2ce;
+    --music-terminal-text: #141a22;
+    --music-terminal-muted: #4f5d6b;
+    --music-terminal-accent: #c99400;
+    --music-terminal-accent-contrast: #141a22;
+    --music-terminal-warning: #c73f2e;
+    --music-terminal-success: #2d8a3e;
+    --music-terminal-hover: #dce2ea;
+    --music-terminal-playing: #e8eef5;
+    --music-terminal-overlay: rgba(20, 26, 34, 0.45);
+    --music-terminal-shadow-elevated: 0 -8px 24px rgba(20, 26, 34, 0.12);
+    --music-terminal-shadow-panel: -8px 0 24px rgba(20, 26, 34, 0.14);
+    --music-terminal-shadow-popup: 0 12px 40px rgba(20, 26, 34, 0.18);
+    --music-terminal-shadow-toast: 0 8px 24px rgba(20, 26, 34, 0.12);
+    --music-terminal-shadow-float: 0 4px 12px rgba(20, 26, 34, 0.1);
+    --music-terminal-accent-glow: 0 4px 16px rgba(201, 148, 0, 0.2);
+    --music-terminal-warning-bg: rgba(199, 63, 46, 0.1);
+    --music-terminal-warning-bg-strong: rgba(199, 63, 46, 0.14);
+
     /* Primary Colors */
     --primary: #4e7cff;
     --primary-hover: #3d6bff;
@@ -70,6 +93,29 @@
     --music-playing-bg: rgba(78, 124, 255, 0.1);
     --game-card-bg: #ffffff;
     --crosshair-card-bg: #ffffff;
+
+    /* Music Page — Rhodes Island Terminal (Light Edition) */
+    --music-terminal-bg: #e4e8ed;
+    --music-terminal-bg-secondary: #f0f3f7;
+    --music-terminal-surface: #fafbfc;
+    --music-terminal-border: #b8c2ce;
+    --music-terminal-text: #141a22;
+    --music-terminal-muted: #4f5d6b;
+    --music-terminal-accent: #c99400;
+    --music-terminal-accent-contrast: #141a22;
+    --music-terminal-warning: #c73f2e;
+    --music-terminal-success: #2d8a3e;
+    --music-terminal-hover: #dce2ea;
+    --music-terminal-playing: #e8eef5;
+    --music-terminal-overlay: rgba(20, 26, 34, 0.45);
+    --music-terminal-shadow-elevated: 0 -8px 24px rgba(20, 26, 34, 0.12);
+    --music-terminal-shadow-panel: -8px 0 24px rgba(20, 26, 34, 0.14);
+    --music-terminal-shadow-popup: 0 12px 40px rgba(20, 26, 34, 0.18);
+    --music-terminal-shadow-toast: 0 8px 24px rgba(20, 26, 34, 0.12);
+    --music-terminal-shadow-float: 0 4px 12px rgba(20, 26, 34, 0.1);
+    --music-terminal-accent-glow: 0 4px 16px rgba(201, 148, 0, 0.2);
+    --music-terminal-warning-bg: rgba(199, 63, 46, 0.1);
+    --music-terminal-warning-bg-strong: rgba(199, 63, 46, 0.14);
 }
 
 /* ==========================================================================
@@ -109,6 +155,29 @@
     --music-playing-bg: rgba(78, 124, 255, 0.2);
     --game-card-bg: #2a2a2a;
     --crosshair-card-bg: #2a2a2a;
+
+    /* Music Page — Rhodes Island Terminal (Dark Edition) */
+    --music-terminal-bg: #0b0d10;
+    --music-terminal-bg-secondary: #12161d;
+    --music-terminal-surface: #171c24;
+    --music-terminal-border: #2a313c;
+    --music-terminal-text: #e8edf2;
+    --music-terminal-muted: #9aa4b2;
+    --music-terminal-accent: #f7b500;
+    --music-terminal-accent-contrast: #0b0d10;
+    --music-terminal-warning: #ff6b5a;
+    --music-terminal-success: #74d680;
+    --music-terminal-hover: #1e2530;
+    --music-terminal-playing: #1a222d;
+    --music-terminal-overlay: rgba(11, 13, 16, 0.75);
+    --music-terminal-shadow-elevated: 0 -8px 24px rgba(0, 0, 0, 0.35);
+    --music-terminal-shadow-panel: -8px 0 24px rgba(0, 0, 0, 0.4);
+    --music-terminal-shadow-popup: 0 12px 40px rgba(0, 0, 0, 0.5);
+    --music-terminal-shadow-toast: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --music-terminal-shadow-float: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --music-terminal-accent-glow: 0 4px 16px rgba(247, 181, 0, 0.15);
+    --music-terminal-warning-bg: rgba(255, 107, 90, 0.12);
+    --music-terminal-warning-bg-strong: rgba(255, 107, 90, 0.15);
 }
 
 /* ==========================================================================
