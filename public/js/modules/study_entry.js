@@ -1,8 +1,11 @@
 import components from '../components/components.js';
 import { StudyManager } from './study.js';
+import { initStudyPageIcons } from './study-icons.js';
 
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    initStudyPageIcons();
+
     // Initialize components
     components.init();
 

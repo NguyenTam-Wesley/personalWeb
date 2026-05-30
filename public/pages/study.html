@@ -1,52 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doc Archive</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style/components.css" />
+    <link rel="stylesheet" href="../style/themes.css" />
+    <link rel="stylesheet" href="../style/study.css" />
     <link
       rel="icon"
       href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
       type="image/jpeg"
     />
-    <title>Study Resources</title>
-    <link rel="stylesheet" href="../style/components.css" />
-    <link rel="stylesheet" href="../style/study.css" />
-    <link rel="stylesheet" href="../style/themes.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   </head>
 
-  <body>
+  <body class="study-page">
     <main class="study-container">
-      <section class="study-intro">
-        <h1>Tài liệu học tập</h1>
-        <p class="subtitle">Đây là tài liệu do tôi sưu tầm lại của các thầy cô thông qua quá trình học tập tại trường Đại học Khoa học Tự nhiên - ĐHQG-HCM. Cũng có những tài liệu do tôi sưu tầm thêm bên ngoài trong quá trình tự học. Hi vọng các bạn có thể tìm được thứ mình cần ở đây</p>
-      </section>
+      <div class="study-archive">
+        <header class="study-archive-header study-panel">
+          <div class="study-module-id">[STU-001]</div>
+          <div class="study-header-body">
+            <h1 class="study-system-name">HCMUS KNOWLEDGE ARCHIVE</h1>
+            <p class="study-system-desc">Documentation Interface</p>
+          </div>
+          <div class="study-header-meta">
+            <span class="study-meta-line">BUILD 1.4.3</span>
+            <span class="study-meta-line">ARCHIVE-14</span>
+            <span class="study-status-badge">
+              <span class="study-status-badge-icon" aria-hidden="true"></span>
+              <span>READY</span>
+            </span>
+          </div>
+        </header>
 
-      <section id="subjects" class="subjects-grid"></section>
+        <div class="study-layout">
+          <aside class="study-index-panel study-panel" aria-label="Knowledge index">
+            <div class="study-panel-label">
+              <span class="study-module-id-sm">[IDX-01]</span>
+              <span class="study-panel-title">KNOWLEDGE INDEX</span>
+            </div>
+            <div class="study-panel-divider" aria-hidden="true"></div>
+            <nav class="study-index-nav">
+              <span class="study-index-entry">DOCUMENT ARCHIVE</span>
+              <span class="study-index-entry">RESEARCH FILES</span>
+              <span class="study-index-entry">ARCHIVED RECORDS</span>
+              <span class="study-index-entry">STUDY RECORDS</span>
+              <span class="study-index-entry">REFERENCE MATERIALS</span>
+            </nav>
+            <div class="study-index-footer">
+              <span class="study-meta-line">DOC COUNTER ACTIVE</span>
+            </div>
+          </aside>
 
-      <div id="controls" class="controls-panel" hidden>
-        <div class="controls-panel-inner">
-          <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search resources..." />
+          <div class="study-main-panel">
+            <section class="study-briefing study-panel">
+              <div class="study-panel-label">
+                <span class="study-module-id-sm">[BRF-02]</span>
+                <span class="study-panel-title">ARCHIVE BRIEFING</span>
+              </div>
+              <div class="study-panel-divider" aria-hidden="true"></div>
+              <div class="study-intro">
+                <p class="subtitle">
+                  Tài liệu được thu thập từ quá trình học tập tại Đại học Khoa học Tự nhiên — ĐHQG-HCM
+                  và các nguồn tự nghiên cứu bổ sung. Hệ thống lưu trữ phục vụ truy xuất hồ sơ kiến thức
+                  theo chủ đề — không phải nền tảng khóa học thương mại.
+                </p>
+              </div>
+            </section>
+
+            <section class="study-categories study-panel" aria-labelledby="categories-heading">
+              <div class="study-panel-label">
+                <span class="study-module-id-sm">[CAT-03]</span>
+                <span class="study-panel-title" id="categories-heading">SUBJECT REGISTRY</span>
+              </div>
+              <div class="study-panel-divider" aria-hidden="true"></div>
+              <section id="subjects" class="subjects-grid"></section>
+            </section>
+
+            <div id="controls" class="controls-panel study-panel" hidden>
+              <div class="controls-panel-inner">
+                <div class="study-panel-label">
+                  <span class="study-module-id-sm">[QRY-04]</span>
+                  <span class="study-panel-title">ARCHIVE QUERY</span>
+                </div>
+                <div class="study-panel-divider" aria-hidden="true"></div>
+                <div class="study-query-row">
+                  <div class="search-container">
+                    <label for="searchInput" class="study-search-label">QUERY</label>
+                    <div class="study-search-field">
+                      <span class="study-search-icon" aria-hidden="true"></span>
+                      <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Query Archive — locate documentation..."
+                      />
+                    </div>
+                  </div>
+                  <div class="filters-container">
+                    <label class="study-filter-label" for="typeFilter">
+                      <span class="study-filter-icon study-filter-icon--type" aria-hidden="true"></span>
+                      TYPE
+                    </label>
+                    <select id="typeFilter" class="filter-select">
+                      <option value="">Filter by type</option>
+                    </select>
+                    <label class="study-filter-label" for="sortSelect">
+                      <span class="study-filter-icon study-filter-icon--sort" aria-hidden="true"></span>
+                      SORT
+                    </label>
+                    <select id="sortSelect" class="filter-select">
+                      <option value="az">Name A-Z</option>
+                      <option value="za">Name Z-A</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <section class="study-documents-wrap study-panel" aria-labelledby="documents-heading">
+              <div class="study-panel-label">
+                <span class="study-module-id-sm">[DOC-05]</span>
+                <span class="study-panel-title" id="documents-heading">DOCUMENT ARCHIVE</span>
+              </div>
+              <div class="study-panel-divider" aria-hidden="true"></div>
+              <div class="study-doc-table-header" aria-hidden="true">
+                <span class="study-col study-col-id">ARCHIVE ID</span>
+                <span class="study-col study-col-title">TITLE</span>
+                <span class="study-col study-col-type">TYPE</span>
+                <span class="study-col study-col-access">ACCESS</span>
+              </div>
+              <section id="documents" class="documents-grid"></section>
+            </section>
           </div>
 
-          <div class="filters-container">
-            <select id="typeFilter" class="filter-select">
-              <option value="">Filter by type</option>
-            </select>
-
-            <select id="sortSelect" class="filter-select">
-              <option value="az">Name A-Z</option>
-              <option value="za">Name Z-A</option>
-            </select>
-          </div>
+          <aside class="study-meta-panel study-panel" aria-label="Archive metadata">
+            <div class="study-panel-label">
+              <span class="study-module-id-sm">[META-06]</span>
+              <span class="study-panel-title">RECORD METADATA</span>
+            </div>
+            <div class="study-panel-divider" aria-hidden="true"></div>
+            <dl class="study-meta-fields">
+              <dt>STATUS</dt>
+              <dd class="study-meta-status">
+                <span class="study-monitor-sys-icon" aria-hidden="true"></span>
+                ACTIVE
+              </dd>
+              <dt>INDEX</dt>
+              <dd>SUBJECT REGISTRY</dd>
+              <dt>REVISION</dt>
+              <dd>CONTINUOUS</dd>
+              <dt>CLASSIFICATION</dt>
+              <dd>REFERENCE</dd>
+            </dl>
+            <div class="study-meta-footer">
+              <span class="study-meta-line">SYS-STU-001</span>
+            </div>
+          </aside>
         </div>
       </div>
-
-      <section id="documents" class="documents-grid" hidden></section>
     </main>
 
     <script type="module" src="../js/modules/study_entry.js"></script>
-
   </body>
 </html>

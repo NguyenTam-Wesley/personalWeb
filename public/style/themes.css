@@ -31,6 +31,20 @@
     --music-terminal-warning-bg: rgba(199, 63, 46, 0.1);
     --music-terminal-warning-bg-strong: rgba(199, 63, 46, 0.14);
 
+    /* Study Page — Knowledge Archive (Light) */
+    --study-archive-bg: #e4e8ed;
+    --study-archive-bg-secondary: #f0f3f7;
+    --study-archive-surface: #fafbfc;
+    --study-archive-border: #b8c2ce;
+    --study-archive-text: #141a22;
+    --study-archive-muted: #4f5d6b;
+    --study-archive-accent: #c99400;
+    --study-archive-accent-contrast: #141a22;
+    --study-archive-warning: #c73f2e;
+    --study-archive-success: #2d8a3e;
+    --study-archive-hover: #dce2ea;
+    --study-archive-active: #e8eef5;
+
     /* Primary Colors */
     --primary: #4e7cff;
     --primary-hover: #3d6bff;
@@ -116,6 +130,20 @@
     --music-terminal-accent-glow: 0 4px 16px rgba(201, 148, 0, 0.2);
     --music-terminal-warning-bg: rgba(199, 63, 46, 0.1);
     --music-terminal-warning-bg-strong: rgba(199, 63, 46, 0.14);
+
+    /* Study Page — Knowledge Archive (Light) */
+    --study-archive-bg: #e4e8ed;
+    --study-archive-bg-secondary: #f0f3f7;
+    --study-archive-surface: #fafbfc;
+    --study-archive-border: #b8c2ce;
+    --study-archive-text: #141a22;
+    --study-archive-muted: #4f5d6b;
+    --study-archive-accent: #c99400;
+    --study-archive-accent-contrast: #141a22;
+    --study-archive-warning: #c73f2e;
+    --study-archive-success: #2d8a3e;
+    --study-archive-hover: #dce2ea;
+    --study-archive-active: #e8eef5;
 }
 
 /* ==========================================================================
@@ -178,6 +206,20 @@
     --music-terminal-accent-glow: 0 4px 16px rgba(247, 181, 0, 0.15);
     --music-terminal-warning-bg: rgba(255, 107, 90, 0.12);
     --music-terminal-warning-bg-strong: rgba(255, 107, 90, 0.15);
+
+    /* Study Page — Knowledge Archive (Dark) */
+    --study-archive-bg: #0b0d10;
+    --study-archive-bg-secondary: #12161d;
+    --study-archive-surface: #171c24;
+    --study-archive-border: #2a313c;
+    --study-archive-text: #e8edf2;
+    --study-archive-muted: #9aa4b2;
+    --study-archive-accent: #f7b500;
+    --study-archive-accent-contrast: #0b0d10;
+    --study-archive-warning: #ff6b5a;
+    --study-archive-success: #74d680;
+    --study-archive-hover: #1e2530;
+    --study-archive-active: #1a222d;
 }
 
 /* ==========================================================================
