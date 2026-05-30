@@ -2,6 +2,7 @@ import { getCurrentUserWithRetry, logoutUser } from '../supabase/auth.js';
 import { ROUTES, route } from '../routes/routes.js';
 import { themeToggle } from './themeToggle.js';
 import { Pet } from './pet.js';
+import { coreIcon } from './core-icons.js';
 
 export class Components {
   constructor() {
@@ -52,6 +53,7 @@ export class Components {
 
   initHeader() {
     this.header = document.createElement('header');
+    this.header.className = 'ri-network-header';
     this.setupHeader();
     document.body.prepend(this.header);
     this.updateLoginStatus();
@@ -60,21 +62,49 @@ export class Components {
 
 
 
+  getNavDisplayName(name) {
+    const labels = {
+      Music: 'MUSIC ARCHIVE',
+      Study: 'KNOWLEDGE ARCHIVE',
+      Games: 'TRAINING SIMULATOR',
+      Blog: 'BLOG INDEX',
+      Novel: 'NOVEL INDEX',
+      TV: 'MEDIA INDEX'
+    };
+    return labels[name] || String(name).toUpperCase();
+  }
+
   setupHeader() {
     this.header.innerHTML = `
-      <nav>
-        <a href="${ROUTES.home}" class="nav-logo">ntam</a>
+      <nav class="ri-nav" aria-label="Rhodes Island Network">
+        <a href="${ROUTES.home}" class="nav-logo ri-net-brand">
+          <span class="ri-net-badge" aria-hidden="true">
+            <span class="ri-net-id">NET-001</span>
+            ${coreIcon('network', 'ri-core-icon ri-net-icon')}
+          </span>
+          <span class="ri-net-title">
+            <span class="ri-net-kicker">RI-NET</span>
+            <span class="ri-net-name">RHODES ISLAND NETWORK</span>
+          </span>
+        </a>
 
-        <div class="nav-links">
+        <div class="ri-net-status" aria-hidden="true">
+          <span class="ri-status-pill ri-status-pill--live">
+            ${coreIcon('signal', 'ri-core-icon ri-status-icon')}
+            <span>ARCHIVE ONLINE</span>
+          </span>
+        </div>
+
+        <div class="nav-links ri-nav-modules">
           ${this.config.navLinks.map(link =>
-            `<a href="${link.url}" class="nav-link">${link.name}</a>`
+            `<a href="${link.url}" class="nav-link">${this.getNavDisplayName(link.name)}</a>`
           ).join('')}
         </div>
 
-        <div class="nav-controls">
+        <div class="nav-controls ri-nav-controls">
           ${this.renderAuthSection()}
-          <button id="themeToggle" class="theme-toggle-btn" title="Toggle Dark Mode">
-            <span class="theme-icon">🌙</span>
+          <button id="themeToggle" class="theme-toggle-btn" type="button" title="Toggle Dark Mode">
+            <span class="theme-icon" aria-hidden="true">🌙</span>
           </button>
         </div>
       </nav>
@@ -86,23 +116,37 @@ export class Components {
   renderAuthSection() {
     if (!this.isLoggedIn) {
       return `
-        <div class="auth-buttons">
-          <a href="${route('pages.login')}" class="auth-button login-button">Login</a>
+        <div class="ri-operator-panel">
+          <span class="ri-operator-label">ACCESS</span>
+          <div class="auth-buttons">
+            <a href="${route('pages.login')}" class="auth-button login-button">
+              ${coreIcon('access', 'ri-core-icon ri-auth-icon')}
+              <span>SIGN IN</span>
+            </a>
+          </div>
         </div>
       `;
     }
 
+    const accessLevel = String(this.userRole || 'guest').toUpperCase();
+
     return `
-      <div class="user-menu">
-        <span class="user-name">${this.userName}</span>
-        <div class="user-dropdown">
-          <a href="${route('pages.profile')}" class="dropdown-item">Profile</a>
-          <a href="${route('pages.profileManager')}" class="dropdown-item">Edit Profile</a>
-          ${this.userRole === 'admin'
-            ? `<a href="${route('admin.dashboard')}" class="dropdown-item">Admin</a>`
-            : ''
-          }
-          <a href="#" class="dropdown-item" id="logoutLink">Logout</a>
+      <div class="ri-operator-panel">
+        <span class="ri-operator-meta">
+          <span class="ri-operator-label">OPERATOR</span>
+          <span class="ri-access-level">${accessLevel}</span>
+        </span>
+        <div class="user-menu">
+          <span class="user-name">${this.userName}</span>
+          <div class="user-dropdown">
+            <a href="${route('pages.profile')}" class="dropdown-item">Profile</a>
+            <a href="${route('pages.profileManager')}" class="dropdown-item">Edit Profile</a>
+            ${this.userRole === 'admin'
+              ? `<a href="${route('admin.dashboard')}" class="dropdown-item">Admin</a>`
+              : ''
+            }
+            <a href="#" class="dropdown-item" id="logoutLink">Logout</a>
+          </div>
         </div>
       </div>
     `;
@@ -167,13 +211,43 @@ export class Components {
 
   initFooter() {
     this.footer = document.createElement('footer');
+    this.footer.className = 'ri-system-footer';
     this.footer.innerHTML = `
-      <div class="socials">
-        ${this.config.socialLinks.map(
-          link => `<a href="${link.url}" target="_blank">${link.name}</a>`
-        ).join('')}
+      <div class="ri-sys-bar">
+        <div class="ri-sys-segment ri-sys-build">
+          <span class="ri-sys-label">BUILD</span>
+          <span class="ri-sys-value">2.7.1</span>
+        </div>
+        <span class="ri-sys-divider" aria-hidden="true"></span>
+        <div class="ri-sys-segment ri-sys-node">
+          ${coreIcon('node', 'ri-core-icon ri-sys-icon')}
+          <span class="ri-sys-label">NODE</span>
+          <span class="ri-sys-value">A-03</span>
+        </div>
+        <span class="ri-sys-divider" aria-hidden="true"></span>
+        <div class="ri-sys-segment ri-sys-status">
+          ${coreIcon('signal', 'ri-core-icon ri-sys-icon')}
+          <span class="ri-sys-label">SYS</span>
+          <span class="ri-sys-value ri-sys-value--live">ONLINE</span>
+        </div>
+        <span class="ri-sys-divider" aria-hidden="true"></span>
+        <div class="ri-sys-segment ri-sys-archive">
+          ${coreIcon('archive', 'ri-core-icon ri-sys-icon')}
+          <span class="ri-sys-label">ARCHIVE</span>
+          <span class="ri-sys-value">ACTIVE</span>
+        </div>
+        <span class="ri-sys-divider ri-sys-divider--grow" aria-hidden="true"></span>
+        <div class="ri-sys-segment ri-sys-net">
+          <span class="ri-sys-label">RHODES NET</span>
+          <span class="ri-sys-value">SYNCED</span>
+        </div>
+        <span class="ri-sys-divider" aria-hidden="true"></span>
+        <div class="socials ri-sys-segment ri-sys-links">
+          ${this.config.socialLinks.map(
+            link => `<a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.name}</a>`
+          ).join('')}
+        </div>
       </div>
-      <p>&copy; ntam</p>
     `;
     document.body.appendChild(this.footer);
   }
