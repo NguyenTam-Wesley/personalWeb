@@ -1,4 +1,4 @@
-/* Rhodes Island Access Control — Login / Signup (UI only) */
+/* Rhodes Island Access Control — Operator Authentication Simulator (UI only) */
 
 /* ==========================================================================
    TOKENS — theme-aware (light / dark via data-theme + fallbacks)
@@ -65,28 +65,133 @@ body.access-page {
 }
 
 /* ==========================================================================
+   ROOT & SYSTEM HEADER
+   ========================================================================== */
+
+.access-root {
+  width: 100%;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 1rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.access-system-header {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--access-border);
+  background: var(--access-surface);
+  border-radius: var(--access-radius);
+  position: relative;
+  animation: access-fade-in 180ms ease forwards;
+}
+
+.access-system-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3rem;
+  height: 2px;
+  background: var(--access-accent);
+}
+
+.access-system-header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.access-system-header-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.access-system-module-id {
+  flex-shrink: 0;
+  font-family: var(--access-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--access-accent);
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--access-border);
+  background: var(--access-surface-raised);
+  border-radius: var(--access-radius);
+}
+
+.access-system-name {
+  margin: 0 0 0.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  line-height: 1.35;
+}
+
+.access-system-desc {
+  margin: 0;
+  font-family: var(--access-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  color: var(--access-muted);
+}
+
+.access-system-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.access-system-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--access-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  color: var(--access-muted);
+}
+
+.access-system-meta-item strong {
+  color: var(--access-text);
+  font-weight: 600;
+}
+
+.access-system-meta-item--live strong {
+  color: var(--access-accent);
+}
+
+.access-system-meta-item--muted {
+  opacity: 0.75;
+}
+
+/* ==========================================================================
    SHELL LAYOUT
    ========================================================================== */
 
 body.access-page .auth-container.access-shell {
-  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+  min-height: auto;
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(320px, 420px);
+  grid-template-columns: minmax(260px, 1fr) minmax(300px, 400px);
   align-items: stretch;
   justify-content: center;
   gap: 0;
-  max-width: 56rem;
+  max-width: none;
   width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   background: transparent;
 }
 
 .access-info {
   display: flex;
-  align-items: center;
-  padding: 1.5rem 1.25rem 1.5rem 0;
+  align-items: stretch;
+  padding: 0 1.25rem 0 0;
 }
 
 .access-info-panel {
@@ -108,6 +213,44 @@ body.access-page .auth-container.access-shell {
   background: var(--access-accent);
 }
 
+/* Panel labels & dividers */
+.access-panel-label,
+.access-form-module-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.access-module-id-sm {
+  font-family: var(--access-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  color: var(--access-accent);
+}
+
+.access-panel-title {
+  font-family: var(--access-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--access-muted);
+}
+
+.access-panel-divider {
+  height: 1px;
+  background: var(--access-border);
+  margin-bottom: 1rem;
+}
+
+.access-panel-divider--spaced {
+  margin-top: 1rem;
+}
+
+.access-panel-divider--inset {
+  margin-bottom: 1.25rem;
+}
+
 .access-info-badge {
   display: inline-flex;
   align-items: center;
@@ -116,7 +259,7 @@ body.access-page .auth-container.access-shell {
   border: 1px solid var(--access-border);
   background: var(--access-surface-raised);
   border-radius: var(--access-radius);
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .access-info-id,
@@ -139,6 +282,11 @@ body.access-page .auth-container.access-shell {
   height: 0.875rem;
 }
 
+.access-icon--xs {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
 .access-info-title {
   margin: 0 0 0.35rem;
   font-size: 0.8125rem;
@@ -148,7 +296,7 @@ body.access-page .auth-container.access-shell {
 }
 
 .access-info-desc {
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
   font-family: var(--access-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
@@ -161,7 +309,7 @@ body.access-page .auth-container.access-shell {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .access-status-item {
@@ -179,7 +327,7 @@ body.access-page .auth-container.access-shell {
 
 .access-status-label {
   color: var(--access-muted);
-  min-width: 3.5rem;
+  min-width: 3.25rem;
 }
 
 .access-status-value {
@@ -191,6 +339,68 @@ body.access-page .auth-container.access-shell {
   color: var(--access-accent);
 }
 
+/* Metadata grid */
+.access-metadata {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.access-metadata-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--access-border);
+  background: var(--access-surface-raised);
+  border-radius: var(--access-radius);
+  font-family: var(--access-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+}
+
+.access-metadata-row dt {
+  margin: 0;
+  color: var(--access-muted);
+  flex-shrink: 0;
+}
+
+.access-metadata-row dd {
+  margin: 0;
+  text-align: right;
+  color: var(--access-text);
+  font-weight: 500;
+}
+
+.access-metadata-value--ok {
+  color: var(--access-success);
+}
+
+.access-security-notice {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--access-border);
+  background: var(--access-surface-raised);
+  border-radius: var(--access-radius);
+  border-left: 2px solid var(--access-accent);
+}
+
+.access-security-notice p {
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: var(--access-muted);
+}
+
+.access-security-notice .access-icon {
+  margin-top: 0.1rem;
+  color: var(--access-muted);
+}
+
 /* ==========================================================================
    AUTH PANEL
    ========================================================================== */
@@ -198,21 +408,24 @@ body.access-page .auth-container.access-shell {
 .access-panel {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 1rem 0 1rem 1.25rem;
+  justify-content: flex-start;
+  padding: 0 0 0 0.25rem;
 }
 
 .access-header {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--access-border);
 }
 
 .access-header-badge {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   padding: 0.3rem 0.45rem;
   border: 1px solid var(--access-border);
   background: var(--access-surface-raised);
@@ -221,7 +434,7 @@ body.access-page .auth-container.access-shell {
 
 .access-header-title.auth-title {
   margin: 0 0 0.25rem;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-align: left;
@@ -235,6 +448,76 @@ body.access-page .auth-container.access-shell {
   letter-spacing: 0.04em;
   color: var(--access-muted);
   text-align: left;
+}
+
+/* Authorization journey */
+.access-journey {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.35rem;
+}
+
+.access-journey-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.4rem 0.35rem;
+  border: 1px solid var(--access-border);
+  background: var(--access-surface-raised);
+  border-radius: var(--access-radius);
+  font-family: var(--access-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  color: var(--access-muted);
+  transition: border-color var(--access-transition), color var(--access-transition), background-color var(--access-transition);
+}
+
+.access-journey-num {
+  font-size: 0.5625rem;
+  color: var(--access-muted);
+  opacity: 0.8;
+}
+
+.access-journey-label {
+  line-height: 1.25;
+  min-height: 2.4em;
+}
+
+.access-journey-step--complete {
+  border-color: color-mix(in srgb, var(--access-success) 40%, var(--access-border));
+}
+
+.access-journey-step--complete .access-journey-num {
+  color: var(--access-success);
+}
+
+.access-journey-step--current {
+  border-color: var(--access-accent);
+  background: color-mix(in srgb, var(--access-accent) 8%, var(--access-surface-raised));
+  color: var(--access-text);
+}
+
+.access-journey-step--current .access-journey-num {
+  color: var(--access-accent);
+}
+
+/* Step 03 highlights when form is being filled */
+.access-panel:has(.access-form :focus) .access-journey-step:nth-child(3) {
+  border-color: color-mix(in srgb, var(--access-accent) 55%, var(--access-border));
+  color: var(--access-text);
+}
+
+.access-panel:has(.access-form :focus) .access-journey-step:nth-child(3) .access-journey-num {
+  color: var(--access-accent);
+}
+
+/* Step 03 active on submit press */
+.access-panel:has(.btn-primary:active) .access-journey-step:nth-child(3) {
+  border-color: var(--access-accent);
+  background: color-mix(in srgb, var(--access-accent) 12%, var(--access-surface-raised));
 }
 
 .auth-form.access-form {
@@ -257,6 +540,19 @@ body.access-page .auth-container.access-shell {
   height: 2px;
   background: var(--access-accent);
   opacity: 0.7;
+}
+
+.access-terminal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.5rem;
+  font-family: var(--access-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  color: var(--access-muted);
+  opacity: 0.85;
 }
 
 /* ==========================================================================
@@ -284,6 +580,10 @@ body.access-page .auth-container.access-shell {
 .form-label .required {
   color: var(--access-error);
   margin-left: 0.2rem;
+}
+
+.password-wrapper {
+  position: relative;
 }
 
 .form-input {
@@ -518,7 +818,7 @@ body.access-page .auth-container.access-shell {
 .auth-footer {
   margin-top: 1.25rem;
   text-align: center;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--access-muted);
 }
 
@@ -542,7 +842,9 @@ body.access-page .auth-container.access-shell {
   padding-top: 1rem;
   border-top: 1px solid var(--access-border);
   text-align: center;
-  font-size: 0.6875rem;
+  font-family: var(--access-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.03em;
   color: var(--access-muted);
   line-height: 1.5;
 }
@@ -596,6 +898,39 @@ body.access-page .auth-container.access-shell {
   outline-offset: 2px;
 }
 
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes access-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.access-panel-reveal {
+  animation: access-fade-in 180ms ease forwards;
+}
+
+.access-panel-reveal--delay {
+  animation-delay: 80ms;
+  opacity: 0;
+}
+
+.access-status-item--live .access-status-value {
+  animation: access-status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes access-status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
 /* Pet — lower prominence on access pages */
 body.access-page #pet-component {
   opacity: 0.55;
@@ -605,15 +940,37 @@ body.access-page #pet-component {
    RESPONSIVE
    ========================================================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   body.access-page .auth-container.access-shell {
     grid-template-columns: 1fr;
     max-width: 28rem;
-    padding: 1rem 0.75rem;
+    margin: 0 auto;
   }
 
   .access-info {
     padding: 0 0 1rem;
+  }
+
+  .access-panel {
+    padding: 0;
+  }
+
+  .access-journey {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .access-journey-label {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .access-system-header-inner {
+    flex-direction: column;
+  }
+
+  .access-system-header-meta {
+    width: 100%;
   }
 
   .access-info-title {
@@ -625,23 +982,19 @@ body.access-page #pet-component {
     grid-template-columns: 1fr 1fr;
     gap: 0.35rem;
   }
-
-  .access-panel {
-    padding: 0;
-  }
-
-  .access-header {
-    margin-bottom: 1rem;
-  }
 }
 
 @media (max-width: 480px) {
+  .access-root {
+    padding: 0 0.75rem 1rem;
+  }
+
   .auth-form.access-form {
     padding: 1rem;
   }
 
   .access-header-title.auth-title {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
   }
 
   .form-input {
@@ -650,5 +1003,23 @@ body.access-page #pet-component {
 
   .access-status-list {
     grid-template-columns: 1fr;
+  }
+
+  .access-journey {
+    grid-template-columns: 1fr;
+  }
+
+  .access-system-name {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .access-panel-reveal,
+  .access-panel-reveal--delay,
+  .access-system-header,
+  .access-status-item--live .access-status-value {
+    animation: none;
+    opacity: 1;
   }
 }

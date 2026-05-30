@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Access Control — Operator Registration</title>
+  <title>ACS-002 — Operator Registration</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
   <link rel="stylesheet" href="../style/components.css" />
+  <link rel="stylesheet" href="../style/themes.css" />
   <link rel="stylesheet" href="../style/auth.css" />
   <link
       rel="icon"
@@ -16,154 +17,272 @@
     />
 </head>
 <body class="access-page access-page--signup">
-  <main class="auth-container access-shell">
-    <aside class="access-info" aria-label="System information">
-      <div class="access-info-panel">
-        <div class="access-info-badge">
-          <span class="access-info-id">ACS-002</span>
-          <svg class="access-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
-            <circle cx="12" cy="12" r="2" /><line x1="12" y1="2" x2="12" y2="8" /><line x1="12" y1="16" x2="12" y2="22" /><line x1="2" y1="12" x2="8" y2="12" /><line x1="16" y1="12" x2="22" y2="12" />
-          </svg>
-        </div>
-        <h2 class="access-info-title">OPERATOR REGISTRATION</h2>
-        <p class="access-info-desc">Identity Enrollment Terminal</p>
-        <ul class="access-status-list">
-          <li class="access-status-item access-status-item--live">
-            <svg class="access-icon access-icon--sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
-              <line x1="5" y1="16" x2="5" y2="10" /><line x1="10" y1="16" x2="10" y2="7" /><line x1="15" y1="16" x2="15" y2="12" /><line x1="20" y1="16" x2="20" y2="5" />
-            </svg>
-            <span class="access-status-label">NET</span>
-            <span class="access-status-value">ONLINE</span>
-          </li>
-          <li class="access-status-item">
-            <span class="access-status-label">SYS</span>
-            <span class="access-status-value">READY</span>
-          </li>
-          <li class="access-status-item">
-            <span class="access-status-label">NODE</span>
-            <span class="access-status-value">A-03</span>
-          </li>
-          <li class="access-status-item">
-            <span class="access-status-label">MODE</span>
-            <span class="access-status-value">ENROLLMENT</span>
-          </li>
-        </ul>
-      </div>
-    </aside>
-
-    <section class="access-panel">
-      <header class="access-header">
-        <div class="access-header-badge">
-          <span class="access-header-id">ACS-002</span>
-        </div>
-        <div class="access-header-text">
-          <h1 class="auth-title access-header-title">CREATE ACCESS PROFILE</h1>
-          <p class="auth-subtitle access-header-subtitle">New Operator Record · Network Registration</p>
-        </div>
-      </header>
-
-      <form class="auth-form access-form" id="signupForm" novalidate>
-        <div class="form-group">
-          <label for="username" class="form-label">
-            OPERATOR ID
-            <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            class="form-input"
-            placeholder="vd: nguyenvana"
-            autocomplete="username"
-            required
-            aria-describedby="username-error"
-          />
-          <span id="username-error" class="error-message" role="alert"></span>
-        </div>
-
-        <div class="form-group">
-          <label for="password" class="form-label">
-            PASSWORD
-            <span class="required">*</span>
-          </label>
-          <div class="password-wrapper">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="form-input"
-              placeholder="Minimum 6 characters"
-              autocomplete="new-password"
-              required
-              aria-describedby="password-error password-rules"
-            />
-            <button
-              type="button"
-              class="password-toggle"
-              id="passwordToggle"
-              aria-label="Hiển thị mật khẩu"
-              tabindex="0"
-            >👁️</button>
+  <main class="access-root">
+    <header class="access-system-header" aria-label="Rhodes Island Operator Registration">
+      <div class="access-system-header-inner">
+        <div class="access-system-header-main">
+          <span class="access-system-module-id">[ACS-002]</span>
+          <div class="access-system-header-text">
+            <h1 class="access-system-name">RHODES ISLAND ACCESS CONTROL</h1>
+            <p class="access-system-desc">Operator Registration · Identity Enrollment</p>
           </div>
-          <span id="password-error" class="error-message" role="alert"></span>
+        </div>
+        <div class="access-system-header-meta" aria-label="System status">
+          <span class="access-system-meta-item access-system-meta-item--live">
+            <svg class="access-icon access-icon--xs" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+              <circle cx="12" cy="12" r="2" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
+            </svg>
+            NET STATUS: <strong>ONLINE</strong>
+          </span>
+          <span class="access-system-meta-item">
+            ENROLLMENT MODE: <strong>ACTIVE</strong>
+          </span>
+          <span class="access-system-meta-item">
+            BUILD: <strong>2.7.1</strong>
+          </span>
+          <span class="access-system-meta-item access-system-meta-item--muted">
+            VERSION 0.9.8
+          </span>
+        </div>
+      </div>
+    </header>
 
-          <div class="password-rules" id="passwordRules">
-            <div class="password-rules-title">Credential requirements</div>
-            <div class="password-rule" id="rule-length">
-              <span class="password-rule-icon">○</span>
-              <span>Minimum 6 characters</span>
+    <div class="auth-container access-shell">
+      <aside class="access-info" aria-label="System information">
+        <div class="access-info-panel access-panel-reveal">
+          <div class="access-panel-label">
+            <span class="access-module-id-sm">[SYS-01]</span>
+            <span class="access-panel-title">NETWORK STATUS</span>
+          </div>
+          <div class="access-panel-divider" aria-hidden="true"></div>
+
+          <div class="access-info-badge">
+            <span class="access-info-id">ACS-002</span>
+            <svg class="access-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+              <circle cx="12" cy="8" r="3" /><path d="M5 20c0-4 3.5-6 7-6s7 2 7 6" /><line x1="16" y1="6" x2="20" y2="2" /><line x1="16" y1="2" x2="20" y2="2" /><line x1="20" y1="6" x2="20" y2="2" />
+            </svg>
+          </div>
+          <h2 class="access-info-title">OPERATOR REGISTRATION</h2>
+          <p class="access-info-desc">Identity Enrollment Terminal · New Operator Record</p>
+
+          <ul class="access-status-list">
+            <li class="access-status-item access-status-item--live">
+              <svg class="access-icon access-icon--sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                <line x1="5" y1="16" x2="5" y2="10" /><line x1="10" y1="16" x2="10" y2="7" /><line x1="15" y1="16" x2="15" y2="12" /><line x1="20" y1="16" x2="20" y2="5" />
+              </svg>
+              <span class="access-status-label">NET</span>
+              <span class="access-status-value">ONLINE</span>
+            </li>
+            <li class="access-status-item access-status-item--live">
+              <span class="access-status-label">SYS</span>
+              <span class="access-status-value">READY</span>
+            </li>
+            <li class="access-status-item">
+              <span class="access-status-label">MODE</span>
+              <span class="access-status-value">ENROLLMENT</span>
+            </li>
+            <li class="access-status-item">
+              <span class="access-status-label">NODE</span>
+              <span class="access-status-value">A-03</span>
+            </li>
+          </ul>
+
+          <div class="access-panel-divider access-panel-divider--spaced" aria-hidden="true"></div>
+
+          <div class="access-panel-label">
+            <span class="access-module-id-sm">[ENR-02]</span>
+            <span class="access-panel-title">ENROLLMENT STATUS</span>
+          </div>
+          <div class="access-panel-divider" aria-hidden="true"></div>
+
+          <dl class="access-metadata">
+            <div class="access-metadata-row">
+              <dt>RHODES NET</dt>
+              <dd class="access-metadata-value access-metadata-value--ok">CONNECTED</dd>
+            </div>
+            <div class="access-metadata-row">
+              <dt>REGISTRY</dt>
+              <dd class="access-metadata-value access-metadata-value--ok">ACCEPTING</dd>
+            </div>
+            <div class="access-metadata-row">
+              <dt>SECURITY STATUS</dt>
+              <dd>NORMAL</dd>
+            </div>
+            <div class="access-metadata-row">
+              <dt>ACCESS LEVEL</dt>
+              <dd>PUBLIC</dd>
+            </div>
+            <div class="access-metadata-row">
+              <dt>PENDING RECORDS</dt>
+              <dd>—</dd>
+            </div>
+            <div class="access-metadata-row">
+              <dt>LAST SYNCHRONIZATION</dt>
+              <dd><time datetime="2026-05-30T08:15:00Z">2026-05-30 08:15 UTC</time></dd>
+            </div>
+            <div class="access-metadata-row">
+              <dt>ARCHIVE NODE</dt>
+              <dd>ARCHIVE-14</dd>
+            </div>
+          </dl>
+
+          <div class="access-security-notice" role="note">
+            <svg class="access-icon access-icon--sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+              <path d="M12 3L3 20h18L12 3z" /><line x1="12" y1="10" x2="12" y2="14" /><line x1="12" y1="17" x2="12" y2="17.01" />
+            </svg>
+            <p>New operator records require profile initialization. Authorization may be pending until first session.</p>
+          </div>
+        </div>
+      </aside>
+
+      <section class="access-panel access-panel-reveal access-panel-reveal--delay">
+        <header class="access-header">
+          <div class="access-header-badge">
+            <span class="access-header-id">ACS-002</span>
+            <svg class="access-icon access-icon--sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+              <rect x="4" y="6" width="16" height="14" /><path d="M8 6V5a4 4 0 018 0v1" /><line x1="4" y1="11" x2="20" y2="11" />
+            </svg>
+          </div>
+          <div class="access-header-text">
+            <h2 class="auth-title access-header-title">CREATE ACCESS PROFILE</h2>
+            <p class="auth-subtitle access-header-subtitle">New Operator Record · Profile Initialization</p>
+          </div>
+        </header>
+
+        <ol class="access-journey access-journey--signup" aria-label="Enrollment sequence">
+          <li class="access-journey-step access-journey-step--complete">
+            <span class="access-journey-num">01</span>
+            <span class="access-journey-label">SYSTEM DETECTED</span>
+          </li>
+          <li class="access-journey-step access-journey-step--current">
+            <span class="access-journey-num">02</span>
+            <span class="access-journey-label">IDENTITY ENROLLMENT</span>
+          </li>
+          <li class="access-journey-step">
+            <span class="access-journey-num">03</span>
+            <span class="access-journey-label">AUTHORIZATION REQUEST</span>
+          </li>
+          <li class="access-journey-step">
+            <span class="access-journey-num">04</span>
+            <span class="access-journey-label">PROFILE REGISTERED</span>
+          </li>
+        </ol>
+
+        <form class="auth-form access-form" id="signupForm" novalidate>
+          <div class="access-form-module-label">
+            <span class="access-module-id-sm">[ENR-03]</span>
+            <span class="access-panel-title">REGISTRATION TERMINAL</span>
+          </div>
+          <div class="access-panel-divider access-panel-divider--inset" aria-hidden="true"></div>
+
+          <div class="form-group">
+            <label for="username" class="form-label">
+              OPERATOR ID
+              <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-input"
+              placeholder="Assign operator identifier"
+              autocomplete="username"
+              required
+              aria-describedby="username-error"
+            />
+            <span id="username-error" class="error-message" role="alert"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">
+              ACCESS KEY
+              <span class="required">*</span>
+            </label>
+            <div class="password-wrapper">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-input"
+                placeholder="Minimum 6 characters"
+                autocomplete="new-password"
+                required
+                aria-describedby="password-error password-rules"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                id="passwordToggle"
+                aria-label="Hiển thị mật khẩu"
+                tabindex="0"
+              >👁️</button>
+            </div>
+            <span id="password-error" class="error-message" role="alert"></span>
+
+            <div class="password-rules" id="passwordRules">
+              <div class="password-rules-title">ACCESS KEY REQUIREMENTS</div>
+              <div class="password-rule" id="rule-length">
+                <span class="password-rule-icon">○</span>
+                <span>Minimum 6 characters</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="confirmPassword" class="form-label">
-            CONFIRM PASSWORD
-            <span class="required">*</span>
-          </label>
-          <div class="password-wrapper">
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              class="form-input"
-              placeholder="Re-enter credentials"
-              autocomplete="new-password"
-              required
-              aria-describedby="confirmPassword-error"
-            />
-            <button
-              type="button"
-              class="password-toggle"
-              id="confirmPasswordToggle"
-              aria-label="Hiển thị mật khẩu"
-              tabindex="0"
-            >👁️</button>
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">
+              CONFIRM ACCESS KEY
+              <span class="required">*</span>
+            </label>
+            <div class="password-wrapper">
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                class="form-input"
+                placeholder="Re-enter access key"
+                autocomplete="new-password"
+                required
+                aria-describedby="confirmPassword-error"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                id="confirmPasswordToggle"
+                aria-label="Hiển thị mật khẩu"
+                tabindex="0"
+              >👁️</button>
+            </div>
+            <span id="confirmPassword-error" class="error-message" role="alert"></span>
           </div>
-          <span id="confirmPassword-error" class="error-message" role="alert"></span>
-        </div>
 
-        <div class="access-submit-block">
-          <span class="access-action-label">CREATE PROFILE</span>
-          <button type="submit" class="btn-primary" id="signupBtn">
-            <span id="signupBtnText">Tạo tài khoản</span>
-            <span id="signupBtnSpinner" class="btn-spinner" style="display: none;"></span>
-          </button>
-        </div>
+          <div class="access-submit-block">
+            <span class="access-action-label">AUTHORIZATION REQUEST</span>
+            <button type="submit" class="btn-primary" id="signupBtn">
+              <span id="signupBtnText">PROFILE INITIALIZATION</span>
+              <span id="signupBtnSpinner" class="btn-spinner" style="display: none;"></span>
+            </button>
+          </div>
 
-        <div class="trust-links">
-          By registering, you agree to our
-          <a href="#" target="_blank">Terms of Use</a>
-          and
-          <a href="#" target="_blank">Privacy Policy</a>.
-        </div>
+          <div class="trust-links">
+            Registration constitutes acceptance of
+            <a href="#" target="_blank">Network Authorization Policy</a>
+            and
+            <a href="#" target="_blank">Data Classification Notice</a>.
+          </div>
 
-        <div class="auth-footer">
-          Existing operator?
-          <a href="login.html" class="auth-footer-link">Request access</a>
+          <div class="auth-footer">
+            Existing operator record?
+            <a href="login.html" class="auth-footer-link">AUTHENTICATION REQUEST</a>
+          </div>
+        </form>
+
+        <div class="access-terminal-footer" aria-hidden="true">
+          <span>SESSION: INACTIVE</span>
+          <span>ENROLLMENT: ACTIVE</span>
+          <span>ARCHIVE-14</span>
         </div>
-      </form>
-    </section>
+      </section>
+    </div>
   </main>
 
   <script type="module" src="../js/modules/signup_entry.js"></script>
