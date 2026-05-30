@@ -12,7 +12,7 @@ body > footer.ri-system-footer {
   --ri-bar-text: var(--text-primary, #f0f3f7);
   --ri-bar-muted: var(--text-muted, var(--text-secondary));
   --ri-bar-border: var(--border-light, var(--border-dark));
-  --ri-bar-accent: var(--accent-primary);
+  --ri-bar-accent: var(--music-terminal-accent, var(--study-archive-accent, var(--accent-primary)));
   --ri-bar-hover: var(--hover-bg, var(--overlay-bg));
   --ri-bar-mono: 'JetBrains Mono', ui-monospace, monospace;
   --ri-bar-font: 'Inter', system-ui, -apple-system, sans-serif;
@@ -239,7 +239,7 @@ body > header.ri-network-header nav.ri-nav {
 .nav-link.active {
   color: var(--ri-bar-accent);
   background: var(--ri-bar-hover);
-  border-color: var(--ri-bar-border);
+  border-color: var(--ri-bar-accent);
 }
 
 .nav-link:focus-visible {
