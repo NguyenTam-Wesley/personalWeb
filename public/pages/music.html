@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Music Playlist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
+    <title>Rhodes Island Music Archive</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../style/components.css" />
     <link rel="stylesheet" href="../style/themes.css" />
     <link rel="stylesheet" href="../style/music.css" />
@@ -13,109 +16,184 @@
       href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
     />
   </head>
-  <body>
-    <main class="container music-section">
-      <!-- Header -->
-      <h1 class="page-title">🎵 Danh mục</h1>
-
-      <!-- Top Bar: Back + Search -->
-      <div class="top-bar">
-        <button id="backBtn" aria-label="Quay lại">⬅️ Quay lại</button>
-        <div class="search-container">
-          <span class="search-icon">🔍</span>
-          <input 
-            type="text" 
-            id="searchInput" 
-            class="search-input" 
-            placeholder="Tìm kiếm bài hát, nghệ sĩ..."
-            autocomplete="off"
-            aria-label="Tìm kiếm bài hát"
-          />
+  <body class="music-page">
+    <div class="music-terminal">
+      <!-- System Header -->
+      <header class="music-terminal-header music-terminal-panel">
+        <div class="music-module-id">[MUS-001]</div>
+        <div class="music-header-body">
+          <h1 class="music-system-name">RHODES ISLAND MUSIC ARCHIVE</h1>
+          <p class="music-system-desc">Operator Audio Database Interface</p>
         </div>
-        <div class="volume-control-bar">
-          <canvas id="volumeCanvas" width="100" height="20" aria-label="Điều chỉnh âm lượng"></canvas>
-          <button id="eraserBtn" aria-label="Xóa bản vẽ">🧹</button>
+        <div class="music-header-meta">
+          <span class="music-meta-line">BUILD 2.7.1</span>
+          <span class="music-meta-line">NODE A-03</span>
+          <span class="music-status-badge music-status-ready">READY</span>
+        </div>
+      </header>
+
+      <!-- Top Bar: Navigation + Search + Volume -->
+      <div class="music-top-bar music-terminal-panel" data-module="SYS-002">
+        <div class="music-panel-label">
+          <span class="music-module-id-sm">[SYS-002]</span>
+          <span class="music-panel-title">SYSTEM CONTROL</span>
+        </div>
+        <div class="music-top-bar-row top-bar">
+          <button id="backBtn" class="music-back-btn" aria-label="Quay lại">
+            <span class="music-btn-label">RETURN</span>
+          </button>
+          <div class="search-container">
+            <label for="searchInput" class="music-search-label">QUERY</label>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search tracks, artists, genres, regions..."
+              autocomplete="off"
+              aria-label="Tìm kiếm bài hát"
+            />
+          </div>
+          <div class="volume-control-bar">
+            <span class="music-vol-label">VOL</span>
+            <canvas id="volumeCanvas" width="100" height="20" aria-label="Điều chỉnh âm lượng"></canvas>
+            <button id="eraserBtn" class="music-eraser-btn" aria-label="Xóa bản vẽ">CLR</button>
+          </div>
         </div>
       </div>
 
-      <!-- Filter / Category -->
-      <div class="filter-container" id="filterContainer">
-        <!-- Filters will be dynamically added -->
+      <div class="music-layout">
+        <!-- Left: Archive Navigation (static subsystem map) -->
+        <aside class="music-nav-panel music-terminal-panel" aria-label="Archive navigation">
+          <div class="music-panel-label">
+            <span class="music-module-id-sm">[NAV-01]</span>
+            <span class="music-panel-title">ARCHIVE INDEX</span>
+          </div>
+          <div class="music-panel-divider" aria-hidden="true"></div>
+          <nav class="music-nav-list">
+            <span class="music-nav-entry">TRACK DATABASE</span>
+            <span class="music-nav-entry">ARTIST REGISTRY</span>
+            <span class="music-nav-entry">GENRE INDEX</span>
+            <span class="music-nav-entry">REGIONAL ARCHIVE</span>
+            <span class="music-nav-entry">PLAYLIST ARCHIVE</span>
+          </nav>
+          <div class="music-nav-footer">
+            <span class="music-meta-line">ARCHIVE-14</span>
+            <span class="music-meta-line">COORD 41.2 / 12.8</span>
+          </div>
+        </aside>
+
+        <!-- Center: Dynamic content -->
+        <section class="music-main-panel">
+          <div class="music-database-panel music-terminal-panel" data-module="DB-003">
+            <div class="music-panel-label">
+              <span class="music-module-id-sm">[DB-003]</span>
+              <span class="music-panel-title">TRACK DATABASE</span>
+            </div>
+            <div class="music-panel-divider" aria-hidden="true"></div>
+
+            <div class="filter-container" id="filterContainer"></div>
+
+            <div id="mainMenu" class="music-archive-menu"></div>
+
+            <div id="playlistContainer" class="music-playlist-heading"></div>
+
+            <div class="music-table-header" aria-hidden="true">
+              <span class="music-col music-col-id">TRACK_ID</span>
+              <span class="music-col music-col-title">TITLE</span>
+              <span class="music-col music-col-artist">ARTIST</span>
+              <span class="music-col music-col-status">STATUS</span>
+              <span class="music-col music-col-actions">OPS</span>
+            </div>
+
+            <div class="music-list" id="musicList"></div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+              <div class="empty-state-icon" aria-hidden="true">◇</div>
+              <div class="empty-state-text">NO RECORDS IN BUFFER</div>
+              <div class="empty-state-hint">Select an archive category to load track data</div>
+            </div>
+
+            <div class="loading-state" id="loadingState" style="display: none;">
+              <div class="music-loading-bar" aria-hidden="true"></div>
+              <span>INDEXING...</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right: Playback monitor (static labels; live data in bottom player) -->
+        <aside class="music-side-panel music-terminal-panel" aria-label="Playback monitor">
+          <div class="music-panel-label">
+            <span class="music-module-id-sm">[PLY-004]</span>
+            <span class="music-panel-title">PLAYBACK MONITOR</span>
+          </div>
+          <div class="music-panel-divider" aria-hidden="true"></div>
+          <dl class="music-monitor-fields">
+            <dt>QUEUE</dt>
+            <dd class="music-monitor-queue-hint">Use queue panel →</dd>
+            <dt>PLAY MODE</dt>
+            <dd class="music-monitor-mode">STANDARD</dd>
+            <dt>SYSTEM</dt>
+            <dd class="music-monitor-sys">ONLINE</dd>
+          </dl>
+          <div class="music-side-footer">
+            <span class="music-meta-line">SYS-001</span>
+          </div>
+        </aside>
       </div>
+    </div>
 
-      <!-- Main Menu -->
-      <div id="mainMenu"></div>
-      
-      <!-- Playlist Container -->
-      <div id="playlistContainer"></div>
-
-      <!-- Music List -->
-      <div class="music-list" id="musicList">
-        <!-- Music items will be dynamically added -->
-      </div>
-
-      <!-- Empty State -->
-      <div class="empty-state" id="emptyState" style="display: none;">
-        <div class="empty-state-icon">🎵</div>
-        <div class="empty-state-text">Chưa có bài hát</div>
-        <div class="empty-state-hint">Chọn playlist để bắt đầu nghe nhạc</div>
-      </div>
-
-      <!-- Loading State -->
-      <div class="loading-state" id="loadingState" style="display: none;">
-        <div>Đang tải...</div>
-      </div>
-    </main>
-
-    <!-- Queue Panel - Slide Out -->
+    <!-- Queue Panel -->
     <div id="queuePanel" class="queue-panel">
       <div class="queue-panel-header">
-        <h3>📋 Hàng đợi phát</h3>
+        <div class="music-queue-header-text">
+          <span class="music-module-id-sm">[QUE-005]</span>
+          <h3>PLAYBACK QUEUE</h3>
+        </div>
         <div class="queue-panel-actions">
-          <button id="clearQueueBtn" class="queue-clear-btn" title="Xóa tất cả">
-            🗑️
-          </button>
-          <button id="closeQueueBtn" class="queue-close-btn" title="Đóng">
-            ✕
-          </button>
+          <button id="clearQueueBtn" class="queue-clear-btn" title="Xóa tất cả">CLR</button>
+          <button id="closeQueueBtn" class="queue-close-btn" title="Đóng">✕</button>
         </div>
       </div>
       <div class="queue-list" id="queueList">
         <div class="queue-empty">
-          <div class="queue-empty-icon">📭</div>
-          <div class="queue-empty-text">Hàng đợi trống</div>
-          <div class="queue-empty-hint">Thêm bài hát để tạo hàng đợi</div>
+          <div class="queue-empty-icon" aria-hidden="true">◇</div>
+          <div class="queue-empty-text">QUEUE EMPTY</div>
+          <div class="queue-empty-hint">Add tracks to initialize playback queue</div>
         </div>
       </div>
     </div>
 
-    <!-- Queue Toggle Button -->
     <button id="queueToggleBtn" class="queue-toggle-btn" title="Hàng đợi phát">
-      📋 <span class="queue-count">0</span>
+      <span class="music-queue-toggle-label">QUE</span>
+      <span class="queue-count">0</span>
     </button>
 
-    <!-- Player - Sticky Bottom -->
+    <!-- Now Playing Module -->
     <div id="controlsContainer" class="controls-container">
+      <div class="music-now-playing-label">
+        <span class="music-module-id-sm">[PLY-006]</span>
+        <span class="music-panel-title">NOW PLAYING</span>
+      </div>
       <div class="player-controls">
         <div class="song-info">
-          <span id="currentSongTitle">Chưa chọn bài hát</span>
+          <span id="currentSongTitle">NO TRACK SELECTED</span>
         </div>
         <div class="control-buttons">
-          <button id="shuffleBtn" aria-label="Bật/tắt phát ngẫu nhiên">🔀</button>
-          <button id="prevBtn" aria-label="Bài trước">⏮️</button>
-          <button id="pauseResumeBtn" aria-label="Phát/Tạm dừng">▶️</button>
-          <button id="nextBtn" aria-label="Bài tiếp">⏭️</button>
-          <button id="repeatBtn" aria-label="Bật/tắt lặp lại">🔁</button>
-          <button id="addToPlaylistBtn" class="add-to-playlist-btn" aria-label="Thêm bài hát vào playlist">➕</button>
+          <button id="shuffleBtn" aria-label="Bật/tắt phát ngẫu nhiên">SHF</button>
+          <button id="prevBtn" aria-label="Bài trước">PREV</button>
+          <button id="pauseResumeBtn" aria-label="Phát/Tạm dừng">PLAY</button>
+          <button id="nextBtn" aria-label="Bài tiếp">NEXT</button>
+          <button id="repeatBtn" aria-label="Bật/tắt lặp lại">RPT</button>
+          <button id="addToPlaylistBtn" class="add-to-playlist-btn" aria-label="Thêm bài hát vào playlist">ADD</button>
         </div>
         <div class="progress-container">
           <span id="currentTime" aria-label="Thời gian hiện tại">0:00</span>
-          <input 
-            type="range" 
-            id="progressBar" 
-            min="0" 
-            value="0" 
-            step="1" 
+          <input
+            type="range"
+            id="progressBar"
+            min="0"
+            value="0"
+            step="1"
             aria-label="Thanh tiến trình phát nhạc"
           />
           <span id="duration" aria-label="Tổng thời gian">0:00</span>
