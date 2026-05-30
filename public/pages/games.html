@@ -3,29 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Games</title>
+    <title>SIM-001 — Rhodes Island Training Simulator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../style/components.css" />
+    <link rel="stylesheet" href="../style/themes.css" />
     <link rel="stylesheet" href="../style/games.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style/training-simulator.css" />
     <link
       rel="icon"
       href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
     />
 </head>
-<body>
-    <div class="games-page">
-        <div class="games-container">
-        <section class="games-intro">
-            <h1>Games</h1>
-            <p>Detail, Build, Strategy, and more...</p>
-        </section>
+<body class="games-page sim-page">
+    <main class="sim-container">
+      <div class="sim-facility">
+        <header class="sim-header sim-panel" aria-label="Training Simulator">
+          <div class="sim-module-id">[SIM-001]</div>
+          <div class="sim-header-body">
+            <h1 class="sim-system-name">RHODES ISLAND TRAINING SIMULATOR</h1>
+            <p class="sim-system-desc">Operator Evaluation Interface</p>
+          </div>
+          <div class="sim-header-meta">
+            <span class="sim-meta-line sim-meta-line--live">SIM STATUS: READY</span>
+            <span class="sim-meta-line">EXERCISE: AVAILABLE</span>
+            <span class="sim-meta-line">NODE: TRN-A03</span>
+            <span class="sim-meta-line">BUILD 2.7.1</span>
+          </div>
+        </header>
 
-        <div class="games-grid">
-            <!-- Games will be rendered here by GamesManager -->
+        <div class="sim-layout">
+          <aside class="sim-index-panel sim-panel" aria-label="Training index">
+            <div class="sim-panel-label">
+              <span class="sim-module-id-sm">[IDX-01]</span>
+              <span class="sim-panel-title">EXERCISE INDEX</span>
+            </div>
+            <div class="sim-panel-divider" aria-hidden="true"></div>
+            <nav class="sim-index-nav">
+              <span class="sim-index-entry sim-index-entry--active">SIMULATION MODULES</span>
+              <span class="sim-index-entry">TACTICAL RECORDS</span>
+              <span class="sim-index-entry">ASSESSMENT LOG</span>
+              <span class="sim-index-entry">MISSION DATA</span>
+              <span class="sim-index-entry">PERFORMANCE ARCHIVE</span>
+            </nav>
+            <div class="sim-panel-divider sim-panel-divider--spaced" aria-hidden="true"></div>
+            <div class="sim-panel-label">
+              <span class="sim-module-id-sm">[FLT-02]</span>
+              <span class="sim-panel-title">DIFFICULTY FILTER</span>
+            </div>
+            <div class="sim-panel-divider" aria-hidden="true"></div>
+            <ul class="sim-filter-list">
+              <li class="sim-filter-item sim-filter-item--active">ALL LEVELS</li>
+              <li class="sim-filter-item">STANDARD</li>
+              <li class="sim-filter-item">ADVANCED</li>
+              <li class="sim-filter-item">EVALUATION</li>
+            </ul>
+            <div class="sim-index-footer">
+              <span class="sim-meta-line">MODULE-08 ACTIVE</span>
+              <span class="sim-meta-line">NODE-14</span>
+            </div>
+          </aside>
+
+          <section class="sim-modules-panel sim-panel" aria-label="Simulation modules">
+            <div class="sim-panel-label">
+              <span class="sim-module-id-sm">[MOD-03]</span>
+              <span class="sim-panel-title">SIMULATION MODULES</span>
+            </div>
+            <div class="sim-panel-divider" aria-hidden="true"></div>
+            <p class="sim-modules-brief">
+              Select a training exercise to initialize simulation. All modules are monitored for operator assessment and performance recording.
+            </p>
+
+            <div class="games-container sim-games-container">
+              <div class="games-grid">
+                <!-- Simulation modules rendered by GamesManager -->
+              </div>
+            </div>
+          </section>
+
+          <aside class="sim-records-panel sim-panel" aria-label="Operator records">
+            <div class="sim-panel-label">
+              <span class="sim-module-id-sm">[REC-04]</span>
+              <span class="sim-panel-title">OPERATOR RECORDS</span>
+            </div>
+            <div class="sim-panel-divider" aria-hidden="true"></div>
+
+            <dl class="sim-records-meta">
+              <div class="sim-records-row">
+                <dt>OPERATOR STATUS</dt>
+                <dd class="sim-records-value sim-records-value--ok">ACTIVE</dd>
+              </div>
+              <div class="sim-records-row">
+                <dt>ASSESSMENT</dt>
+                <dd>IN PROGRESS</dd>
+              </div>
+              <div class="sim-records-row">
+                <dt>TRAINING HOURS</dt>
+                <dd>—</dd>
+              </div>
+              <div class="sim-records-row">
+                <dt>SIMULATION SCORE</dt>
+                <dd>—</dd>
+              </div>
+              <div class="sim-records-row">
+                <dt>LAST EXERCISE</dt>
+                <dd>—</dd>
+              </div>
+              <div class="sim-records-row">
+                <dt>CERTIFICATION</dt>
+                <dd>UNDER REVIEW</dd>
+              </div>
+            </dl>
+
+            <div class="sim-panel-divider sim-panel-divider--spaced" aria-hidden="true"></div>
+            <div class="sim-panel-label">
+              <span class="sim-module-id-sm">[PRF-05]</span>
+              <span class="sim-panel-title">PERFORMANCE RECORD</span>
+            </div>
+            <div class="sim-panel-divider" aria-hidden="true"></div>
+
+            <ul class="sim-performance-list">
+              <li class="sim-performance-item">
+                <span class="sim-performance-label">COMPLETION RATE</span>
+                <span class="sim-performance-bar" aria-hidden="true"><span style="width: 0%"></span></span>
+                <span class="sim-performance-value">—</span>
+              </li>
+              <li class="sim-performance-item">
+                <span class="sim-performance-label">BEST SCORE</span>
+                <span class="sim-performance-value">—</span>
+              </li>
+              <li class="sim-performance-item">
+                <span class="sim-performance-label">ATTEMPT COUNT</span>
+                <span class="sim-performance-value">—</span>
+              </li>
+              <li class="sim-performance-item">
+                <span class="sim-performance-label">PERFORMANCE STATUS</span>
+                <span class="sim-performance-value sim-performance-value--ready">READY</span>
+              </li>
+            </ul>
+
+            <div class="sim-records-notice" role="note">
+              <svg class="sim-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="10" y1="4" x2="10" y2="20" />
+              </svg>
+              <p>Exercise results are logged to the tactical assessment database upon module completion.</p>
+            </div>
+          </aside>
         </div>
-    </div>
-    </div>
+      </div>
+    </main>
 
     <script type="module" src="../js/modules/game_entry.js"></script>
 </body>
-</html> 
+</html>
