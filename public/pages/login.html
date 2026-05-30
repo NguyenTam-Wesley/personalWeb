@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng nhập</title>
+  <title>Access Control — Operator Login</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="../style/components.css" />
   <link rel="stylesheet" href="../style/auth.css" />
   <link
@@ -11,80 +15,123 @@
       href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
     />
 </head>
-<body>
-  <main class="auth-container">
-    <form class="auth-form" id="loginForm" novalidate>
-      <h1 class="auth-title">Đăng nhập</h1>
-      <p class="auth-subtitle">Chào mừng bạn trở lại</p>
-
-      <!-- Username Field -->
-      <div class="form-group">
-        <label for="username" class="form-label">
-          Tên đăng nhập
-          <span class="required">*</span>
-        </label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          class="form-input"
-          placeholder="Nhập tên đăng nhập của bạn"
-          autocomplete="username"
-          required
-          aria-describedby="username-error"
-        />
-        <span id="username-error" class="error-message" role="alert"></span>
+<body class="access-page access-page--login">
+  <main class="auth-container access-shell">
+    <aside class="access-info" aria-label="System information">
+      <div class="access-info-panel">
+        <div class="access-info-badge">
+          <span class="access-info-id">ACS-001</span>
+          <svg class="access-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" /><path d="M8 10V8a4 4 0 018 0v2" />
+          </svg>
+        </div>
+        <h2 class="access-info-title">RHODES ISLAND ACCESS CONTROL</h2>
+        <p class="access-info-desc">Internal Security Gateway</p>
+        <ul class="access-status-list">
+          <li class="access-status-item access-status-item--live">
+            <svg class="access-icon access-icon--sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+              <line x1="5" y1="16" x2="5" y2="10" /><line x1="10" y1="16" x2="10" y2="7" /><line x1="15" y1="16" x2="15" y2="12" /><line x1="20" y1="16" x2="20" y2="5" />
+            </svg>
+            <span class="access-status-label">NET</span>
+            <span class="access-status-value">ONLINE</span>
+          </li>
+          <li class="access-status-item">
+            <span class="access-status-label">SYS</span>
+            <span class="access-status-value">READY</span>
+          </li>
+          <li class="access-status-item">
+            <span class="access-status-label">NODE</span>
+            <span class="access-status-value">A-03</span>
+          </li>
+          <li class="access-status-item">
+            <span class="access-status-label">ACCESS</span>
+            <span class="access-status-value">UNAUTHORIZED</span>
+          </li>
+          <li class="access-status-item">
+            <span class="access-status-label">BUILD</span>
+            <span class="access-status-value">2.7.1</span>
+          </li>
+        </ul>
       </div>
+    </aside>
 
-      <!-- Password Field -->
-      <div class="form-group">
-        <label for="password" class="form-label">
-          Mật khẩu
-          <span class="required">*</span>
-        </label>
-        <div class="password-wrapper">
+    <section class="access-panel">
+      <header class="access-header">
+        <div class="access-header-badge">
+          <span class="access-header-id">ACS-001</span>
+        </div>
+        <div class="access-header-text">
+          <h1 class="auth-title access-header-title">OPERATOR LOGIN</h1>
+          <p class="auth-subtitle access-header-subtitle">Identity Verification · Network Access</p>
+        </div>
+      </header>
+
+      <form class="auth-form access-form" id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="username" class="form-label">
+            OPERATOR ID
+            <span class="required">*</span>
+          </label>
           <input
-            type="password"
-            id="password"
-            name="password"
+            type="text"
+            id="username"
+            name="username"
             class="form-input"
-            placeholder="Nhập mật khẩu của bạn"
-            autocomplete="current-password"
+            placeholder="Enter operator identifier"
+            autocomplete="username"
             required
-            aria-describedby="password-error"
+            aria-describedby="username-error"
           />
-          <button
-            type="button"
-            class="password-toggle"
-            id="passwordToggle"
-            aria-label="Hiển thị mật khẩu"
-            tabindex="0"
-          >
-            👁️
+          <span id="username-error" class="error-message" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">
+            PASSWORD
+            <span class="required">*</span>
+          </label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="Enter access credentials"
+              autocomplete="current-password"
+              required
+              aria-describedby="password-error"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              id="passwordToggle"
+              aria-label="Hiển thị mật khẩu"
+              tabindex="0"
+            >👁️</button>
+          </div>
+          <span id="password-error" class="error-message" role="alert"></span>
+        </div>
+
+        <div class="forgot-password">
+          <a href="#" class="forgot-password-link" id="forgotPasswordLink">
+            Forgot credentials?
+          </a>
+        </div>
+
+        <div class="access-submit-block">
+          <span class="access-action-label">ACCESS REQUEST</span>
+          <button type="submit" class="btn-primary" id="loginBtn">
+            <span id="loginBtnText">Đăng nhập</span>
+            <span id="loginBtnSpinner" class="btn-spinner" style="display: none;"></span>
           </button>
         </div>
-        <span id="password-error" class="error-message" role="alert"></span>
-      </div>
 
-      <!-- Forgot Password Link -->
-      <div class="forgot-password">
-        <a href="#" class="forgot-password-link" id="forgotPasswordLink">
-          Quên mật khẩu?
-        </a>
-      </div>
-
-      <!-- Submit Button -->
-      <button type="submit" class="btn-primary" id="loginBtn">
-        <span id="loginBtnText">Đăng nhập</span>
-        <span id="loginBtnSpinner" class="btn-spinner" style="display: none;"></span>
-      </button>
-
-      <!-- Footer Link -->
-      <div class="auth-footer">
-        Chưa có tài khoản?
-        <a href="signup.html" class="auth-footer-link">Đăng ký ngay</a>
-      </div>
-    </form>
+        <div class="auth-footer">
+          No operator profile?
+          <a href="signup.html" class="auth-footer-link">Register access</a>
+        </div>
+      </form>
+    </section>
   </main>
 
   <script type="module" src="../js/modules/login_entry.js"></script>

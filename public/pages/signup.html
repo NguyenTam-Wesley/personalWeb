@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng ký</title>
+  <title>Access Control — Operator Registration</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="../style/components.css" />
   <link rel="stylesheet" href="../style/auth.css" />
   <link
@@ -11,121 +15,155 @@
       href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
     />
 </head>
-<body>
-  <main class="auth-container">
-    <form class="auth-form" id="signupForm" novalidate>
-      <h1 class="auth-title">Tạo tài khoản</h1>
-      <p class="auth-subtitle">Bắt đầu hành trình của bạn</p>
-
-      <!-- Username Field -->
-      <div class="form-group">
-        <label for="username" class="form-label">
-          Tên đăng nhập
-          <span class="required">*</span>
-        </label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          class="form-input"
-          placeholder="vd: nguyenvana"
-          autocomplete="username"
-          required
-          aria-describedby="username-error"
-        />
-        <span id="username-error" class="error-message" role="alert"></span>
-      </div>
-
-      <!-- Password Field -->
-      <div class="form-group">
-        <label for="password" class="form-label">
-          Mật khẩu
-          <span class="required">*</span>
-        </label>
-        <div class="password-wrapper">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="form-input"
-            placeholder="Tối thiểu 6 ký tự"
-            autocomplete="new-password"
-            required
-            aria-describedby="password-error password-rules"
-          />
-          <button
-            type="button"
-            class="password-toggle"
-            id="passwordToggle"
-            aria-label="Hiển thị mật khẩu"
-            tabindex="0"
-          >
-            👁️
-          </button>
+<body class="access-page access-page--signup">
+  <main class="auth-container access-shell">
+    <aside class="access-info" aria-label="System information">
+      <div class="access-info-panel">
+        <div class="access-info-badge">
+          <span class="access-info-id">ACS-002</span>
+          <svg class="access-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <circle cx="12" cy="12" r="2" /><line x1="12" y1="2" x2="12" y2="8" /><line x1="12" y1="16" x2="12" y2="22" /><line x1="2" y1="12" x2="8" y2="12" /><line x1="16" y1="12" x2="22" y2="12" />
+          </svg>
         </div>
-        <span id="password-error" class="error-message" role="alert"></span>
-        
-        <!-- Password Rules -->
-        <div class="password-rules" id="passwordRules">
-          <div class="password-rules-title">Yêu cầu mật khẩu:</div>
-          <div class="password-rule" id="rule-length">
-            <span class="password-rule-icon">○</span>
-            <span>Tối thiểu 6 ký tự</span>
+        <h2 class="access-info-title">OPERATOR REGISTRATION</h2>
+        <p class="access-info-desc">Identity Enrollment Terminal</p>
+        <ul class="access-status-list">
+          <li class="access-status-item access-status-item--live">
+            <svg class="access-icon access-icon--sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+              <line x1="5" y1="16" x2="5" y2="10" /><line x1="10" y1="16" x2="10" y2="7" /><line x1="15" y1="16" x2="15" y2="12" /><line x1="20" y1="16" x2="20" y2="5" />
+            </svg>
+            <span class="access-status-label">NET</span>
+            <span class="access-status-value">ONLINE</span>
+          </li>
+          <li class="access-status-item">
+            <span class="access-status-label">SYS</span>
+            <span class="access-status-value">READY</span>
+          </li>
+          <li class="access-status-item">
+            <span class="access-status-label">NODE</span>
+            <span class="access-status-value">A-03</span>
+          </li>
+          <li class="access-status-item">
+            <span class="access-status-label">MODE</span>
+            <span class="access-status-value">ENROLLMENT</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <section class="access-panel">
+      <header class="access-header">
+        <div class="access-header-badge">
+          <span class="access-header-id">ACS-002</span>
+        </div>
+        <div class="access-header-text">
+          <h1 class="auth-title access-header-title">CREATE ACCESS PROFILE</h1>
+          <p class="auth-subtitle access-header-subtitle">New Operator Record · Network Registration</p>
+        </div>
+      </header>
+
+      <form class="auth-form access-form" id="signupForm" novalidate>
+        <div class="form-group">
+          <label for="username" class="form-label">
+            OPERATOR ID
+            <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-input"
+            placeholder="vd: nguyenvana"
+            autocomplete="username"
+            required
+            aria-describedby="username-error"
+          />
+          <span id="username-error" class="error-message" role="alert"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">
+            PASSWORD
+            <span class="required">*</span>
+          </label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="Minimum 6 characters"
+              autocomplete="new-password"
+              required
+              aria-describedby="password-error password-rules"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              id="passwordToggle"
+              aria-label="Hiển thị mật khẩu"
+              tabindex="0"
+            >👁️</button>
+          </div>
+          <span id="password-error" class="error-message" role="alert"></span>
+
+          <div class="password-rules" id="passwordRules">
+            <div class="password-rules-title">Credential requirements</div>
+            <div class="password-rule" id="rule-length">
+              <span class="password-rule-icon">○</span>
+              <span>Minimum 6 characters</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Confirm Password Field -->
-      <div class="form-group">
-        <label for="confirmPassword" class="form-label">
-          Xác nhận mật khẩu
-          <span class="required">*</span>
-        </label>
-        <div class="password-wrapper">
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            class="form-input"
-            placeholder="Nhập lại mật khẩu"
-            autocomplete="new-password"
-            required
-            aria-describedby="confirmPassword-error"
-          />
-          <button
-            type="button"
-            class="password-toggle"
-            id="confirmPasswordToggle"
-            aria-label="Hiển thị mật khẩu"
-            tabindex="0"
-          >
-            👁️
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">
+            CONFIRM PASSWORD
+            <span class="required">*</span>
+          </label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              class="form-input"
+              placeholder="Re-enter credentials"
+              autocomplete="new-password"
+              required
+              aria-describedby="confirmPassword-error"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              id="confirmPasswordToggle"
+              aria-label="Hiển thị mật khẩu"
+              tabindex="0"
+            >👁️</button>
+          </div>
+          <span id="confirmPassword-error" class="error-message" role="alert"></span>
+        </div>
+
+        <div class="access-submit-block">
+          <span class="access-action-label">CREATE PROFILE</span>
+          <button type="submit" class="btn-primary" id="signupBtn">
+            <span id="signupBtnText">Tạo tài khoản</span>
+            <span id="signupBtnSpinner" class="btn-spinner" style="display: none;"></span>
           </button>
         </div>
-        <span id="confirmPassword-error" class="error-message" role="alert"></span>
-      </div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="btn-primary" id="signupBtn">
-        <span id="signupBtnText">Tạo tài khoản</span>
-        <span id="signupBtnSpinner" class="btn-spinner" style="display: none;"></span>
-      </button>
+        <div class="trust-links">
+          By registering, you agree to our
+          <a href="#" target="_blank">Terms of Use</a>
+          and
+          <a href="#" target="_blank">Privacy Policy</a>.
+        </div>
 
-      <!-- Trust Links -->
-      <div class="trust-links">
-        Bằng việc đăng ký, bạn đồng ý với
-        <a href="#" target="_blank">Điều khoản sử dụng</a>
-        và
-        <a href="#" target="_blank">Chính sách bảo mật</a>
-        của chúng tôi.
-      </div>
-
-      <!-- Footer Link -->
-      <div class="auth-footer">
-        Đã có tài khoản?
-        <a href="login.html" class="auth-footer-link">Đăng nhập ngay</a>
-      </div>
-    </form>
+        <div class="auth-footer">
+          Existing operator?
+          <a href="login.html" class="auth-footer-link">Request access</a>
+        </div>
+      </form>
+    </section>
   </main>
 
   <script type="module" src="../js/modules/signup_entry.js"></script>
