@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rhodes Island Music Archive</title>
+    <title>Music Archive</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
@@ -28,7 +28,10 @@
         <div class="music-header-meta">
           <span class="music-meta-line">BUILD 1.0</span>
           <span class="music-meta-line">NODE A9-05-30-26</span>
-          <span class="music-status-badge music-status-ready">READY</span>
+          <span class="music-status-badge music-status-ready">
+            <span class="music-status-badge-icon" aria-hidden="true"></span>
+            <span>READY</span>
+          </span>
         </div>
       </header>
 
@@ -44,25 +47,27 @@
           </button>
           <div class="search-container">
             <label for="searchInput" class="music-search-label">QUERY</label>
-            <input
-              type="text"
-              id="searchInput"
-              class="search-input"
-              placeholder="Search tracks, artists, genres, regions..."
-              autocomplete="off"
-              aria-label="Tìm kiếm bài hát"
-            />
+            <div class="music-search-field">
+              <span class="music-search-icon" aria-hidden="true"></span>
+              <input
+                type="text"
+                id="searchInput"
+                class="search-input"
+                placeholder="Search tracks, artists, genres, regions..."
+                autocomplete="off"
+                aria-label="Tìm kiếm bài hát"
+              />
+            </div>
           </div>
           <div class="volume-control-bar">
             <span class="music-vol-label">VOL</span>
             <canvas id="volumeCanvas" width="100" height="20" aria-label="Điều chỉnh âm lượng"></canvas>
-            <button id="eraserBtn" class="music-eraser-btn" aria-label="Xóa bản vẽ">CLR</button>
+            <button id="eraserBtn" class="music-eraser-btn" aria-label="Xóa bản vẽ"></button>
           </div>
         </div>
       </div>
 
       <div class="music-layout">
-        <!-- Left: Archive Navigation (static subsystem map) -->
         <aside class="music-nav-panel music-terminal-panel" aria-label="Archive navigation">
           <div class="music-panel-label">
             <span class="music-module-id-sm">[NAV-01]</span>
@@ -82,7 +87,6 @@
           </div>
         </aside>
 
-        <!-- Center: Dynamic content -->
         <section class="music-main-panel">
           <div class="music-database-panel music-terminal-panel" data-module="DB-003">
             <div class="music-panel-label">
@@ -108,7 +112,7 @@
             <div class="music-list" id="musicList"></div>
 
             <div class="empty-state" id="emptyState" style="display: none;">
-              <div class="empty-state-icon" aria-hidden="true">◇</div>
+              <div class="empty-state-icon" aria-hidden="true"></div>
               <div class="empty-state-text">NO RECORDS IN BUFFER</div>
               <div class="empty-state-hint">Select an archive category to load track data</div>
             </div>
@@ -120,7 +124,6 @@
           </div>
         </section>
 
-        <!-- Right: Playback monitor (static labels; live data in bottom player) -->
         <aside class="music-side-panel music-terminal-panel" aria-label="Playback monitor">
           <div class="music-panel-label">
             <span class="music-module-id-sm">[PLY-004]</span>
@@ -133,7 +136,10 @@
             <dt>PLAY MODE</dt>
             <dd class="music-monitor-mode">STANDARD</dd>
             <dt>SYSTEM</dt>
-            <dd class="music-monitor-sys">ONLINE</dd>
+            <dd class="music-monitor-sys">
+              <span class="music-monitor-sys-icon" aria-hidden="true"></span>
+              ONLINE
+            </dd>
           </dl>
           <div class="music-side-footer">
             <span class="music-meta-line">SYS-001</span>
@@ -142,7 +148,6 @@
       </div>
     </div>
 
-    <!-- Queue Panel -->
     <div id="queuePanel" class="queue-panel">
       <div class="queue-panel-header">
         <div class="music-queue-header-text">
@@ -150,25 +155,24 @@
           <h3>PLAYBACK QUEUE</h3>
         </div>
         <div class="queue-panel-actions">
-          <button id="clearQueueBtn" class="queue-clear-btn" title="Xóa tất cả">CLR</button>
-          <button id="closeQueueBtn" class="queue-close-btn" title="Đóng">✕</button>
+          <button id="clearQueueBtn" class="queue-clear-btn" title="Xóa tất cả" aria-label="Xóa tất cả"></button>
+          <button id="closeQueueBtn" class="queue-close-btn" title="Đóng" aria-label="Đóng"></button>
         </div>
       </div>
       <div class="queue-list" id="queueList">
         <div class="queue-empty">
-          <div class="queue-empty-icon" aria-hidden="true">◇</div>
+          <div class="queue-empty-icon" aria-hidden="true"></div>
           <div class="queue-empty-text">QUEUE EMPTY</div>
           <div class="queue-empty-hint">Add tracks to initialize playback queue</div>
         </div>
       </div>
     </div>
 
-    <button id="queueToggleBtn" class="queue-toggle-btn" title="Hàng đợi phát">
-      <span class="music-queue-toggle-label">QUE</span>
+    <button id="queueToggleBtn" class="queue-toggle-btn" title="Hàng đợi phát" aria-label="Hàng đợi phát">
+      <span class="music-queue-toggle-icon" aria-hidden="true"></span>
       <span class="queue-count">0</span>
     </button>
 
-    <!-- Now Playing Module -->
     <div id="controlsContainer" class="controls-container">
       <div class="music-now-playing-label">
         <span class="music-module-id-sm">[PLY-006]</span>
@@ -179,12 +183,12 @@
           <span id="currentSongTitle">NO TRACK SELECTED</span>
         </div>
         <div class="control-buttons">
-          <button id="shuffleBtn" aria-label="Bật/tắt phát ngẫu nhiên">SHF</button>
-          <button id="prevBtn" aria-label="Bài trước">PREV</button>
-          <button id="pauseResumeBtn" aria-label="Phát/Tạm dừng">PLAY</button>
-          <button id="nextBtn" aria-label="Bài tiếp">NEXT</button>
-          <button id="repeatBtn" aria-label="Bật/tắt lặp lại">RPT</button>
-          <button id="addToPlaylistBtn" class="add-to-playlist-btn" aria-label="Thêm bài hát vào playlist">ADD</button>
+          <button id="shuffleBtn" type="button" aria-label="Bật/tắt phát ngẫu nhiên"></button>
+          <button id="prevBtn" type="button" aria-label="Bài trước"></button>
+          <button id="pauseResumeBtn" type="button" aria-label="Phát/Tạm dừng"></button>
+          <button id="nextBtn" type="button" aria-label="Bài tiếp"></button>
+          <button id="repeatBtn" type="button" aria-label="Bật/tắt lặp lại"></button>
+          <button id="addToPlaylistBtn" class="add-to-playlist-btn" type="button" aria-label="Thêm bài hát vào playlist"></button>
         </div>
         <div class="progress-container">
           <span id="currentTime" aria-label="Thời gian hiện tại">0:00</span>

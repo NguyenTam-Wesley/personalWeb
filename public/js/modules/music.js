@@ -1,5 +1,12 @@
 import { supabase } from "../supabase/supabase.js";
 import { User } from "../supabase/user.js";
+import {
+  musicIcon,
+  setMusicIcon,
+  setPlayPauseIcon,
+  categoryIconName,
+  getNotificationIconMarkup
+} from "./music-icons.js";
 
 export class MusicPlayer {
   constructor() {
@@ -102,6 +109,15 @@ export class MusicPlayer {
 
     // Initialize button states
     this.updateButtons();
+    setPlayPauseIcon(this.elements.pauseResumeBtn, "play");
+    setMusicIcon(this.elements.prevBtn, "prev");
+    setMusicIcon(this.elements.nextBtn, "next");
+    setMusicIcon(this.elements.addToPlaylistBtn, "add");
+    setMusicIcon(this.elements.eraserBtn, "pencil");
+    setMusicIcon(this.elements.clearQueueBtn, "clear");
+    setMusicIcon(this.elements.closeQueueBtn, "close");
+    const queueToggleIcon = this.elements.queueToggleBtn.querySelector(".music-queue-toggle-icon");
+    if (queueToggleIcon) setMusicIcon(queueToggleIcon, "queue");
 
     this.init();
 
@@ -301,8 +317,26 @@ export class MusicPlayer {
   }
 
   // Initialize
+  initPageIcons() {
+    const searchIcon = document.querySelector(".music-search-icon");
+    if (searchIcon) searchIcon.innerHTML = musicIcon("search");
+
+    const emptyIcon = document.querySelector("#emptyState .empty-state-icon");
+    if (emptyIcon) emptyIcon.innerHTML = musicIcon("empty");
+
+    const queueEmptyIcon = document.querySelector("#queueList .queue-empty-icon");
+    if (queueEmptyIcon) queueEmptyIcon.innerHTML = musicIcon("empty");
+
+    const statusIcon = document.querySelector(".music-status-badge-icon");
+    if (statusIcon) statusIcon.innerHTML = musicIcon("statusReady");
+
+    const sysIcon = document.querySelector(".music-monitor-sys-icon");
+    if (sysIcon) sysIcon.innerHTML = musicIcon("statusOnline");
+  }
+
   async init() {
     try {
+      this.initPageIcons();
       // Luôn setup event listeners trước
       this.setupEventListeners();
       
@@ -363,7 +397,7 @@ export class MusicPlayer {
     // Eraser
     this.elements.eraserBtn.addEventListener("click", () => {
       this.state.erasing = !this.state.erasing;
-      this.elements.eraserBtn.textContent = this.state.erasing ? "🧽" : "✏️";
+      setMusicIcon(this.elements.eraserBtn, this.state.erasing ? "eraser" : "pencil");
     });
 
     // Navigation
@@ -432,13 +466,26 @@ export class MusicPlayer {
   }
 
   getNotificationIcon(type) {
-    const icons = {
-      success: "✅",
-      error: "❌",
-      warning: "⚠️",
-      info: "ℹ️"
-    };
-    return icons[type] || icons.info;
+    return getNotificationIconMarkup(type);
+  }
+
+  buildMenuItem(label, type) {
+    const menuItem = document.createElement("div");
+    menuItem.className = "menu-item";
+    menuItem.innerHTML = `<span class="menu-item-icon">${musicIcon(categoryIconName(type))}</span><span class="menu-item-label">${label}</span>`;
+    menuItem.setAttribute("role", "button");
+    menuItem.setAttribute("tabindex", "0");
+    menuItem.setAttribute("aria-label", label);
+    menuItem.addEventListener("click", () => {
+      this.loadCategory(type, label);
+    });
+    menuItem.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        this.loadCategory(type, label);
+      }
+    });
+    return menuItem;
   }
 
   // Main Menu với phân trang
@@ -474,10 +521,10 @@ export class MusicPlayer {
       this.elements.backBtn.style.display = "none";
 
       const categories = [
-        { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
-        { emoji: "🎧", label: "Thể loại", type: "genre" },
-        { emoji: "🌍", label: "Khu vực", type: "region" },
-        { emoji: "📂", label: "Playlist", type: "playlist" }
+        { label: "Nghệ sĩ", type: "artist" },
+        { label: "Thể loại", type: "genre" },
+        { label: "Khu vực", type: "region" },
+        { label: "Playlist", type: "playlist" }
       ];
 
       // Phân trang
@@ -487,23 +534,8 @@ export class MusicPlayer {
       const pageCategories = categories.slice(startIdx, endIdx);
 
       const fragment = document.createDocumentFragment();
-      pageCategories.forEach(({ emoji, label, type }) => {
-        const menuItem = document.createElement("div");
-        menuItem.className = "menu-item";
-        menuItem.textContent = `${emoji} ${label}`;
-        menuItem.setAttribute("role", "button");
-        menuItem.setAttribute("tabindex", "0");
-        menuItem.setAttribute("aria-label", label);
-        menuItem.addEventListener("click", () => {
-          this.loadCategory(type, `${emoji} ${label}`);
-        });
-        menuItem.addEventListener("keypress", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            this.loadCategory(type, `${emoji} ${label}`);
-          }
-        });
-        fragment.appendChild(menuItem);
+      pageCategories.forEach(({ label, type }) => {
+        fragment.appendChild(this.buildMenuItem(label, type));
       });
       this.elements.mainMenu.appendChild(fragment);
 
@@ -827,9 +859,8 @@ export class MusicPlayer {
 
     // Thumbnail placeholder
     const thumbnail = document.createElement("div");
-    thumbnail.className = "music-thumbnail";
-    thumbnail.style.background = "linear-gradient(135deg, #4e7cff 0%, #f093fb 100%)";
-    thumbnail.textContent = "🎵";
+    thumbnail.className = "music-thumbnail music-thumbnail--icon";
+    thumbnail.innerHTML = musicIcon("track");
 
     // Song info
     const info = document.createElement("div");
@@ -855,7 +886,7 @@ export class MusicPlayer {
       const addBtn = document.createElement("button");
       addBtn.className = "add-to-playlist-btn";
       addBtn.setAttribute("aria-label", `Thêm ${song.song_name} vào playlist`);
-      addBtn.textContent = "➕";
+      setMusicIcon(addBtn, "add");
       addBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         this.showAddToPlaylistPopup(song.id);
@@ -869,7 +900,7 @@ export class MusicPlayer {
       removeBtn.className = "remove-from-playlist-btn";
       removeBtn.setAttribute("aria-label", `Xóa ${song.song_name} khỏi playlist`);
       removeBtn.setAttribute("title", "Xóa khỏi playlist");
-      removeBtn.textContent = "🗑️";
+      setMusicIcon(removeBtn, "remove");
       removeBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         if (confirm(`Xóa "${song.song_name}" khỏi playlist?`)) {
@@ -885,7 +916,7 @@ export class MusicPlayer {
     playNextBtn.className = "queue-btn play-next-btn";
     playNextBtn.setAttribute("aria-label", `Phát ${song.song_name} tiếp theo`);
     playNextBtn.setAttribute("title", "Phát tiếp theo");
-    playNextBtn.textContent = "⏭️";
+    setMusicIcon(playNextBtn, "playNext");
     playNextBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.playNext(song);
@@ -897,7 +928,7 @@ export class MusicPlayer {
     queueBtn.className = "queue-btn add-queue-btn";
     queueBtn.setAttribute("aria-label", `Thêm ${song.song_name} vào hàng đợi`);
     queueBtn.setAttribute("title", "Thêm vào hàng đợi");
-    queueBtn.textContent = "📥";
+    setMusicIcon(queueBtn, "queueAdd");
     queueBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.addToQueue(song);
@@ -907,7 +938,7 @@ export class MusicPlayer {
     // Play overlay
     const overlay = document.createElement("div");
     overlay.className = "music-play-overlay";
-    overlay.textContent = "▶️";
+    overlay.innerHTML = musicIcon("play");
 
     item.appendChild(thumbnail);
     item.appendChild(info);
@@ -917,7 +948,7 @@ export class MusicPlayer {
     // Click handler - 100% clickable
     item.addEventListener("click", (e) => {
       // Don't trigger if clicking on add button
-      if (!e.target.closest(".add-to-playlist-btn")) {
+      if (!e.target.closest(".music-item-actions button")) {
         this.playSongById(song.id);
       }
     });
@@ -1106,10 +1137,10 @@ export class MusicPlayer {
 
     // Store original categories
     this.originalCategories = [
-      { emoji: "🎤", label: "Nghệ sĩ", type: "artist" },
-      { emoji: "🎧", label: "Thể loại", type: "genre" },
-      { emoji: "🌍", label: "Khu vực", type: "region" },
-      { emoji: "📂", label: "Playlist", type: "playlist" }
+      { label: "Nghệ sĩ", type: "artist" },
+      { label: "Thể loại", type: "genre" },
+      { label: "Khu vực", type: "region" },
+      { label: "Playlist", type: "playlist" }
     ];
 
     let searchTimeout;
@@ -1130,23 +1161,8 @@ export class MusicPlayer {
     mainMenu.innerHTML = "";
 
     const fragment = document.createDocumentFragment();
-    categories.forEach(({ emoji, label, type }) => {
-      const menuItem = document.createElement("div");
-      menuItem.className = "menu-item";
-      menuItem.textContent = `${emoji} ${label}`;
-      menuItem.setAttribute("role", "button");
-      menuItem.setAttribute("tabindex", "0");
-      menuItem.setAttribute("aria-label", label);
-      menuItem.addEventListener("click", () => {
-        this.loadCategory(type, `${emoji} ${label}`);
-      });
-      menuItem.addEventListener("keypress", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          this.loadCategory(type, `${emoji} ${label}`);
-        }
-      });
-      fragment.appendChild(menuItem);
+    categories.forEach(({ label, type }) => {
+      fragment.appendChild(this.buildMenuItem(label, type));
     });
     mainMenu.appendChild(fragment);
   }
@@ -1168,7 +1184,6 @@ export class MusicPlayer {
     // Filter categories
     const filteredCategories = this.originalCategories.filter(category =>
       category.label.toLowerCase().includes(query) ||
-      category.emoji.includes(query) ||
       category.type.toLowerCase().includes(query)
     );
 
@@ -1376,7 +1391,7 @@ export class MusicPlayer {
       this.handleError(error, "Không thể phát bài hát này");
     });
 
-    this.elements.pauseResumeBtn.textContent = "⏸";
+    setPlayPauseIcon(this.elements.pauseResumeBtn, "pause");
     this.elements.pauseResumeBtn.setAttribute("aria-label", "Tạm dừng");
 
     // Luôn hiển thị controls khi phát bài hát
@@ -1442,7 +1457,7 @@ export class MusicPlayer {
       this.handleError(error, "Không thể phát bài hát này");
     });
 
-    this.elements.pauseResumeBtn.textContent = "⏸";
+    setPlayPauseIcon(this.elements.pauseResumeBtn, "pause");
     this.elements.pauseResumeBtn.setAttribute("aria-label", "Tạm dừng");
 
     // Luôn hiển thị controls khi phát bài hát
@@ -1456,14 +1471,14 @@ export class MusicPlayer {
     if (audio.paused) {
       audio.play().then(() => {
         console.log("Gọi play() thành công");
-        this.elements.pauseResumeBtn.textContent = "⏸";
+        setPlayPauseIcon(this.elements.pauseResumeBtn, "pause");
         this.elements.pauseResumeBtn.setAttribute("aria-label", "Tạm dừng");
       }).catch(e => {
         console.error("Lỗi khi play:", e);
       });
     } else {
       audio.pause();
-      this.elements.pauseResumeBtn.textContent = "▶";
+      setPlayPauseIcon(this.elements.pauseResumeBtn, "play");
       this.elements.pauseResumeBtn.setAttribute("aria-label", "Phát");
       console.log("Gọi pause()");
     }
@@ -1763,7 +1778,7 @@ export class MusicPlayer {
     if (queueCount === 0) {
       queueList.innerHTML = `
         <div class="queue-empty">
-          <div class="queue-empty-icon">📭</div>
+          <div class="queue-empty-icon">${musicIcon("empty")}</div>
           <div class="queue-empty-text">Hàng đợi trống</div>
           <div class="queue-empty-hint">Thêm bài hát để tạo hàng đợi</div>
         </div>
@@ -1798,8 +1813,8 @@ export class MusicPlayer {
         <div class="queue-item-artist">${song.artist?.name || "Unknown"}</div>
       </div>
       <div class="queue-item-actions">
-        <button class="queue-item-remove" title="Xóa khỏi hàng đợi" data-song-id="${song.id}">
-          ✕
+        <button class="queue-item-remove" title="Xóa khỏi hàng đợi" data-song-id="${song.id}" aria-label="Xóa khỏi hàng đợi">
+          ${musicIcon("close")}
         </button>
       </div>
     `;
@@ -1841,7 +1856,7 @@ export class MusicPlayer {
         placeholder = document.createElement("div");
         placeholder.className = "queue-item drag-placeholder";
         placeholder.style.height = item.offsetHeight + "px";
-        placeholder.innerHTML = "<div style='opacity: 0.5; text-align: center;'>↕️ Kéo thả để sắp xếp</div>";
+        placeholder.innerHTML = `<div class="queue-drag-hint">${musicIcon("drag")}<span>Kéo thả để sắp xếp</span></div>`;
 
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("text/html", item.outerHTML);
@@ -1903,13 +1918,11 @@ export class MusicPlayer {
   }
 
   updateButtons() {
-    // Update repeat button
     this.elements.repeatBtn.classList.toggle("active", this.state.isRepeat);
-    this.elements.repeatBtn.textContent = this.state.isRepeat ? "🔁" : "🔂";
+    setMusicIcon(this.elements.repeatBtn, this.state.isRepeat ? "repeatOne" : "repeat");
 
-    // Update shuffle button
     this.elements.shuffleBtn.classList.toggle("active", this.state.isShuffle);
-    this.elements.shuffleBtn.textContent = this.state.isShuffle ? "🔀" : "➡️";
+    setMusicIcon(this.elements.shuffleBtn, this.state.isShuffle ? "shuffle" : "shuffleOff");
   }
 
   updateProgress() {
@@ -1995,7 +2008,7 @@ export class MusicPlayer {
     popup.innerHTML = `
       <div class="popup-content">
         <h3>Thêm bài hát vào playlist</h3>
-        <button id="createNewPlaylistBtn">➕ Tạo playlist mới</button>
+        <button id="createNewPlaylistBtn" type="button">${musicIcon("add")}<span>Tạo playlist mới</span></button>
         <div style="margin: 16px 0 8px 0; color: var(--music-text-secondary); font-size: 14px;">Hoặc chọn playlist đã có:</div>
         <div id="userPlaylistsList">Đang tải...</div>
         <div class="popup-actions">
