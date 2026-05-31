@@ -3,101 +3,236 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sudoku Game</title>
+  <title>SIM-SDK — Rhodes Island Strategic Deduction Examination</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../../../style/themes.css" />
   <link rel="stylesheet" href="../../../style/components.css" />
   <link rel="stylesheet" href="../../../style/style.css" />
   <link rel="stylesheet" href="../../../style/sudoku.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../style/strategic-deduction-exam.css" />
   <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
 </head>
-<body>
-  <div class="sudoku-center">
-    <div class="sudoku-container">
-    <div class="sudoku-header">
-      <h1>Sudoku</h1>
-      <div class="sudoku-info">
-        <div id="timer" class="sudoku-timer">⏱ 00:00</div>
-        <div class="difficulty-selector">
-          <label for="difficulty">Độ khó:</label>
-          <select id="difficulty" class="difficulty-select">
+<body class="sde-page">
+  <div class="sudoku-center sde-facility-wrap">
+    <header class="sde-header sde-panel" aria-label="Strategic Deduction Examination">
+      <div class="sde-header-main">
+        <span class="sde-module-id">[SIM-SDK]</span>
+        <div class="sde-header-text">
+          <h1>RHODES ISLAND STRATEGIC DEDUCTION EXAMINATION</h1>
+          <p class="sde-system-desc">Tactical Analysis Interface · Analytical Reasoning Assessment</p>
+        </div>
+      </div>
+      <div class="sde-header-meta" aria-label="Examination status">
+        <span class="sde-meta-line sde-meta-line--live">SIM STATUS: READY</span>
+        <span class="sde-meta-line sde-meta-line--live">ASSESSMENT STATUS: AVAILABLE</span>
+        <span class="sde-meta-line">NODE: ANA-A01</span>
+        <span class="sde-meta-line">BUILD 2.7.1</span>
+        <span class="sde-meta-line sde-meta-line--muted">ANA-214</span>
+      </div>
+    </header>
+
+    <div class="sde-layout">
+      <aside class="sde-briefing-panel sde-panel" aria-label="Assessment briefing">
+        <div class="sde-panel-label">
+          <span class="sde-module-id-sm">[BRI-01]</span>
+          <span class="sde-panel-title">ASSESSMENT BRIEFING</span>
+        </div>
+        <div class="sde-panel-divider" aria-hidden="true"></div>
+
+        <div class="sde-briefing-content">
+          <p class="sde-briefing-text">Populate the 9×9 analysis matrix with digits 1–9. Each row, column, and 3×3 sector must contain unique values.</p>
+          <p class="sde-briefing-text">Use arrow keys for cell navigation. Disable IME for optimal numeric input.</p>
+        </div>
+
+        <div class="sde-panel-divider sde-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="sde-panel-label">
+          <span class="sde-module-id-sm">[PAR-02]</span>
+          <span class="sde-panel-title">ANALYSIS PARAMETERS</span>
+        </div>
+        <div class="sde-panel-divider" aria-hidden="true"></div>
+
+        <div class="difficulty-selector sde-difficulty">
+          <label for="difficulty">COMPLEXITY LEVEL</label>
+          <select id="difficulty" class="difficulty-select sde-difficulty-select">
             <option value="easy">EZ (35-40 ô)</option>
             <option value="medium" selected>MED (45-50 ô)</option>
             <option value="hard">HARD (50-55 ô)</option>
             <option value="very_hard">VERY HARD (55-60 ô)</option>
             <option value="expert">EXPERT (60-64 ô)</option>
           </select>
-          <div id="best-time-display" class="best-time-display">Best: --:--</div>
-          <div id="rank-display" class="rank-display">Rank: --</div>
         </div>
-      </div>
-      <p>Điền các số từ 1-9 vào lưới 9x9 | Sử dụng phím mũi tên để di chuyển</p>
-    </div>
 
-    <div class="sudoku-controls">
-      <button id="checkBtn" class="btn-secondary">Kiểm tra</button>
-      <button id="resetBtn" class="btn-secondary">Chơi lại</button>
-      <button id="hintBtn" class="btn-secondary">Gợi ý</button>
-      <button id="newGameBtn" class="btn-secondary">Ván mới</button>
-      <div class="action-buttons">
-        <button id="pencilBtn" class="btn-secondary action-btn pencil" title="Pencil Mode (✏️)">✏️</button>
-        <button id="clearBtn" class="btn-secondary action-btn clear" title="Clear All (🧹)">🧹</button>
-      </div>
-      <div class="achievements-container">
-        <button id="achievementsBtn" class="btn-secondary achievements-btn">🏆 Thành tích</button>
-        <div id="achievementsDropdown" class="achievements-dropdown" style="display: none;">
-          <div class="achievements-content">
-            <h4>Thành tích của bạn</h4>
-            <div id="achievements-list" class="achievements-list">
-              <!-- Achievements will be populated here -->
-            </div>
+        <dl class="sde-assessment-meta">
+          <div class="sde-meta-row">
+            <dt>MODULE</dt>
+            <dd>SDK-ANA</dd>
           </div>
-        </div>
-      </div>
-      <div class="leaderboard-container">
-        <button id="leaderboardBtn" class="btn-secondary leaderboard-btn">🏅 Leaderboard</button>
-        <div id="leaderboardDropdown" class="leaderboard-dropdown" style="display: none;">
-          <div class="leaderboard-content">
-            <h4>Top Players</h4>
-            <div id="leaderboard-list" class="leaderboard-list">
-              <!-- Leaderboard will be populated here -->
-            </div>
+          <div class="sde-meta-row">
+            <dt>EVAL TYPE</dt>
+            <dd>DEDUCTION</dd>
           </div>
-        </div>
-      </div>
-      <div id="loadingIndicator" class="loading-indicator" style="display: none;">
-        <div class="loading-spinner"></div>
-        <span>Đang tạo đề...</span>
-      </div>
-    </div>
+          <div class="sde-meta-row">
+            <dt>MATRIX</dt>
+            <dd>9×9 SECTOR</dd>
+          </div>
+        </dl>
 
-    <div id="sudoku-grid" class="sudoku-grid"></div>
-
-    <!-- Number input buttons for mobile -->
-    <div id="number-buttons" class="number-buttons">
-      <div class="number-buttons-grid">
-        <button class="number-btn" data-number="1">1</button>
-        <button class="number-btn" data-number="2">2</button>
-        <button class="number-btn" data-number="3">3</button>
-        <button class="number-btn" data-number="4">4</button>
-        <button class="number-btn" data-number="5">5</button>
-        <button class="number-btn" data-number="6">6</button>
-        <button class="number-btn" data-number="7">7</button>
-        <button class="number-btn" data-number="8">8</button>
-        <button class="number-btn" data-number="9">9</button>
-        <button id="deleteBtn" class="number-btn delete-btn" data-number="delete">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12H3"></path>
-            <path d="M19 6l-6 6-6-6"></path>
+        <div class="sde-notice" role="note">
+          <svg class="sde-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="1" /><path d="M12 8v5M12 16h.01" />
           </svg>
-        </button>
-      </div>
-    </div>
+          <p>Performance metrics are recorded upon assessment completion. Maintain analytical focus throughout the examination.</p>
+        </div>
+      </aside>
 
-    <div class="sudoku-instructions">
-      <p><strong>Lưu ý:</strong> Tắt IME (gõ tiếng Việt) để nhập số mượt mà nhất</p>
+      <section class="sudoku-container sde-sim-panel sde-panel" aria-label="Deduction matrix">
+        <div class="sde-panel-label sde-panel-label--center">
+          <span class="sde-module-id-sm">[MAT-03]</span>
+          <span class="sde-panel-title">DEDUCTION GRID</span>
+        </div>
+        <div class="sde-panel-divider" aria-hidden="true"></div>
+
+        <div class="sudoku-controls sde-controls">
+          <button id="checkBtn" class="btn-secondary sde-btn">VALIDATE ANALYSIS</button>
+          <button id="resetBtn" class="btn-secondary sde-btn">RESET MATRIX</button>
+          <button id="hintBtn" class="btn-secondary sde-btn">REQUEST ANALYSIS AID</button>
+          <button id="newGameBtn" class="btn-secondary sde-btn">INITIALIZE EXAMINATION</button>
+          <div class="action-buttons sde-action-buttons">
+            <button id="pencilBtn" class="btn-secondary action-btn pencil sde-btn-icon" title="Annotation Mode" aria-label="Annotation mode">
+              <svg class="sde-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                <path d="M4 20h4l10-10-4-4L4 16v4z" /><path d="M14 6l4 4" />
+              </svg>
+            </button>
+            <button id="clearBtn" class="btn-secondary action-btn clear sde-btn-icon" title="Clear matrix inputs" aria-label="Clear matrix inputs">
+              <svg class="sde-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                <path d="M4 7h16M9 7V5h6v2M7 7l1 14h8l1-14" />
+              </svg>
+            </button>
+          </div>
+          <div class="achievements-container sde-dropdown-wrap">
+            <button id="achievementsBtn" class="btn-secondary achievements-btn sde-btn sde-btn-with-icon">
+              <svg class="sde-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                <path d="M8 21h8M12 17v4M7 4h10l1 8a5 5 0 0 1-10 0L7 4z" />
+              </svg>
+              ASSESSMENT RECORDS
+            </button>
+            <div id="achievementsDropdown" class="achievements-dropdown sde-dropdown" style="display: none;">
+              <div class="achievements-content">
+                <h4>OPERATOR ASSESSMENT INDEX</h4>
+                <div id="achievements-list" class="achievements-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="leaderboard-container sde-dropdown-wrap">
+            <button id="leaderboardBtn" class="btn-secondary leaderboard-btn sde-btn sde-btn-with-icon">
+              <svg class="sde-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                <path d="M4 20V10M10 20V4M16 20v-8M22 20H2" />
+              </svg>
+              PERFORMANCE INDEX
+            </button>
+            <div id="leaderboardDropdown" class="leaderboard-dropdown sde-dropdown" style="display: none;">
+              <div class="leaderboard-content">
+                <h4>OPERATOR PERFORMANCE INDEX</h4>
+                <div id="leaderboard-list" class="leaderboard-list"></div>
+              </div>
+            </div>
+          </div>
+          <div id="loadingIndicator" class="loading-indicator sde-loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <span>Generating examination matrix...</span>
+          </div>
+        </div>
+
+        <div id="sudoku-grid" class="sudoku-grid sde-matrix"></div>
+
+        <div id="number-buttons" class="number-buttons sde-number-pad">
+          <div class="number-buttons-grid">
+            <button class="number-btn" data-number="1">1</button>
+            <button class="number-btn" data-number="2">2</button>
+            <button class="number-btn" data-number="3">3</button>
+            <button class="number-btn" data-number="4">4</button>
+            <button class="number-btn" data-number="5">5</button>
+            <button class="number-btn" data-number="6">6</button>
+            <button class="number-btn" data-number="7">7</button>
+            <button class="number-btn" data-number="8">8</button>
+            <button class="number-btn" data-number="9">9</button>
+            <button id="deleteBtn" class="number-btn delete-btn" data-number="delete" aria-label="Clear cell">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12H3"></path>
+                <path d="M19 6l-6 6-6-6"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="sde-assessment-status" role="status">
+          <span class="sde-status-label">ASSESSMENT STATUS</span>
+          <span class="sde-status-value">ACTIVE · IN PROGRESS</span>
+        </div>
+      </section>
+
+      <aside class="sde-metrics-panel sde-panel" aria-label="Evaluation metrics">
+        <div class="sde-panel-label">
+          <span class="sde-module-id-sm">[MET-04]</span>
+          <span class="sde-panel-title">EVALUATION METRICS</span>
+        </div>
+        <div class="sde-panel-divider" aria-hidden="true"></div>
+
+        <div class="sudoku-info sde-metrics">
+          <div class="sde-metric-block">
+            <span class="sde-metric-label">TIME ELAPSED</span>
+            <div id="timer" class="sudoku-timer sde-metric-value">⏱ 00:00</div>
+          </div>
+          <div class="sde-metric-block">
+            <span class="sde-metric-label">PEAK PERFORMANCE</span>
+            <div id="best-time-display" class="best-time-display sde-metric-value">Best: --:--</div>
+          </div>
+          <div class="sde-metric-block">
+            <span class="sde-metric-label">OPERATOR STANDING</span>
+            <div id="rank-display" class="rank-display sde-metric-value">Rank: --</div>
+          </div>
+        </div>
+
+        <div class="sde-panel-divider sde-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="sde-panel-label">
+          <span class="sde-module-id-sm">[EVL-05]</span>
+          <span class="sde-panel-title">EVALUATION CRITERIA</span>
+        </div>
+        <div class="sde-panel-divider" aria-hidden="true"></div>
+        <ul class="sde-criteria-list">
+          <li class="sde-criteria-item">
+            <span class="sde-criteria-code">DED</span>
+            <span>Logical deduction accuracy</span>
+          </li>
+          <li class="sde-criteria-item">
+            <span class="sde-criteria-code">PAT</span>
+            <span>Pattern recognition speed</span>
+          </li>
+          <li class="sde-criteria-item">
+            <span class="sde-criteria-code">SEC</span>
+            <span>Sector constraint compliance</span>
+          </li>
+        </ul>
+
+        <div class="sde-validation-block" role="note">
+          <svg class="sde-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <path d="M9 12l2 2 4-4" /><rect x="3" y="3" width="18" height="18" rx="1" />
+          </svg>
+          <div>
+            <span class="sde-validation-label">RECORD STATUS</span>
+            <span class="sde-validation-value">AWAITING COMPLETION</span>
+          </div>
+        </div>
+
+        <div class="sudoku-instructions sde-instructions">
+          <p><strong>Input note:</strong> Disable IME (Vietnamese input) for optimal numeric entry during examination.</p>
+        </div>
+      </aside>
     </div>
   </div>
-</div>
 
   <script type="module" src="../../../js/modules/sudoku_entry.js"></script>
 </body>

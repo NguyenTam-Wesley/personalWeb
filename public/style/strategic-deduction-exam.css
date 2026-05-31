@@ -1,0 +1,917 @@
+/* Rhodes Island Strategic Deduction Examination — sudoku.html only (scoped to .sde-page) */
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
+
+.sde-page {
+  --sudoku-bg: var(--bg-secondary, #e4e8ed);
+  --sudoku-surface: var(--bg-primary, #fafbfc);
+  --sudoku-surface-raised: var(--bg-tertiary, #f0f3f7);
+  --sudoku-border: var(--border-medium, #b8c2ce);
+  --sudoku-text: var(--text-primary, #141a22);
+  --sudoku-muted: var(--text-muted, #4f5d6b);
+  --sudoku-accent: var(--music-terminal-accent, var(--study-archive-accent, #c99400));
+  --sudoku-accent-hover: var(--music-terminal-hover, #dce2ea);
+  --sudoku-status: var(--music-terminal-success, #2d8a3e);
+  --sudoku-error: var(--error, #c73f2e);
+  --sudoku-font: "Inter", system-ui, -apple-system, sans-serif;
+  --sudoku-mono: "JetBrains Mono", ui-monospace, monospace;
+  --sudoku-radius: 2px;
+  --sudoku-motion: 160ms ease;
+  --board-width: min(92vw, 420px);
+
+  /* Highlight overrides — industrial accent instead of pink */
+  --hl-cell: color-mix(in srgb, var(--sudoku-accent) 18%, var(--sudoku-surface));
+  --hl-line: color-mix(in srgb, var(--sudoku-accent) 8%, var(--sudoku-surface));
+  --hl-same: color-mix(in srgb, var(--sudoku-accent) 12%, var(--sudoku-surface-raised));
+
+  font-family: var(--sudoku-font);
+  color: var(--sudoku-text);
+  background: var(--sudoku-bg) !important;
+}
+
+[data-theme="dark"] .sde-page {
+  --sudoku-bg: var(--bg-secondary, #12161d);
+  --sudoku-surface: var(--bg-primary, #171c24);
+  --sudoku-surface-raised: var(--bg-tertiary, #1e2530);
+  --sudoku-border: var(--border-medium, #2a313c);
+  --sudoku-text: var(--text-primary, #e8edf2);
+  --sudoku-muted: var(--text-muted, #9aa4b2);
+  --sudoku-accent: var(--music-terminal-accent, #f7b500);
+  --sudoku-accent-hover: var(--music-terminal-hover, #1e2530);
+  --sudoku-status: var(--music-terminal-success, #74d680);
+  --sudoku-error: var(--music-terminal-warning, #ff6b5a);
+
+  --hl-cell: color-mix(in srgb, var(--sudoku-accent) 15%, var(--sudoku-surface));
+  --hl-line: color-mix(in srgb, var(--sudoku-accent) 6%, var(--sudoku-surface));
+  --hl-same: color-mix(in srgb, var(--sudoku-accent) 10%, var(--sudoku-surface-raised));
+}
+
+/* ==========================================================================
+   SHELL — override sudoku.css body / layout
+   ========================================================================== */
+
+.sde-page {
+  display: block !important;
+  padding-top: calc(var(--header-height, 4rem) + 1rem) !important;
+  padding-bottom: calc(var(--footer-height, 3.5rem) + 1rem) !important;
+}
+
+.sde-page .sudoku-center.sde-facility-wrap {
+  display: block;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 12px 12px 48px;
+  box-sizing: border-box;
+}
+
+.sde-page .sudoku-container.sde-sim-panel {
+  flex: unset;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  padding: 0 0 14px;
+}
+
+/* ==========================================================================
+   PANELS
+   ========================================================================== */
+
+.sde-panel {
+  background: var(--sudoku-surface);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+  position: relative;
+}
+
+.sde-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--sudoku-accent);
+  border-right: 2px solid var(--sudoku-accent);
+  pointer-events: none;
+}
+
+.sde-module-id,
+.sde-module-id-sm {
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sudoku-accent);
+  letter-spacing: 0.04em;
+}
+
+.sde-panel-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 14px 0;
+}
+
+.sde-panel-label--center {
+  justify-content: center;
+}
+
+.sde-panel-title {
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--sudoku-text);
+  text-transform: uppercase;
+}
+
+.sde-panel-divider {
+  height: 1px;
+  margin: 8px 14px 12px;
+  background: linear-gradient(
+    90deg,
+    var(--sudoku-accent) 0%,
+    var(--sudoku-border) 40%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
+
+.sde-panel-divider--spaced {
+  margin-top: 14px;
+}
+
+.sde-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--sudoku-accent);
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.sde-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  animation: sde-fade-in var(--sudoku-motion) forwards;
+}
+
+.sde-header-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.sde-header h1 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: var(--sudoku-text);
+  text-align: left;
+  text-shadow: none !important;
+}
+
+.sde-system-desc {
+  margin: 0;
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--sudoku-muted);
+}
+
+.sde-header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+}
+
+.sde-meta-line {
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--sudoku-muted);
+}
+
+.sde-meta-line--live {
+  color: var(--sudoku-accent);
+}
+
+.sde-meta-line--muted {
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+
+.sde-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr) minmax(180px, 220px);
+  gap: 12px;
+  align-items: start;
+}
+
+.sde-briefing-panel,
+.sde-metrics-panel {
+  padding: 0 0 14px;
+  animation: sde-fade-in var(--sudoku-motion) forwards;
+}
+
+.sde-briefing-panel {
+  animation-delay: 40ms;
+}
+
+.sde-metrics-panel {
+  animation-delay: 80ms;
+}
+
+.sde-sim-panel {
+  animation: sde-fade-in var(--sudoku-motion) 60ms forwards;
+}
+
+/* ==========================================================================
+   LEFT — BRIEFING
+   ========================================================================== */
+
+.sde-briefing-content {
+  padding: 0 14px;
+}
+
+.sde-briefing-text {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--sudoku-text);
+}
+
+.sde-page .difficulty-selector.sde-difficulty {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 0 14px;
+}
+
+.sde-page .difficulty-selector.sde-difficulty label {
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sudoku-muted);
+}
+
+.sde-page .difficulty-select.sde-difficulty-select {
+  width: 100%;
+  padding: 8px 10px;
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  color: var(--sudoku-text);
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+}
+
+.sde-page .difficulty-select.sde-difficulty-select:hover,
+.sde-page .difficulty-select.sde-difficulty-select:focus {
+  border-color: var(--sudoku-accent);
+  background: var(--sudoku-surface-raised);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sudoku-accent) 25%, transparent);
+}
+
+.sde-assessment-meta {
+  margin: 14px 0 0;
+  padding: 0 14px;
+}
+
+.sde-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--sudoku-border) 60%, transparent);
+}
+
+.sde-meta-row:last-child {
+  border-bottom: none;
+}
+
+.sde-meta-row dt {
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--sudoku-muted);
+  font-weight: 500;
+}
+
+.sde-meta-row dd {
+  margin: 0;
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--sudoku-text);
+}
+
+.sde-notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 14px 14px 0;
+  padding: 10px;
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+}
+
+.sde-notice p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--sudoku-muted);
+}
+
+/* ==========================================================================
+   CENTER — CONTROLS & MATRIX
+   ========================================================================== */
+
+.sde-page .sudoku-controls.sde-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 14px 12px;
+  margin-bottom: 0;
+}
+
+.sde-page .btn-secondary.sde-btn,
+.sde-page .btn-secondary.sde-btn-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sudoku-text);
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+  transition: border-color var(--sudoku-motion), background var(--sudoku-motion);
+}
+
+.sde-page .btn-secondary.sde-btn:hover,
+.sde-page .btn-secondary.sde-btn-with-icon:hover {
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--sudoku-accent) 12%, var(--sudoku-surface-raised));
+  border-color: var(--sudoku-accent);
+  color: var(--sudoku-text);
+}
+
+.sde-page .btn-secondary.sde-btn-icon {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sde-page .action-btn.pencil.active {
+  background: color-mix(in srgb, var(--sudoku-accent) 20%, var(--sudoku-surface-raised));
+  color: var(--sudoku-accent);
+  border-color: var(--sudoku-accent);
+}
+
+.sde-page .action-btn.clear {
+  background: color-mix(in srgb, var(--sudoku-error) 10%, var(--sudoku-surface-raised));
+  color: var(--sudoku-error);
+  border-color: color-mix(in srgb, var(--sudoku-error) 40%, var(--sudoku-border));
+}
+
+.sde-page .action-btn.clear:hover {
+  background: color-mix(in srgb, var(--sudoku-error) 18%, var(--sudoku-surface-raised));
+}
+
+.sde-page .loading-indicator.sde-loading {
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  color: var(--sudoku-accent);
+}
+
+.sde-page .loading-spinner {
+  border-color: var(--sudoku-border);
+  border-top-color: var(--sudoku-accent);
+}
+
+/* Matrix grid */
+.sde-page .sudoku-grid.sde-matrix {
+  width: var(--board-width);
+  height: var(--board-width);
+  margin: 0 auto;
+  gap: 1px;
+  padding: 4px;
+  background: var(--sudoku-border);
+  border: 2px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sudoku-accent) 12%, transparent);
+}
+
+.sde-page .sudoku-cell {
+  font-family: var(--sudoku-mono);
+  font-weight: 700;
+  background: var(--sudoku-surface) !important;
+  border: 1px solid color-mix(in srgb, var(--sudoku-border) 80%, transparent);
+  border-radius: 0;
+  transition: background var(--sudoku-motion), border-color var(--sudoku-motion);
+}
+
+.sde-page .sudoku-cell:nth-child(3n) {
+  border-right: 2px solid var(--sudoku-border);
+}
+
+.sde-page .sudoku-cell:nth-child(n+19):nth-child(-n+27),
+.sde-page .sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 2px solid var(--sudoku-border);
+}
+
+.sde-page .sudoku-cell.given {
+  background: var(--sudoku-surface-raised) !important;
+  color: var(--sudoku-text);
+  font-weight: 700 !important;
+}
+
+.sde-page .sudoku-cell.given .cell-value {
+  color: var(--sudoku-text) !important;
+  -webkit-text-fill-color: var(--sudoku-text) !important;
+}
+
+.sde-page .sudoku-cell:not(.given) .cell-value {
+  color: var(--sudoku-accent) !important;
+  -webkit-text-fill-color: var(--sudoku-accent) !important;
+}
+
+.sde-page .sudoku-cell.focus-cell {
+  outline: 2px solid var(--sudoku-accent) !important;
+  outline-offset: -2px;
+}
+
+.sde-page .sudoku-cell.selected {
+  background: var(--hl-cell) !important;
+  border-color: var(--sudoku-accent);
+  box-shadow: inset 0 0 0 1px var(--sudoku-accent);
+}
+
+.sde-page .sudoku-cell.selected:not(.given) {
+  color: var(--sudoku-accent);
+}
+
+.sde-page .sudoku-cell:focus {
+  background: var(--hl-cell) !important;
+  border-color: var(--sudoku-accent);
+  box-shadow: inset 0 0 0 1px var(--sudoku-accent);
+}
+
+.sde-page .sudoku-cell:not(.given):focus {
+  color: var(--sudoku-accent);
+  outline: 2px solid var(--sudoku-accent);
+}
+
+.sde-page .sudoku-cell.conflict,
+.sde-page .sudoku-cell.wrong {
+  background: color-mix(in srgb, var(--sudoku-error) 12%, var(--sudoku-surface)) !important;
+  color: var(--sudoku-error) !important;
+  border-color: var(--sudoku-error) !important;
+}
+
+.sde-page .sudoku-cell.empty {
+  background: color-mix(in srgb, var(--sudoku-accent) 8%, var(--sudoku-surface)) !important;
+  border-color: var(--sudoku-accent);
+}
+
+.sde-page .sudoku-cell.correct {
+  background: color-mix(in srgb, var(--sudoku-status) 12%, var(--sudoku-surface)) !important;
+  color: var(--sudoku-status) !important;
+  border-color: var(--sudoku-status);
+}
+
+.sde-page .cell-notes,
+.sde-page .cell-notes span {
+  color: var(--sudoku-muted) !important;
+}
+
+.sde-page .cell-notes span.active {
+  color: var(--sudoku-accent) !important;
+}
+
+@keyframes sde-hint-pulse {
+  0%, 100% { background: var(--sudoku-surface); }
+  50% {
+    background: color-mix(in srgb, var(--sudoku-accent) 20%, var(--sudoku-surface));
+  }
+}
+
+.sde-page .sudoku-cell.hint {
+  animation: sde-hint-pulse 1.6s ease-in-out !important;
+}
+
+/* Number pad */
+.sde-page .number-buttons.sde-number-pad {
+  width: var(--board-width);
+  margin: 1.5rem auto 0;
+}
+
+.sde-page .number-buttons-grid {
+  gap: 6px;
+}
+
+.sde-page .number-btn {
+  font-family: var(--sudoku-mono);
+  font-weight: 600;
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+  color: var(--sudoku-text);
+  transition: border-color var(--sudoku-motion), background var(--sudoku-motion);
+}
+
+.sde-page .number-btn:hover {
+  transform: none;
+  background: color-mix(in srgb, var(--sudoku-accent) 12%, var(--sudoku-surface-raised));
+  border-color: var(--sudoku-accent);
+}
+
+.sde-page .number-btn:active {
+  transform: none;
+  background: color-mix(in srgb, var(--sudoku-accent) 22%, var(--sudoku-surface-raised));
+  color: var(--sudoku-text);
+}
+
+.sde-page .delete-btn {
+  background: color-mix(in srgb, var(--sudoku-error) 10%, var(--sudoku-surface-raised));
+  border-color: color-mix(in srgb, var(--sudoku-error) 35%, var(--sudoku-border));
+  color: var(--sudoku-error);
+}
+
+.sde-assessment-status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 14px 14px 0;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--sudoku-accent) 8%, var(--sudoku-surface-raised));
+  border: 1px solid color-mix(in srgb, var(--sudoku-accent) 30%, var(--sudoku-border));
+  border-radius: var(--sudoku-radius);
+  text-align: center;
+}
+
+.sde-status-label {
+  font-family: var(--sudoku-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--sudoku-muted);
+}
+
+.sde-status-value {
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--sudoku-accent);
+}
+
+/* Mobile number pad override from sudoku.css */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+  .sde-page .number-buttons.sde-number-pad {
+    display: block !important;
+    border-top: 1px solid var(--sudoku-border);
+    padding-top: 12px;
+    background: var(--sudoku-surface-raised);
+    border-radius: var(--sudoku-radius);
+    margin-top: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   RIGHT — METRICS
+   ========================================================================== */
+
+.sde-page .sudoku-info.sde-metrics {
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 14px;
+  margin: 0;
+}
+
+.sde-metric-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+}
+
+.sde-metric-label {
+  font-family: var(--sudoku-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sudoku-muted);
+}
+
+.sde-page .sudoku-timer.sde-metric-value,
+.sde-page .best-time-display.sde-metric-value,
+.sde-page .rank-display.sde-metric-value {
+  font-family: var(--sudoku-mono);
+  font-size: 14px !important;
+  font-weight: 600;
+  color: var(--sudoku-accent) !important;
+  text-shadow: none !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.sde-criteria-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 14px;
+}
+
+.sde-criteria-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--sudoku-border) 50%, transparent);
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--sudoku-muted);
+}
+
+.sde-criteria-item:last-child {
+  border-bottom: none;
+}
+
+.sde-criteria-code {
+  min-width: 28px;
+  padding: 2px 4px;
+  text-align: center;
+  color: var(--sudoku-accent);
+  background: color-mix(in srgb, var(--sudoku-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sudoku-accent) 25%, var(--sudoku-border));
+  border-radius: var(--sudoku-radius);
+}
+
+.sde-validation-block {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 14px 14px 0;
+  padding: 10px;
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+}
+
+.sde-validation-label {
+  display: block;
+  font-family: var(--sudoku-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--sudoku-muted);
+  margin-bottom: 4px;
+}
+
+.sde-validation-value {
+  display: block;
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--sudoku-text);
+}
+
+.sde-page .sudoku-instructions.sde-instructions {
+  display: block !important;
+  margin: 10px 14px 0;
+  padding: 10px;
+  max-width: none;
+  width: auto;
+  text-align: left;
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+}
+
+.sde-page .sudoku-instructions.sde-instructions p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--sudoku-muted);
+}
+
+/* ==========================================================================
+   DROPDOWNS (JS-rendered)
+   ========================================================================== */
+
+.sde-page .achievements-dropdown.sde-dropdown,
+.sde-page .leaderboard-dropdown.sde-dropdown {
+  background: var(--sudoku-surface);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+  box-shadow: var(--music-terminal-shadow-popup, 0 12px 40px rgba(20, 26, 34, 0.18));
+  min-width: 280px;
+}
+
+.sde-page .achievements-content h4,
+.sde-page .leaderboard-content h4 {
+  font-family: var(--sudoku-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sudoku-text);
+}
+
+.sde-page .achievement-item {
+  background: var(--sudoku-surface-raised);
+  border: 1px solid var(--sudoku-border);
+  border-radius: var(--sudoku-radius);
+}
+
+.sde-page .achievement-difficulty {
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  color: var(--sudoku-text);
+}
+
+.sde-page .achievement-time {
+  font-family: var(--sudoku-mono);
+  color: var(--sudoku-accent);
+}
+
+.sde-page .leaderboard-item {
+  padding: 8px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--sudoku-border) 60%, transparent);
+  color: var(--sudoku-text);
+  background: var(--sudoku-surface-raised);
+  border-radius: var(--sudoku-radius);
+  margin-bottom: 4px;
+}
+
+.sde-page .leaderboard-item.current-user {
+  background: color-mix(in srgb, var(--sudoku-accent) 12%, var(--sudoku-surface-raised));
+  border-left: 3px solid var(--sudoku-accent);
+}
+
+.sde-page .leaderboard-item.top-3,
+.sde-page .leaderboard-item.top-1 {
+  background: var(--sudoku-surface-raised) !important;
+  color: var(--sudoku-text) !important;
+}
+
+.sde-page .leaderboard-item.top-1 {
+  border: 1px solid var(--sudoku-accent);
+  font-weight: 600;
+}
+
+.sde-page .leaderboard-rank {
+  font-family: var(--sudoku-mono);
+  color: var(--sudoku-accent);
+}
+
+.sde-page .leaderboard-rank.top-1::before,
+.sde-page .leaderboard-rank.top-2::before,
+.sde-page .leaderboard-rank.top-3::before {
+  content: none;
+}
+
+.sde-page .leaderboard-score {
+  font-family: var(--sudoku-mono);
+  color: var(--sudoku-text);
+}
+
+/* ==========================================================================
+   REWARD NOTIFICATION (JS-rendered)
+   ========================================================================== */
+
+.sde-page .reward-notification {
+  top: calc(var(--header-height, 56px) + 12px);
+  background: var(--sudoku-surface);
+  color: var(--sudoku-text);
+  border: 1px solid var(--sudoku-accent);
+  border-radius: var(--sudoku-radius);
+  box-shadow: var(--music-terminal-shadow-popup, 0 12px 40px rgba(20, 26, 34, 0.18));
+  font-family: var(--sudoku-mono);
+  animation: sde-slide-in 180ms ease-out;
+}
+
+.sde-page .reward-notification h3 {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sudoku-accent);
+}
+
+.sde-page .reward-notification button,
+.sde-page .reward-notification .reward-close-btn {
+  font-family: var(--sudoku-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--sudoku-accent) 15%, var(--sudoku-surface));
+  border: 1px solid var(--sudoku-accent);
+  color: var(--sudoku-text);
+  border-radius: var(--sudoku-radius);
+}
+
+/* ==========================================================================
+   FOCUS / ACCESSIBILITY
+   ========================================================================== */
+
+.sde-page .btn-secondary:focus-visible,
+.sde-page .number-btn:focus-visible,
+.sde-page .difficulty-select:focus-visible {
+  outline: 2px solid var(--sudoku-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .sde-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .sde-header {
+    grid-template-columns: 1fr;
+  }
+
+  .sde-header-meta {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .sde-page .sudoku-center.sde-facility-wrap {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .sde-page .sudoku-controls.sde-controls {
+    gap: 4px;
+  }
+
+  .sde-page .btn-secondary.sde-btn {
+    font-size: 9px;
+    padding: 7px 8px;
+  }
+}
+
+/* ==========================================================================
+   ANIMATION
+   ========================================================================== */
+
+@keyframes sde-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sde-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
