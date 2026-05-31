@@ -3,72 +3,190 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TV Show</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
+    <title>MED-001 — Rhodes Island Media Repository</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../style/components.css" />
+    <link rel="stylesheet" href="../style/themes.css" />
     <link rel="stylesheet" href="../style/tv.css" />
-
+    <link rel="stylesheet" href="../style/media-repository.css" />
     <link
       rel="icon"
-      href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg"
+      href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
+      type="image/jpeg"
     />
   </head>
 
-  <body>
-    <!-- FILM GRAIN OVERLAY -->
-    <div class="film-grain-overlay"></div>
-
-    <!-- AMBIENT AUDIO (optional) -->
+  <body class="repository-page">
+    <div class="film-grain-overlay" aria-hidden="true"></div>
     <audio id="ambientAudio" loop preload="none" volume="0.1"></audio>
 
-    <main class="container tv-section">
-
-      <!-- TITLE -->
-      <h1 class="page-title cinematic-title">📺 TV Show</h1>
-
-      <!-- TOP BAR -->
-      <div class="top-bar">
-        <!-- FILTER -->
-        <div class="filter-bar">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="🔍 Tìm theo tên phim..."
-          />
-
-          <select id="seriesFilter">
-            <option value="">-- Bộ phim --</option>
-          </select>
-
-          <select id="genreFilter">
-            <option value="">-- Thể loại --</option>
-          </select>
-
-          <select id="regionFilter">
-            <option value="">-- Quốc gia --</option>
-          </select>
+    <main class="container tv-section media-facility">
+      <header class="media-header media-panel" aria-label="Media Repository">
+        <div class="media-header-main">
+          <span class="media-module-id">[MED-001]</span>
+          <div class="media-header-text">
+            <h1 class="page-title cinematic-title">RHODES ISLAND MEDIA REPOSITORY</h1>
+            <p class="media-system-desc">Asset Management Interface · Resource Retrieval System</p>
+          </div>
         </div>
-      </div>
-      <nav class="tv-breadcrumb" id="tvBreadcrumb">
-        <span class="crumb active">TV</span>
-      </nav>
-      <!-- PLAYER -->
-      <div class="tv-player-container">
-        <video
-          id="videoPlayer"
-          controls
-          preload="metadata"
-        ></video>
-
-        <div class="video-info">
-          <span id="currentVideoTitle">Chưa chọn video</span>
+        <div class="media-header-meta" aria-label="Repository status">
+          <span class="media-meta-line media-meta-line--live">DATABASE STATUS: ONLINE</span>
+          <span class="media-meta-line media-meta-line--live">INDEX STATUS: READY</span>
+          <span class="media-meta-line">ASSET COUNT: —</span>
+          <span class="media-meta-line">BUILD 2.7.1</span>
+          <span class="media-meta-line media-meta-line--muted">ASSET-214</span>
         </div>
+      </header>
+
+      <div class="media-layout">
+        <aside class="media-sidebar media-panel" aria-label="Asset categories">
+          <div class="media-panel-label">
+            <span class="media-module-id-sm">[IDX-01]</span>
+            <span class="media-panel-title">ASSET CATEGORIES</span>
+          </div>
+          <div class="media-panel-divider" aria-hidden="true"></div>
+          <nav class="media-category-nav">
+            <span class="media-category-entry media-category-entry--active">VIDEO RECORDS</span>
+            <span class="media-category-entry">AUDIO RECORDS</span>
+            <span class="media-category-entry">IMAGE ASSETS</span>
+            <span class="media-category-entry">DOCUMENTS</span>
+            <span class="media-category-entry">REFERENCE MATERIALS</span>
+          </nav>
+          <div class="media-panel-divider media-panel-divider--spaced" aria-hidden="true"></div>
+          <div class="media-panel-label">
+            <span class="media-module-id-sm">[CLS-02]</span>
+            <span class="media-panel-title">CLASSIFICATION</span>
+          </div>
+          <div class="media-panel-divider" aria-hidden="true"></div>
+          <ul class="media-class-list">
+            <li class="media-class-item">ACTIVE</li>
+            <li class="media-class-item">ARCHIVED</li>
+            <li class="media-class-item">INTERNAL</li>
+            <li class="media-class-item">PUBLIC</li>
+            <li class="media-class-item">UNDER REVIEW</li>
+          </ul>
+          <div class="media-sidebar-footer">
+            <span class="media-meta-line">NODE-A03</span>
+          </div>
+        </aside>
+
+        <section class="media-main" aria-label="Repository content">
+          <nav class="tv-breadcrumb media-breadcrumb" id="tvBreadcrumb" aria-label="Navigation path">
+            <span class="crumb active">REPOSITORY</span>
+          </nav>
+
+          <div class="top-bar media-top-bar">
+            <div class="filter-bar media-filter-bar media-panel">
+              <div class="media-panel-label media-filters-label">
+                <span class="media-module-id-sm">[QRY-03]</span>
+                <span class="media-panel-title">ASSET RETRIEVAL</span>
+              </div>
+              <div class="media-panel-divider media-panel-divider--inset" aria-hidden="true"></div>
+              <div class="media-filters-row">
+                <div class="media-search-wrap">
+                  <label for="searchInput" class="media-field-label">QUERY DATABASE</label>
+                  <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Query resource database..."
+                  />
+                </div>
+                <div class="media-select-group">
+                  <div class="media-select-wrap">
+                    <label for="seriesFilter" class="media-field-label">COLLECTION</label>
+                    <select id="seriesFilter">
+                      <option value="">All collections</option>
+                    </select>
+                  </div>
+                  <div class="media-select-wrap">
+                    <label for="genreFilter" class="media-field-label">TYPE</label>
+                    <select id="genreFilter">
+                      <option value="">All types</option>
+                    </select>
+                  </div>
+                  <div class="media-select-wrap">
+                    <label for="regionFilter" class="media-field-label">REGION</label>
+                    <select id="regionFilter">
+                      <option value="">All regions</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tv-player-container media-player-panel media-panel">
+            <div class="media-panel-label">
+              <span class="media-module-id-sm">[PLY-04]</span>
+              <span class="media-panel-title">ASSET PLAYBACK TERMINAL</span>
+            </div>
+            <div class="media-panel-divider media-panel-divider--inset" aria-hidden="true"></div>
+            <video id="videoPlayer" controls preload="metadata"></video>
+            <div class="video-info media-video-info">
+              <span class="media-field-label">CURRENT ASSET</span>
+              <span id="currentVideoTitle">No asset selected</span>
+            </div>
+          </div>
+
+          <div class="media-feed-header">
+            <div class="media-panel-label">
+              <span class="media-module-id-sm">[IDX-05]</span>
+              <span class="media-panel-title">ASSET INDEX · MEDIA RECORDS</span>
+            </div>
+            <span class="media-feed-badge">REPOSITORY GRID ACTIVE</span>
+          </div>
+
+          <div id="tvList" class="tv-list media-asset-list"></div>
+        </section>
+
+        <aside class="media-meta-panel media-panel" aria-label="Repository metadata">
+          <div class="media-panel-label">
+            <span class="media-module-id-sm">[MET-06]</span>
+            <span class="media-panel-title">REPOSITORY METADATA</span>
+          </div>
+          <div class="media-panel-divider" aria-hidden="true"></div>
+          <dl class="media-meta-list">
+            <div class="media-meta-row">
+              <dt>STORAGE STATUS</dt>
+              <dd class="media-meta-value media-meta-value--ok">ONLINE</dd>
+            </div>
+            <div class="media-meta-row">
+              <dt>INDEX SYNC</dt>
+              <dd>SYNCED</dd>
+            </div>
+            <div class="media-meta-row">
+              <dt>FORMAT SUPPORT</dt>
+              <dd>VIDEO · STREAM</dd>
+            </div>
+            <div class="media-meta-row">
+              <dt>ACCESS LEVEL</dt>
+              <dd>INTERNAL</dd>
+            </div>
+            <div class="media-meta-row">
+              <dt>ARCHIVE NODE</dt>
+              <dd>ASSET-214</dd>
+            </div>
+          </dl>
+          <div class="media-panel-divider media-panel-divider--spaced" aria-hidden="true"></div>
+          <div class="media-panel-label">
+            <span class="media-module-id-sm">[BRF-07]</span>
+            <span class="media-panel-title">REPOSITORY BRIEF</span>
+          </div>
+          <div class="media-panel-divider" aria-hidden="true"></div>
+          <p class="media-brief-text">
+            Centralized media asset index for video records and archived resources. Query, filter, and retrieve indexed assets through the repository interface.
+          </p>
+          <div class="media-meta-notice" role="note">
+            <svg class="media-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" /><polygon points="10,9 10,15 16,12" />
+            </svg>
+            <p>Asset retrieval is logged. Streaming access subject to Rhodes Island network policy.</p>
+          </div>
+        </aside>
       </div>
-
-      <!-- LIST -->
-      <div id="tvList" class="tv-list"></div>
-
     </main>
 
     <script type="module" src="../js/modules/tv_entry.js"></script>
