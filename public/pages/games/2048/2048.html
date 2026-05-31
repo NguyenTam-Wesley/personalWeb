@@ -2,54 +2,170 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>2048 Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIM-2048 — Rhodes Island Cognitive Assessment</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../../../style/themes.css" />
   <link rel="stylesheet" href="../../../style/components.css" />
   <link rel="stylesheet" href="../../../style/style.css" />
   <link rel="stylesheet" href="../../../style/2048.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../style/cognitive-assessment-sim.css" />
   <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
 </head>
-<body>
-  <div class="game-container">
-    <div class="game-header">
-      <div class="game-title-section">
-        <h1>2048</h1>
-        <div class="score-container">
-          <div id="score" class="game-score">Điểm: 0</div>
-          <div id="best-score-display" class="best-score-display">Best: --</div>
+<body class="cog-assessment-page">
+  <div class="game-container cog-facility">
+    <header class="cog-header cog-panel" aria-label="Cognitive Assessment Simulator">
+      <div class="cog-header-main">
+        <span class="cog-module-id">[SIM-2048]</span>
+        <div class="cog-header-text">
+          <h1>RHODES ISLAND COGNITIVE ASSESSMENT</h1>
+          <p class="cog-system-desc">Logic Evaluation Interface · Tactical Processing Simulator</p>
         </div>
       </div>
-      <p>Sử dụng các phím mũi tên để di chuyển | Nhấn R để chơi lại</p>
-      <div class="game-controls">
-        <button id="resetBtn" class="btn-secondary">Chơi lại</button>
-        <div class="rank-display-container">
-          <div id="rank-display" class="rank-display">Rank: --</div>
+      <div class="cog-header-meta" aria-label="Simulation status">
+        <span class="cog-meta-line cog-meta-line--live">SIM STATUS: READY</span>
+        <span class="cog-meta-line cog-meta-line--live">TEST STATUS: AVAILABLE</span>
+        <span class="cog-meta-line">NODE: COG-A01</span>
+        <span class="cog-meta-line">BUILD 2.7.1</span>
+        <span class="cog-meta-line cog-meta-line--muted">COG-214</span>
+      </div>
+    </header>
+
+    <div class="cog-layout">
+      <aside class="cog-info-panel cog-panel" aria-label="Assessment information">
+        <div class="cog-panel-label">
+          <span class="cog-module-id-sm">[BRI-01]</span>
+          <span class="cog-panel-title">OPERATOR INSTRUCTIONS</span>
         </div>
-        <div class="leaderboard-container">
-          <button id="leaderboardBtn" class="btn-secondary leaderboard-btn">🏅 Leaderboard</button>
-          <div id="leaderboardDropdown" class="leaderboard-dropdown" style="display: none;">
-            <div class="leaderboard-content">
-              <h4>Top Players</h4>
-              <div id="leaderboard-list" class="leaderboard-list">
-                <!-- Leaderboard will be populated here -->
+        <div class="cog-panel-divider" aria-hidden="true"></div>
+
+        <div class="game-instructions cog-instructions">
+          <h3>ASSESSMENT PROTOCOL</h3>
+          <ul>
+            <li>Merge equivalent processing units to increase node value</li>
+            <li>Objective: Reach evaluation node 2048</li>
+            <li>Use arrow keys for directional input · Press R to reset assessment</li>
+          </ul>
+        </div>
+
+        <div class="cog-panel-divider cog-panel-divider--spaced" aria-hidden="true"></div>
+        <dl class="cog-assessment-meta">
+          <div class="cog-meta-row">
+            <dt>MODULE</dt>
+            <dd>COG-2048</dd>
+          </div>
+          <div class="cog-meta-row">
+            <dt>DIFFICULTY</dt>
+            <dd>STANDARD</dd>
+          </div>
+          <div class="cog-meta-row">
+            <dt>EVAL TYPE</dt>
+            <dd>LOGIC / SPATIAL</dd>
+          </div>
+        </dl>
+
+        <div class="cog-notice" role="note">
+          <svg class="cog-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="1" /><path d="M12 8v5M12 16h.01" />
+          </svg>
+          <p>Performance data is recorded upon assessment completion. Maintain focus throughout the evaluation sequence.</p>
+        </div>
+      </aside>
+
+      <section class="cog-sim-panel cog-panel" aria-label="Simulation matrix">
+        <div class="cog-panel-label">
+          <span class="cog-module-id-sm">[SIM-02]</span>
+          <span class="cog-panel-title">EVALUATION MATRIX</span>
+        </div>
+        <div class="cog-panel-divider" aria-hidden="true"></div>
+
+        <div class="game-header cog-board-header">
+          <p class="cog-input-hint">Directional input: Arrow keys · Reset: R key</p>
+          <div class="game-controls cog-controls">
+            <button id="resetBtn" class="btn-secondary cog-btn-reset">RESET ASSESSMENT</button>
+            <div class="leaderboard-container cog-leaderboard-wrap">
+              <button id="leaderboardBtn" class="btn-secondary leaderboard-btn cog-btn-leaderboard">
+                <svg class="cog-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                  <path d="M4 20V10M10 20V4M16 20v-8M22 20H2" />
+                </svg>
+                ASSESSMENT RECORDS
+              </button>
+              <div id="leaderboardDropdown" class="leaderboard-dropdown cog-leaderboard-dropdown" style="display: none;">
+                <div class="leaderboard-content">
+                  <h4>OPERATOR PERFORMANCE INDEX</h4>
+                  <div id="leaderboard-list" class="leaderboard-list"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="game-grid">
-      <div class="grid" id="grid"></div>
-    </div>
+        <div class="game-grid cog-game-grid">
+          <div class="grid" id="grid"></div>
+        </div>
 
-    <div class="game-instructions">
-      <h3>Hướng dẫn:</h3>
-      <ul>
-        <li>Kết hợp các ô có cùng số để tạo ra số lớn hơn</li>
-        <li>Mục tiêu: Tạo ra ô 2048</li>
-        <li>Nhấn R hoặc nút "Chơi lại" để bắt đầu lại</li>
-      </ul>
+        <div class="cog-assessment-status" role="status">
+          <span class="cog-status-label">ASSESSMENT STATUS</span>
+          <span class="cog-status-value">ACTIVE · IN PROGRESS</span>
+        </div>
+      </section>
+
+      <aside class="cog-metrics-panel cog-panel" aria-label="Evaluation metrics">
+        <div class="cog-panel-label">
+          <span class="cog-module-id-sm">[MET-03]</span>
+          <span class="cog-panel-title">EVALUATION METRICS</span>
+        </div>
+        <div class="cog-panel-divider" aria-hidden="true"></div>
+
+        <div class="score-container cog-metrics">
+          <div class="cog-metric-block">
+            <span class="cog-metric-label">PROCESSING SCORE</span>
+            <div id="score" class="game-score cog-metric-value">Điểm: 0</div>
+          </div>
+          <div class="cog-metric-block">
+            <span class="cog-metric-label">PEAK PERFORMANCE</span>
+            <div id="best-score-display" class="best-score-display cog-metric-value">Best: --</div>
+          </div>
+          <div class="rank-display-container cog-metric-block">
+            <span class="cog-metric-label">OPERATOR STANDING</span>
+            <div id="rank-display" class="rank-display cog-metric-value">Rank: --</div>
+          </div>
+        </div>
+
+        <div class="cog-panel-divider cog-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="cog-panel-label">
+          <span class="cog-module-id-sm">[EVL-04]</span>
+          <span class="cog-panel-title">EVALUATION CRITERIA</span>
+        </div>
+        <div class="cog-panel-divider" aria-hidden="true"></div>
+        <ul class="cog-criteria-list">
+          <li class="cog-criteria-item">
+            <span class="cog-criteria-code">OPT</span>
+            <span>Optimize merge sequences</span>
+          </li>
+          <li class="cog-criteria-item">
+            <span class="cog-criteria-code">EFF</span>
+            <span>Minimize redundant moves</span>
+          </li>
+          <li class="cog-criteria-item">
+            <span class="cog-criteria-code">TGT</span>
+            <span>Reach node value 2048</span>
+          </li>
+        </ul>
+
+        <div class="cog-validation-block" role="note">
+          <svg class="cog-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <path d="M9 12l2 2 4-4" /><rect x="3" y="3" width="18" height="18" rx="1" />
+          </svg>
+          <div>
+            <span class="cog-validation-label">RECORD STATUS</span>
+            <span class="cog-validation-value">AWAITING COMPLETION</span>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
