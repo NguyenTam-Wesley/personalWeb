@@ -1,118 +1,235 @@
-<!-- pages/blog.html -->
+<!-- pages/blog.html — Rhodes Island Intelligence Reports -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog</title>
+  <title>RPT-001 — ntam Island Intelligence Reports</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="../style/themes.css" />
   <link rel="stylesheet" href="../style/components.css" />
   <link rel="stylesheet" href="../style/blog.css" />
+  <link rel="stylesheet" href="../style/intelligence-reports.css" />
   <link
     rel="icon"
     href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
   />
 </head>
-<body>
-  <main class="blog-container">
-    <div class="blog-header">
-      <h1>📝 Blog</h1>
-      <p>Chia sẻ kiến thức và trải nghiệm</p>
-      <div class="blog-controls">
-        <button id="createPostBtn" class="btn-primary admin-only" style="display: none;">
-          <span class="icon">✏️</span>
-          Viết bài mới
+<body class="report-page">
+  <main class="blog-container report-facility">
+    <header class="blog-header report-header report-panel" aria-label="Intelligence Reports">
+      <div class="report-header-main">
+        <span class="report-module-id">[RPT-001]</span>
+        <div class="report-header-text">
+          <h1>ntam ISLAND INTELLIGENCE REPORTS</h1>
+          <p>Information Analysis Interface · Research Publication System</p>
+        </div>
+      </div>
+      <div class="report-header-meta" aria-label="System status">
+        <span class="report-meta-line report-meta-line--live">REPORT STATUS: ACTIVE</span>
+        <span class="report-meta-line report-meta-line--live">DATABASE STATUS: ONLINE</span>
+        <span class="report-meta-line">ARCHIVE STATUS: READY</span>
+        <span class="report-meta-line">BUILD 2.7.1</span>
+        <span class="report-meta-line report-meta-line--muted">NODE-A03</span>
+      </div>
+      <div class="blog-controls report-controls">
+        <button id="createPostBtn" class="btn-primary admin-only report-compose-btn" style="display: none;">
+          <span class="icon" aria-hidden="true"></span>
+          COMPOSE REPORT
         </button>
       </div>
-    </div>
+    </header>
 
-    <div class="blog-content">
-      <div class="blog-filters">
-        <div class="search-box">
-          <input type="text" id="searchInput" placeholder="Tìm kiếm bài viết..." />
-          <span class="search-icon">🔍</span>
+    <div class="report-layout">
+      <aside class="report-sidebar report-panel" aria-label="Report categories">
+        <div class="report-panel-label">
+          <span class="report-module-id-sm">[IDX-01]</span>
+          <span class="report-panel-title">REPORT CATEGORIES</span>
         </div>
-        <div class="filter-options">
-          <select id="topicFilter">
-            <option value="">Tất cả chủ đề</option>
-            <!-- Topics will be populated by JavaScript -->
-          </select>
-          <select id="sortFilter">
-            <option value="newest">Mới nhất</option>
-            <option value="oldest">Cũ nhất</option>
-            <option value="popular">Xem nhiều</option>
-            <option value="most_liked">Thích nhiều</option>
-          </select>
+        <div class="report-panel-divider" aria-hidden="true"></div>
+        <nav class="report-category-nav">
+          <span class="report-category-entry report-category-entry--active">INTELLIGENCE REPORTS</span>
+          <span class="report-category-entry">TECHNICAL ANALYSIS</span>
+          <span class="report-category-entry">FIELD REPORTS</span>
+          <span class="report-category-entry">OPERATIONAL RECORDS</span>
+          <span class="report-category-entry">RESEARCH PUBLICATIONS</span>
+        </nav>
+        <div class="report-panel-divider report-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="report-panel-label">
+          <span class="report-module-id-sm">[CLS-02]</span>
+          <span class="report-panel-title">CLASSIFICATION</span>
         </div>
-        <div class="tag-filters" id="tagFilters">
-          <!-- Tag checkboxes will be populated by JavaScript -->
+        <div class="report-panel-divider" aria-hidden="true"></div>
+        <ul class="report-class-list">
+          <li class="report-class-item">PUBLIC</li>
+          <li class="report-class-item">INTERNAL</li>
+          <li class="report-class-item">RESEARCH</li>
+          <li class="report-class-item">TECHNICAL</li>
+          <li class="report-class-item">ANALYSIS</li>
+        </ul>
+        <div class="report-sidebar-footer">
+          <span class="report-meta-line">REPORT-214 INDEXED</span>
+        </div>
+      </aside>
+
+      <div class="blog-content report-main">
+        <div class="blog-filters report-filters report-panel">
+          <div class="report-panel-label report-filters-label">
+            <span class="report-module-id-sm">[QRY-03]</span>
+            <span class="report-panel-title">REPORT RETRIEVAL</span>
+          </div>
+          <div class="report-panel-divider report-panel-divider--inset" aria-hidden="true"></div>
+          <div class="report-filters-row">
+            <div class="search-box report-search">
+              <label for="searchInput" class="report-search-label">QUERY DATABASE</label>
+              <input type="text" id="searchInput" placeholder="Query intelligence database..." />
+              <span class="search-icon" aria-hidden="true"></span>
+            </div>
+            <div class="filter-options report-filter-options">
+              <div class="report-select-wrap">
+                <label for="topicFilter" class="report-field-label">CATEGORY</label>
+                <select id="topicFilter">
+                  <option value="">All categories</option>
+                </select>
+              </div>
+              <div class="report-select-wrap">
+                <label for="sortFilter" class="report-field-label">SORT ORDER</label>
+                <select id="sortFilter">
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                  <option value="popular">Most accessed</option>
+                  <option value="most_liked">Most referenced</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="report-tags-section">
+            <span class="report-field-label report-tags-heading">TAG INDEX</span>
+            <div class="tag-filters report-tag-filters" id="tagFilters">
+              <!-- Tag checkboxes populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <div class="report-feed-header">
+          <div class="report-panel-label">
+            <span class="report-module-id-sm">[FED-04]</span>
+            <span class="report-panel-title">REPORT FEED · DOCUMENTED FINDINGS</span>
+          </div>
+          <span class="report-feed-badge">PRIORITY INDEX ACTIVE</span>
+        </div>
+
+        <div class="blog-posts report-feed" id="blogPosts">
+          <div class="loading-spinner report-loading">
+            <div class="spinner"></div>
+            <p>Retrieving reports from database...</p>
+          </div>
+        </div>
+
+        <div class="blog-pagination report-pagination" id="pagination" style="display: none;">
+          <button class="pagination-btn" id="prevPage">← PREV</button>
+          <div class="page-numbers" id="pageNumbers"></div>
+          <button class="pagination-btn" id="nextPage">NEXT →</button>
         </div>
       </div>
 
-      <div class="blog-posts" id="blogPosts">
-        <!-- Posts will be loaded here -->
-        <div class="loading-spinner">
-          <div class="spinner"></div>
-          <p>Đang tải bài viết...</p>
+      <aside class="report-meta-panel report-panel" aria-label="Publication metadata">
+        <div class="report-panel-label">
+          <span class="report-module-id-sm">[MET-05]</span>
+          <span class="report-panel-title">DATABASE METADATA</span>
         </div>
-      </div>
-
-      <div class="blog-pagination" id="pagination" style="display: none;">
-        <button class="pagination-btn" id="prevPage">← Trước</button>
-        <div class="page-numbers" id="pageNumbers"></div>
-        <button class="pagination-btn" id="nextPage">Sau →</button>
-      </div>
+        <div class="report-panel-divider" aria-hidden="true"></div>
+        <dl class="report-meta-list">
+          <div class="report-meta-row">
+            <dt>REPORT INDEX</dt>
+            <dd class="report-meta-value report-meta-value--ok">ONLINE</dd>
+          </div>
+          <div class="report-meta-row">
+            <dt>SYNC STATUS</dt>
+            <dd>SYNCED</dd>
+          </div>
+          <div class="report-meta-row">
+            <dt>CLASSIFICATION</dt>
+            <dd>INTERNAL</dd>
+          </div>
+          <div class="report-meta-row">
+            <dt>LAST REVISION</dt>
+            <dd>—</dd>
+          </div>
+          <div class="report-meta-row">
+            <dt>ARCHIVE NODE</dt>
+            <dd>REPORT-214</dd>
+          </div>
+        </dl>
+        <div class="report-panel-divider report-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="report-panel-label">
+          <span class="report-module-id-sm">[BRF-06]</span>
+          <span class="report-panel-title">INFORMATION BRIEF</span>
+        </div>
+        <div class="report-panel-divider" aria-hidden="true"></div>
+        <p class="report-brief-text">
+          All entries are operational reports and technical analyses distributed through the Rhodes Island information network. Select a record to open full documentation.
+        </p>
+        <div class="report-meta-notice" role="note">
+          <svg class="report-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="10" y1="4" x2="10" y2="20" />
+          </svg>
+          <p>Report access is logged. Unauthorized distribution is prohibited under network policy.</p>
+        </div>
+      </aside>
     </div>
   </main>
 
-  <!-- Create Post Modal -->
-  <div id="createPostModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Viết bài mới</h2>
-        <button class="close-btn" id="closeCreateModal">&times;</button>
+  <!-- Create Post Modal — DOM contract preserved -->
+  <div id="createPostModal" class="modal report-modal">
+    <div class="modal-content report-modal-content">
+      <div class="modal-header report-modal-header">
+        <h2>COMPOSE REPORT</h2>
+        <button class="close-btn" id="closeCreateModal" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
         <form id="createPostForm">
           <div class="form-row">
             <div class="form-group">
-              <label for="postTitle">Tiêu đề bài viết *</label>
-              <input type="text" id="postTitle" name="postTitle" required placeholder="Nhập tiêu đề bài viết" maxlength="200" />
+              <label for="postTitle">Report title *</label>
+              <input type="text" id="postTitle" name="postTitle" required placeholder="Enter report title" maxlength="200" />
             </div>
             <div class="form-group">
-              <label for="postTopic">Chủ đề *</label>
+              <label for="postTopic">Category *</label>
               <select id="postTopic" name="postTopic" required>
-                <option value="">Chọn chủ đề</option>
-                <!-- Topics will be populated by JavaScript -->
+                <option value="">Select category</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="postContent">Nội dung bài viết *</label>
+            <label for="postContent">Report content *</label>
             <div id="postContent" style="height: 300px;"></div>
             <input type="hidden" name="postContent" id="postContentHidden" required>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="postTags">Tags (phân cách bằng dấu phẩy)</label>
-              <input type="text" id="postTags" name="postTags" placeholder="javascript, react, tutorial" />
+              <label for="postTags">Tags (comma-separated)</label>
+              <input type="text" id="postTags" name="postTags" placeholder="analysis, research, technical" />
             </div>
             <div class="form-group">
-              <label for="postStatus">Trạng thái</label>
+              <label for="postStatus">Publication status</label>
               <select id="postStatus" name="postStatus">
-                <option value="published">Công khai</option>
-                <option value="draft">Bản nháp</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
               </select>
             </div>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn-secondary" id="cancelCreate">Hủy</button>
+            <button type="button" class="btn-secondary" id="cancelCreate">Cancel</button>
             <button type="submit" class="btn-primary">
-              <span class="btn-icon">📝</span>
-              Đăng bài
+              <span class="btn-icon" aria-hidden="true"></span>
+              Submit report
             </button>
           </div>
         </form>
@@ -120,10 +237,8 @@
     </div>
   </div>
 
-  <!-- Quill Editor CSS & JS -->
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script>
-    // Set global flag when Quill loads
     window.QuillLoaded = false;
     var quillScript = document.createElement('script');
     quillScript.src = 'https://cdn.quilljs.com/1.3.6/quill.js';
@@ -134,7 +249,6 @@
     document.head.appendChild(quillScript);
   </script>
 
-  <!-- Load blog script after Quill is ready -->
   <script>
     function loadBlogScript() {
       if (window.QuillLoaded && typeof Quill !== 'undefined') {
@@ -148,9 +262,7 @@
         setTimeout(loadBlogScript, 50);
       }
     }
-
-    // Start checking
     loadBlogScript();
   </script>
 </body>
-</html> 
+</html>
