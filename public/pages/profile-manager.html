@@ -3,128 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý Profile - NTAM</title>
+  <title>PMT-001 — Rhodes Island Personnel Modification Terminal</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="../style/themes.css">
   <link rel="stylesheet" href="../style/components.css">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../style/profile-manager.css">
+  <link rel="stylesheet" href="../style/personnel-modification-terminal.css">
   <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
 </head>
-<body>
-  <div class="profile-container">
-    <div class="profile-header">
-      <h1>Quản lý Profile</h1>
-      <p>Thay đổi thông tin cá nhân và avatar của bạn</p>
-    </div>
-
-    <div class="profile-content">
-      <!-- Avatar Section -->
-      <section class="profile-section avatar-section">
-        <h2>Avatar</h2>
-        <div class="avatar-upload-container">
-          <div class="avatar-preview-wrapper">
-            <img id="avatarPreview" src="/default-avatar.png" alt="Avatar Preview" class="avatar-preview">
-          </div>
-          <div class="avatar-upload-controls">
-            <label for="userAvatarInput" class="upload-btn">
-              <span>Chọn ảnh</span>
-              <input type="file" id="userAvatarInput" accept="image/*" style="display: none;">
-            </label>
-            <p class="upload-hint">Ảnh tối đa 5MB, định dạng JPG/PNG</p>
-          </div>
+<body class="pmt-page">
+  <div class="profile-container pmt-facility">
+    <header class="pmt-header pmt-panel" aria-label="Personnel Modification Terminal">
+      <div class="pmt-header-main">
+        <span class="pmt-module-id">[PMT-001]</span>
+        <div class="pmt-header-text">
+          <h1>RHODES ISLAND PERSONNEL MODIFICATION TERMINAL</h1>
+          <p class="pmt-system-desc">Personnel Record Update Interface · Dossier Maintenance System</p>
         </div>
-      </section>
+      </div>
+      <div class="pmt-header-meta" aria-label="Terminal status">
+        <span class="pmt-meta-line pmt-meta-line--live">TERMINAL STATUS: ACTIVE</span>
+        <span class="pmt-meta-line pmt-meta-line--live">AUTHORIZATION: VERIFIED</span>
+        <span class="pmt-meta-line">RECORD STATUS: READY</span>
+        <span class="pmt-meta-line">BUILD 2.7.1</span>
+        <span class="pmt-meta-line pmt-meta-line--muted">DOSSIER-214</span>
+      </div>
+    </header>
 
-      <!-- Profile Information -->
-      <section class="profile-section">
-        <h2>Thông tin cá nhân</h2>
-        <form class="profile-form">
-          <div class="form-group">
-            <label for="username">Tên hiển thị</label>
-            <input type="text" id="username" readonly>
-            <small class="form-hint">Tên hiển thị không thể thay đổi</small>
-          </div>
+    <div class="pmt-layout">
+      <aside class="pmt-identity-panel pmt-panel" aria-label="Operator identification">
+        <div class="pmt-panel-label">
+          <span class="pmt-module-id-sm">[IDN-01]</span>
+          <span class="pmt-panel-title">OPERATOR IDENTIFICATION</span>
+        </div>
+        <div class="pmt-panel-divider" aria-hidden="true"></div>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="Nhập email của bạn">
-          </div>
-
-          <div class="form-group">
-            <label for="fullName">Họ và tên</label>
-            <input type="text" id="fullName" placeholder="Nhập họ và tên đầy đủ">
-          </div>
-
-          <div class="form-group">
-            <label for="bio">Tiểu sử</label>
-            <textarea id="bio" placeholder="Viết gì đó về bạn..." rows="4"></textarea>
-          </div>
-
-          <button type="button" id="saveProfileBtn" class="btn-primary">Lưu thay đổi</button>
-        </form>
-      </section>
-
-      <!-- Password Section -->
-      <section class="profile-section">
-        <h2>Đổi mật khẩu</h2>
-        <form class="password-form">
-          <div class="form-group">
-            <label for="newPassword">Mật khẩu mới</label>
-            <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới">
-          </div>
-
-          <div class="form-group">
-            <label for="confirmPassword">Xác nhận mật khẩu</label>
-            <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu mới">
-          </div>
-
-          <button type="button" id="changePasswordBtn" class="btn-secondary">Đổi mật khẩu</button>
-        </form>
-      </section>
-
-      <!-- Stats Section -->
-      <section class="profile-section stats-section">
-        <h2>Thống kê</h2>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-label">Cấp độ</div>
-            <div class="stat-value" id="level-badge">Lv. 1</div>
-          </div>
-
-          <div class="stat-item">
-            <div class="stat-label">XP</div>
-            <div class="stat-value" id="xp-text">0 / 1000 XP</div>
-            <div class="xp-bar">
-              <div class="xp-fill" id="xp-fill"></div>
+        <section class="profile-section avatar-section pmt-avatar-section">
+          <h2>PERSONNEL PHOTO</h2>
+          <div class="avatar-upload-container pmt-avatar-upload">
+            <div class="avatar-preview-wrapper pmt-photo-frame">
+              <img id="avatarPreview" src="/default-avatar.png" alt="Operator identification photo" class="avatar-preview">
+            </div>
+            <div class="avatar-upload-controls pmt-upload-controls">
+              <label for="userAvatarInput" class="upload-btn pmt-upload-btn">
+                <svg class="pmt-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                  <path d="M12 16V4M8 8l4-4 4 4" /><path d="M4 20h16" />
+                </svg>
+                <span>UPLOAD ID PHOTO</span>
+                <input type="file" id="userAvatarInput" accept="image/*" style="display: none;">
+              </label>
+              <p class="upload-hint pmt-upload-hint">Max 5MB · JPG/PNG · Personnel identification format</p>
             </div>
           </div>
+        </section>
 
-          <div class="stat-item">
-            <div class="stat-label">Coins</div>
-            <div class="stat-value" id="coins-amount">0</div>
+        <div class="pmt-panel-divider pmt-panel-divider--spaced" aria-hidden="true"></div>
+        <dl class="pmt-id-meta">
+          <div class="pmt-meta-row">
+            <dt>RECORD STATUS</dt>
+            <dd class="pmt-meta-value pmt-meta-value--ok">READY</dd>
           </div>
-
-          <div class="stat-item">
-            <div class="stat-label">Gems</div>
-            <div class="stat-value" id="gems-amount">0</div>
+          <div class="pmt-meta-row">
+            <dt>DOSSIER ID</dt>
+            <dd>DOSSIER-214</dd>
           </div>
-
-          <div class="stat-item">
-            <div class="stat-label">Lần đăng nhập</div>
-            <div class="stat-value" id="loginCount">0</div>
+          <div class="pmt-meta-row">
+            <dt>VALIDATION</dt>
+            <dd class="pmt-meta-value pmt-meta-value--ok">VERIFIED</dd>
           </div>
+        </dl>
+      </aside>
 
-          <div class="stat-item">
-            <div class="stat-label">Ngày tham gia</div>
-            <div class="stat-value" id="joinDate">-</div>
+      <div class="profile-content pmt-main">
+        <section class="profile-section pmt-form-section pmt-panel">
+          <div class="pmt-panel-label">
+            <span class="pmt-module-id-sm">[DAT-02]</span>
+            <span class="pmt-panel-title">IDENTITY DATA</span>
           </div>
+          <div class="pmt-panel-divider pmt-panel-divider--inset" aria-hidden="true"></div>
+          <h2 class="pmt-section-heading">PERSONNEL INFORMATION</h2>
+          <form class="profile-form pmt-form">
+            <div class="form-group pmt-field">
+              <label for="username">OPERATOR CODENAME</label>
+              <input type="text" id="username" readonly>
+              <small class="form-hint pmt-field-hint">Codename is locked by authorization policy</small>
+            </div>
 
-          <div class="stat-item">
-            <div class="stat-label">Vai trò</div>
-            <div class="stat-value" id="userRole">User</div>
+            <div class="form-group pmt-field">
+              <label for="email">CONTACT CHANNEL</label>
+              <input type="email" id="email" placeholder="Enter registered contact channel">
+            </div>
+
+            <div class="form-group pmt-field">
+              <label for="fullName">FULL LEGAL NAME</label>
+              <input type="text" id="fullName" placeholder="Enter full legal name on record">
+            </div>
+
+            <div class="form-group pmt-field">
+              <label for="bio">OPERATOR NOTES</label>
+              <textarea id="bio" placeholder="Personnel notes and dossier annotations..." rows="4"></textarea>
+            </div>
+
+            <button type="button" id="saveProfileBtn" class="btn-primary pmt-btn-primary">UPDATE DOSSIER</button>
+          </form>
+        </section>
+
+        <section class="profile-section pmt-form-section pmt-panel">
+          <div class="pmt-panel-label">
+            <span class="pmt-module-id-sm">[AUT-03]</span>
+            <span class="pmt-panel-title">AUTHORIZATION CREDENTIALS</span>
+          </div>
+          <div class="pmt-panel-divider pmt-panel-divider--inset" aria-hidden="true"></div>
+          <h2 class="pmt-section-heading">CREDENTIAL MODIFICATION</h2>
+          <form class="password-form pmt-form">
+            <div class="form-group pmt-field">
+              <label for="newPassword">NEW CREDENTIAL</label>
+              <input type="password" id="newPassword" placeholder="Enter new authorization credential">
+            </div>
+
+            <div class="form-group pmt-field">
+              <label for="confirmPassword">CONFIRM CREDENTIAL</label>
+              <input type="password" id="confirmPassword" placeholder="Re-enter credential for validation">
+            </div>
+
+            <button type="button" id="changePasswordBtn" class="btn-secondary pmt-btn-secondary">COMMIT CREDENTIAL UPDATE</button>
+          </form>
+        </section>
+      </div>
+
+      <aside class="pmt-status-panel pmt-panel" aria-label="Record metadata and modification log">
+        <div class="pmt-panel-label">
+          <span class="pmt-module-id-sm">[MET-04]</span>
+          <span class="pmt-panel-title">RECORD METADATA</span>
+        </div>
+        <div class="pmt-panel-divider" aria-hidden="true"></div>
+
+        <section class="profile-section stats-section pmt-stats-section">
+          <div class="stats-grid pmt-stats-grid">
+            <div class="stat-item pmt-stat-item">
+              <div class="stat-label">Authorization Rank</div>
+              <div class="stat-value" id="level-badge">Lv. 1</div>
+            </div>
+
+            <div class="stat-item pmt-stat-item pmt-stat-item--xp">
+              <div class="stat-label">Experience Record</div>
+              <div class="stat-value" id="xp-text">0 / 1000 XP</div>
+              <div class="xp-bar pmt-xp-bar">
+                <div class="xp-fill" id="xp-fill"></div>
+              </div>
+            </div>
+
+            <div class="stat-item pmt-stat-item">
+              <div class="stat-label">Resource · Coins</div>
+              <div class="stat-value" id="coins-amount">0</div>
+            </div>
+
+            <div class="stat-item pmt-stat-item">
+              <div class="stat-label">Resource · Gems</div>
+              <div class="stat-value" id="gems-amount">0</div>
+            </div>
+
+            <div class="stat-item pmt-stat-item">
+              <div class="stat-label">Access Sessions</div>
+              <div class="stat-value" id="loginCount">0</div>
+            </div>
+
+            <div class="stat-item pmt-stat-item">
+              <div class="stat-label">Registration Date</div>
+              <div class="stat-value pmt-stat-value--sm" id="joinDate">-</div>
+            </div>
+
+            <div class="stat-item pmt-stat-item">
+              <div class="stat-label">Authorization Role</div>
+              <div class="stat-value pmt-stat-value--sm" id="userRole">User</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="pmt-panel-divider pmt-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="pmt-panel-label">
+          <span class="pmt-module-id-sm">[LOG-05]</span>
+          <span class="pmt-panel-title">MODIFICATION LOG</span>
+        </div>
+        <div class="pmt-panel-divider" aria-hidden="true"></div>
+        <ul class="pmt-mod-log">
+          <li class="pmt-log-item">
+            <span class="pmt-log-code">SYN</span>
+            <span class="pmt-log-msg">RECORD SYNCHRONIZED</span>
+          </li>
+          <li class="pmt-log-item">
+            <span class="pmt-log-code">VAL</span>
+            <span class="pmt-log-msg">DATA VALIDATED</span>
+          </li>
+          <li class="pmt-log-item">
+            <span class="pmt-log-code">ACS</span>
+            <span class="pmt-log-msg">AUTHORIZATION VERIFIED</span>
+          </li>
+          <li class="pmt-log-item">
+            <span class="pmt-log-code">RDY</span>
+            <span class="pmt-log-msg">TERMINAL READY</span>
+          </li>
+        </ul>
+
+        <div class="pmt-validation-status" role="status">
+          <svg class="pmt-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <path d="M9 12l2 2 4-4" /><rect x="3" y="3" width="18" height="18" rx="1" />
+          </svg>
+          <div>
+            <span class="pmt-validation-label">VALIDATION STATUS</span>
+            <span class="pmt-validation-value">RECORD READY FOR MODIFICATION</span>
           </div>
         </div>
-      </section>
+
+        <div class="pmt-notice" role="note">
+          <svg class="pmt-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16h.01" />
+          </svg>
+          <p>All modifications are logged under Rhodes Island network policy. Unauthorized changes require elevated authorization.</p>
+        </div>
+      </aside>
     </div>
   </div>
 

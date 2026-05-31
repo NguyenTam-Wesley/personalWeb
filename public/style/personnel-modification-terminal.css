@@ -1,0 +1,748 @@
+/* Rhodes Island Personnel Modification Terminal — profile-manager.html only (scoped to .pmt-page) */
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
+
+.pmt-page {
+  --edit-bg: var(--bg-secondary, #e4e8ed);
+  --edit-surface: var(--bg-primary, #fafbfc);
+  --edit-surface-raised: var(--bg-tertiary, #f0f3f7);
+  --edit-border: var(--border-medium, #b8c2ce);
+  --edit-text: var(--text-primary, #141a22);
+  --edit-muted: var(--text-muted, #4f5d6b);
+  --edit-accent: var(--music-terminal-accent, var(--study-archive-accent, #c99400));
+  --edit-accent-hover: var(--music-terminal-hover, #dce2ea);
+  --edit-status: var(--music-terminal-success, #2d8a3e);
+  --edit-font: "Inter", system-ui, -apple-system, sans-serif;
+  --edit-mono: "JetBrains Mono", ui-monospace, monospace;
+  --edit-radius: 2px;
+  --edit-motion: 180ms ease;
+
+  font-family: var(--edit-font);
+  color: var(--edit-text);
+  background: var(--edit-bg) !important;
+}
+
+[data-theme="dark"] .pmt-page {
+  --edit-bg: var(--bg-secondary, #12161d);
+  --edit-surface: var(--bg-primary, #171c24);
+  --edit-surface-raised: var(--bg-tertiary, #1e2530);
+  --edit-border: var(--border-medium, #2a313c);
+  --edit-text: var(--text-primary, #e8edf2);
+  --edit-muted: var(--text-muted, #9aa4b2);
+  --edit-accent: var(--music-terminal-accent, #f7b500);
+  --edit-accent-hover: var(--music-terminal-hover, #1e2530);
+  --edit-status: var(--music-terminal-success, #74d680);
+}
+
+/* ==========================================================================
+   SHELL — override profile-manager.css
+   ========================================================================== */
+
+.pmt-page .profile-container.pmt-facility {
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: calc(100vh - var(--header-height, 56px));
+  padding: calc(var(--header-height, 56px) + 16px) 12px 48px;
+  background: var(--edit-bg) !important;
+  color: var(--edit-text);
+}
+
+/* ==========================================================================
+   PANELS
+   ========================================================================== */
+
+.pmt-panel {
+  background: var(--edit-surface);
+  border: 1px solid var(--edit-border);
+  border-radius: var(--edit-radius);
+  position: relative;
+}
+
+.pmt-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--edit-accent);
+  border-right: 2px solid var(--edit-accent);
+  pointer-events: none;
+}
+
+.pmt-module-id,
+.pmt-module-id-sm {
+  font-family: var(--edit-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--edit-accent);
+  letter-spacing: 0.04em;
+}
+
+.pmt-panel-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.pmt-panel-title {
+  font-family: var(--edit-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--edit-text);
+  text-transform: uppercase;
+}
+
+.pmt-panel-divider {
+  height: 1px;
+  margin: 8px 0 12px;
+  background: linear-gradient(
+    90deg,
+    var(--edit-accent) 0%,
+    var(--edit-border) 40%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
+
+.pmt-panel-divider--spaced {
+  margin-top: 14px;
+}
+
+.pmt-panel-divider--inset {
+  margin: 10px 0 14px;
+}
+
+.pmt-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--edit-accent);
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.pmt-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  animation: pmt-fade-in var(--edit-motion) forwards;
+}
+
+.pmt-header-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.pmt-header h1 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: var(--edit-text);
+  text-align: left;
+  background: none !important;
+  -webkit-text-fill-color: var(--edit-text) !important;
+}
+
+.pmt-system-desc {
+  margin: 0;
+  font-family: var(--edit-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--edit-muted);
+}
+
+.pmt-header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+}
+
+.pmt-meta-line {
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--edit-muted);
+}
+
+.pmt-meta-line--live {
+  color: var(--edit-accent);
+}
+
+.pmt-meta-line--muted {
+  opacity: 0.75;
+}
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+
+.pmt-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) minmax(200px, 240px);
+  gap: 12px;
+  align-items: start;
+}
+
+.pmt-identity-panel,
+.pmt-status-panel {
+  padding: 14px;
+  animation: pmt-fade-in var(--edit-motion) forwards;
+}
+
+.pmt-identity-panel {
+  animation-delay: 40ms;
+}
+
+.pmt-status-panel {
+  animation-delay: 80ms;
+}
+
+.pmt-page .profile-content.pmt-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  grid-template-columns: unset;
+  animation: pmt-fade-in var(--edit-motion) 60ms forwards;
+}
+
+/* ==========================================================================
+   IDENTITY / AVATAR
+   ========================================================================== */
+
+.pmt-page .profile-section.pmt-avatar-section {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.pmt-page .profile-section.pmt-avatar-section:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.pmt-page .profile-section.pmt-avatar-section h2 {
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--edit-muted);
+  margin: 0 0 12px;
+  padding: 0;
+  border: none;
+}
+
+.pmt-page .avatar-upload-container.pmt-avatar-upload {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.pmt-page .avatar-preview-wrapper.pmt-photo-frame {
+  width: 100%;
+  max-width: 180px;
+  margin: 0 auto;
+  border: 2px solid var(--edit-border);
+  border-radius: var(--edit-radius);
+  background: var(--edit-surface-raised);
+  position: relative;
+  overflow: hidden;
+}
+
+.pmt-page .avatar-preview-wrapper.pmt-photo-frame::after {
+  content: "ID PHOTO";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 6px;
+  font-family: var(--edit-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--edit-muted);
+  background: color-mix(in srgb, var(--edit-surface) 88%, transparent);
+  border-top: 1px solid var(--edit-border);
+}
+
+.pmt-page .avatar-preview {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  display: block;
+  object-fit: cover;
+  transition: none;
+}
+
+.pmt-page .avatar-preview:hover {
+  transform: none;
+}
+
+.pmt-page .avatar-upload-controls.pmt-upload-controls {
+  align-items: stretch;
+}
+
+.pmt-page .upload-btn.pmt-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--edit-text);
+  background: color-mix(in srgb, var(--edit-accent) 12%, var(--edit-surface));
+  border: 1px solid var(--edit-accent);
+  border-radius: var(--edit-radius);
+  cursor: pointer;
+  transition: background var(--edit-motion), border-color var(--edit-motion);
+}
+
+.pmt-page .upload-btn.pmt-upload-btn:hover {
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--edit-accent) 22%, var(--edit-surface));
+}
+
+.pmt-page .upload-hint.pmt-upload-hint {
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--edit-muted);
+  text-align: center;
+  max-width: none;
+  margin: 0;
+}
+
+.pmt-id-meta {
+  margin: 0;
+}
+
+.pmt-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--edit-border) 60%, transparent);
+}
+
+.pmt-meta-row:last-child {
+  border-bottom: none;
+}
+
+.pmt-meta-row dt {
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--edit-muted);
+  font-weight: 500;
+}
+
+.pmt-meta-row dd {
+  margin: 0;
+  font-family: var(--edit-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--edit-text);
+}
+
+.pmt-meta-value--ok {
+  color: var(--edit-status);
+}
+
+/* ==========================================================================
+   FORMS (CENTER)
+   ========================================================================== */
+
+.pmt-page .profile-section.pmt-form-section {
+  padding: 14px 16px 16px;
+  margin: 0;
+  background: var(--edit-surface);
+  border: 1px solid var(--edit-border);
+  border-radius: var(--edit-radius);
+  box-shadow: none;
+  transform: none;
+}
+
+.pmt-page .profile-section.pmt-form-section:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.pmt-page .profile-section.pmt-form-section h2.pmt-section-heading {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--edit-text);
+  margin: 0 0 14px;
+  padding: 0;
+  border: none;
+}
+
+.pmt-page .profile-form.pmt-form,
+.pmt-page .password-form.pmt-form {
+  gap: 12px;
+}
+
+.pmt-page .form-group.pmt-field label {
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--edit-muted);
+}
+
+.pmt-page .form-group.pmt-field input,
+.pmt-page .form-group.pmt-field textarea {
+  padding: 8px 10px;
+  font-family: var(--edit-font);
+  font-size: 13px;
+  color: var(--edit-text);
+  background: var(--edit-surface-raised);
+  border: 1px solid var(--edit-border);
+  border-radius: var(--edit-radius);
+  transition: border-color var(--edit-motion), box-shadow var(--edit-motion);
+}
+
+.pmt-page .form-group.pmt-field input:focus,
+.pmt-page .form-group.pmt-field textarea:focus {
+  outline: none;
+  border-color: var(--edit-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--edit-accent) 25%, transparent);
+}
+
+.pmt-page .form-group.pmt-field input[readonly] {
+  background: color-mix(in srgb, var(--edit-border) 25%, var(--edit-surface-raised));
+  color: var(--edit-muted);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.pmt-page .form-group.pmt-field textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.pmt-page .form-hint.pmt-field-hint {
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  color: var(--edit-muted);
+}
+
+.pmt-page .btn-primary.pmt-btn-primary,
+.pmt-page .btn-secondary.pmt-btn-secondary {
+  padding: 9px 14px;
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--edit-radius);
+  cursor: pointer;
+  transition: background var(--edit-motion), border-color var(--edit-motion), color var(--edit-motion);
+}
+
+.pmt-page .btn-primary.pmt-btn-primary {
+  color: var(--edit-text);
+  background: color-mix(in srgb, var(--edit-accent) 18%, var(--edit-surface));
+  border: 1px solid var(--edit-accent);
+}
+
+.pmt-page .btn-primary.pmt-btn-primary:hover {
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--edit-accent) 28%, var(--edit-surface));
+}
+
+.pmt-page .btn-secondary.pmt-btn-secondary {
+  color: var(--edit-text);
+  background: var(--edit-surface-raised);
+  border: 1px solid var(--edit-border);
+}
+
+.pmt-page .btn-secondary.pmt-btn-secondary:hover {
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--edit-accent) 10%, var(--edit-surface-raised));
+  border-color: var(--edit-accent);
+  color: var(--edit-text);
+}
+
+/* ==========================================================================
+   METADATA / STATS (RIGHT)
+   ========================================================================== */
+
+.pmt-page .profile-section.pmt-stats-section {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.pmt-page .profile-section.pmt-stats-section:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.pmt-page .profile-section.pmt-stats-section h2 {
+  display: none;
+}
+
+.pmt-page .stats-grid.pmt-stats-grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.pmt-page .stat-item.pmt-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 10px;
+  text-align: left;
+  background: var(--edit-surface-raised);
+  border: 1px solid var(--edit-border);
+  border-radius: var(--edit-radius);
+  box-shadow: none;
+  transition: border-color var(--edit-motion);
+}
+
+.pmt-page .stat-item.pmt-stat-item:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--edit-accent);
+}
+
+.pmt-page .stat-label {
+  font-family: var(--edit-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--edit-muted);
+  margin-bottom: 4px;
+}
+
+.pmt-page .stat-value {
+  font-family: var(--edit-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--edit-text);
+  margin-bottom: 0;
+}
+
+.pmt-page .stat-value.pmt-stat-value--sm {
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.pmt-page .xp-bar.pmt-xp-bar {
+  width: 100%;
+  height: 6px;
+  margin-top: 6px;
+  background: var(--edit-surface);
+  border: 1px solid var(--edit-border);
+  border-radius: var(--edit-radius);
+}
+
+.pmt-page .xp-fill {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--edit-accent) 70%, #000) 0%,
+    var(--edit-accent) 100%
+  );
+  border-radius: 0;
+}
+
+/* Modification log */
+.pmt-mod-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pmt-log-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--edit-border) 50%, transparent);
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.pmt-log-item:last-child {
+  border-bottom: none;
+}
+
+.pmt-log-code {
+  min-width: 28px;
+  padding: 2px 4px;
+  text-align: center;
+  color: var(--edit-accent);
+  background: color-mix(in srgb, var(--edit-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--edit-accent) 25%, var(--edit-border));
+  border-radius: var(--edit-radius);
+}
+
+.pmt-log-msg {
+  color: var(--edit-muted);
+}
+
+.pmt-validation-status {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 14px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--edit-status) 8%, var(--edit-surface-raised));
+  border: 1px solid color-mix(in srgb, var(--edit-status) 35%, var(--edit-border));
+  border-radius: var(--edit-radius);
+}
+
+.pmt-validation-label {
+  display: block;
+  font-family: var(--edit-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--edit-muted);
+  margin-bottom: 4px;
+}
+
+.pmt-validation-value {
+  display: block;
+  font-family: var(--edit-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--edit-status);
+}
+
+.pmt-notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--edit-surface-raised);
+  border: 1px solid var(--edit-border);
+  border-radius: var(--edit-radius);
+}
+
+.pmt-notice p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--edit-muted);
+}
+
+/* ==========================================================================
+   TOAST MESSAGES (JS-rendered)
+   ========================================================================== */
+
+.pmt-page .message {
+  top: calc(var(--header-height, 56px) + 12px);
+  padding: 10px 14px;
+  font-family: var(--edit-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  border-radius: var(--edit-radius);
+  border: 1px solid var(--edit-border);
+  box-shadow: var(--music-terminal-shadow-toast, 0 8px 24px rgba(20, 26, 34, 0.12));
+}
+
+.pmt-page .message.info {
+  background: var(--edit-surface);
+  color: var(--edit-text);
+  border-color: var(--edit-accent);
+}
+
+.pmt-page .message.success {
+  background: color-mix(in srgb, var(--edit-status) 12%, var(--edit-surface));
+  color: var(--edit-status);
+  border-color: var(--edit-status);
+}
+
+.pmt-page .message.error {
+  background: color-mix(in srgb, var(--error, #ef4444) 10%, var(--edit-surface));
+  color: var(--error, #ef4444);
+  border-color: var(--error, #ef4444);
+}
+
+/* ==========================================================================
+   FOCUS / ACCESSIBILITY
+   ========================================================================== */
+
+.pmt-page .btn-primary:focus-visible,
+.pmt-page .btn-secondary:focus-visible,
+.pmt-page .upload-btn:focus-visible,
+.pmt-page .form-group input:focus-visible,
+.pmt-page .form-group textarea:focus-visible {
+  outline: 2px solid var(--edit-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .pmt-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pmt-header {
+    grid-template-columns: 1fr;
+  }
+
+  .pmt-header-meta {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .pmt-page .profile-container.pmt-facility {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+/* ==========================================================================
+   ANIMATION
+   ========================================================================== */
+
+@keyframes pmt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
