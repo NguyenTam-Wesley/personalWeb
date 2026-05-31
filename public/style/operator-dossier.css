@@ -248,17 +248,18 @@
 }
 
 .dossier-page .profile-avatar.dossier-avatar {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1;
-  max-width: 160px;
-  margin: 0 auto;
-  border: 2px solid var(--operator-border);
-  border-radius: var(--operator-radius);
-  background: var(--operator-surface-raised);
-  position: relative;
+  overflow: hidden;
 }
 
+.dossier-page .avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border-radius: 0;
+  transition: none;
+}
 .dossier-page .profile-avatar.dossier-avatar::after {
   content: "ID PHOTO";
   position: absolute;
