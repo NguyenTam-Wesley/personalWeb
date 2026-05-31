@@ -1,0 +1,844 @@
+/* Rhodes Island Narrative Records — novel.html only (scoped to .narrative-page) */
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
+
+.narrative-page {
+  --narrative-bg: var(--bg-secondary, #e4e8ed);
+  --narrative-surface: var(--bg-primary, #fafbfc);
+  --narrative-surface-raised: var(--bg-tertiary, #f0f3f7);
+  --narrative-border: var(--border-medium, #b8c2ce);
+  --narrative-text: var(--text-primary, #141a22);
+  --narrative-muted: var(--text-muted, #4f5d6b);
+  --narrative-accent: var(--music-terminal-accent, var(--study-archive-accent, #c99400));
+  --narrative-accent-hover: var(--music-terminal-hover, #dce2ea);
+  --narrative-status: var(--music-terminal-success, #2d8a3e);
+  --narrative-font: "Inter", system-ui, -apple-system, sans-serif;
+  --narrative-mono: "JetBrains Mono", ui-monospace, monospace;
+  --narrative-radius: 2px;
+  --narrative-motion: 180ms ease;
+
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--narrative-font);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--narrative-text);
+  background: var(--narrative-bg) !important;
+  overflow-x: hidden;
+}
+
+[data-theme="dark"] .narrative-page {
+  --narrative-bg: var(--bg-secondary, #12161d);
+  --narrative-surface: var(--bg-primary, #171c24);
+  --narrative-surface-raised: var(--bg-tertiary, #1e2530);
+  --narrative-border: var(--border-medium, #2a313c);
+  --narrative-text: var(--text-primary, #e8edf2);
+  --narrative-muted: var(--text-muted, #9aa4b2);
+  --narrative-accent: var(--music-terminal-accent, #f7b500);
+  --narrative-accent-hover: var(--music-terminal-hover, #1e2530);
+  --narrative-status: var(--music-terminal-success, #74d680);
+}
+
+/* Suppress legacy cinematic layers */
+.narrative-page .novel-bg-breathing,
+.narrative-page .genre-atmosphere-overlay {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Neutralize JS inline transforms on filtered cards */
+.narrative-page .novel-card {
+  transition: border-color var(--narrative-motion), opacity var(--narrative-motion) !important;
+}
+
+/* ==========================================================================
+   SHELL
+   ========================================================================== */
+
+.narrative-page .novel-container.narrative-facility {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: calc(var(--header-height, 56px) + 16px) 12px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.narrative-panel {
+  background: var(--narrative-surface);
+  border: 1px solid var(--narrative-border);
+  border-radius: var(--narrative-radius);
+  position: relative;
+}
+
+.narrative-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--narrative-accent);
+  border-right: 2px solid var(--narrative-accent);
+  pointer-events: none;
+}
+
+.narrative-module-id,
+.narrative-module-id-sm {
+  font-family: var(--narrative-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--narrative-accent);
+  letter-spacing: 0.04em;
+}
+
+.narrative-panel-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.narrative-panel-title {
+  font-family: var(--narrative-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--narrative-text);
+  text-transform: uppercase;
+}
+
+.narrative-panel-divider {
+  height: 1px;
+  margin: 8px 0 12px;
+  background: linear-gradient(
+    90deg,
+    var(--narrative-accent) 0%,
+    var(--narrative-border) 40%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
+
+.narrative-panel-divider--spaced {
+  margin-top: 14px;
+}
+
+.narrative-meta-line {
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--narrative-muted);
+}
+
+.narrative-meta-line--live {
+  color: var(--narrative-accent);
+}
+
+.narrative-meta-line--muted {
+  opacity: 0.75;
+}
+
+.narrative-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--narrative-muted);
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.narrative-page .novel-intro.narrative-header {
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  text-align: left;
+  animation: narrative-fade-in 180ms ease forwards;
+}
+
+.narrative-header-main {
+  margin-bottom: 12px;
+}
+
+.narrative-page .novel-title-breathing {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: var(--narrative-text);
+  animation: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+.narrative-page .novel-subtitle-gentle {
+  margin: 0;
+  font-family: var(--narrative-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--narrative-muted);
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+.narrative-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.narrative-filter-section {
+  padding-top: 14px;
+  border-top: 1px solid var(--narrative-border);
+}
+
+.narrative-page .genre-atmosphere-filter.narrative-genre-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.narrative-page .genre-filter-btn {
+  padding: 6px 12px;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  color: var(--narrative-muted);
+  background: var(--narrative-surface-raised);
+  border: 1px solid var(--narrative-border);
+  border-radius: var(--narrative-radius);
+  cursor: pointer;
+  transition: border-color var(--narrative-motion), color var(--narrative-motion), background-color var(--narrative-motion);
+  box-shadow: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.narrative-page .genre-filter-btn:hover,
+.narrative-page .genre-filter-btn.active {
+  color: var(--narrative-text);
+  border-color: var(--narrative-accent);
+  background: color-mix(in srgb, var(--narrative-accent) 8%, var(--narrative-surface-raised));
+}
+
+/* ==========================================================================
+   THREE-COLUMN LAYOUT
+   ========================================================================== */
+
+.narrative-layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(200px, 240px);
+  gap: 12px;
+  align-items: start;
+}
+
+.narrative-sidebar,
+.narrative-meta-panel {
+  padding: 14px;
+  animation: narrative-fade-in 180ms ease forwards;
+}
+
+.narrative-main {
+  animation: narrative-fade-in 180ms ease forwards;
+  animation-delay: 60ms;
+  opacity: 0;
+}
+
+.narrative-meta-panel {
+  animation-delay: 100ms;
+  opacity: 0;
+}
+
+/* Left sidebar */
+.narrative-category-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.narrative-category-entry {
+  display: block;
+  padding: 8px 10px;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--narrative-muted);
+  border: 1px solid transparent;
+  border-radius: var(--narrative-radius);
+}
+
+.narrative-category-entry--active {
+  color: var(--narrative-text);
+  border-color: var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  border-left: 2px solid var(--narrative-accent);
+}
+
+.narrative-class-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.narrative-class-item {
+  padding: 6px 10px;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--narrative-muted);
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  border-radius: var(--narrative-radius);
+}
+
+.narrative-sidebar-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--narrative-border);
+}
+
+/* Right metadata */
+.narrative-meta-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.narrative-meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  border-radius: var(--narrative-radius);
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.narrative-meta-row dt {
+  margin: 0;
+  color: var(--narrative-muted);
+}
+
+.narrative-meta-row dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--narrative-text);
+  text-align: right;
+}
+
+.narrative-meta-value--ok {
+  color: var(--narrative-status);
+}
+
+.narrative-brief-text {
+  margin: 0 0 12px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--narrative-muted);
+}
+
+.narrative-meta-notice {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  border-left: 2px solid var(--narrative-accent);
+  border-radius: var(--narrative-radius);
+}
+
+.narrative-meta-notice p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--narrative-muted);
+}
+
+/* Feed header */
+.narrative-feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.narrative-feed-badge {
+  font-family: var(--narrative-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 4px 8px;
+  border: 1px solid var(--narrative-border);
+  color: var(--narrative-accent);
+  background: var(--narrative-surface-raised);
+  border-radius: var(--narrative-radius);
+}
+
+/* ==========================================================================
+   RECORD LIST (JS-rendered)
+   ========================================================================== */
+
+.narrative-page .novel-list-breathing.narrative-record-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  counter-reset: narrative-index;
+  animation: none !important;
+}
+
+.narrative-page #novel-list > p {
+  grid-column: 1 / -1;
+  padding: 24px;
+  font-family: var(--narrative-mono);
+  font-size: 12px;
+  color: var(--narrative-muted);
+  text-align: center;
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface);
+  border-radius: var(--narrative-radius);
+}
+
+.narrative-page .novel-card {
+  counter-increment: narrative-index;
+  position: relative;
+  padding: 14px 16px;
+  background: var(--narrative-surface);
+  border: 1px solid var(--narrative-border);
+  border-radius: var(--narrative-radius);
+  box-shadow: none !important;
+  cursor: pointer;
+  animation: narrative-card-enter 180ms ease both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+.narrative-page .novel-card::before {
+  content: "NAR-" counter(narrative-index, decimal-leading-zero);
+  display: block;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--narrative-accent);
+  margin-bottom: 8px;
+}
+
+.narrative-page .novel-card::after {
+  content: "ACTIVE";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: var(--narrative-mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  color: var(--narrative-status);
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  border-radius: var(--narrative-radius);
+  pointer-events: none;
+}
+
+.narrative-page .novel-card:hover {
+  transform: none !important;
+  border-color: var(--narrative-accent);
+  box-shadow: none !important;
+}
+
+.narrative-page .novel-card.deep-focus {
+  border-color: var(--narrative-accent);
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.narrative-page .novel-card.scroll-aware {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.narrative-page .bookmark-icon {
+  position: absolute;
+  top: 14px;
+  left: auto;
+  right: 72px;
+  font-size: 0;
+  width: 14px;
+  height: 14px;
+  background-color: var(--narrative-accent);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='square'%3E%3Cpath d='M6 4h12v16l-6-4-6 4V4z'/%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='square'%3E%3Cpath d='M6 4h12v16l-6-4-6 4V4z'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+}
+
+.narrative-page .memory-indicator {
+  font-family: var(--narrative-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  color: var(--narrative-accent);
+  border-radius: var(--narrative-radius);
+}
+
+.narrative-page .novel-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  color: var(--narrative-text);
+  animation: none !important;
+}
+
+.narrative-page .novel-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--narrative-muted);
+}
+
+.narrative-page .novel-summary {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--narrative-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.narrative-page .novel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.narrative-page .novel-tag {
+  font-family: var(--narrative-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  color: var(--narrative-muted);
+  border-radius: var(--narrative-radius);
+}
+
+/* Hide mood tags — not archive terminology */
+.narrative-page .novel-mood-tags {
+  display: none;
+}
+
+.narrative-page .novel-progress {
+  margin-bottom: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--narrative-border);
+}
+
+.narrative-page .progress-bar {
+  height: 3px;
+  background: var(--narrative-border);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.narrative-page .progress-fill {
+  height: 100%;
+  background: var(--narrative-accent);
+}
+
+.narrative-page .progress-text {
+  font-family: var(--narrative-mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: var(--narrative-muted);
+}
+
+.narrative-page .novel-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--narrative-border);
+}
+
+.narrative-page .action-btn {
+  flex: 1;
+  padding: 8px 10px;
+  font-family: var(--narrative-mono);
+  font-size: 0;
+  letter-spacing: 0.08em;
+  color: var(--narrative-text);
+  background: var(--narrative-surface-raised);
+  border: 1px solid var(--narrative-border);
+  border-radius: var(--narrative-radius);
+  cursor: pointer;
+  transition: border-color var(--narrative-motion);
+}
+
+.narrative-page .action-btn::after {
+  font-size: 10px;
+}
+
+.narrative-page .action-btn:first-child::after {
+  content: "OPEN RECORD";
+}
+
+.narrative-page .action-btn.primary {
+  background: var(--narrative-accent);
+  border-color: var(--narrative-accent);
+  color: var(--music-terminal-accent-contrast, var(--text-inverse, #141a22));
+}
+
+.narrative-page .action-btn.primary::after {
+  content: "PREVIEW";
+}
+
+.narrative-page .action-btn:hover {
+  border-color: var(--narrative-accent);
+  transform: none !important;
+}
+
+.narrative-page .error-message {
+  grid-column: 1 / -1;
+  padding: 24px;
+  text-align: center;
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface);
+  border-radius: var(--narrative-radius);
+  font-family: var(--narrative-mono);
+  font-size: 12px;
+}
+
+.narrative-page .error-message button {
+  margin-top: 12px;
+  padding: 8px 14px;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--narrative-border);
+  background: var(--narrative-surface-raised);
+  border-radius: var(--narrative-radius);
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   PREVIEW PANEL
+   ========================================================================== */
+
+.narrative-page .novel-preview-panel {
+  background: color-mix(in srgb, var(--narrative-bg) 75%, transparent);
+  backdrop-filter: none;
+}
+
+.narrative-page .novel-preview-panel.open {
+  animation: none;
+}
+
+.narrative-page .preview-panel-content {
+  max-width: 560px;
+  background: var(--narrative-surface);
+  border: 1px solid var(--narrative-border);
+  border-radius: var(--narrative-radius);
+  box-shadow: none;
+  padding: 18px 20px;
+}
+
+.narrative-page .preview-panel-content::before {
+  content: "[REC-PREVIEW]";
+  display: block;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--narrative-accent);
+  margin-bottom: 12px;
+}
+
+.narrative-page .preview-close-btn {
+  font-family: var(--narrative-mono);
+  font-size: 14px;
+  color: var(--narrative-muted);
+  border: 1px solid var(--narrative-border);
+  border-radius: var(--narrative-radius);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.narrative-page .preview-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--narrative-text);
+  margin-bottom: 8px;
+}
+
+.narrative-page .preview-meta {
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--narrative-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--narrative-border);
+}
+
+.narrative-page .preview-content {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--narrative-muted);
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.narrative-page .preview-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.narrative-page .preview-read-btn,
+.narrative-page .preview-bookmark-btn {
+  flex: 1;
+  padding: 10px 14px;
+  font-family: var(--narrative-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  border-radius: var(--narrative-radius);
+  cursor: pointer;
+  border: 1px solid var(--narrative-border);
+  transition: background-color var(--narrative-motion), border-color var(--narrative-motion);
+}
+
+.narrative-page .preview-read-btn {
+  background: var(--narrative-accent);
+  border-color: var(--narrative-accent);
+  color: var(--music-terminal-accent-contrast, var(--text-inverse, #141a22));
+  font-size: 0;
+}
+
+.narrative-page .preview-read-btn::after {
+  content: "OPEN FULL RECORD";
+  font-size: 10px;
+}
+
+.narrative-page .preview-bookmark-btn {
+  background: var(--narrative-surface-raised);
+  color: var(--narrative-text);
+  font-size: 0;
+}
+
+.narrative-page .preview-bookmark-btn::after {
+  content: "MARK RECORD";
+  font-size: 10px;
+}
+
+/* Pet */
+.narrative-page #pet-component {
+  opacity: 0.5;
+}
+
+/* Focus */
+.narrative-page .novel-card:focus-visible,
+.narrative-page .genre-filter-btn:focus-visible,
+.narrative-page .action-btn:focus-visible,
+.narrative-page .preview-read-btn:focus-visible,
+.narrative-page .preview-bookmark-btn:focus-visible {
+  outline: 2px solid var(--narrative-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes narrative-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes narrative-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1100px) {
+  .narrative-layout {
+    grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
+  }
+
+  .narrative-meta-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .narrative-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .narrative-page .novel-list-breathing.narrative-record-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .narrative-page .narrative-main,
+  .narrative-sidebar,
+  .narrative-meta-panel,
+  .narrative-page .novel-intro,
+  .narrative-page .novel-card {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}

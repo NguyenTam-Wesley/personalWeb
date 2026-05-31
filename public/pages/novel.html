@@ -4,25 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
-  <title>Danh sách tiểu thuyết</title>
+  <title>NAR-001 — Rhodes Island Narrative Records</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="../style/components.css">
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../style/themes.css">
   <link rel="stylesheet" href="../style/novel.css">
+  <link rel="stylesheet" href="../style/narrative-records.css">
 </head>
-<body>
-  <!-- Breathing Background Layers -->
-  <div class="novel-bg-breathing">
+<body class="narrative-page">
+  <!-- Legacy layers — required by novel.js; visually suppressed -->
+  <div class="novel-bg-breathing" aria-hidden="true">
     <div class="novel-bg-gradient"></div>
     <div class="novel-bg-noise"></div>
   </div>
+  <div class="genre-atmosphere-overlay" aria-hidden="true"></div>
 
-  <!-- Genre Atmosphere Overlay -->
-  <div class="genre-atmosphere-overlay"></div>
-
-  <!-- Preview Panel -->
+  <!-- Record preview panel — DOM contract preserved -->
   <div class="novel-preview-panel" id="novel-preview-panel">
     <div class="preview-panel-content">
-      <div class="preview-close-btn" id="preview-close-btn">✕</div>
+      <div class="preview-close-btn" id="preview-close-btn" aria-label="Close">✕</div>
       <div class="preview-header">
         <h3 id="preview-title"></h3>
         <div class="preview-meta">
@@ -38,27 +41,131 @@
     </div>
   </div>
 
-  <div class="novel-container">
-    <section class="novel-intro">
-      <h1 class="novel-title-breathing">Danh sách tiểu thuyết</h1>
-      <p class="novel-subtitle-gentle">Khám phá, đánh dấu, và đọc các bộ tiểu thuyết hấp dẫn!</p>
-
-      <!-- Genre Filter Atmosphere -->
-      <div class="genre-atmosphere-filter">
-        <button class="genre-filter-btn active" data-genre="all">Tất cả</button>
-        <button class="genre-filter-btn" data-genre="fantasy">Fantasy</button>
-        <button class="genre-filter-btn" data-genre="sci-fi">Sci-Fi</button>
-        <button class="genre-filter-btn" data-genre="romance">Lãng mạn</button>
-        <button class="genre-filter-btn" data-genre="mystery">Bí ẩn</button>
-        <button class="genre-filter-btn" data-genre="slice-of-life">Đời thường</button>
+  <div class="novel-container narrative-facility">
+    <header class="novel-intro narrative-header narrative-panel" aria-label="Narrative Records">
+      <div class="narrative-header-main">
+        <span class="narrative-module-id">[NAR-001]</span>
+        <div class="narrative-header-text">
+          <h1 class="novel-title-breathing">RHODES ISLAND NARRATIVE RECORDS</h1>
+          <p class="novel-subtitle-gentle">Historical Documentation Interface · Story Archive System</p>
+        </div>
       </div>
-    </section>
+      <div class="narrative-header-meta" aria-label="Archive status">
+        <span class="narrative-meta-line narrative-meta-line--live">ARCHIVE STATUS: ONLINE</span>
+        <span class="narrative-meta-line narrative-meta-line--live">RECORD STATUS: READY</span>
+        <span class="narrative-meta-line">DATABASE STATUS: ACTIVE</span>
+        <span class="narrative-meta-line">BUILD 2.7.1</span>
+        <span class="narrative-meta-line narrative-meta-line--muted">ARCHIVE-14</span>
+      </div>
 
-    <main>
-      <div id="novel-list" class="novel-list-breathing"></div>
-    </main>
+      <div class="narrative-filter-section">
+        <div class="narrative-panel-label">
+          <span class="narrative-module-id-sm">[FLT-02]</span>
+          <span class="narrative-panel-title">COLLECTION FILTER · NARRATIVE INDEX</span>
+        </div>
+        <div class="genre-atmosphere-filter narrative-genre-filter">
+          <button class="genre-filter-btn active" data-genre="all">ALL RECORDS</button>
+          <button class="genre-filter-btn" data-genre="fantasy">EVENT CHRONICLES</button>
+          <button class="genre-filter-btn" data-genre="sci-fi">MISSION RECORDS</button>
+          <button class="genre-filter-btn" data-genre="romance">OPERATOR RECORDS</button>
+          <button class="genre-filter-btn" data-genre="mystery">CLASSIFIED</button>
+          <button class="genre-filter-btn" data-genre="slice-of-life">WORLD RECORDS</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="narrative-layout">
+      <aside class="narrative-sidebar narrative-panel" aria-label="Narrative categories">
+        <div class="narrative-panel-label">
+          <span class="narrative-module-id-sm">[IDX-01]</span>
+          <span class="narrative-panel-title">STORY ARCHIVES</span>
+        </div>
+        <div class="narrative-panel-divider" aria-hidden="true"></div>
+        <nav class="narrative-category-nav">
+          <span class="narrative-category-entry narrative-category-entry--active">NARRATIVE RECORDS</span>
+          <span class="narrative-category-entry">EVENT CHRONICLES</span>
+          <span class="narrative-category-entry">MISSION RECORDS</span>
+          <span class="narrative-category-entry">HISTORICAL DOCUMENTATION</span>
+          <span class="narrative-category-entry">OPERATOR RECORDS</span>
+        </nav>
+        <div class="narrative-panel-divider narrative-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="narrative-panel-label">
+          <span class="narrative-module-id-sm">[CLS-03]</span>
+          <span class="narrative-panel-title">CLASSIFICATION</span>
+        </div>
+        <div class="narrative-panel-divider" aria-hidden="true"></div>
+        <ul class="narrative-class-list">
+          <li class="narrative-class-item">ARCHIVED</li>
+          <li class="narrative-class-item">ACTIVE</li>
+          <li class="narrative-class-item">IN PROGRESS</li>
+          <li class="narrative-class-item">HISTORICAL</li>
+          <li class="narrative-class-item">RESTRICTED</li>
+        </ul>
+        <div class="narrative-sidebar-footer">
+          <span class="narrative-meta-line">NODE-A03</span>
+        </div>
+      </aside>
+
+      <section class="narrative-main" aria-label="Narrative record feed">
+        <div class="narrative-feed-header">
+          <div class="narrative-panel-label">
+            <span class="narrative-module-id-sm">[REC-04]</span>
+            <span class="narrative-panel-title">ARCHIVED STORIES · RECORD FEED</span>
+          </div>
+          <span class="narrative-feed-badge">PRIORITY INDEX ACTIVE</span>
+        </div>
+        <main>
+          <div id="novel-list" class="novel-list-breathing narrative-record-list"></div>
+        </main>
+      </section>
+
+      <aside class="narrative-meta-panel narrative-panel" aria-label="Archive metadata">
+        <div class="narrative-panel-label">
+          <span class="narrative-module-id-sm">[MET-05]</span>
+          <span class="narrative-panel-title">ARCHIVE METADATA</span>
+        </div>
+        <div class="narrative-panel-divider" aria-hidden="true"></div>
+        <dl class="narrative-meta-list">
+          <div class="narrative-meta-row">
+            <dt>STORY INDEX</dt>
+            <dd class="narrative-meta-value narrative-meta-value--ok">ONLINE</dd>
+          </div>
+          <div class="narrative-meta-row">
+            <dt>SYNC STATUS</dt>
+            <dd>SYNCED</dd>
+          </div>
+          <div class="narrative-meta-row">
+            <dt>CLASSIFICATION</dt>
+            <dd>INTERNAL</dd>
+          </div>
+          <div class="narrative-meta-row">
+            <dt>TIMELINE</dt>
+            <dd>CHRONOLOGICAL</dd>
+          </div>
+          <div class="narrative-meta-row">
+            <dt>ARCHIVE NODE</dt>
+            <dd>ARCHIVE-14</dd>
+          </div>
+        </dl>
+        <div class="narrative-panel-divider narrative-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="narrative-panel-label">
+          <span class="narrative-module-id-sm">[BRF-06]</span>
+          <span class="narrative-panel-title">ARCHIVE BRIEF</span>
+        </div>
+        <div class="narrative-panel-divider" aria-hidden="true"></div>
+        <p class="narrative-brief-text">
+          Preserved chronicles, operator narratives, and documented events maintained within the Rhodes Island information network. Select a record to review metadata or open full documentation.
+        </p>
+        <div class="narrative-meta-notice" role="note">
+          <svg class="narrative-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <path d="M6 4h12v16H6z" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="9" y1="12" x2="15" y2="12" /><line x1="9" y1="16" x2="13" y2="16" />
+          </svg>
+          <p>Narrative records are preserved under Rhodes Island documentation policy. Access is logged.</p>
+        </div>
+      </aside>
+    </div>
   </div>
 
   <script type="module" src="../js/modules/novel_entry.js"></script>
 </body>
-</html> 
+</html>
