@@ -1,0 +1,581 @@
+/* Rhodes Island Control Authority — admin.html only (scoped to .authority-page) */
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
+
+.authority-page {
+  --admin-ctrl-bg: var(--bg-secondary, #e4e8ed);
+  --admin-ctrl-surface: var(--bg-primary, #fafbfc);
+  --admin-ctrl-surface-raised: var(--bg-tertiary, #f0f3f7);
+  --admin-ctrl-border: var(--border-medium, #b8c2ce);
+  --admin-ctrl-text: var(--text-primary, #141a22);
+  --admin-ctrl-muted: var(--text-muted, #4f5d6b);
+  --admin-ctrl-accent: var(--music-terminal-accent, var(--study-archive-accent, #c99400));
+  --admin-ctrl-accent-hover: var(--music-terminal-hover, #dce2ea);
+  --admin-ctrl-status: var(--music-terminal-success, #2d8a3e);
+  --admin-ctrl-font: "Inter", system-ui, -apple-system, sans-serif;
+  --admin-ctrl-mono: "JetBrains Mono", ui-monospace, monospace;
+  --admin-ctrl-radius: 2px;
+  --admin-ctrl-motion: 180ms ease;
+
+  font-family: var(--admin-ctrl-font);
+  color: var(--admin-ctrl-text);
+  background: var(--admin-ctrl-bg);
+}
+
+[data-theme="dark"] .authority-page {
+  --admin-ctrl-bg: var(--bg-secondary, #12161d);
+  --admin-ctrl-surface: var(--bg-primary, #171c24);
+  --admin-ctrl-surface-raised: var(--bg-tertiary, #1e2530);
+  --admin-ctrl-border: var(--border-medium, #2a313c);
+  --admin-ctrl-text: var(--text-primary, #e8edf2);
+  --admin-ctrl-muted: var(--text-muted, #9aa4b2);
+  --admin-ctrl-accent: var(--music-terminal-accent, #f7b500);
+  --admin-ctrl-accent-hover: var(--music-terminal-hover, #1e2530);
+  --admin-ctrl-status: var(--music-terminal-success, #74d680);
+}
+
+/* Override admin.css dashboard shell on authority page only */
+.authority-page .admin-container.authority-facility {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;
+  min-height: calc(100vh - var(--header-height, 56px));
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: calc(var(--header-height, 56px) + 16px) 12px 48px;
+  overflow: visible;
+  z-index: auto;
+  background: var(--admin-ctrl-bg);
+}
+
+/* ==========================================================================
+   PANELS
+   ========================================================================== */
+
+.authority-panel {
+  background: var(--admin-ctrl-surface);
+  border: 1px solid var(--admin-ctrl-border);
+  border-radius: var(--admin-ctrl-radius);
+  position: relative;
+}
+
+.authority-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--admin-ctrl-accent);
+  border-right: 2px solid var(--admin-ctrl-accent);
+  pointer-events: none;
+}
+
+.authority-module-id,
+.authority-module-id-sm {
+  font-family: var(--admin-ctrl-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--admin-ctrl-accent);
+  letter-spacing: 0.04em;
+}
+
+.authority-panel-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.authority-panel-title {
+  font-family: var(--admin-ctrl-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--admin-ctrl-text);
+  text-transform: uppercase;
+}
+
+.authority-panel-divider {
+  height: 1px;
+  margin: 8px 0 12px;
+  background: linear-gradient(
+    90deg,
+    var(--admin-ctrl-accent) 0%,
+    var(--admin-ctrl-border) 40%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
+
+.authority-panel-divider--spaced {
+  margin-top: 14px;
+}
+
+.authority-meta-line {
+  font-family: var(--admin-ctrl-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--admin-ctrl-muted);
+}
+
+.authority-meta-line--live {
+  color: var(--admin-ctrl-accent);
+}
+
+.authority-meta-line--muted {
+  opacity: 0.75;
+}
+
+.authority-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--admin-ctrl-accent);
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.authority-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  animation: authority-fade-in 180ms ease forwards;
+}
+
+.authority-header h1 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: var(--admin-ctrl-text);
+  text-align: left;
+}
+
+.authority-system-desc {
+  margin: 0;
+  font-family: var(--admin-ctrl-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--admin-ctrl-muted);
+}
+
+.authority-header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+}
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+
+.authority-layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(200px, 260px);
+  gap: 12px;
+  align-items: start;
+}
+
+.authority-sidebar,
+.authority-status-panel {
+  padding: 14px;
+  animation: authority-fade-in 180ms ease forwards;
+}
+
+.authority-page .admin-dashboard.authority-main {
+  max-width: none;
+  margin: 0;
+  padding: 14px 16px 16px;
+  background: var(--admin-ctrl-surface);
+  border: 1px solid var(--admin-ctrl-border);
+  border-radius: var(--admin-ctrl-radius);
+  box-shadow: none;
+  text-align: left;
+  animation: authority-fade-in 180ms ease forwards;
+  animation-delay: 60ms;
+  opacity: 0;
+  position: relative;
+}
+
+.authority-page .admin-dashboard.authority-main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--admin-ctrl-accent);
+  border-right: 2px solid var(--admin-ctrl-accent);
+  pointer-events: none;
+}
+
+.authority-status-panel {
+  animation-delay: 100ms;
+  opacity: 0;
+}
+
+.authority-main-brief {
+  margin: 0 0 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--admin-ctrl-muted);
+}
+
+/* Sidebar nav */
+.authority-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authority-nav-entry {
+  display: block;
+  padding: 8px 10px;
+  font-family: var(--admin-ctrl-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--admin-ctrl-muted);
+  border: 1px solid transparent;
+  border-radius: var(--admin-ctrl-radius);
+}
+
+.authority-nav-entry--active {
+  color: var(--admin-ctrl-text);
+  border-color: var(--admin-ctrl-border);
+  background: var(--admin-ctrl-surface-raised);
+  border-left: 2px solid var(--admin-ctrl-accent);
+}
+
+.authority-class-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authority-class-item {
+  padding: 6px 10px;
+  font-family: var(--admin-ctrl-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--admin-ctrl-muted);
+  border: 1px solid var(--admin-ctrl-border);
+  background: var(--admin-ctrl-surface-raised);
+  border-radius: var(--admin-ctrl-radius);
+}
+
+.authority-class-item--active {
+  color: var(--admin-ctrl-accent);
+  border-color: color-mix(in srgb, var(--admin-ctrl-accent) 45%, var(--admin-ctrl-border));
+}
+
+.authority-sidebar-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--admin-ctrl-border);
+}
+
+/* Status panel */
+.authority-status-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authority-status-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--admin-ctrl-border);
+  background: var(--admin-ctrl-surface-raised);
+  border-radius: var(--admin-ctrl-radius);
+  font-family: var(--admin-ctrl-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.authority-status-row dt {
+  margin: 0;
+  color: var(--admin-ctrl-muted);
+}
+
+.authority-status-row dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--admin-ctrl-text);
+  text-align: right;
+}
+
+.authority-status-value--ok {
+  color: var(--admin-ctrl-status);
+}
+
+.authority-log-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authority-log-item {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--admin-ctrl-border);
+  background: var(--admin-ctrl-surface-raised);
+  border-radius: var(--admin-ctrl-radius);
+  font-family: var(--admin-ctrl-mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+.authority-log-time {
+  color: var(--admin-ctrl-accent);
+  font-weight: 600;
+}
+
+.authority-log-msg {
+  color: var(--admin-ctrl-muted);
+}
+
+.authority-notice {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--admin-ctrl-border);
+  background: var(--admin-ctrl-surface-raised);
+  border-left: 2px solid var(--admin-ctrl-accent);
+  border-radius: var(--admin-ctrl-radius);
+}
+
+.authority-notice p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--admin-ctrl-muted);
+}
+
+.authority-notice .authority-icon {
+  margin-top: 1px;
+  color: var(--admin-ctrl-muted);
+}
+
+/* ==========================================================================
+   MODULE CARDS
+   ========================================================================== */
+
+.authority-page .admin-modules.authority-modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.authority-page .admin-module-card.authority-module-card {
+  position: relative;
+  text-align: left;
+  padding: 14px 16px;
+  background: var(--admin-ctrl-surface-raised);
+  border: 1px solid var(--admin-ctrl-border);
+  border-radius: var(--admin-ctrl-radius);
+  box-shadow: none !important;
+  transition: border-color var(--admin-ctrl-motion), background-color var(--admin-ctrl-motion);
+  animation: authority-card-enter 180ms ease both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+.authority-page .admin-module-card:nth-child(1) { --i: 0; }
+.authority-page .admin-module-card:nth-child(2) { --i: 1; }
+.authority-page .admin-module-card:nth-child(3) { --i: 2; }
+.authority-page .admin-module-card:nth-child(4) { --i: 3; }
+.authority-page .admin-module-card:nth-child(5) { --i: 4; }
+.authority-page .admin-module-card:nth-child(6) { --i: 5; }
+
+.authority-page .admin-module-card::before {
+  display: block;
+  font-family: var(--admin-ctrl-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--admin-ctrl-accent);
+  margin-bottom: 8px;
+}
+
+.authority-page .admin-module-card[data-ctrl-module="tactical"]::before {
+  content: "CTRL-201 · TACTICAL ASSETS";
+}
+
+.authority-page .admin-module-card[data-ctrl-module="music"]::before {
+  content: "MUS-001 · MUSIC ARCHIVE";
+}
+
+.authority-page .admin-module-card[data-ctrl-module="archive"]::before {
+  content: "ARC-001 · KNOWLEDGE ARCHIVE";
+}
+
+.authority-page .admin-module-card[data-ctrl-module="simulator"]::before {
+  content: "SIM-001 · TRAINING SIMULATOR";
+}
+
+.authority-page .admin-module-card[data-ctrl-module="reports"]::before {
+  content: "RPT-001 · INTELLIGENCE REPORTS";
+}
+
+.authority-page .admin-module-card[data-ctrl-module="narrative"]::before {
+  content: "NAR-001 · NARRATIVE RECORDS";
+}
+
+.authority-page .admin-module-card::after {
+  content: "ACTIVE";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: var(--admin-ctrl-mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  color: var(--admin-ctrl-status);
+  border: 1px solid var(--admin-ctrl-border);
+  background: var(--admin-ctrl-surface);
+  border-radius: var(--admin-ctrl-radius);
+  pointer-events: none;
+}
+
+.authority-page .admin-module-card[data-ctrl-module="music"]::after,
+.authority-page .admin-module-card[data-ctrl-module="archive"]::after,
+.authority-page .admin-module-card[data-ctrl-module="reports"]::after {
+  content: "READY";
+  color: var(--admin-ctrl-muted);
+}
+
+.authority-page .admin-module-card:hover {
+  transform: none !important;
+  border-color: var(--admin-ctrl-accent);
+  background: color-mix(in srgb, var(--admin-ctrl-accent) 6%, var(--admin-ctrl-surface-raised));
+  box-shadow: none !important;
+}
+
+.authority-page .admin-module-card .icon {
+  font-size: 0;
+  margin-bottom: 10px;
+  color: var(--admin-ctrl-accent);
+}
+
+.authority-page .admin-module-card h2 {
+  margin: 0 0 6px;
+  padding-right: 56px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  color: var(--admin-ctrl-text);
+}
+
+.authority-page .admin-module-card p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--admin-ctrl-muted);
+}
+
+/* Pet */
+.authority-page #pet-component {
+  opacity: 0.45;
+}
+
+/* Focus */
+.authority-page .admin-module-card:focus-visible {
+  outline: 2px solid var(--admin-ctrl-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes authority-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes authority-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1100px) {
+  .authority-layout {
+    grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
+  }
+
+  .authority-status-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .authority-header {
+    grid-template-columns: 1fr;
+  }
+
+  .authority-header-meta {
+    align-items: flex-start;
+    text-align: left;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .authority-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .authority-page .admin-modules.authority-modules {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .authority-page .admin-dashboard.authority-main,
+  .authority-sidebar,
+  .authority-status-panel,
+  .authority-header,
+  .authority-page .admin-module-card {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}

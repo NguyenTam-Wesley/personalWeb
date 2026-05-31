@@ -3,55 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
+  <title>ADM-001 — Rhodes Island Control Authority</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="../../style/components.css" />
-  <link rel="stylesheet" href="../../style/style.css" />
-  <link rel="stylesheet" href="../../style/admin.css" />
   <link rel="stylesheet" href="../../style/themes.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style/admin.css" />
+  <link rel="stylesheet" href="../../style/control-authority.css" />
   <link
     rel="icon"
     href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
   />
 </head>
-<body>
-  <main class="admin-container">
-    <div class="admin-dashboard">
-      <h1>Admin Dashboard</h1>
-      <div class="admin-modules">
-        <a class="admin-module-card" href="crosshair-manager.html">
-          <div class="icon">🎯</div>
-          <h2>Quản lý Crosshair</h2>
-          <p>Thêm, sửa, xóa các mã tâm ngắm Valorant</p>
-        </a>
-        <a class="admin-module-card" href="#" onclick="event.preventDefault(); alert('Chức năng sắp ra mắt!');">
-          <div class="icon">🎵</div>
-          <h2>Quản lý Music</h2>
-          <p>Quản lý nhạc, playlist, nghệ sĩ</p>
-        </a>
-        <a class="admin-module-card" href="#" onclick="event.preventDefault(); alert('Chức năng sắp ra mắt!');">
-          <div class="icon">📚</div>
-          <h2>Quản lý Study</h2>
-          <p>Quản lý tài liệu, bài học, chủ đề học tập</p>
-        </a>
-        <a class="admin-module-card" href="edit-games.html">
-          <div class="icon">🕹️</div>
-          <h2>Quản lý Game</h2>
-          <p>Quản lý dữ liệu game, nhân vật, items</p>
-        </a>
-        <a class="admin-module-card" href="#" onclick="event.preventDefault(); alert('Chức năng sắp ra mắt!');">
-          <div class="icon">📝</div>
-          <h2>Quản lý Blog</h2>
-          <p>Quản lý bài viết, danh mục, tags</p>
-        </a>
-        <a class="admin-module-card" href="novel-manager.html">
-          <div class="icon">📖</div>
-          <h2>Quản lý Novel</h2>
-          <p>Thêm, sửa, xóa các bộ tiểu thuyết</p>
-        </a>
+<body class="authority-page">
+  <main class="admin-container authority-facility">
+    <header class="authority-header authority-panel" aria-label="Control Authority">
+      <div class="authority-header-main">
+        <span class="authority-module-id">[ADM-001]</span>
+        <div class="authority-header-text">
+          <h1>RHODES ISLAND CONTROL AUTHORITY</h1>
+          <p class="authority-system-desc">Administrative Operations Interface · Network Governance Console</p>
+        </div>
       </div>
+      <div class="authority-header-meta" aria-label="Authority status">
+        <span class="authority-meta-line authority-meta-line--live">AUTHORITY STATUS: ACTIVE</span>
+        <span class="authority-meta-line authority-meta-line--live">NETWORK STATUS: ONLINE</span>
+        <span class="authority-meta-line">SYSTEM LOAD: NORMAL</span>
+        <span class="authority-meta-line">BUILD 2.7.1</span>
+        <span class="authority-meta-line authority-meta-line--muted">CTRL-214</span>
+      </div>
+    </header>
+
+    <div class="authority-layout">
+      <aside class="authority-sidebar authority-panel" aria-label="System navigation">
+        <div class="authority-panel-label">
+          <span class="authority-module-id-sm">[NAV-01]</span>
+          <span class="authority-panel-title">SYSTEM NAVIGATION</span>
+        </div>
+        <div class="authority-panel-divider" aria-hidden="true"></div>
+        <nav class="authority-nav">
+          <span class="authority-nav-entry authority-nav-entry--active">MODULE MANAGEMENT</span>
+          <span class="authority-nav-entry">ACCESS GOVERNANCE</span>
+          <span class="authority-nav-entry">AUTHORIZATION CONTROL</span>
+          <span class="authority-nav-entry">NETWORK CONTROL</span>
+          <span class="authority-nav-entry">SYSTEM CONFIGURATION</span>
+        </nav>
+        <div class="authority-panel-divider authority-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="authority-panel-label">
+          <span class="authority-module-id-sm">[GOV-02]</span>
+          <span class="authority-panel-title">OVERSIGHT LEVEL</span>
+        </div>
+        <div class="authority-panel-divider" aria-hidden="true"></div>
+        <ul class="authority-class-list">
+          <li class="authority-class-item authority-class-item--active">ADMINISTRATOR</li>
+          <li class="authority-class-item">AUTHORIZED</li>
+          <li class="authority-class-item">MONITORED</li>
+          <li class="authority-class-item">RESTRICTED</li>
+        </ul>
+        <div class="authority-sidebar-footer">
+          <span class="authority-meta-line">NODE-A03</span>
+        </div>
+      </aside>
+
+      <section class="admin-dashboard authority-main" aria-label="Module management">
+        <div class="authority-panel-label">
+          <span class="authority-module-id-sm">[MOD-03]</span>
+          <span class="authority-panel-title">MODULE MANAGEMENT · OPERATIONAL CONTROLS</span>
+        </div>
+        <div class="authority-panel-divider" aria-hidden="true"></div>
+        <p class="authority-main-brief">
+          Supervise and configure Rhodes Island network subsystems. Select a module to access administrative controls.
+        </p>
+
+        <div class="admin-modules authority-modules">
+          <a class="admin-module-card authority-module-card" href="crosshair-manager.html" data-ctrl-module="tactical">
+            <div class="icon" aria-hidden="true">
+              <svg class="authority-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square">
+                <circle cx="12" cy="12" r="6" /><line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" />
+              </svg>
+            </div>
+            <h2>TACTICAL CROSSHAIR REGISTRY</h2>
+            <p>Manage Valorant crosshair codes and tactical reference assets</p>
+          </a>
+
+          <a class="admin-module-card authority-module-card" href="#" onclick="event.preventDefault(); alert('Chức năng sắp ra mắt!');" data-ctrl-module="music">
+            <div class="icon" aria-hidden="true">
+              <svg class="authority-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square">
+                <rect x="3" y="14" width="3" height="7" /><rect x="8" y="10" width="3" height="11" /><rect x="13" y="6" width="3" height="15" /><rect x="18" y="12" width="3" height="9" />
+              </svg>
+            </div>
+            <h2>MUSIC ARCHIVE CONTROL</h2>
+            <p>Audio library, playlist, and artist registry administration</p>
+          </a>
+
+          <a class="admin-module-card authority-module-card" href="#" onclick="event.preventDefault(); alert('Chức năng sắp ra mắt!');" data-ctrl-module="archive">
+            <div class="icon" aria-hidden="true">
+              <svg class="authority-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square">
+                <rect x="4" y="4" width="16" height="16" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="10" y1="4" x2="10" y2="20" />
+              </svg>
+            </div>
+            <h2>KNOWLEDGE ARCHIVE CONTROL</h2>
+            <p>Documentation, subject registry, and study record administration</p>
+          </a>
+
+          <a class="admin-module-card authority-module-card" href="edit-games.html" data-ctrl-module="simulator">
+            <div class="icon" aria-hidden="true">
+              <svg class="authority-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square">
+                <rect x="4" y="6" width="16" height="12" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="12" y1="6" x2="12" y2="18" />
+              </svg>
+            </div>
+            <h2>TRAINING SIMULATOR CONTROL</h2>
+            <p>Exercise modules, game data, and simulation asset administration</p>
+          </a>
+
+          <a class="admin-module-card authority-module-card" href="#" onclick="event.preventDefault(); alert('Chức năng sắp ra mắt!');" data-ctrl-module="reports">
+            <div class="icon" aria-hidden="true">
+              <svg class="authority-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square">
+                <line x1="5" y1="7" x2="19" y2="7" /><line x1="5" y1="12" x2="19" y2="12" /><line x1="5" y1="17" x2="14" y2="17" />
+              </svg>
+            </div>
+            <h2>INTELLIGENCE REPORTS CONTROL</h2>
+            <p>Report index, categories, and publication administration</p>
+          </a>
+
+          <a class="admin-module-card authority-module-card" href="novel-manager.html" data-ctrl-module="narrative">
+            <div class="icon" aria-hidden="true">
+              <svg class="authority-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square">
+                <path d="M6 4h12v16H6z" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="9" y1="12" x2="15" y2="12" /><line x1="9" y1="16" x2="13" y2="16" />
+              </svg>
+            </div>
+            <h2>NARRATIVE RECORDS CONTROL</h2>
+            <p>Story archive, volume, and chapter record administration</p>
+          </a>
+        </div>
+      </section>
+
+      <aside class="authority-status-panel authority-panel" aria-label="Network status">
+        <div class="authority-panel-label">
+          <span class="authority-module-id-sm">[MON-04]</span>
+          <span class="authority-panel-title">NETWORK STATUS</span>
+        </div>
+        <div class="authority-panel-divider" aria-hidden="true"></div>
+        <dl class="authority-status-list">
+          <div class="authority-status-row">
+            <dt>SYSTEM HEALTH</dt>
+            <dd class="authority-status-value authority-status-value--ok">HEALTHY</dd>
+          </div>
+          <div class="authority-status-row">
+            <dt>NETWORK SYNC</dt>
+            <dd>SYNCED</dd>
+          </div>
+          <div class="authority-status-row">
+            <dt>ACTIVE MODULES</dt>
+            <dd>6</dd>
+          </div>
+          <div class="authority-status-row">
+            <dt>ACCESS LEVEL</dt>
+            <dd>ADMINISTRATOR</dd>
+          </div>
+          <div class="authority-status-row">
+            <dt>ARCHIVE NODE</dt>
+            <dd>CTRL-214</dd>
+          </div>
+        </dl>
+
+        <div class="authority-panel-divider authority-panel-divider--spaced" aria-hidden="true"></div>
+        <div class="authority-panel-label">
+          <span class="authority-module-id-sm">[LOG-05]</span>
+          <span class="authority-panel-title">ADMINISTRATIVE LOG</span>
+        </div>
+        <div class="authority-panel-divider" aria-hidden="true"></div>
+        <ul class="authority-log-list">
+          <li class="authority-log-item">
+            <span class="authority-log-time">SYS</span>
+            <span class="authority-log-msg">AUTHORITY CONSOLE INITIALIZED</span>
+          </li>
+          <li class="authority-log-item">
+            <span class="authority-log-time">NET</span>
+            <span class="authority-log-msg">ALL MODULES MONITORED</span>
+          </li>
+          <li class="authority-log-item">
+            <span class="authority-log-time">ARC</span>
+            <span class="authority-log-msg">ARCHIVE SYNCHRONIZED</span>
+          </li>
+          <li class="authority-log-item">
+            <span class="authority-log-time">ACS</span>
+            <span class="authority-log-msg">ACCESS GOVERNANCE ACTIVE</span>
+          </li>
+        </ul>
+
+        <div class="authority-notice" role="note">
+          <svg class="authority-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+            <path d="M12 3L3 20h18L12 3z" /><line x1="12" y1="10" x2="12" y2="14" /><line x1="12" y1="17" x2="12" y2="17.01" />
+          </svg>
+          <p>Administrative actions are logged. Unauthorized configuration changes are prohibited.</p>
+        </div>
+      </aside>
     </div>
   </main>
   <script type="module" src="../../js/modules/admin_entry.js"></script>
 </body>
-</html> 
+</html>
