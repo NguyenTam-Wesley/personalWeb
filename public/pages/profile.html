@@ -3,244 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - ntam</title>
-    <link rel="stylesheet" href="../style/variables.css">
-    <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
+    <title>OPR-001 — Rhodes Island Operator Dossier</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style/themes.css">
     <link rel="stylesheet" href="../style/components.css">
     <link rel="stylesheet" href="../style/profile.css">
+    <link rel="stylesheet" href="../style/operator-dossier.css">
+    <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
 </head>
-<body class="dark-theme">
-    <div class="container">
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- User Profile Section -->
-            <section class="profile-section">
-                <div class="profile-header">
-                    <!-- Left side: Profile info -->
-                    <div class="profile-left">
-                        <div class="profile-avatar">
-                            <img id="profile-avatar-img" src="/default-avatar.png" alt="Profile Avatar" class="avatar-image">
+<body class="dossier-page">
+    <div class="container dossier-facility">
+        <header class="dossier-header dossier-panel" aria-label="Operator Dossier">
+            <div class="dossier-header-main">
+                <span class="dossier-module-id">[OPR-001]</span>
+                <div class="dossier-header-text">
+                    <h1>RHODES ISLAND OPERATOR DOSSIER</h1>
+                    <p class="dossier-system-desc">Personnel Record Interface · Identity Documentation System</p>
+                </div>
+            </div>
+            <div class="dossier-header-meta" aria-label="Dossier status">
+                <span class="dossier-meta-line dossier-meta-line--live">DOSSIER STATUS: ACTIVE</span>
+                <span class="dossier-meta-line dossier-meta-line--live">AUTHORIZATION: VERIFIED</span>
+                <span class="dossier-meta-line">NETWORK STATUS: ONLINE</span>
+                <span class="dossier-meta-line">BUILD 2.7.1</span>
+                <span class="dossier-meta-line dossier-meta-line--muted">DOSSIER-214</span>
+            </div>
+        </header>
+
+        <div class="dossier-layout">
+            <aside class="dossier-identity-panel dossier-panel" aria-label="Operator identity">
+                <div class="dossier-panel-label">
+                    <span class="dossier-module-id-sm">[IDN-01]</span>
+                    <span class="dossier-panel-title">OPERATOR IDENTITY</span>
+                </div>
+                <div class="dossier-panel-divider" aria-hidden="true"></div>
+
+                <section class="profile-section dossier-identity-section">
+                    <div class="profile-left dossier-profile-left">
+                        <div class="profile-avatar dossier-avatar">
+                            <img id="profile-avatar-img" src="/default-avatar.png" alt="Operator identification photo" class="avatar-image">
                         </div>
-                        <div class="profile-info">
-                            <h2 id="username-display" class="username">Loading...</h2>
-                            <div class="level-info">
-                                <span class="level-badge" id="level-badge">Lv. 1</span>
-                                <div class="xp-bar">
+                        <div class="profile-info dossier-profile-info">
+                            <span class="dossier-field-label">OPERATOR CODENAME</span>
+                            <h2 id="username-display" class="username dossier-codename">Loading...</h2>
+                            <div class="level-info dossier-rank-block">
+                                <span class="dossier-field-label">AUTHORIZATION RANK</span>
+                                <span class="level-badge dossier-level-badge" id="level-badge">Lv. 1</span>
+                                <div class="xp-bar dossier-xp-bar">
                                     <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
                                     <span class="xp-text" id="xp-text">0 / 100 XP</span>
                                 </div>
-                                <div class="currency-info">
+                                <div class="currency-info dossier-currency">
                                     <div class="currency-item">
-                                        <span class="currency-icon">🪙</span>
+                                        <span class="currency-icon" aria-hidden="true"></span>
                                         <span class="currency-amount" id="coins-amount">0</span>
                                     </div>
                                     <div class="currency-item">
-                                        <span class="currency-icon">💎</span>
+                                        <span class="currency-icon currency-icon--gems" aria-hidden="true"></span>
                                         <span class="currency-amount" id="gems-amount">0</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </section>
 
-                    <!-- Right side: Stats grid -->
-                    <div class="profile-right">
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">🎮</div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="games-played">0</div>
-                                    <div class="stat-label">Games Played</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">⏱️</div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="total-time">0h</div>
-                                    <div class="stat-label">Total Time</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">🔥</div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="current-streak">0</div>
-                                    <div class="stat-label">Current Streak</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon">🏆</div>
-                                <div class="stat-info">
-                                    <div class="stat-value" id="best-streak">0</div>
-                                    <div class="stat-label">Best Streak</div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="dossier-panel-divider dossier-panel-divider--spaced" aria-hidden="true"></div>
+                <dl class="dossier-id-meta">
+                    <div class="dossier-meta-row">
+                        <dt>STATUS</dt>
+                        <dd class="dossier-meta-value dossier-meta-value--ok">ACTIVE</dd>
                     </div>
-                </div>
-            </section>
-
-            <!-- Tabs Section -->
-            <section class="tabs-section">
-                <div class="tabs-header">
-                    <div class="tab-buttons">
-                        <button class="tab-button active" data-tab="inventory">🎒 Inventory</button>
-                        <button class="tab-button" data-tab="achievements">🏆 Achievements</button>
-                        <button class="tab-button" data-tab="pets">🐾 Pets</button>
-                        <button class="tab-button" data-tab="daily">📅 Daily</button>
-                        <button class="tab-button" onclick="window.location.href='../pages/shop.html'">🛒 Shop</button>
+                    <div class="dossier-meta-row">
+                        <dt>CLASSIFICATION</dt>
+                        <dd>OPERATOR</dd>
                     </div>
-                </div>
+                    <div class="dossier-meta-row">
+                        <dt>RECORD NODE</dt>
+                        <dd>DOSSIER-214</dd>
+                    </div>
+                </dl>
+            </aside>
 
-                <div class="tabs-content">
-                    <!-- Inventory Tab -->
-                    <div class="tab-pane active" id="inventory-tab">
-                        <div class="inventory-grid" id="inventory-grid">
-                            <!-- Items will be loaded here -->
+            <main class="main-content dossier-main">
+                <section class="tabs-section dossier-records-section dossier-panel">
+                    <div class="tabs-header dossier-tabs-header">
+                        <div class="dossier-panel-label">
+                            <span class="dossier-module-id-sm">[REC-02]</span>
+                            <span class="dossier-panel-title">PERSONNEL RECORDS</span>
                         </div>
-                        <div class="empty-state" id="empty-inventory">
-                            <div class="empty-icon">🎒</div>
-                            <div class="empty-text">Your inventory is empty</div>
-                            <div class="empty-subtext">Complete games to earn items!</div>
+                        <div class="dossier-panel-divider dossier-panel-divider--inset" aria-hidden="true"></div>
+                        <div class="tab-buttons dossier-tab-buttons">
+                            <button class="tab-button active" data-tab="inventory">EQUIPMENT LOG</button>
+                            <button class="tab-button" data-tab="achievements">SERVICE RECORDS</button>
+                            <button class="tab-button" data-tab="pets">COMPANION UNIT</button>
+                            <button class="tab-button" data-tab="daily">DAILY ALLOCATION</button>
+                            <button class="tab-button dossier-tab-shop" onclick="window.location.href='shop.html'">SUPPLY DEPOT</button>
                         </div>
                     </div>
 
-                    <!-- Achievements Tab -->
-                    <div class="tab-pane" id="achievements-tab">
-                        <div class="achievements-summary">
-                            <div class="achievement-stat">
-                                <div class="stat-number" id="achievements-unlocked">0</div>
-                                <div class="stat-label">Unlocked</div>
-                            </div>
-                            <div class="achievement-stat">
-                                <div class="stat-number" id="achievements-total">0</div>
-                                <div class="stat-label">Total</div>
-                            </div>
-                            <div class="achievement-stat">
-                                <div class="stat-number" id="completion-rate">0%</div>
-                                <div class="stat-label">Completion</div>
+                    <div class="tabs-content dossier-tabs-content">
+                        <div class="tab-pane active" id="inventory-tab">
+                            <div class="inventory-grid" id="inventory-grid"></div>
+                            <div class="empty-state" id="empty-inventory">
+                                <div class="empty-icon" aria-hidden="true"></div>
+                                <div class="empty-text">Equipment log empty</div>
+                                <div class="empty-subtext">Complete training exercises to acquire equipment.</div>
                             </div>
                         </div>
-                        <div class="achievements-grid" id="achievements-grid">
-                            <!-- Achievements will be loaded here -->
+
+                        <div class="tab-pane" id="achievements-tab">
+                            <div class="achievements-summary dossier-achievements-summary">
+                                <div class="achievement-stat">
+                                    <div class="stat-number" id="achievements-unlocked">0</div>
+                                    <div class="stat-label">Verified</div>
+                                </div>
+                                <div class="achievement-stat">
+                                    <div class="stat-number" id="achievements-total">0</div>
+                                    <div class="stat-label">Total Records</div>
+                                </div>
+                                <div class="achievement-stat">
+                                    <div class="stat-number" id="completion-rate">0%</div>
+                                    <div class="stat-label">Completion</div>
+                                </div>
+                            </div>
+                            <div class="achievements-grid" id="achievements-grid"></div>
                         </div>
-                    </div>
 
-                    <!-- Pets Tab -->
-                    <div class="tab-pane" id="pets-tab">
-                        <!-- Pet Settings -->
-                        <div class="pet-settings-section">
-                            <h3>🐾 Pet Settings</h3>
-                            <div class="settings-grid">
-                                <div class="setting-item">
-                                    <label class="setting-label">
-                                        <input type="checkbox" id="pet-enabled" onchange="togglePetEnabled()">
-                                        <span>Enable Pet</span>
-                                    </label>
+                        <div class="tab-pane" id="pets-tab">
+                            <div class="pet-settings-section dossier-pet-section">
+                                <h3>COMPANION UNIT CONFIGURATION</h3>
+                                <div class="settings-grid">
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="pet-enabled" onchange="togglePetEnabled()">
+                                            <span>Enable companion unit</span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <label class="setting-label">Unit scale:</label>
+                                        <select id="pet-size" onchange="updatePetSize()">
+                                            <option value="small">Small</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="large">Large</option>
+                                        </select>
+                                    </div>
+                                    <div class="setting-item">
+                                        <label class="setting-label">Display theme:</label>
+                                        <select id="pet-theme" onchange="updatePetTheme()">
+                                            <option value="default" selected>Default</option>
+                                            <option value="dark">Dark</option>
+                                            <option value="light">Light</option>
+                                        </select>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="action-buttons">
+                                            <button onclick="resetPetPosition()" class="reset-btn">Reset position</button>
+                                            <button onclick="testPet()" class="test-btn">Test unit</button>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <div class="setting-item">
-                                    <label class="setting-label">Pet Size:</label>
-                                    <select id="pet-size" onchange="updatePetSize()">
-                                        <option value="small">Small</option>
-                                        <option value="medium" selected>Medium</option>
-                                        <option value="large">Large</option>
-                                    </select>
+                                <div class="pet-info-note">
+                                    <small>Control panels are page-specific and may be enabled per module for testing.</small>
                                 </div>
-
-                                <div class="setting-item">
-                                    <label class="setting-label">Pet Theme:</label>
-                                    <select id="pet-theme" onchange="updatePetTheme()">
-                                        <option value="default" selected>Default</option>
-                                        <option value="dark">Dark</option>
-                                        <option value="light">Light</option>
-                                    </select>
-                                </div>
-
-                                <div class="setting-item">
-                                    <div class="action-buttons">
-                                        <button onclick="resetPetPosition()" class="reset-btn">📍 Reset Position</button>
-                                        <button onclick="testPet()" class="test-btn">🎮 Test Pet</button>
+                                <div class="pet-info dossier-pet-info">
+                                    <div class="info-item">
+                                        <strong>Unit status:</strong>
+                                        <span id="pet-status">Checking...</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Active module:</strong>
+                                        <span id="current-page">Loading...</span>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="pet-info-note">
-                                <small>💡 <strong>Note:</strong> Control panels are page-specific and can be enabled per page for gaming or testing.</small>
-                            </div>
-
-                            <div class="pet-info">
-                                <div class="info-item">
-                                    <strong>Current Status:</strong>
-                                    <span id="pet-status">Checking...</span>
-                                </div>
-                                <div class="info-item">
-                                    <strong>Current Page:</strong>
-                                    <span id="current-page">Loading...</span>
+                            <div class="pets-collection-section dossier-pets-collection">
+                                <h3>COMPANION REGISTRY</h3>
+                                <div class="pets-grid" id="pets-grid"></div>
+                                <div class="empty-state" id="empty-pets">
+                                    <div class="empty-icon" aria-hidden="true"></div>
+                                    <div class="empty-text">Registry pending expansion</div>
+                                    <div class="empty-subtext">Additional companion units scheduled for deployment.</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Future: Multiple Pets Collection -->
-                        <div class="pets-collection-section" style="margin-top: 30px;">
-                            <h3>🦴 Pet Collection</h3>
-                            <div class="pets-grid" id="pets-grid">
-                                <!-- Future pets will be loaded here -->
-                            </div>
-                            <div class="empty-state" id="empty-pets">
-                                <div class="empty-icon">🐾</div>
-                                <div class="empty-text">More pets coming soon!</div>
-                                <div class="empty-subtext">Stay tuned for new pet types and customization options!</div>
+                        <div class="tab-pane" id="daily-tab">
+                            <div class="daily-rewards dossier-daily">
+                                <div class="daily-header">
+                                    <h3>DAILY ALLOCATION RECORD</h3>
+                                    <div class="streak-info">
+                                        <span class="streak-icon" aria-hidden="true"></span>
+                                        <span class="streak-count" id="daily-streak">0</span>
+                                    </div>
+                                </div>
+                                <div class="daily-grid" id="daily-rewards-grid"></div>
+                                <button class="claim-daily-btn" id="claim-daily-btn">Claim today's allocation</button>
                             </div>
                         </div>
                     </div>
+                </section>
+            </main>
 
-                    <!-- Daily Tab -->
-                    <div class="tab-pane" id="daily-tab">
-                        <div class="daily-rewards">
-                            <div class="daily-header">
-                                <h3>Daily Rewards</h3>
-                                <div class="streak-info">
-                                    <span class="streak-icon">🔥</span>
-                                    <span class="streak-count" id="daily-streak">0</span>
-                                </div>
+            <aside class="dossier-stats-panel dossier-panel" aria-label="Service records">
+                <div class="dossier-panel-label">
+                    <span class="dossier-module-id-sm">[SVC-03]</span>
+                    <span class="dossier-panel-title">SERVICE RECORDS</span>
+                </div>
+                <div class="dossier-panel-divider" aria-hidden="true"></div>
+
+                <div class="profile-right dossier-stats-wrap">
+                    <div class="stats-grid dossier-stats-grid">
+                        <div class="stat-card dossier-stat-card">
+                            <div class="stat-icon" aria-hidden="true"></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="games-played">0</div>
+                                <div class="stat-label">Training Sessions</div>
                             </div>
-                            <div class="daily-grid" id="daily-rewards-grid">
-                                <!-- Daily rewards will be loaded here -->
+                        </div>
+                        <div class="stat-card dossier-stat-card">
+                            <div class="stat-icon stat-icon--time" aria-hidden="true"></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-time">0h</div>
+                                <div class="stat-label">Service Hours</div>
                             </div>
-                            <button class="claim-daily-btn" id="claim-daily-btn">Claim Today's Reward</button>
+                        </div>
+                        <div class="stat-card dossier-stat-card">
+                            <div class="stat-icon stat-icon--streak" aria-hidden="true"></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="current-streak">0</div>
+                                <div class="stat-label">Active Streak</div>
+                            </div>
+                        </div>
+                        <div class="stat-card dossier-stat-card">
+                            <div class="stat-icon stat-icon--peak" aria-hidden="true"></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="best-streak">0</div>
+                                <div class="stat-label">Peak Streak</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
+
+                <div class="dossier-panel-divider dossier-panel-divider--spaced" aria-hidden="true"></div>
+                <div class="dossier-panel-label">
+                    <span class="dossier-module-id-sm">[LOG-04]</span>
+                    <span class="dossier-panel-title">ACTIVITY LOG</span>
+                </div>
+                <div class="dossier-panel-divider" aria-hidden="true"></div>
+                <ul class="dossier-activity-log">
+                    <li class="dossier-log-item">
+                        <span class="dossier-log-code">ACS</span>
+                        <span class="dossier-log-msg">LOGIN AUTHORIZED</span>
+                    </li>
+                    <li class="dossier-log-item">
+                        <span class="dossier-log-code">ARC</span>
+                        <span class="dossier-log-msg">ARCHIVE ACCESSED</span>
+                    </li>
+                    <li class="dossier-log-item">
+                        <span class="dossier-log-code">SIM</span>
+                        <span class="dossier-log-msg">TRAINING ACTIVE</span>
+                    </li>
+                    <li class="dossier-log-item">
+                        <span class="dossier-log-code">NET</span>
+                        <span class="dossier-log-msg">DOSSIER SYNCHRONIZED</span>
+                    </li>
+                </ul>
+
+                <div class="dossier-notice" role="note">
+                    <svg class="dossier-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                        <circle cx="12" cy="8" r="3" /><path d="M5 20c0-4 3.5-6 7-6s7 2 7 6" />
+                    </svg>
+                    <p>Personnel records are maintained under Rhodes Island network policy. Dossier access is logged.</p>
+                </div>
+            </aside>
+        </div>
     </div>
 
-    <!-- Modals -->
     <div class="modal" id="item-modal">
-        <div class="modal-content">
+        <div class="modal-content dossier-modal-content">
             <div class="modal-header">
                 <h3 id="item-modal-title">Item Details</h3>
                 <button class="modal-close" id="item-modal-close">&times;</button>
             </div>
-            <div class="modal-body" id="item-modal-body">
-                <!-- Item details will be loaded here -->
-            </div>
+            <div class="modal-body" id="item-modal-body"></div>
         </div>
     </div>
 
     <div class="modal" id="achievement-modal">
-        <div class="modal-content">
+        <div class="modal-content dossier-modal-content">
             <div class="modal-header">
                 <h3 id="achievement-modal-title">Achievement Details</h3>
                 <button class="modal-close" id="achievement-modal-close">&times;</button>
             </div>
-            <div class="modal-body" id="achievement-modal-body">
-                <!-- Achievement details will be loaded here -->
-            </div>
+            <div class="modal-body" id="achievement-modal-body"></div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script type="module" src="../js/modules/profile_entry.js"></script>
 </body>
 </html>
