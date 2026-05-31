@@ -3,135 +3,248 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Ntam - Không gian giải trí số cá nhân với nhạc, học tập, game và blog" />
-    <meta name="keywords" content="nhạc, học tập, game, blog, giải trí" />
+    <meta name="description" content="Rhodes Island Command Center — Central operations hub for network modules" />
+    <meta name="keywords" content="command center, archive, training, access control, operations" />
     <link rel="icon" href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8" type="image/jpeg">
-    <title>ntam</title>
+    <title>CMD-001 — Rhodes Island Command Center</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style/components.css" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style/themes.css" />
+    <link rel="stylesheet" href="style/command-center.css" />
   </head>
-  <!-- Awakening System Layers -->
-  <div class="awakening-bg"></div>
-  <div class="noise-layer"></div>
 
-  <body>
-    <!-- Hero Section - Breathing Entity -->
-    <section class="hero">
-      <div class="hero-background"></div>
-      <div class="hero-light-layer"></div>
-      <div class="hero-glow-layer"></div>
-      <div class="hero-container">
-        <div class="hero-content">
-          <h1 class="hero-title">ntam</h1>
-          <p class="hero-subtitle">a personal digital space</p>
-        </div>
-        <div class="scroll-hint">
-          <div class="scroll-arrow">↓</div>
-        </div>
-      </div>
-    </section>
+  <body class="command-page">
+    <!-- Legacy layers — required by home.js hooks; visually suppressed -->
+    <div class="awakening-bg" aria-hidden="true"></div>
+    <div class="noise-layer" aria-hidden="true"></div>
 
-    <!-- Intro Section - Story Beginning -->
-    <section class="intro">
-      <div class="container">
-        <div class="intro-content">
-          <p class="intro-line">In the digital age,</p>
-          <p class="intro-line">ntam is a place where you can find</p>
-          <p class="intro-line">the balance between technology and human life.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Feature Cards Section - Tech Appears -->
-    <section id="features" class="features">
-      <div class="container">
-        <div class="features-grid">
-          <div class="feature-card" onclick="window.location.href='pages/music.html'">
-            <div class="feature-icon">🎵</div>
-            <h3>Music</h3>
-            <p>A rich music library with thousands of songs from various genres</p>
+    <main class="cmd-facility">
+      <!-- System header (hero contract) -->
+      <section class="hero cmd-header cmd-panel" aria-label="Command Center">
+        <div class="hero-background" aria-hidden="true"></div>
+        <div class="hero-light-layer" aria-hidden="true"></div>
+        <div class="hero-glow-layer" aria-hidden="true"></div>
+        <div class="hero-container cmd-header-inner">
+          <div class="hero-content cmd-header-main">
+            <span class="cmd-module-id">[CMD-001]</span>
+            <h1 class="hero-title cmd-system-name">RHODES ISLAND COMMAND CENTER</h1>
+            <p class="hero-subtitle cmd-system-desc">Operations Management Interface</p>
           </div>
-
-          <div class="feature-card" onclick="window.location.href='pages/study.html'">
-            <div class="feature-icon">📚</div>
-            <h3>Study</h3>
-            <p>An ideal place to study with documents, notes and effective study tools</p>
+          <div class="cmd-header-meta" aria-label="System status">
+            <span class="cmd-meta-line cmd-meta-line--live">NET STATUS: ONLINE</span>
+            <span class="cmd-meta-line cmd-meta-line--live">ARCHIVE STATUS: READY</span>
+            <span class="cmd-meta-line">SYSTEM LOAD: NORMAL</span>
+            <span class="cmd-meta-line">BUILD 2.7.1</span>
+            <span class="cmd-meta-line cmd-meta-line--muted">NODE TRN-A03</span>
           </div>
-
-          <div class="feature-card" onclick="window.location.href='pages/games.html'">
-            <div class="feature-icon">🎮</div>
-            <h3>Games</h3>
-            <p>A diverse collection of games from puzzles, action to strategy</p>
-          </div>
-
-          <div class="feature-card" onclick="window.location.href='pages/blog.html'">
-            <div class="feature-icon">📝</div>
-            <h3>Blogs</h3>
-            <p>Share knowledge, experience and interesting stories</p>
+          <div class="scroll-hint" aria-hidden="true">
+            <div class="scroll-arrow">↓</div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Immersion Zone - Lose Track of Time -->
-    <section class="immersion">
-      <div class="immersion-content">
-        <div class="immersion-text">
-          "Technology is not to replace humans,<br>
-          but to help humans become better humans."
+      <!-- System overview -->
+      <section class="intro cmd-overview cmd-panel">
+        <div class="container cmd-panel-inner">
+          <div class="cmd-panel-label">
+            <span class="cmd-module-id-sm">[SYS-01]</span>
+            <span class="cmd-panel-title">SYSTEM OVERVIEW</span>
+          </div>
+          <div class="cmd-panel-divider" aria-hidden="true"></div>
+          <div class="intro-content cmd-overview-grid">
+            <dl class="cmd-status-block">
+              <div class="cmd-status-row">
+                <dt>NETWORK STATUS</dt>
+                <dd class="cmd-status-value cmd-status-value--ok">CONNECTED</dd>
+              </div>
+              <div class="cmd-status-row">
+                <dt>OPERATIONAL STATUS</dt>
+                <dd class="cmd-status-value cmd-status-value--ok">READY</dd>
+              </div>
+              <div class="cmd-status-row">
+                <dt>ACTIVE MODULES</dt>
+                <dd>5</dd>
+              </div>
+            </dl>
+            <dl class="cmd-status-block">
+              <div class="cmd-status-row">
+                <dt>SESSION STATUS</dt>
+                <dd>MONITORING</dd>
+              </div>
+              <div class="cmd-status-row">
+                <dt>AUTHORIZATION</dt>
+                <dd>NETWORK POLICY</dd>
+              </div>
+              <div class="cmd-status-row">
+                <dt>SYSTEM NODES</dt>
+                <dd>NODE-14 · ARCHIVE-14</dd>
+              </div>
+            </dl>
+          </div>
+          <p class="intro-line cmd-overview-line">Central operations hub for Rhodes Island network modules.</p>
+          <p class="intro-line cmd-overview-line">All subsystem access is routed through this command interface.</p>
+          <p class="intro-line cmd-overview-line">Select a module node below to initialize subsystem connection.</p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Timeline/Content Section - Flowing Stream -->
-    <section class="timeline">
-      <div class="container">
-        <div class="timeline-content">
-          <div class="timeline-item">
-            <div class="timeline-marker"></div>
-            <div class="timeline-text">
-              <h4>Beginning</h4>
-              <p>ntam was born from a simple idea: to create a space where technology serves humans, not the other way around.</p>
+      <!-- Module access grid -->
+      <section id="features" class="features cmd-modules">
+        <div class="container cmd-panel cmd-panel-inner">
+          <div class="cmd-panel-label">
+            <span class="cmd-module-id-sm">[MOD-02]</span>
+            <span class="cmd-panel-title">MODULE INDEX · SYSTEM NODES</span>
+          </div>
+          <div class="cmd-panel-divider" aria-hidden="true"></div>
+          <div class="features-grid cmd-module-grid">
+            <div class="feature-card cmd-module-card" onclick="window.location.href='pages/study.html'">
+              <div class="cmd-module-card-header">
+                <svg class="cmd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                  <rect x="4" y="4" width="16" height="16" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="10" y1="4" x2="10" y2="20" />
+                </svg>
+                <span class="cmd-module-id-sm">ARC-001</span>
+              </div>
+              <span class="feature-icon" aria-hidden="true"></span>
+              <h3>KNOWLEDGE ARCHIVE</h3>
+              <p>Research documentation repository · classified knowledge index</p>
+              <span class="cmd-module-status">STATUS: READY</span>
+            </div>
+
+            <div class="feature-card cmd-module-card" onclick="window.location.href='pages/music.html'">
+              <div class="cmd-module-card-header">
+                <svg class="cmd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                  <rect x="3" y="14" width="3" height="7" /><rect x="8" y="10" width="3" height="11" /><rect x="13" y="6" width="3" height="15" /><rect x="18" y="12" width="3" height="9" />
+                </svg>
+                <span class="cmd-module-id-sm">MUS-001</span>
+              </div>
+              <span class="feature-icon" aria-hidden="true"></span>
+              <h3>MUSIC ARCHIVE</h3>
+              <p>Operator audio database · tactical sound library interface</p>
+              <span class="cmd-module-status">STATUS: READY</span>
+            </div>
+
+            <div class="feature-card cmd-module-card" onclick="window.location.href='pages/games.html'">
+              <div class="cmd-module-card-header">
+                <svg class="cmd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                  <rect x="4" y="6" width="16" height="12" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="12" y1="6" x2="12" y2="18" />
+                </svg>
+                <span class="cmd-module-id-sm">SIM-001</span>
+              </div>
+              <span class="feature-icon" aria-hidden="true"></span>
+              <h3>TRAINING SIMULATOR</h3>
+              <p>Operator evaluation environment · tactical exercise modules</p>
+              <span class="cmd-module-status">STATUS: READY</span>
+            </div>
+
+            <div class="feature-card cmd-module-card" onclick="window.location.href='pages/login.html'">
+              <div class="cmd-module-card-header">
+                <svg class="cmd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                  <rect x="5" y="10" width="14" height="10" /><path d="M8 10V8a4 4 0 018 0v2" />
+                </svg>
+                <span class="cmd-module-id-sm">ACS-001</span>
+              </div>
+              <span class="feature-icon" aria-hidden="true"></span>
+              <h3>ACCESS CONTROL</h3>
+              <p>Operator authentication gateway · session authorization terminal</p>
+              <span class="cmd-module-status cmd-module-status--active">STATUS: ACTIVE</span>
+            </div>
+
+            <div class="feature-card cmd-module-card" onclick="window.location.href='pages/blog.html'">
+              <div class="cmd-module-card-header">
+                <svg class="cmd-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
+                  <line x1="5" y1="7" x2="19" y2="7" /><line x1="5" y1="12" x2="19" y2="12" /><line x1="5" y1="17" x2="14" y2="17" />
+                </svg>
+                <span class="cmd-module-id-sm">BLG-001</span>
+              </div>
+              <span class="feature-icon" aria-hidden="true"></span>
+              <h3>BLOG INDEX</h3>
+              <p>Operational records · field reports and documentation feed</p>
+              <span class="cmd-module-status">STATUS: READY</span>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div class="timeline-item">
-            <div class="timeline-marker"></div>
-            <div class="timeline-text">
-              <h4>Development</h4>
-              <p>With the combination of music, study, entertainment and creativity, ntam became a reliable companion.</p>
-            </div>
+      <!-- Network infrastructure -->
+      <section class="immersion cmd-network">
+        <div class="immersion-content cmd-network-inner cmd-panel">
+          <div class="cmd-panel-label">
+            <span class="cmd-module-id-sm">[NET-03]</span>
+            <span class="cmd-panel-title">NETWORK INFRASTRUCTURE</span>
           </div>
+          <div class="cmd-panel-divider" aria-hidden="true"></div>
+          <div class="cmd-network-map" aria-hidden="true">
+            <span class="cmd-network-node cmd-network-node--hub">CMD-001</span>
+            <span class="cmd-network-line"></span>
+            <span class="cmd-network-node">ARC-001</span>
+            <span class="cmd-network-node">MUS-001</span>
+            <span class="cmd-network-node">SIM-001</span>
+            <span class="cmd-network-node">ACS-001</span>
+          </div>
+          <div class="immersion-text cmd-network-text">
+            All subsystems synchronized under Rhodes Island network policy.<br>
+            Module routing active · Archive backbone online · Operator access monitored.
+          </div>
+        </div>
+      </section>
 
-          <div class="timeline-item">
-            <div class="timeline-marker"></div>
-            <div class="timeline-text">
-              <h4>Future</h4>
-              <p>I will continue to expand, bringing new experiences, helping you live a full life in the digital world.</p>
+      <!-- Status logs -->
+      <section class="timeline cmd-logs">
+        <div class="container cmd-panel cmd-panel-inner">
+          <div class="cmd-panel-label">
+            <span class="cmd-module-id-sm">[LOG-04]</span>
+            <span class="cmd-panel-title">STATUS LOG · RECENT ACTIVITY</span>
+          </div>
+          <div class="cmd-panel-divider" aria-hidden="true"></div>
+          <div class="timeline-content cmd-log-list">
+            <div class="timeline-item cmd-log-item">
+              <div class="timeline-marker cmd-log-marker" aria-hidden="true"></div>
+              <div class="timeline-text cmd-log-text">
+                <h4>SYSTEM INITIALIZATION</h4>
+                <p>Command center online. All module nodes registered and awaiting operator routing requests.</p>
+              </div>
+            </div>
+            <div class="timeline-item cmd-log-item">
+              <div class="timeline-marker cmd-log-marker" aria-hidden="true"></div>
+              <div class="timeline-text cmd-log-text">
+                <h4>ARCHIVE SYNCHRONIZATION</h4>
+                <p>Knowledge and music archives synced. Training simulator exercises indexed. Access control gateway standing by.</p>
+              </div>
+            </div>
+            <div class="timeline-item cmd-log-item">
+              <div class="timeline-marker cmd-log-marker" aria-hidden="true"></div>
+              <div class="timeline-text cmd-log-text">
+                <h4>OPERATIONAL READINESS</h4>
+                <p>Network load normal. Subsystem connections stable. Command interface ready for module access.</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-
-    <!-- CTA Section - Decisive -->
-    <section class="cta-section">
-      <div class="container">
-        <div class="cta-content">
-          <h2>Start your journey</h2>
-          <p>Discover and experience today</p>
-          <div class="cta-buttons">
-            <a href="pages/music.html" class="cta-button primary">
-              <span class="cta-text">Discover now</span>
-              <span class="cta-arrow">→</span>
-            </a>
+      <!-- Quick module access -->
+      <section class="cta-section cmd-quick-access">
+        <div class="container cmd-panel cmd-panel-inner">
+          <div class="cmd-panel-label">
+            <span class="cmd-module-id-sm">[RTE-05]</span>
+            <span class="cmd-panel-title">PRIMARY MODULE ROUTE</span>
+          </div>
+          <div class="cmd-panel-divider" aria-hidden="true"></div>
+          <div class="cta-content cmd-quick-content">
+            <h2>INITIALIZE SUBSYSTEM CONNECTION</h2>
+            <p>Route to primary audio archive module</p>
+            <div class="cta-buttons">
+              <a href="pages/music.html" class="cta-button primary cmd-route-btn">
+                <span class="cta-text">MUSIC ARCHIVE · MUS-001</span>
+                <span class="cta-arrow" aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-
-
+      </section>
+    </main>
 
     <script type="module" src="js/modules/home.js"></script>
   </body>

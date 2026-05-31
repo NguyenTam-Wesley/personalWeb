@@ -65,8 +65,8 @@ export class Components {
   getNavDisplayName(name) {
     const labels = {
       Music: 'MUSIC ARCHIVE',
-      Study: 'KNOWLEDGE ARCHIVE',
-      Games: 'TRAINING SIMULATOR',
+      Study: 'DOC ARCHIVE',
+      Games: 'GAMES',
       Blog: 'BLOG INDEX',
       Novel: 'NOVEL INDEX',
       TV: 'MEDIA INDEX'
@@ -76,15 +76,15 @@ export class Components {
 
   setupHeader() {
     this.header.innerHTML = `
-      <nav class="ri-nav" aria-label="Rhodes Island Network">
+      <nav class="ri-nav" aria-label="ntam Island Network">
         <a href="${ROUTES.home}" class="nav-logo ri-net-brand">
           <span class="ri-net-badge" aria-hidden="true">
             <span class="ri-net-id">NET-001</span>
             ${coreIcon('network', 'ri-core-icon ri-net-icon')}
           </span>
           <span class="ri-net-title">
-            <span class="ri-net-kicker">RI-NET</span>
-            <span class="ri-net-name">RHODES ISLAND NETWORK</span>
+            <span class="ri-net-kicker">NT-NET</span>
+            <span class="ri-net-name">NTAM ISLAND NETWORK</span>
           </span>
         </a>
 

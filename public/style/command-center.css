@@ -1,0 +1,674 @@
+/* Rhodes Island Command Center — index.html only (scoped to .command-page) */
+
+/* ==========================================================================
+   TOKENS
+   ========================================================================== */
+
+.command-page {
+  --command-bg: var(--bg-secondary, #e4e8ed);
+  --command-surface: var(--bg-primary, #fafbfc);
+  --command-surface-raised: var(--bg-tertiary, #f0f3f7);
+  --command-border: var(--border-medium, #b8c2ce);
+  --command-text: var(--text-primary, #141a22);
+  --command-muted: var(--text-muted, #4f5d6b);
+  --command-accent: var(--music-terminal-accent, var(--study-archive-accent, #c99400));
+  --command-accent-hover: var(--music-terminal-hover, #dce2ea);
+  --command-status: var(--music-terminal-success, #2d8a3e);
+  --command-font: "Inter", system-ui, -apple-system, sans-serif;
+  --command-mono: "JetBrains Mono", ui-monospace, monospace;
+  --command-radius: 2px;
+  --command-motion: 180ms ease;
+
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--command-font);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--command-text);
+  background: var(--command-bg);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+[data-theme="dark"] .command-page {
+  --command-bg: var(--bg-secondary, #12161d);
+  --command-surface: var(--bg-primary, #171c24);
+  --command-surface-raised: var(--bg-tertiary, #1e2530);
+  --command-border: var(--border-medium, #2a313c);
+  --command-text: var(--text-primary, #e8edf2);
+  --command-muted: var(--text-muted, #9aa4b2);
+  --command-accent: var(--music-terminal-accent, #f7b500);
+  --command-accent-hover: var(--music-terminal-hover, #1e2530);
+  --command-status: var(--music-terminal-success, #74d680);
+}
+
+.command-page *,
+.command-page *::before,
+.command-page *::after {
+  box-sizing: border-box;
+}
+
+/* Suppress legacy cinematic layers */
+.command-page .awakening-bg,
+.command-page .noise-layer,
+.command-page .hero-background,
+.command-page .hero-light-layer,
+.command-page .hero-glow-layer,
+.command-page .scroll-hint,
+.command-page .feature-icon {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Neutralize home.js inline scroll/cinematic transforms */
+.command-page section {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  transition: border-color var(--command-motion), background-color var(--command-motion) !important;
+}
+
+/* ==========================================================================
+   SHELL
+   ========================================================================== */
+
+.cmd-facility {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(var(--header-height, 56px) + 16px) 12px 48px;
+}
+
+.cmd-panel {
+  background: var(--command-surface);
+  border: 1px solid var(--command-border);
+  border-radius: var(--command-radius);
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.cmd-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--command-accent);
+  border-right: 2px solid var(--command-accent);
+  pointer-events: none;
+}
+
+.cmd-panel-inner.container {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 14px 16px 16px;
+}
+
+.cmd-module-id {
+  display: inline-block;
+  font-family: var(--command-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--command-accent);
+  padding: 4px 8px;
+  border: 1px solid var(--command-border);
+  background: var(--command-surface-raised);
+  border-radius: var(--command-radius);
+  margin-bottom: 10px;
+}
+
+.cmd-module-id-sm {
+  font-family: var(--command-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--command-accent);
+}
+
+.cmd-panel-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.cmd-panel-title {
+  font-family: var(--command-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--command-text);
+  text-transform: uppercase;
+}
+
+.cmd-panel-divider {
+  height: 1px;
+  margin: 8px 0 14px;
+  background: linear-gradient(
+    90deg,
+    var(--command-accent) 0%,
+    var(--command-border) 40%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
+
+.cmd-meta-line {
+  font-family: var(--command-mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: var(--command-muted);
+}
+
+.cmd-meta-line--live {
+  color: var(--command-accent);
+}
+
+.cmd-meta-line--muted {
+  opacity: 0.75;
+}
+
+.cmd-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--command-accent);
+}
+
+/* ==========================================================================
+   HEADER (hero contract)
+   ========================================================================== */
+
+.command-page .hero.cmd-header {
+  min-height: auto;
+  height: auto;
+  padding: 0;
+  margin-bottom: 12px;
+  overflow: visible;
+  background: var(--command-surface);
+  animation: cmd-fade-in 180ms ease forwards;
+}
+
+.command-page .hero-container.cmd-header-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 16px;
+  padding: 16px 18px;
+  max-width: none;
+  min-height: 0;
+}
+
+.command-page .hero-content.cmd-header-main {
+  text-align: left;
+}
+
+.command-page .hero-title.cmd-system-name {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: var(--command-text);
+  text-shadow: none;
+  opacity: 1 !important;
+}
+
+.command-page .hero-subtitle.cmd-system-desc {
+  margin: 0;
+  font-family: var(--command-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--command-muted);
+  opacity: 1 !important;
+}
+
+.cmd-header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+}
+
+/* ==========================================================================
+   SYSTEM OVERVIEW (intro contract)
+   ========================================================================== */
+
+.command-page .intro.cmd-overview {
+  padding: 0;
+  margin: 0 0 12px;
+  background: transparent;
+  text-align: left;
+  animation: cmd-fade-in 180ms ease forwards;
+  animation-delay: 40ms;
+  opacity: 0;
+}
+
+.cmd-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.cmd-status-block {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cmd-status-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--command-border);
+  background: var(--command-surface-raised);
+  border-radius: var(--command-radius);
+  font-family: var(--command-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.cmd-status-row dt {
+  margin: 0;
+  color: var(--command-muted);
+}
+
+.cmd-status-row dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--command-text);
+  text-align: right;
+}
+
+.cmd-status-value--ok {
+  color: var(--command-status);
+}
+
+.command-page .intro-line.cmd-overview-line {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--command-muted);
+  line-height: 1.5;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* ==========================================================================
+   MODULE GRID (features contract)
+   ========================================================================== */
+
+.command-page .features.cmd-modules {
+  padding: 0;
+  margin: 0 0 12px;
+  background: transparent;
+  animation: cmd-fade-in 180ms ease forwards;
+  animation-delay: 80ms;
+  opacity: 0;
+}
+
+.command-page .features-grid.cmd-module-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.command-page .feature-card.cmd-module-card {
+  position: relative;
+  aspect-ratio: auto;
+  min-height: 148px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 6px;
+  transform: none !important;
+  border-radius: var(--command-radius);
+  border: 1px solid var(--command-border);
+  background: var(--command-surface-raised);
+  box-shadow: none !important;
+  cursor: pointer;
+  text-decoration: none;
+  overflow: visible;
+  animation: cmd-card-enter 180ms ease both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+  transition: border-color var(--command-motion), background-color var(--command-motion);
+}
+
+.command-page .feature-card.cmd-module-card:nth-child(1) { --i: 0; }
+.command-page .feature-card.cmd-module-card:nth-child(2) { --i: 1; }
+.command-page .feature-card.cmd-module-card:nth-child(3) { --i: 2; }
+.command-page .feature-card.cmd-module-card:nth-child(4) { --i: 3; }
+.command-page .feature-card.cmd-module-card:nth-child(5) { --i: 4; }
+
+.command-page .feature-card.cmd-module-card:hover {
+  transform: none !important;
+  border-color: var(--command-accent);
+  background: color-mix(in srgb, var(--command-accent) 6%, var(--command-surface-raised));
+  box-shadow: none !important;
+}
+
+.cmd-module-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.command-page .feature-card h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--command-text);
+  text-shadow: none;
+  line-height: 1.3;
+}
+
+.command-page .feature-card p {
+  margin: 0;
+  flex: 1;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--command-muted);
+}
+
+.cmd-module-status {
+  margin-top: auto;
+  padding-top: 8px;
+  font-family: var(--command-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--command-muted);
+}
+
+.cmd-module-status--active {
+  color: var(--command-accent);
+}
+
+/* ==========================================================================
+   NETWORK (immersion contract)
+   ========================================================================== */
+
+.command-page .immersion.cmd-network {
+  min-height: auto;
+  padding: 0;
+  margin: 0 0 12px;
+  background: transparent;
+  display: block;
+  animation: cmd-fade-in 180ms ease forwards;
+  animation-delay: 120ms;
+  opacity: 0;
+}
+
+.cmd-network-inner {
+  padding: 14px 16px 16px;
+}
+
+.cmd-network-map {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--command-border);
+  background: var(--command-surface-raised);
+  border-radius: var(--command-radius);
+}
+
+.cmd-network-node {
+  font-family: var(--command-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  padding: 4px 8px;
+  border: 1px solid var(--command-border);
+  color: var(--command-muted);
+  border-radius: var(--command-radius);
+}
+
+.cmd-network-node--hub {
+  color: var(--command-accent);
+  border-color: color-mix(in srgb, var(--command-accent) 50%, var(--command-border));
+  background: color-mix(in srgb, var(--command-accent) 8%, var(--command-surface-raised));
+}
+
+.cmd-network-line {
+  flex: 1;
+  min-width: 24px;
+  height: 1px;
+  background: var(--command-border);
+}
+
+.command-page .immersion-text.cmd-network-text {
+  margin: 0;
+  font-family: var(--command-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  line-height: 1.55;
+  color: var(--command-muted);
+  text-align: left;
+  transform: none !important;
+}
+
+/* ==========================================================================
+   STATUS LOG (timeline contract)
+   ========================================================================== */
+
+.command-page .timeline.cmd-logs {
+  padding: 0;
+  margin: 0 0 12px;
+  background: transparent;
+  animation: cmd-fade-in 180ms ease forwards;
+  animation-delay: 160ms;
+  opacity: 0;
+}
+
+.cmd-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.command-page .timeline-item.cmd-log-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 10px 12px;
+  border: 1px solid var(--command-border);
+  background: var(--command-surface-raised);
+  border-radius: var(--command-radius);
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.command-page .timeline-marker.cmd-log-marker {
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 0;
+  background: var(--command-accent);
+  box-shadow: none;
+}
+
+.command-page .timeline-text.cmd-log-text h4 {
+  margin: 0 0 4px;
+  font-family: var(--command-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--command-text);
+}
+
+.command-page .timeline-text.cmd-log-text p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--command-muted);
+}
+
+/* ==========================================================================
+   QUICK ACCESS (cta contract)
+   ========================================================================== */
+
+.command-page .cta-section.cmd-quick-access {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  text-align: left;
+  animation: cmd-fade-in 180ms ease forwards;
+  animation-delay: 200ms;
+  opacity: 0;
+}
+
+.cmd-quick-content {
+  text-align: left;
+}
+
+.command-page .cta-content h2 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--command-text);
+  text-shadow: none;
+}
+
+.command-page .cta-content p {
+  margin: 0 0 14px;
+  font-family: var(--command-mono);
+  font-size: 11px;
+  color: var(--command-muted);
+}
+
+.command-page .cta-button.primary.cmd-route-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-family: var(--command-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--music-terminal-accent-contrast, var(--text-inverse, #141a22));
+  background: var(--command-accent);
+  border: 1px solid var(--command-accent);
+  border-radius: var(--command-radius);
+  text-decoration: none;
+  box-shadow: none !important;
+  transform: none !important;
+  animation: none !important;
+  transition: background-color var(--command-motion), border-color var(--command-motion);
+}
+
+.command-page .cta-button.primary.cmd-route-btn:hover {
+  background: color-mix(in srgb, var(--command-accent) 88%, var(--command-text));
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.command-page .cta-arrow {
+  font-size: 12px;
+}
+
+/* Pet — lower prominence */
+.command-page #pet-component {
+  opacity: 0.5;
+}
+
+/* Focus states */
+.command-page .feature-card.cmd-module-card:focus-visible,
+.command-page .cta-button.primary.cmd-route-btn:focus-visible {
+  outline: 2px solid var(--command-accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes cmd-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cmd-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .command-page .hero-container.cmd-header-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .cmd-header-meta {
+    align-items: flex-start;
+    text-align: left;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .cmd-overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .command-page .features-grid.cmd-module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cmd-network-line {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .cmd-facility {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .command-page .hero-title.cmd-system-name {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .command-page section,
+  .command-page .feature-card.cmd-module-card,
+  .command-page .hero.cmd-header {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
