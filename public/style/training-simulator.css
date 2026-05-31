@@ -4,685 +4,701 @@
    PAGE TOKENS
    ========================================================================== */
 
-.sim-page {
-  --sim-bg: var(--bg-secondary, #e4e8ed);
-  --sim-surface: var(--bg-primary, #fafbfc);
-  --sim-surface-raised: var(--bg-tertiary, #f0f3f7);
-  --sim-border: var(--border-medium, #b8c2ce);
-  --sim-text: var(--text-primary, #141a22);
-  --sim-muted: var(--text-muted, #4f5d6b);
-  --sim-accent: var(--music-terminal-accent, var(--study-archive-accent, #c99400));
-  --sim-accent-hover: var(--music-terminal-hover, #dce2ea);
-  --sim-status: var(--music-terminal-success, #2d8a3e);
-  --sim-warning: var(--error, #c73f2e);
-  --sim-font: "Inter", system-ui, -apple-system, sans-serif;
-  --sim-mono: "JetBrains Mono", ui-monospace, monospace;
-  --sim-radius: 2px;
-  --sim-motion: 180ms ease;
-
-  background: var(--sim-bg) !important;
-  background-image: none !important;
-  font-family: var(--sim-font);
-  color: var(--sim-text);
-}
-
-[data-theme="dark"] .sim-page {
-  --sim-bg: var(--bg-secondary, #12161d);
-  --sim-surface: var(--bg-primary, #171c24);
-  --sim-surface-raised: var(--bg-tertiary, #1e2530);
-  --sim-border: var(--border-medium, #2a313c);
-  --sim-text: var(--text-primary, #e8edf2);
-  --sim-muted: var(--text-muted, #9aa4b2);
-  --sim-accent: var(--music-terminal-accent, #f7b500);
-  --sim-accent-hover: var(--music-terminal-hover, #1e2530);
-  --sim-status: var(--music-terminal-success, #74d680);
-  --sim-warning: var(--music-terminal-warning, #ff6b5a);
-}
-
-/* Override global games.css body rules on simulator page only */
-.sim-page.games-page {
-  min-height: 100vh;
-  display: block;
-}
-
-/* ==========================================================================
-   SHELL
-   ========================================================================== */
-
-.sim-container {
-  min-height: calc(100vh - var(--header-height, 0px));
-  padding: 4rem 0 3.5rem;
-  box-sizing: border-box;
-}
-
-.sim-facility {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 12px 12px 48px;
-}
-
-.sim-panel {
-  background: var(--sim-surface);
-  border: 1px solid var(--sim-border);
-  border-radius: var(--sim-radius);
-  position: relative;
-}
-
-.sim-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 12px;
-  height: 12px;
-  border-top: 2px solid var(--sim-accent);
-  border-right: 2px solid var(--sim-accent);
-  pointer-events: none;
-}
-
-.sim-module-id,
-.sim-module-id-sm {
-  font-family: var(--sim-mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--sim-accent);
-  letter-spacing: 0.04em;
-}
-
-.sim-panel-label {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 10px 14px 0;
-}
-
-.sim-panel-title {
-  font-family: var(--sim-mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--sim-text);
-  text-transform: uppercase;
-}
-
-.sim-panel-divider {
-  height: 1px;
-  margin: 8px 14px 12px;
-  background: linear-gradient(
-    90deg,
-    var(--sim-accent) 0%,
-    var(--sim-border) 40%,
-    transparent 100%
-  );
-  opacity: 0.85;
-}
-
-.sim-panel-divider--spaced {
-  margin-top: 14px;
-}
-
-.sim-meta-line {
-  font-family: var(--sim-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--sim-muted);
-}
-
-.sim-meta-line--live {
-  color: var(--sim-accent);
-}
-
-.sim-icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  color: var(--sim-muted);
-}
-
-/* ==========================================================================
-   SYSTEM HEADER
-   ========================================================================== */
-
-.sim-page header.sim-header {
-  position: relative;
-  top: auto;
-  left: auto;
-  width: auto;
-  height: auto;
-  min-height: 0;
-  max-height: none;
-  overflow: visible;
-  z-index: auto;
-  transform: none;
-  border-bottom: none;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: start;
-  gap: 16px;
-  padding: 14px 16px;
-  margin-bottom: 12px;
-  animation: sim-fade-in 180ms ease forwards;
-}
-
-.sim-header-body {
-  min-width: 0;
-}
-
-.sim-system-name {
-  margin: 0 0 4px;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.35;
-}
-
-.sim-system-desc {
-  margin: 0;
-  font-family: var(--sim-mono);
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--sim-muted);
-}
-
-.sim-header-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  text-align: right;
-}
-
-/* ==========================================================================
-   THREE-COLUMN LAYOUT
-   ========================================================================== */
-
-.sim-layout {
-  display: grid;
-  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(200px, 240px);
-  gap: 12px;
-  align-items: start;
-}
-
-.sim-index-panel,
-.sim-records-panel {
-  padding-bottom: 14px;
-  animation: sim-fade-in 180ms ease forwards;
-}
-
-.sim-modules-panel {
-  padding-bottom: 16px;
-  animation: sim-fade-in 180ms ease forwards;
-  animation-delay: 60ms;
-  opacity: 0;
-}
-
-.sim-records-panel {
-  animation-delay: 100ms;
-  opacity: 0;
-}
-
-/* Left — Training index */
-.sim-index-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 0 10px 8px;
-}
-
-.sim-index-entry {
-  display: block;
-  padding: 8px 10px;
-  font-family: var(--sim-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--sim-muted);
-  border: 1px solid transparent;
-  border-radius: var(--sim-radius);
-  transition: border-color var(--sim-motion), color var(--sim-motion), background-color var(--sim-motion);
-}
-
-.sim-index-entry--active {
-  color: var(--sim-text);
-  border-color: var(--sim-border);
-  background: var(--sim-surface-raised);
-  border-left: 2px solid var(--sim-accent);
-}
-
-.sim-filter-list {
-  list-style: none;
-  margin: 0;
-  padding: 0 10px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sim-filter-item {
-  padding: 6px 10px;
-  font-family: var(--sim-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--sim-muted);
-  border: 1px solid var(--sim-border);
-  background: var(--sim-surface-raised);
-  border-radius: var(--sim-radius);
-}
-
-.sim-filter-item--active {
-  color: var(--sim-accent);
-  border-color: color-mix(in srgb, var(--sim-accent) 45%, var(--sim-border));
-}
-
-.sim-index-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 14px 0;
-  border-top: 1px solid var(--sim-border);
-  margin-top: 8px;
-}
-
-/* Center — Modules */
-.sim-modules-brief {
-  margin: 0 14px 14px;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--sim-muted);
-}
-
-.sim-page .sim-games-container.games-container {
-  flex: none;
-  width: 100%;
-  margin: 0;
-  padding: 0 14px 14px;
-  padding-top: 0;
-  padding-bottom: 14px;
-}
-
-.sim-page .games-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  max-width: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Right — Records */
-.sim-records-meta {
-  margin: 0;
-  padding: 0 10px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sim-records-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 10px;
-  border: 1px solid var(--sim-border);
-  background: var(--sim-surface-raised);
-  border-radius: var(--sim-radius);
-  font-family: var(--sim-mono);
-  font-size: 10px;
-  letter-spacing: 0.05em;
-}
-
-.sim-records-row dt {
-  margin: 0;
-  color: var(--sim-muted);
-}
-
-.sim-records-row dd {
-  margin: 0;
-  text-align: right;
-  color: var(--sim-text);
-  font-weight: 500;
-}
-
-.sim-records-value--ok {
-  color: var(--sim-status);
-}
-
-.sim-performance-list {
-  list-style: none;
-  margin: 0;
-  padding: 0 10px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sim-performance-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  gap: 4px 8px;
-  padding: 8px 10px;
-  border: 1px solid var(--sim-border);
-  background: var(--sim-surface-raised);
-  border-radius: var(--sim-radius);
-  font-family: var(--sim-mono);
-  font-size: 10px;
-  letter-spacing: 0.05em;
-}
-
-.sim-performance-label {
-  grid-column: 1;
-  color: var(--sim-muted);
-}
-
-.sim-performance-value {
-  grid-column: 2;
-  grid-row: 1;
-  color: var(--sim-text);
-  font-weight: 500;
-  text-align: right;
-}
-
-.sim-performance-value--ready {
-  color: var(--sim-accent);
-}
-
-.sim-performance-bar {
-  grid-column: 1 / -1;
-  height: 3px;
-  background: var(--sim-border);
-  border-radius: 1px;
-  overflow: hidden;
-}
-
-.sim-performance-bar span {
-  display: block;
-  height: 100%;
-  background: var(--sim-accent);
-  transition: width var(--sim-motion);
-}
-
-.sim-records-notice {
-  display: flex;
-  gap: 8px;
-  margin: 0 10px 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--sim-border);
-  background: var(--sim-surface-raised);
-  border-left: 2px solid var(--sim-accent);
-  border-radius: var(--sim-radius);
-}
-
-.sim-records-notice p {
-  margin: 0;
-  font-size: 11px;
-  line-height: 1.45;
-  color: var(--sim-muted);
-}
-
-/* ==========================================================================
-   SIMULATION MODULE CARDS (JS-rendered — preserve class contracts)
-   ========================================================================== */
-
-.sim-page .game-card {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  padding: 0;
-  transform: none;
-  border-radius: var(--sim-radius);
-  border: 1px solid var(--sim-border);
-  background: var(--sim-surface-raised);
-  box-shadow: none;
-  overflow: hidden;
-  animation: sim-card-enter 180ms ease both;
-  animation-delay: calc(var(--i, 0) * 50ms);
-  transition: border-color var(--sim-motion), background-color var(--sim-motion);
-}
-
-.sim-page .game-card:hover {
-  transform: none;
-  box-shadow: none;
-  border-color: var(--sim-accent);
-}
-
-.sim-page .game-card:hover .game-card-inner {
-  transform: none;
-}
-
-.sim-page .game-card-inner {
-  position: relative;
-  inset: auto;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.sim-page .game-card img {
-  position: relative;
-  inset: auto;
-  width: 100%;
-  height: 52%;
-  min-height: 72px;
-  object-fit: cover;
-  object-position: center top;
-  z-index: 1;
-  opacity: 0.72;
-  filter: saturate(0.65) contrast(1.05);
-  transition: opacity var(--sim-motion), filter var(--sim-motion);
-}
-
-.sim-page .game-card:hover img {
-  opacity: 0.85;
-  filter: saturate(0.8) contrast(1.05);
-}
-
-.sim-page .game-info {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  height: auto;
-  padding: 10px 12px 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 4px;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--sim-surface) 92%, transparent) 0%,
-    var(--sim-surface) 24%
-  );
-  border-top: 1px solid var(--sim-border);
-}
-
-/* Module ID + classification via data-game (presentation only) */
-.sim-page .game-info::before {
-  display: block;
-  font-family: var(--sim-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  color: var(--sim-accent);
-}
-
-.sim-page .game-card[data-game="2048"] .game-info::before {
-  content: "SIM-101 · NUMERICAL ASSESSMENT";
-}
-
-.sim-page .game-card[data-game="sudoku"] .game-info::before {
-  content: "SIM-102 · LOGIC GRID EXERCISE";
-}
-
-.sim-page .game-card[data-game="minesweeper"] .game-info::before {
-  content: "SIM-103 · HAZARD DETECTION";
-}
-
-.sim-page .game-card[data-game="valorant"] .game-info::before {
-  content: "SIM-201 · TACTICAL ANALYSIS";
-}
-
-.sim-page .game-card[data-game="arknights"] .game-info::before {
-  content: "SIM-202 · OPERATOR DATABASE";
-}
-
-.sim-page .game-card[data-game="hsr"] .game-info::before {
-  content: "SIM-203 · STRATEGIC SIMULATION";
-}
-
-.sim-page .game-card[data-game="ww"] .game-info::before {
-  content: "SIM-204 · FIELD EXERCISE";
-}
-
-.sim-page .game-card[data-game="endfield"] .game-info::before {
-  content: "SIM-205 · COMBAT MODULE";
-}
-
-.sim-page .game-info::after {
-  display: block;
-  margin-top: auto;
-  padding-top: 6px;
-  font-family: var(--sim-mono);
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  color: var(--sim-muted);
-  content: "STATUS: READY · DIFFICULTY: STANDARD";
-}
-
-.sim-page .game-info span {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  line-height: 1.25;
-  color: var(--sim-text);
-  text-shadow: none;
-  opacity: 1;
-}
-
-/* Status corner indicator */
-.sim-page .game-card::after {
-  content: "READY";
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 3;
-  padding: 2px 6px;
-  font-family: var(--sim-mono);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--sim-accent);
-  background: color-mix(in srgb, var(--sim-surface) 88%, transparent);
-  border: 1px solid var(--sim-border);
-  border-radius: var(--sim-radius);
-  pointer-events: none;
-}
-
-/* Stagger animation index via nth-child */
-.sim-page .game-card:nth-child(1) { --i: 0; }
-.sim-page .game-card:nth-child(2) { --i: 1; }
-.sim-page .game-card:nth-child(3) { --i: 2; }
-.sim-page .game-card:nth-child(4) { --i: 3; }
-.sim-page .game-card:nth-child(5) { --i: 4; }
-.sim-page .game-card:nth-child(6) { --i: 5; }
-.sim-page .game-card:nth-child(7) { --i: 6; }
-.sim-page .game-card:nth-child(8) { --i: 7; }
-
-/* Hide legacy intro if present */
-.sim-page .games-intro {
-  display: none;
-}
-
-/* Pet — lower prominence */
-.sim-page #pet-component {
-  opacity: 0.5;
-}
-
-/* ==========================================================================
-   ANIMATIONS
-   ========================================================================== */
-
-@keyframes sim-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
+   .sim-page {
+    --sim-bg: var(--bg-secondary, #e4e8ed);
+    --sim-surface: var(--bg-primary, #fafbfc);
+    --sim-surface-raised: var(--bg-tertiary, #f0f3f7);
+    --sim-border: var(--border-medium, #b8c2ce);
+    --sim-text: var(--text-primary, #141a22);
+    --sim-muted: var(--text-muted, #4f5d6b);
+    --sim-accent: var(--music-terminal-accent, var(--study-archive-accent, #c99400));
+    --sim-accent-hover: var(--music-terminal-hover, #dce2ea);
+    --sim-status: var(--music-terminal-success, #2d8a3e);
+    --sim-warning: var(--error, #c73f2e);
+    --sim-font: "Inter", system-ui, -apple-system, sans-serif;
+    --sim-mono: "JetBrains Mono", ui-monospace, monospace;
+    --sim-radius: 2px;
+    --sim-motion: 180ms ease;
+  
+    background: var(--sim-bg) !important;
+    background-image: none !important;
+    font-family: var(--sim-font);
+    color: var(--sim-text);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  [data-theme="dark"] .sim-page {
+    --sim-bg: var(--bg-secondary, #12161d);
+    --sim-surface: var(--bg-primary, #171c24);
+    --sim-surface-raised: var(--bg-tertiary, #1e2530);
+    --sim-border: var(--border-medium, #2a313c);
+    --sim-text: var(--text-primary, #e8edf2);
+    --sim-muted: var(--text-muted, #9aa4b2);
+    --sim-accent: var(--music-terminal-accent, #f7b500);
+    --sim-accent-hover: var(--music-terminal-hover, #1e2530);
+    --sim-status: var(--music-terminal-success, #74d680);
+    --sim-warning: var(--music-terminal-warning, #ff6b5a);
   }
-}
-
-@keyframes sim-card-enter {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
+  
+  /* Override global games.css body rules on simulator page only */
+  .sim-page.games-page {
+    min-height: 100vh;
+    display: block;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  /* ==========================================================================
+     SHELL
+     ========================================================================== */
+  
+  .sim-container {
+    min-height: calc(100vh - var(--header-height, 0px));
+    padding: 4rem 0 3.5rem;
+    box-sizing: border-box;
   }
-}
-
-/* ==========================================================================
-   RESPONSIVE
-   ========================================================================== */
-
-@media (max-width: 1100px) {
-  .sim-layout {
-    grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
-  }
-
-  .sim-records-panel {
-    grid-column: 1 / -1;
-  }
-
-  .sim-page .games-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .sim-page header.sim-header {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .sim-header-meta {
-    align-items: flex-start;
-    text-align: left;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-  }
-
-  .sim-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .sim-page .games-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 480px) {
+  
   .sim-facility {
-    padding: 8px 8px 32px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 12px 12px 48px;
   }
-
-  .sim-page .games-grid {
-    grid-template-columns: 1fr;
+  
+  .sim-panel {
+    background: var(--sim-surface);
+    border: 1px solid var(--sim-border);
+    border-radius: var(--sim-radius);
+    position: relative;
   }
-
-  .sim-system-name {
-    font-size: 13px;
+  
+  .sim-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-top: 2px solid var(--sim-accent);
+    border-right: 2px solid var(--sim-accent);
+    pointer-events: none;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sim-page .game-card,
-  .sim-modules-panel,
-  .sim-records-panel,
+  
+  .sim-module-id,
+  .sim-module-id-sm {
+    font-family: var(--sim-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--sim-accent);
+    letter-spacing: 0.04em;
+  }
+  
+  .sim-panel-label {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 14px 0;
+  }
+  
+  .sim-panel-title {
+    font-family: var(--sim-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--sim-text);
+    text-transform: uppercase;
+  }
+  
+  .sim-panel-divider {
+    height: 1px;
+    margin: 8px 14px 12px;
+    background: linear-gradient(
+      90deg,
+      var(--sim-accent) 0%,
+      var(--sim-border) 40%,
+      transparent 100%
+    );
+    opacity: 0.85;
+  }
+  
+  .sim-panel-divider--spaced {
+    margin-top: 14px;
+  }
+  
+  .sim-meta-line {
+    font-family: var(--sim-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--sim-muted);
+  }
+  
+  .sim-meta-line--live {
+    color: var(--sim-accent);
+  }
+  
+  .sim-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--sim-muted);
+  }
+  
+  /* ==========================================================================
+     SYSTEM HEADER
+     ========================================================================== */
+  
   .sim-page header.sim-header {
-    animation: none;
-    opacity: 1;
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+    z-index: auto;
+    transform: none;
+    border-bottom: none;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+    gap: 16px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    animation: sim-fade-in 180ms ease forwards;
   }
-}
+  
+  .sim-header-body {
+    min-width: 0;
+  }
+  
+  .sim-system-name {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+  }
+  
+  .sim-system-desc {
+    margin: 0;
+    font-family: var(--sim-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--sim-muted);
+  }
+  
+  .sim-header-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    text-align: right;
+  }
+  
+  /* ==========================================================================
+     THREE-COLUMN LAYOUT
+     ========================================================================== */
+  
+  .sim-layout {
+    display: grid;
+    grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(200px, 240px);
+    gap: 12px;
+    /* FIX: stretch agar semua panel sama tinggi, modules panel bao trọn cards */
+    align-items: start;
+  }
+  
+  .sim-index-panel,
+  .sim-records-panel {
+    padding-bottom: 14px;
+    animation: sim-fade-in 180ms ease forwards;
+  }
+  
+  .sim-modules-panel {
+    /* FIX: padding-bottom tăng để panel luôn bao trọn nội dung card cuối */
+    padding-bottom: 16px;
+    animation: sim-fade-in 180ms ease forwards;
+    animation-delay: 60ms;
+    opacity: 0;
+    /* FIX: đảm bảo panel không bị clip nội dung */
+    overflow: visible;
+  }
+  
+  .sim-records-panel {
+    animation-delay: 100ms;
+    opacity: 0;
+  }
+  
+  /* Left — Training index */
+  .sim-index-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 10px 8px;
+  }
+  
+  .sim-index-entry {
+    display: block;
+    padding: 8px 10px;
+    font-family: var(--sim-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--sim-muted);
+    border: 1px solid transparent;
+    border-radius: var(--sim-radius);
+    transition: border-color var(--sim-motion), color var(--sim-motion), background-color var(--sim-motion);
+  }
+  
+  .sim-index-entry--active {
+    color: var(--sim-text);
+    border-color: var(--sim-border);
+    background: var(--sim-surface-raised);
+    border-left: 2px solid var(--sim-accent);
+  }
+  
+  .sim-filter-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .sim-filter-item {
+    padding: 6px 10px;
+    font-family: var(--sim-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--sim-muted);
+    border: 1px solid var(--sim-border);
+    background: var(--sim-surface-raised);
+    border-radius: var(--sim-radius);
+  }
+  
+  .sim-filter-item--active {
+    color: var(--sim-accent);
+    border-color: color-mix(in srgb, var(--sim-accent) 45%, var(--sim-border));
+  }
+  
+  .sim-index-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px 0;
+    border-top: 1px solid var(--sim-border);
+    margin-top: 8px;
+  }
+  
+  /* Center — Modules */
+  .sim-modules-brief {
+    margin: 0 14px 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--sim-muted);
+  }
+  
+  .sim-page .sim-games-container.games-container {
+    flex: none;
+    width: 100%;
+    margin: 0;
+    padding: 0 14px 0;
+  }
+  
+  .sim-page .games-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Right — Records */
+  .sim-records-meta {
+    margin: 0;
+    padding: 0 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .sim-records-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    border: 1px solid var(--sim-border);
+    background: var(--sim-surface-raised);
+    border-radius: var(--sim-radius);
+    font-family: var(--sim-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  
+  .sim-records-row dt {
+    margin: 0;
+    color: var(--sim-muted);
+  }
+  
+  .sim-records-row dd {
+    margin: 0;
+    text-align: right;
+    color: var(--sim-text);
+    font-weight: 500;
+  }
+  
+  .sim-records-value--ok {
+    color: var(--sim-status);
+  }
+  
+  .sim-performance-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .sim-performance-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 4px 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--sim-border);
+    background: var(--sim-surface-raised);
+    border-radius: var(--sim-radius);
+    font-family: var(--sim-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  
+  .sim-performance-label {
+    grid-column: 1;
+    color: var(--sim-muted);
+  }
+  
+  .sim-performance-value {
+    grid-column: 2;
+    grid-row: 1;
+    color: var(--sim-text);
+    font-weight: 500;
+    text-align: right;
+  }
+  
+  .sim-performance-value--ready {
+    color: var(--sim-accent);
+  }
+  
+  .sim-performance-bar {
+    grid-column: 1 / -1;
+    height: 3px;
+    background: var(--sim-border);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  
+  .sim-performance-bar span {
+    display: block;
+    height: 100%;
+    background: var(--sim-accent);
+    transition: width var(--sim-motion);
+  }
+  
+  .sim-records-notice {
+    display: flex;
+    gap: 8px;
+    margin: 0 10px 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--sim-border);
+    background: var(--sim-surface-raised);
+    border-left: 2px solid var(--sim-accent);
+    border-radius: var(--sim-radius);
+  }
+  
+  .sim-records-notice p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--sim-muted);
+  }
+  
+  /* ==========================================================================
+     SIMULATION MODULE CARDS (JS-rendered — preserve class contracts)
+     ========================================================================== */
+  
+  .sim-page .game-card {
+    position: relative;
+    /* Card nhỏ gọn với aspect-ratio cố định — ảnh fill toàn bộ, info overlay */
+    aspect-ratio: 16 / 9 !important;
+    transform: none !important;
+    padding: 0;
+    border-radius: var(--sim-radius);
+    border: 1px solid var(--sim-border);
+    background: var(--sim-surface-raised);
+    box-shadow: none;
+    overflow: hidden;
+    display: block !important;
+    animation: sim-card-enter 180ms ease both !important;
+    animation-delay: calc(var(--i, 0) * 50ms) !important;
+    transition: border-color var(--sim-motion) !important;
+    cursor: pointer;
+  }
+  
+  .sim-page .game-card:hover {
+    transform: none !important;
+    box-shadow: none;
+    border-color: var(--sim-accent);
+  }
+  
+  .sim-page .game-card:hover .game-card-inner {
+    transform: none !important;
+  }
+  
+  /* card-inner: absolute fill toàn bộ card — giữ như games.css nhưng scoped */
+  .sim-page .game-card-inner {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    will-change: auto;
+    transition: none;
+  }
+  
+  /* Ảnh fill toàn bộ card, absolute background */
+  .sim-page .game-card img {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: unset;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    z-index: 1;
+    opacity: 0.6;
+    filter: saturate(0.55) contrast(1.1) brightness(0.85);
+    transition: opacity var(--sim-motion), filter var(--sim-motion);
+  }
+  
+  .sim-page .game-card:hover img {
+    opacity: 0.75;
+    filter: saturate(0.75) contrast(1.05) brightness(0.9);
+  }
+  
+  /* Info: overlay trong suốt phía dưới card */
+  .sim-page .game-info {
+    position: relative;
+    z-index: 2;
+    flex: none;
+    height: auto !important;
+    padding: 8px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 2px;
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.72) 0%,
+      rgba(0, 0, 0, 0.45) 60%,
+      transparent 100%
+    );
+    border-top: none;
+  }
+  
+  /* Module ID + classification via data-game (presentation only) */
+  .sim-page .game-info::before {
+    display: block;
+    font-family: var(--sim-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--sim-accent);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  }
+  
+  .sim-page .game-card[data-game="2048"] .game-info::before {
+    content: "SIM-101 · NUMERICAL ASSESSMENT";
+  }
+  
+  .sim-page .game-card[data-game="sudoku"] .game-info::before {
+    content: "SIM-102 · LOGIC GRID EXERCISE";
+  }
+  
+  .sim-page .game-card[data-game="minesweeper"] .game-info::before {
+    content: "SIM-103 · HAZARD DETECTION";
+  }
+  
+  .sim-page .game-card[data-game="valorant"] .game-info::before {
+    content: "SIM-201 · TACTICAL ANALYSIS";
+  }
+  
+  .sim-page .game-card[data-game="arknights"] .game-info::before {
+    content: "SIM-202 · OPERATOR DATABASE";
+  }
+  
+  .sim-page .game-card[data-game="hsr"] .game-info::before {
+    content: "SIM-203 · STRATEGIC SIMULATION";
+  }
+  
+  .sim-page .game-card[data-game="ww"] .game-info::before {
+    content: "SIM-204 · FIELD EXERCISE";
+  }
+  
+  .sim-page .game-card[data-game="endfield"] .game-info::before {
+    content: "SIM-205 · COMBAT MODULE";
+  }
+  
+  .sim-page .game-info::after {
+    display: block;
+    margin-top: 2px;
+    padding-top: 0;
+    font-family: var(--sim-mono);
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    color: rgba(180, 195, 210, 0.8);
+    content: "STATUS: READY · DIFFICULTY: STANDARD";
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+  }
+  
+  .sim-page .game-info span {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    line-height: 1.25;
+    color: #ffffff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    opacity: 1 !important;
+    transition: none;
+  }
+  
+  /* Status corner indicator */
+  .sim-page .game-card::after {
+    content: "READY";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+    padding: 2px 6px;
+    font-family: var(--sim-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--sim-accent);
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--sim-radius);
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+  }
+  
+  /* Stagger animation index via nth-child */
+  .sim-page .game-card:nth-child(1) { --i: 0; }
+  .sim-page .game-card:nth-child(2) { --i: 1; }
+  .sim-page .game-card:nth-child(3) { --i: 2; }
+  .sim-page .game-card:nth-child(4) { --i: 3; }
+  .sim-page .game-card:nth-child(5) { --i: 4; }
+  .sim-page .game-card:nth-child(6) { --i: 5; }
+  .sim-page .game-card:nth-child(7) { --i: 6; }
+  .sim-page .game-card:nth-child(8) { --i: 7; }
+  
+  /* Hide legacy intro if present */
+  .sim-page .games-intro {
+    display: none;
+  }
+  
+  /* Pet — lower prominence */
+  .sim-page #pet-component {
+    opacity: 0.5;
+  }
+  
+  /* ==========================================================================
+     ANIMATIONS
+     ========================================================================== */
+  
+  @keyframes sim-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes sim-card-enter {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ==========================================================================
+     RESPONSIVE
+     ========================================================================== */
+  
+  @media (max-width: 1100px) {
+    .sim-layout {
+      grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
+    }
+  
+    .sim-records-panel {
+      grid-column: 1 / -1;
+    }
+  
+    .sim-page .games-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .sim-page header.sim-header {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  
+    .sim-header-meta {
+      align-items: flex-start;
+      text-align: left;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+    }
+  
+    .sim-layout {
+      grid-template-columns: 1fr;
+    }
+  
+    .sim-page .games-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .sim-facility {
+      padding: 8px 8px 32px;
+    }
+  
+    .sim-page .games-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .sim-system-name {
+      font-size: 13px;
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .sim-page .game-card,
+    .sim-modules-panel,
+    .sim-records-panel,
+    .sim-page header.sim-header {
+      animation: none;
+      opacity: 1;
+    }
+  }
