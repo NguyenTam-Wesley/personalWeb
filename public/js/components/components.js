@@ -26,7 +26,7 @@ export class Components {
         { name: 'Study', url: route('pages.study') },
         { name: 'Games', url: route('pages.games') },
         { name: 'Blog', url: route('pages.blog') },
-        { name: 'Novel', url: route('pages.novel') },
+        //{ name: 'Novel', url: route('pages.novel') },
         { name: 'TV', url: route('pages.tv') }
       ]
     };
@@ -216,13 +216,13 @@ export class Components {
       <div class="ri-sys-bar">
         <div class="ri-sys-segment ri-sys-build">
           <span class="ri-sys-label">BUILD</span>
-          <span class="ri-sys-value">2.7.1</span>
+          <span class="ri-sys-value">02.01.26</span>
         </div>
         <span class="ri-sys-divider" aria-hidden="true"></span>
         <div class="ri-sys-segment ri-sys-node">
           ${coreIcon('node', 'ri-core-icon ri-sys-icon')}
           <span class="ri-sys-label">NODE</span>
-          <span class="ri-sys-value">A-03</span>
+          <span class="ri-sys-value">N/A</span>
         </div>
         <span class="ri-sys-divider" aria-hidden="true"></span>
         <div class="ri-sys-segment ri-sys-status">
@@ -238,7 +238,7 @@ export class Components {
         </div>
         <span class="ri-sys-divider ri-sys-divider--grow" aria-hidden="true"></span>
         <div class="ri-sys-segment ri-sys-net">
-          <span class="ri-sys-label">RHODES NET</span>
+          <span class="ri-sys-label">NTAM NET</span>
           <span class="ri-sys-value">SYNCED</span>
         </div>
         <span class="ri-sys-divider" aria-hidden="true"></span>

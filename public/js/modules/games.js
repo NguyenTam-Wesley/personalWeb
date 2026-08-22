@@ -33,6 +33,7 @@ export class GamesManager {
                 detailUrl: './games/arknights.html',
                 description: 'Arknights là một game tower defense kết hợp với RPG, được phát triển bởi Hypergryph.'
             },
+            /*
             hsr: {
                 id: 'hsr',
                 name: 'Honkai: Star Rail',
@@ -49,6 +50,7 @@ export class GamesManager {
                 detailUrl: './games/ww.html',
                 description: 'Wuthering Waves là một game nhập vai hành động thế giới mở được phát triển bởi KURO Game.'
             },
+            */
             minesweeper: {
                 id: 'minesweeper',
                 name: 'Minesweeper',
