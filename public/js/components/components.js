@@ -88,17 +88,31 @@ export class Components {
           </span>
         </a>
 
-        <div class="ri-net-status" aria-hidden="true">
+        <div class="ri-net-status ri-nav-desktop" aria-hidden="true">
           <span class="ri-status-pill ri-status-pill--live">
             ${coreIcon('signal', 'ri-core-icon ri-status-icon')}
             <span>ARCHIVE ONLINE</span>
           </span>
         </div>
 
-        <div class="nav-links ri-nav-modules">
+        <div class="nav-links ri-nav-modules" id="riNavModules">
+          <div class="ri-nav-drawer-head">
+            <span class="ri-sys-label">MODULE INDEX</span>
+            <span class="ri-sys-value">NTAM NET</span>
+          </div>
           ${this.config.navLinks.map(link =>
             `<a href="${link.url}" class="nav-link">${this.getNavDisplayName(link.name)}</a>`
           ).join('')}
+        </div>
+
+        <div class="ri-nav-mobile-meta" aria-hidden="true">
+          <span class="ri-sys-divider"></span>
+          <div class="ri-sys-segment ri-sys-status">
+            ${coreIcon('signal', 'ri-core-icon ri-sys-icon')}
+            <span class="ri-sys-label">SYS</span>
+            <span class="ri-sys-value ri-sys-value--live">ONLINE</span>
+          </div>
+          <span class="ri-sys-divider ri-sys-divider--grow"></span>
         </div>
 
         <div class="nav-controls ri-nav-controls">
@@ -106,11 +120,64 @@ export class Components {
           <button id="themeToggle" class="theme-toggle-btn" type="button" title="Toggle Dark Mode">
             <span class="theme-icon" aria-hidden="true">🌙</span>
           </button>
+          <button type="button" class="ri-module-toggle" aria-expanded="false" aria-controls="riNavModules" title="Open modules">
+            ${coreIcon('menu', 'ri-core-icon ri-menu-icon')}
+            <span class="ri-sys-label">NAV</span>
+          </button>
         </div>
       </nav>
+      <div class="ri-nav-backdrop" hidden></div>
     `;
 
     this.highlightActiveLink();
+    this.bindHeaderInteractions();
+  }
+
+  setMobileNavOpen(open) {
+    if (!this.header) return;
+    this.header.classList.toggle('is-open', open);
+    const toggle = this.header.querySelector('.ri-module-toggle');
+    const backdrop = this.header.querySelector('.ri-nav-backdrop');
+    const modules = this.header.querySelector('#riNavModules');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('title', open ? 'Close modules' : 'Open modules');
+    }
+    if (backdrop) backdrop.hidden = !open;
+    if (modules) modules.setAttribute('aria-hidden', open ? 'false' : 'true');
+  }
+
+  bindHeaderInteractions() {
+    const toggle = this.header.querySelector('.ri-module-toggle');
+    const backdrop = this.header.querySelector('.ri-nav-backdrop');
+    const userMenu = this.header.querySelector('.user-menu');
+
+    toggle?.addEventListener('click', () => {
+      this.setMobileNavOpen(!this.header.classList.contains('is-open'));
+    });
+
+    backdrop?.addEventListener('click', () => this.setMobileNavOpen(false));
+
+    this.header.querySelectorAll('.nav-link').forEach((link) => {
+      link.addEventListener('click', () => this.setMobileNavOpen(false));
+    });
+
+    userMenu?.addEventListener('click', (e) => {
+      if (!window.matchMedia('(max-width: 768px)').matches) return;
+      if (e.target.closest('.user-dropdown')) return;
+      userMenu.classList.toggle('is-open');
+    });
+
+    if (this._navKeyHandler) {
+      document.removeEventListener('keydown', this._navKeyHandler);
+    }
+    this._navKeyHandler = (e) => {
+      if (e.key === 'Escape') {
+        this.setMobileNavOpen(false);
+        userMenu?.classList.remove('is-open');
+      }
+    };
+    document.addEventListener('keydown', this._navKeyHandler);
   }
 
   renderAuthSection() {
@@ -264,7 +331,9 @@ export class Components {
 
       // Only update if significant scroll change (5px threshold)
       if (Math.abs(currentScroll - lastScroll) > 5) {
-        if (scrollingDown) {
+        if (this.header?.classList.contains('is-open')) {
+          lastScroll = currentScroll;
+        } else if (scrollingDown) {
           this.header?.classList.add('hidden');
           this.footer?.classList.add('hidden');
         } else {

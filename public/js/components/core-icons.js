@@ -21,7 +21,9 @@ const PATHS = {
   node:
     '<rect x="3" y="3" width="8" height="8" /><rect x="13" y="13" width="8" height="8" /><line x1="11" y1="7" x2="13" y2="13" />',
   home:
-    '<path d="M4 11L12 4l8 7" /><path d="M6 10v9h12v-9" />'
+    '<path d="M4 11L12 4l8 7" /><path d="M6 10v9h12v-9" />',
+  menu:
+    '<line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" />'
 };
 
 /**
