@@ -1,211 +1,586 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Music Archive</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../style/components.css" />
-    <link rel="stylesheet" href="../style/themes.css" />
-    <link rel="stylesheet" href="../style/music.css" />
-    <link
-      rel="icon"
-      href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
-    />
-  </head>
-  <body class="music-page">
-    <div class="music-terminal">
-      <!-- System Header -->
-      <header class="music-terminal-header music-terminal-panel">
-        <div class="music-module-id">[MUS-001]</div>
-        <div class="music-header-body">
-          <h1 class="music-system-name">ntam's MUSIC ARCHIVE</h1>
-          <p class="music-system-desc">Audio Library Interface</p>
-        </div>
-        <div class="music-header-meta">
-          <span class="music-meta-line">BUILD 22.08.26</span>
-          <span class="music-meta-line">NODE N/A</span>
-          <span class="music-status-badge music-status-ready">
-            <span class="music-status-badge-icon" aria-hidden="true"></span>
-            <span>READY</span>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Music</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="../style/components.css" />
+  <link rel="stylesheet" href="../style/themes.css" />
+  <link rel="stylesheet" href="../style/music.css" />
+
+  <link
+    rel="icon"
+    href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
+  />
+</head>
+
+<body class="music-page">
+
+  <div class="music-terminal">
+
+    <!-- HEADER -->
+    <header class="music-terminal-header music-terminal-panel">
+
+      <div class="music-module-id">
+        [MUS-001]
+      </div>
+
+      <div class="music-header-body">
+
+        <h1 class="music-system-name">
+          NTAM MUSIC ARCHIVE
+        </h1>
+
+        <p class="music-system-desc">
+          Audio Library
+        </p>
+
+      </div>
+
+      <div class="music-header-meta">
+
+        <span class="music-status-badge music-status-ready">
+          <span
+            class="music-status-badge-icon"
+            aria-hidden="true"
+          ></span>
+
+          <span>READY</span>
+        </span>
+
+      </div>
+
+    </header>
+
+
+    <!-- SEARCH / CONTROL -->
+    <div
+      class="music-top-bar music-terminal-panel"
+      data-module="SYS-002"
+    >
+
+      <div class="music-top-bar-row top-bar">
+
+        <!-- BACK -->
+        <button
+          id="backBtn"
+          class="music-back-btn"
+          aria-label="Quay lại"
+        >
+          <span class="music-btn-label">
+            RETURN
           </span>
-        </div>
-      </header>
+        </button>
 
-      <!-- Top Bar: Navigation + Search + Volume -->
-      <div class="music-top-bar music-terminal-panel" data-module="SYS-002">
+
+        <!-- SEARCH -->
+        <div class="search-container">
+
+          <label
+            for="searchInput"
+            class="music-search-label"
+          >
+            SEARCH
+          </label>
+
+          <div class="music-search-field">
+
+            <span
+              class="music-search-icon"
+              aria-hidden="true"
+            ></span>
+
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search music..."
+              autocomplete="off"
+              aria-label="Tìm kiếm bài hát"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- VOLUME -->
+        <div class="volume-control-bar">
+
+          <span class="music-vol-label">
+            VOL
+          </span>
+
+          <canvas
+            id="volumeCanvas"
+            width="100"
+            height="20"
+            aria-label="Điều chỉnh âm lượng"
+          ></canvas>
+
+          <button
+            id="eraserBtn"
+            class="music-eraser-btn"
+            aria-label="Xóa bản vẽ"
+          ></button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAIN -->
+    <main class="music-layout">
+
+      <!-- ARCHIVE NAVIGATION -->
+      <aside
+        class="music-nav-panel music-terminal-panel"
+        aria-label="Archive navigation"
+      >
+
         <div class="music-panel-label">
-          <span class="music-module-id-sm">[SYS-002]</span>
-          <span class="music-panel-title">SYSTEM CONTROL</span>
-        </div>
-        <div class="music-top-bar-row top-bar">
-          <button id="backBtn" class="music-back-btn" aria-label="Quay lại">
-            <span class="music-btn-label">RETURN</span>
-          </button>
-          <div class="search-container">
-            <label for="searchInput" class="music-search-label">QUERY</label>
-            <div class="music-search-field">
-              <span class="music-search-icon" aria-hidden="true"></span>
-              <input
-                type="text"
-                id="searchInput"
-                class="search-input"
-                placeholder="Search tracks, artists, genres, regions..."
-                autocomplete="off"
-                aria-label="Tìm kiếm bài hát"
-              />
-            </div>
-          </div>
-          <div class="volume-control-bar">
-            <span class="music-vol-label">VOL</span>
-            <canvas id="volumeCanvas" width="100" height="20" aria-label="Điều chỉnh âm lượng"></canvas>
-            <button id="eraserBtn" class="music-eraser-btn" aria-label="Xóa bản vẽ"></button>
-          </div>
-        </div>
-      </div>
 
-      <div class="music-layout">
-        <aside class="music-nav-panel music-terminal-panel" aria-label="Archive navigation">
+          <span class="music-module-id-sm">
+            [NAV]
+          </span>
+
+          <span class="music-panel-title">
+            ARCHIVE
+          </span>
+
+        </div>
+
+        <div
+          class="music-panel-divider"
+          aria-hidden="true"
+        ></div>
+
+        <nav class="music-nav-list">
+
+          <span class="music-nav-entry">
+            TRACKS
+          </span>
+
+          <span class="music-nav-entry">
+            ARTISTS
+          </span>
+
+          <span class="music-nav-entry">
+            GENRES
+          </span>
+
+          <span class="music-nav-entry">
+            PLAYLISTS
+          </span>
+
+        </nav>
+
+      </aside>
+
+
+      <!-- TRACK DATABASE -->
+      <section class="music-main-panel">
+
+        <div
+          class="music-database-panel music-terminal-panel"
+          data-module="DB-003"
+        >
+
           <div class="music-panel-label">
-            <span class="music-module-id-sm">[NAV-01]</span>
-            <span class="music-panel-title">ARCHIVE INDEX</span>
-          </div>
-          <div class="music-panel-divider" aria-hidden="true"></div>
-          <nav class="music-nav-list">
-            <span class="music-nav-entry">TRACK DATABASE</span>
-            <span class="music-nav-entry">ARTIST REGISTRY</span>
-            <span class="music-nav-entry">GENRE INDEX</span>
-            <span class="music-nav-entry">REGIONAL ARCHIVE</span>
-            <span class="music-nav-entry">PLAYLIST ARCHIVE</span>
-          </nav>
-          <div class="music-nav-footer">
-            <span class="music-meta-line">ARCHIVE-1-SPBASE</span>
-          </div>
-        </aside>  
 
-        <section class="music-main-panel">
-          <div class="music-database-panel music-terminal-panel" data-module="DB-003">
-            <div class="music-panel-label">
-              <span class="music-module-id-sm">[DB-003]</span>
-              <span class="music-panel-title">TRACK DATABASE</span>
+            <span class="music-module-id-sm">
+              [DB-003]
+            </span>
+
+            <span class="music-panel-title">
+              TRACKS
+            </span>
+
+          </div>
+
+          <div
+            class="music-panel-divider"
+            aria-hidden="true"
+          ></div>
+
+
+          <!-- DYNAMIC FILTERS -->
+          <div
+            class="filter-container"
+            id="filterContainer"
+          ></div>
+
+
+          <!-- DYNAMIC MENU -->
+          <div
+            id="mainMenu"
+            class="music-archive-menu"
+          ></div>
+
+
+          <!-- PLAYLIST -->
+          <div
+            id="playlistContainer"
+            class="music-playlist-heading"
+          ></div>
+
+
+          <!-- TABLE HEADER -->
+          <div
+            class="music-table-header"
+            aria-hidden="true"
+          >
+
+            <span class="music-col music-col-id">
+              ID
+            </span>
+
+            <span class="music-col music-col-title">
+              TITLE
+            </span>
+
+            <span class="music-col music-col-artist">
+              ARTIST
+            </span>
+
+            <span class="music-col music-col-status">
+              STATUS
+            </span>
+
+            <span class="music-col music-col-actions">
+              OPS
+            </span>
+
+          </div>
+
+
+          <!-- MUSIC LIST -->
+          <div
+            class="music-list"
+            id="musicList"
+          ></div>
+
+
+          <!-- EMPTY -->
+          <div
+            class="empty-state"
+            id="emptyState"
+            style="display: none;"
+          >
+
+            <div
+              class="empty-state-icon"
+              aria-hidden="true"
+            ></div>
+
+            <div class="empty-state-text">
+              NO TRACKS FOUND
             </div>
-            <div class="music-panel-divider" aria-hidden="true"></div>
 
-            <div class="filter-container" id="filterContainer"></div>
-
-            <div id="mainMenu" class="music-archive-menu"></div>
-
-            <div id="playlistContainer" class="music-playlist-heading"></div>
-
-            <div class="music-table-header" aria-hidden="true">
-              <span class="music-col music-col-id">TRACK_ID</span>
-              <span class="music-col music-col-title">TITLE</span>
-              <span class="music-col music-col-artist">ARTIST</span>
-              <span class="music-col music-col-status">STATUS</span>
-              <span class="music-col music-col-actions">OPS</span>
+            <div class="empty-state-hint">
+              Select a category or search for music
             </div>
 
-            <div class="music-list" id="musicList"></div>
-
-            <div class="empty-state" id="emptyState" style="display: none;">
-              <div class="empty-state-icon" aria-hidden="true"></div>
-              <div class="empty-state-text">NO RECORDS IN BUFFER</div>
-              <div class="empty-state-hint">Select an archive category to load track data</div>
-            </div>
-
-            <div class="loading-state" id="loadingState" style="display: none;">
-              <div class="music-loading-bar" aria-hidden="true"></div>
-              <span>INDEXING...</span>
-            </div>
           </div>
-        </section>
 
-        <aside class="music-side-panel music-terminal-panel" aria-label="Playback monitor">
-          <div class="music-panel-label">
-            <span class="music-module-id-sm">[PLY-004]</span>
-            <span class="music-panel-title">PLAYBACK MONITOR</span>
+
+          <!-- LOADING -->
+          <div
+            class="loading-state"
+            id="loadingState"
+            style="display: none;"
+          >
+
+            <div
+              class="music-loading-bar"
+              aria-hidden="true"
+            ></div>
+
+            <span>
+              LOADING...
+            </span>
+
           </div>
-          <div class="music-panel-divider" aria-hidden="true"></div>
-          <dl class="music-monitor-fields">
-            <dt>QUEUE</dt>
-            <dd class="music-monitor-queue-hint">Use queue panel →</dd>
-            <dt>PLAY MODE</dt>
-            <dd class="music-monitor-mode">STANDARD</dd>
-            <dt>SYSTEM</dt>
-            <dd class="music-monitor-sys">
-              <span class="music-monitor-sys-icon" aria-hidden="true"></span>
-              ONLINE
-            </dd>
-          </dl>
-          <div class="music-side-footer">
-            <span class="music-meta-line">SYS-001</span>
-          </div>
-        </aside>
+
+        </div>
+
+      </section>
+
+
+      <!-- PLAYBACK MONITOR -->
+      <aside
+        class="music-side-panel music-terminal-panel"
+        aria-label="Playback monitor"
+      >
+
+        <div class="music-panel-label">
+
+          <span class="music-module-id-sm">
+            [PLY-004]
+          </span>
+
+          <span class="music-panel-title">
+            PLAYER
+          </span>
+
+        </div>
+
+        <div
+          class="music-panel-divider"
+          aria-hidden="true"
+        ></div>
+
+        <dl class="music-monitor-fields">
+
+          <dt>QUEUE</dt>
+
+          <dd class="music-monitor-queue-hint">
+            Use queue →
+          </dd>
+
+          <dt>MODE</dt>
+
+          <dd class="music-monitor-mode">
+            STANDARD
+          </dd>
+
+          <dt>SYSTEM</dt>
+
+          <dd class="music-monitor-sys">
+
+            <span
+              class="music-monitor-sys-icon"
+              aria-hidden="true"
+            ></span>
+
+            ONLINE
+
+          </dd>
+
+        </dl>
+
+      </aside>
+
+    </main>
+
+  </div>
+
+
+  <!-- QUEUE -->
+  <div
+    id="queuePanel"
+    class="queue-panel"
+  >
+
+    <div class="queue-panel-header">
+
+      <div class="music-queue-header-text">
+
+        <span class="music-module-id-sm">
+          [QUE-005]
+        </span>
+
+        <h3>
+          PLAYBACK QUEUE
+        </h3>
+
       </div>
+
+      <div class="queue-panel-actions">
+
+        <button
+          id="clearQueueBtn"
+          class="queue-clear-btn"
+          title="Xóa tất cả"
+          aria-label="Xóa tất cả"
+        ></button>
+
+        <button
+          id="closeQueueBtn"
+          class="queue-close-btn"
+          title="Đóng"
+          aria-label="Đóng"
+        ></button>
+
+      </div>
+
     </div>
 
-    <div id="queuePanel" class="queue-panel">
-      <div class="queue-panel-header">
-        <div class="music-queue-header-text">
-          <span class="music-module-id-sm">[QUE-005]</span>
-          <h3>PLAYBACK QUEUE</h3>
+
+    <div
+      class="queue-list"
+      id="queueList"
+    >
+
+      <div class="queue-empty">
+
+        <div
+          class="queue-empty-icon"
+          aria-hidden="true"
+        ></div>
+
+        <div class="queue-empty-text">
+          QUEUE EMPTY
         </div>
-        <div class="queue-panel-actions">
-          <button id="clearQueueBtn" class="queue-clear-btn" title="Xóa tất cả" aria-label="Xóa tất cả"></button>
-          <button id="closeQueueBtn" class="queue-close-btn" title="Đóng" aria-label="Đóng"></button>
+
+        <div class="queue-empty-hint">
+          Add tracks to play
         </div>
+
       </div>
-      <div class="queue-list" id="queueList">
-        <div class="queue-empty">
-          <div class="queue-empty-icon" aria-hidden="true"></div>
-          <div class="queue-empty-text">QUEUE EMPTY</div>
-          <div class="queue-empty-hint">Add tracks to initialize playback queue</div>
-        </div>
-      </div>
+
     </div>
 
-    <button id="queueToggleBtn" class="queue-toggle-btn" title="Hàng đợi phát" aria-label="Hàng đợi phát">
-      <span class="music-queue-toggle-icon" aria-hidden="true"></span>
-      <span class="queue-count">0</span>
-    </button>
+  </div>
 
-    <div id="controlsContainer" class="controls-container">
-      <div class="music-now-playing-label">
-        <span class="music-module-id-sm">[PLY-006]</span>
-        <span class="music-panel-title">NOW PLAYING</span>
-      </div>
-      <div class="player-controls">
-        <div class="song-info">
-          <span id="currentSongTitle">NO TRACK SELECTED</span>
-        </div>
-        <div class="control-buttons">
-          <button id="shuffleBtn" type="button" aria-label="Bật/tắt phát ngẫu nhiên"></button>
-          <button id="prevBtn" type="button" aria-label="Bài trước"></button>
-          <button id="pauseResumeBtn" type="button" aria-label="Phát/Tạm dừng"></button>
-          <button id="nextBtn" type="button" aria-label="Bài tiếp"></button>
-          <button id="repeatBtn" type="button" aria-label="Bật/tắt lặp lại"></button>
-          <button id="addToPlaylistBtn" class="add-to-playlist-btn" type="button" aria-label="Thêm bài hát vào playlist"></button>
-        </div>
-        <div class="progress-container">
-          <span id="currentTime" aria-label="Thời gian hiện tại">0:00</span>
-          <input
-            type="range"
-            id="progressBar"
-            min="0"
-            value="0"
-            step="1"
-            aria-label="Thanh tiến trình phát nhạc"
-          />
-          <span id="duration" aria-label="Tổng thời gian">0:00</span>
-        </div>
-      </div>
+
+  <!-- QUEUE BUTTON -->
+  <button
+    id="queueToggleBtn"
+    class="queue-toggle-btn"
+    title="Hàng đợi phát"
+    aria-label="Hàng đợi phát"
+  >
+
+    <span
+      class="music-queue-toggle-icon"
+      aria-hidden="true"
+    ></span>
+
+    <span class="queue-count">
+      0
+    </span>
+
+  </button>
+
+
+  <!-- PLAYER -->
+  <div
+    id="controlsContainer"
+    class="controls-container"
+  >
+
+    <div class="music-now-playing-label">
+
+      <span class="music-module-id-sm">
+        [PLY-006]
+      </span>
+
+      <span class="music-panel-title">
+        NOW PLAYING
+      </span>
+
     </div>
 
-    <audio id="musicPlayer" style="width:0;height:0;opacity:0;position:absolute;left:-9999px;" preload="metadata"></audio>
 
-    <script type="module" src="../js/modules/music_entry.js"></script>
-  </body>
+    <div class="player-controls">
+
+      <div class="song-info">
+
+        <span id="currentSongTitle">
+          NO TRACK SELECTED
+        </span>
+
+      </div>
+
+
+      <div class="control-buttons">
+
+        <button
+          id="shuffleBtn"
+          type="button"
+          aria-label="Bật/tắt phát ngẫu nhiên"
+        ></button>
+
+        <button
+          id="prevBtn"
+          type="button"
+          aria-label="Bài trước"
+        ></button>
+
+        <button
+          id="pauseResumeBtn"
+          type="button"
+          aria-label="Phát/Tạm dừng"
+        ></button>
+
+        <button
+          id="nextBtn"
+          type="button"
+          aria-label="Bài tiếp"
+        ></button>
+
+        <button
+          id="repeatBtn"
+          type="button"
+          aria-label="Bật/tắt lặp lại"
+        ></button>
+
+        <button
+          id="addToPlaylistBtn"
+          class="add-to-playlist-btn"
+          type="button"
+          aria-label="Thêm bài hát vào playlist"
+        ></button>
+
+      </div>
+
+
+      <div class="progress-container">
+
+        <span
+          id="currentTime"
+          aria-label="Thời gian hiện tại"
+        >
+          0:00
+        </span>
+
+        <input
+          type="range"
+          id="progressBar"
+          min="0"
+          value="0"
+          step="1"
+          aria-label="Thanh tiến trình phát nhạc"
+        />
+
+        <span
+          id="duration"
+          aria-label="Tổng thời gian"
+        >
+          0:00
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- AUDIO -->
+  <audio
+    id="musicPlayer"
+    style="width:0;height:0;opacity:0;position:absolute;left:-9999px;"
+    preload="metadata"
+  ></audio>
+
+
+  <script
+    type="module"
+    src="../js/modules/music_entry.js"
+  ></script>
+
+</body>
+
 </html>

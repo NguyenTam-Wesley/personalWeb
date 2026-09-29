@@ -1,268 +1,620 @@
-<!-- pages/blog.html — Rhodes Island Intelligence Reports -->
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RPT-001 — ntam Island Intelligence Reports</title>
+
+  <title>Blog</title>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
+
   <link rel="stylesheet" href="../style/themes.css" />
   <link rel="stylesheet" href="../style/components.css" />
   <link rel="stylesheet" href="../style/blog.css" />
   <link rel="stylesheet" href="../style/intelligence-reports.css" />
+
   <link
     rel="icon"
     href="https://calwzopyjitbtahiafzw.supabase.co/storage/v1/object/sign/web-pic/icon/avt_libai.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Mzg1MDYzNy1jNjQwLTQwYjQtYTk0OS1hODY4YmI0Yzk2YmMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ3ZWItcGljL2ljb24vYXZ0X2xpYmFpLmpwZyIsImlhdCI6MTc2NjAzNzcwMywiZXhwIjo4NjU2OTg4MTg1MDN9.1JSZExUNh3_1uiHZ00ayOskz7UX3S3DpVEtKPkKVwu8"
   />
 </head>
+
 <body class="report-page">
+
   <main class="blog-container report-facility">
-    <header class="blog-header report-header report-panel" aria-label="Intelligence Reports">
+
+    <!-- HEADER -->
+    <header
+      class="blog-header report-header report-panel"
+      aria-label="Blog Archive"
+    >
+
       <div class="report-header-main">
-        <span class="report-module-id">[RPT-001]</span>
+
+        <span class="report-module-id">
+          [RPT-001]
+        </span>
+
         <div class="report-header-text">
-          <h1>ntam ISLAND INTELLIGENCE REPORTS</h1>
-          <p>Information Analysis Interface · Research Publication System</p>
+
+          <h1>
+            NTAM BLOG ARCHIVE
+          </h1>
+
+          <p>
+            Personal Articles &amp; Publications
+          </p>
+
         </div>
+
       </div>
-      <div class="report-header-meta" aria-label="System status">
-        <span class="report-meta-line report-meta-line--live">REPORT STATUS: ACTIVE</span>
-        <span class="report-meta-line report-meta-line--live">DATABASE STATUS: ONLINE</span>
-        <span class="report-meta-line">ARCHIVE STATUS: READY</span>
-        <span class="report-meta-line">BUILD 22.08.26</span>
-        <span class="report-meta-line report-meta-line--muted">NODE-N/A</span>
+
+      <div
+        class="report-header-meta"
+        aria-label="System status"
+      >
+        <span class="report-meta-line report-meta-line--live">
+          STATUS: READY
+        </span>
       </div>
+
+      <!-- Admin only -->
       <div class="blog-controls report-controls">
-        <button id="createPostBtn" class="btn-primary admin-only report-compose-btn" style="display: none;">
+
+        <button
+          id="createPostBtn"
+          class="btn-primary admin-only report-compose-btn"
+          style="display: none;"
+        >
           <span class="icon" aria-hidden="true"></span>
-          COMPOSE REPORT
+          NEW POST
         </button>
+
       </div>
+
     </header>
 
+
+    <!-- MAIN LAYOUT -->
     <div class="report-layout">
-      <aside class="report-sidebar report-panel" aria-label="Report categories">
+
+
+      <!-- CATEGORIES -->
+      <aside
+        class="report-sidebar report-panel"
+        aria-label="Blog categories"
+      >
+
         <div class="report-panel-label">
-          <span class="report-module-id-sm">[IDX-01]</span>
-          <span class="report-panel-title">REPORT CATEGORIES</span>
+
+          <span class="report-panel-title">
+            CATEGORIES
+          </span>
+
         </div>
-        <div class="report-panel-divider" aria-hidden="true"></div>
+
+        <div
+          class="report-panel-divider"
+          aria-hidden="true"
+        ></div>
+
         <nav class="report-category-nav">
-          <span class="report-category-entry report-category-entry--active">INTELLIGENCE REPORTS</span>
-          <span class="report-category-entry">TECHNICAL ANALYSIS</span>
-          <span class="report-category-entry">FIELD REPORTS</span>
-          <span class="report-category-entry">OPERATIONAL RECORDS</span>
-          <span class="report-category-entry">RESEARCH PUBLICATIONS</span>
+
+          <span class="report-category-entry report-category-entry--active">
+            ALL POSTS
+          </span>
+
+          <span class="report-category-entry">
+            TECHNICAL
+          </span>
+
+          <span class="report-category-entry">
+            PERSONAL
+          </span>
+
+          <span class="report-category-entry">
+            RESEARCH
+          </span>
+
         </nav>
-        <div class="report-panel-divider report-panel-divider--spaced" aria-hidden="true"></div>
-        <div class="report-panel-label">
-          <span class="report-module-id-sm">[CLS-02]</span>
-          <span class="report-panel-title">CLASSIFICATION</span>
-        </div>
-        <div class="report-panel-divider" aria-hidden="true"></div>
-        <ul class="report-class-list">
-          <li class="report-class-item">PUBLIC</li>
-          <li class="report-class-item">INTERNAL</li>
-          <li class="report-class-item">RESEARCH</li>
-          <li class="report-class-item">TECHNICAL</li>
-          <li class="report-class-item">ANALYSIS</li>
-        </ul>
-        <div class="report-sidebar-footer">
-          <span class="report-meta-line">REPORT-1-SPBASE INDEXED</span>
-        </div>
+
       </aside>
 
+
+      <!-- BLOG CONTENT -->
       <div class="blog-content report-main">
+
+
+        <!-- SEARCH & FILTER -->
         <div class="blog-filters report-filters report-panel">
+
           <div class="report-panel-label report-filters-label">
-            <span class="report-module-id-sm">[QRY-03]</span>
-            <span class="report-panel-title">REPORT RETRIEVAL</span>
+
+            <span class="report-module-id-sm">
+              [QRY-02]
+            </span>
+
+            <span class="report-panel-title">
+              SEARCH &amp; FILTER
+            </span>
+
           </div>
-          <div class="report-panel-divider report-panel-divider--inset" aria-hidden="true"></div>
+
+          <div
+            class="report-panel-divider report-panel-divider--inset"
+            aria-hidden="true"
+          ></div>
+
+
           <div class="report-filters-row">
+
+            <!-- Search -->
             <div class="search-box report-search">
-              <label for="searchInput" class="report-search-label">QUERY DATABASE</label>
-              <input type="text" id="searchInput" placeholder="Query intelligence database..." />
-              <span class="search-icon" aria-hidden="true"></span>
+
+              <label
+                for="searchInput"
+                class="report-search-label"
+              >
+                SEARCH
+              </label>
+
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search posts..."
+              />
+
+              <span
+                class="search-icon"
+                aria-hidden="true"
+              ></span>
+
             </div>
+
+
+            <!-- Filters -->
             <div class="filter-options report-filter-options">
+
               <div class="report-select-wrap">
-                <label for="topicFilter" class="report-field-label">CATEGORY</label>
+
+                <label
+                  for="topicFilter"
+                  class="report-field-label"
+                >
+                  CATEGORY
+                </label>
+
                 <select id="topicFilter">
-                  <option value="">All categories</option>
+
+                  <option value="">
+                    All categories
+                  </option>
+
                 </select>
+
               </div>
+
+
               <div class="report-select-wrap">
-                <label for="sortFilter" class="report-field-label">SORT ORDER</label>
+
+                <label
+                  for="sortFilter"
+                  class="report-field-label"
+                >
+                  SORT
+                </label>
+
                 <select id="sortFilter">
-                  <option value="newest">Newest first</option>
-                  <option value="oldest">Oldest first</option>
-                  <option value="popular">Most accessed</option>
-                  <option value="most_liked">Most referenced</option>
+
+                  <option value="newest">
+                    Newest first
+                  </option>
+
+                  <option value="oldest">
+                    Oldest first
+                  </option>
+
+                  <option value="popular">
+                    Most accessed
+                  </option>
+
+                  <option value="most_liked">
+                    Most referenced
+                  </option>
+
                 </select>
+
               </div>
+
             </div>
+
           </div>
+
+
+          <!-- Tags -->
           <div class="report-tags-section">
-            <span class="report-field-label report-tags-heading">TAG INDEX</span>
-            <div class="tag-filters report-tag-filters" id="tagFilters">
-              <!-- Tag checkboxes populated by JavaScript -->
+
+            <span class="report-field-label report-tags-heading">
+              TAGS
+            </span>
+
+            <div
+              class="tag-filters report-tag-filters"
+              id="tagFilters"
+            >
+              <!-- Tag filters populated by JavaScript -->
             </div>
+
           </div>
+
         </div>
 
+
+        <!-- POSTS -->
         <div class="report-feed-header">
+
           <div class="report-panel-label">
-            <span class="report-module-id-sm">[FED-04]</span>
-            <span class="report-panel-title">REPORT FEED · DOCUMENTED FINDINGS</span>
+
+            <span class="report-module-id-sm">
+              [POST-03]
+            </span>
+
+            <span class="report-panel-title">
+              POSTS
+            </span>
+
           </div>
-          <span class="report-feed-badge">PRIORITY INDEX ACTIVE</span>
+
         </div>
 
-        <div class="blog-posts report-feed" id="blogPosts">
+
+        <div
+          class="blog-posts report-feed"
+          id="blogPosts"
+        >
+
           <div class="loading-spinner report-loading">
+
             <div class="spinner"></div>
-            <p>Retrieving reports from database...</p>
+
+            <p>
+              Loading posts...
+            </p>
+
           </div>
+
         </div>
 
-        <div class="blog-pagination report-pagination" id="pagination" style="display: none;">
-          <button class="pagination-btn" id="prevPage">← PREV</button>
-          <div class="page-numbers" id="pageNumbers"></div>
-          <button class="pagination-btn" id="nextPage">NEXT →</button>
+
+        <!-- PAGINATION -->
+        <div
+          class="blog-pagination report-pagination"
+          id="pagination"
+          style="display: none;"
+        >
+
+          <button
+            class="pagination-btn"
+            id="prevPage"
+          >
+            ← PREV
+          </button>
+
+          <div
+            class="page-numbers"
+            id="pageNumbers"
+          ></div>
+
+          <button
+            class="pagination-btn"
+            id="nextPage"
+          >
+            NEXT →
+          </button>
+
         </div>
+
       </div>
 
-      <aside class="report-meta-panel report-panel" aria-label="Publication metadata">
+
+      <!-- SIMPLE INFO -->
+      <aside
+        class="report-meta-panel report-panel"
+        aria-label="Blog information"
+      >
+
         <div class="report-panel-label">
-          <span class="report-module-id-sm">[MET-05]</span>
-          <span class="report-panel-title">DATABASE METADATA</span>
+
+          <span class="report-panel-title">
+            BLOG
+          </span>
+
         </div>
-        <div class="report-panel-divider" aria-hidden="true"></div>
+
+        <div
+          class="report-panel-divider"
+          aria-hidden="true"
+        ></div>
+
         <dl class="report-meta-list">
+
           <div class="report-meta-row">
-            <dt>REPORT INDEX</dt>
-            <dd class="report-meta-value report-meta-value--ok">ONLINE</dd>
+
+            <dt>STATUS</dt>
+
+            <dd class="report-meta-value report-meta-value--ok">
+              ONLINE
+            </dd>
+
           </div>
+
           <div class="report-meta-row">
-            <dt>SYNC STATUS</dt>
-            <dd>SYNCED</dd>
+
+            <dt>CONTENT</dt>
+
+            <dd>
+              PUBLIC
+            </dd>
+
           </div>
-          <div class="report-meta-row">
-            <dt>CLASSIFICATION</dt>
-            <dd>INTERNAL</dd>
-          </div>
-          <div class="report-meta-row">
-            <dt>LAST REVISION</dt>
-            <dd>—</dd>
-          </div>
-          <div class="report-meta-row">
-            <dt>ARCHIVE INDEX</dt>
-            <dd>REPORT-1-SPBASE</dd>
-          </div>
+
         </dl>
-        <div class="report-panel-divider report-panel-divider--spaced" aria-hidden="true"></div>
-        <div class="report-panel-label">
-          <span class="report-module-id-sm">[BRF-06]</span>
-          <span class="report-panel-title">INFORMATION BRIEF</span>
-        </div>
-        <div class="report-panel-divider" aria-hidden="true"></div>
-        <p class="report-brief-text">
-          All entries are operational reports and technical analyses distributed through the NTAM information network. Select a record to open full documentation.
-        </p>
-        <div class="report-meta-notice" role="note">
-          <svg class="report-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" aria-hidden="true">
-            <rect x="4" y="4" width="16" height="16" /><line x1="4" y1="10" x2="20" y2="10" /><line x1="10" y1="4" x2="10" y2="20" />
-          </svg>
-          <p>Report access is logged. Unauthorized distribution is prohibited under network policy.</p>
-        </div>
+
       </aside>
+
     </div>
+
   </main>
 
-  <!-- Create Post Modal — DOM contract preserved -->
-  <div id="createPostModal" class="modal report-modal">
+
+  <!-- CREATE POST MODAL -->
+  <!-- DOM contract preserved -->
+
+  <div
+    id="createPostModal"
+    class="modal report-modal"
+  >
+
     <div class="modal-content report-modal-content">
+
       <div class="modal-header report-modal-header">
-        <h2>COMPOSE REPORT</h2>
-        <button class="close-btn" id="closeCreateModal" aria-label="Close">&times;</button>
+
+        <h2>
+          NEW POST
+        </h2>
+
+        <button
+          class="close-btn"
+          id="closeCreateModal"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+
       </div>
+
+
       <div class="modal-body">
+
         <form id="createPostForm">
+
           <div class="form-row">
+
             <div class="form-group">
-              <label for="postTitle">Report title *</label>
-              <input type="text" id="postTitle" name="postTitle" required placeholder="Enter report title" maxlength="200" />
+
+              <label for="postTitle">
+                Title *
+              </label>
+
+              <input
+                type="text"
+                id="postTitle"
+                name="postTitle"
+                required
+                placeholder="Enter post title"
+                maxlength="200"
+              />
+
             </div>
+
+
             <div class="form-group">
-              <label for="postTopic">Category *</label>
-              <select id="postTopic" name="postTopic" required>
-                <option value="">Select category</option>
+
+              <label for="postTopic">
+                Category *
+              </label>
+
+              <select
+                id="postTopic"
+                name="postTopic"
+                required
+              >
+
+                <option value="">
+                  Select category
+                </option>
+
               </select>
+
             </div>
+
           </div>
+
 
           <div class="form-group">
-            <label for="postContent">Report content *</label>
-            <div id="postContent" style="height: 300px;"></div>
-            <input type="hidden" name="postContent" id="postContentHidden" required>
+
+            <label for="postContent">
+              Content *
+            </label>
+
+            <div
+              id="postContent"
+              style="height: 300px;"
+            ></div>
+
+            <input
+              type="hidden"
+              name="postContent"
+              id="postContentHidden"
+              required
+            />
+
           </div>
+
 
           <div class="form-row">
+
             <div class="form-group">
-              <label for="postTags">Tags (comma-separated)</label>
-              <input type="text" id="postTags" name="postTags" placeholder="analysis, research, technical" />
+
+              <label for="postTags">
+                Tags
+              </label>
+
+              <input
+                type="text"
+                id="postTags"
+                name="postTags"
+                placeholder="analysis, research, technical"
+              />
+
             </div>
+
+
             <div class="form-group">
-              <label for="postStatus">Publication status</label>
-              <select id="postStatus" name="postStatus">
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
+
+              <label for="postStatus">
+                Status
+              </label>
+
+              <select
+                id="postStatus"
+                name="postStatus"
+              >
+
+                <option value="published">
+                  Published
+                </option>
+
+                <option value="draft">
+                  Draft
+                </option>
+
               </select>
+
             </div>
+
           </div>
+
 
           <div class="form-actions">
-            <button type="button" class="btn-secondary" id="cancelCreate">Cancel</button>
-            <button type="submit" class="btn-primary">
-              <span class="btn-icon" aria-hidden="true"></span>
-              Submit report
+
+            <button
+              type="button"
+              class="btn-secondary"
+              id="cancelCreate"
+            >
+              Cancel
             </button>
+
+            <button
+              type="submit"
+              class="btn-primary"
+            >
+
+              <span
+                class="btn-icon"
+                aria-hidden="true"
+              ></span>
+
+              Publish
+
+            </button>
+
           </div>
+
         </form>
+
       </div>
+
     </div>
+
   </div>
 
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  <script>
-    window.QuillLoaded = false;
-    var quillScript = document.createElement('script');
-    quillScript.src = 'https://cdn.quilljs.com/1.3.6/quill.js';
-    quillScript.onload = function() {
-      window.QuillLoaded = true;
-      console.log('✅ Quill loaded successfully');
-    };
-    document.head.appendChild(quillScript);
-  </script>
+
+  <!-- Quill -->
+  <link
+    href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+    rel="stylesheet"
+  />
 
   <script>
-    function loadBlogScript() {
-      if (window.QuillLoaded && typeof Quill !== 'undefined') {
-        console.log('✅ Quill ready, loading blog script...');
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = '../js/modules/blog_entry.js';
-        document.head.appendChild(script);
-      } else {
-        console.log('⏳ Waiting for Quill...');
-        setTimeout(loadBlogScript, 50);
-      }
-    }
-    loadBlogScript();
+
+    window.QuillLoaded = false;
+
+    var quillScript = document.createElement('script');
+
+    quillScript.src =
+      'https://cdn.quilljs.com/1.3.6/quill.js';
+
+    quillScript.onload = function () {
+
+      window.QuillLoaded = true;
+
+      console.log('✅ Quill loaded successfully');
+
+    };
+
+    document.head.appendChild(quillScript);
+
   </script>
+
+
+  <!-- Blog JS -->
+  <script>
+
+    function loadBlogScript() {
+
+      if (
+        window.QuillLoaded &&
+        typeof Quill !== 'undefined'
+      ) {
+
+        console.log(
+          '✅ Quill ready, loading blog script...'
+        );
+
+        const script =
+          document.createElement('script');
+
+        script.type = 'module';
+
+        script.src =
+          '../js/modules/blog_entry.js';
+
+        document.head.appendChild(script);
+
+      } else {
+
+        console.log(
+          '⏳ Waiting for Quill...'
+        );
+
+        setTimeout(
+          loadBlogScript,
+          50
+        );
+
+      }
+
+    }
+
+    loadBlogScript();
+
+  </script>
+
 </body>
 </html>
