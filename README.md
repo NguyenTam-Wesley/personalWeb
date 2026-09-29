@@ -23,31 +23,11 @@ SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_key
 ```
 
-1. Chạy dự án ở môi trường development:
-
-```bash
-npm run dev
-```
-
-1. Build và chạy:
-
-```bash
-npm run build
-npm start
-```
-
 ## Cấu trúc dự án
 
 ```
 Thập cẩm
 ```
-
-## API Documentation
-
-### Endpoints
-
-- `GET /`: Trang chủ
-- `GET /pages/*`: Các trang tĩnh
 
 ## Development
 
