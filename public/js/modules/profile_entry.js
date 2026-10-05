@@ -1,24 +1,18 @@
-// 🎯 Profile Page Entry Point
-// ✅ Initialize components (header, footer, navigation)
-// ✅ Load profile page logic from profile_page.js
-
 import components from '../components/components.js';
 import { ProfileManager } from './profile_manager.js';
 import { UserProfile } from './user_profile.js';
 import { ProfilePage } from './profile_page.js';
 import { achievements } from './achievements.js';
 
-// Initialize components immediately (like other entry points)
 components.init();
 
-// Initialize pet for profile page (clean, no controls - settings in Pets tab)
 components.initPet({
   container: document.body,
   size: 'small',
   theme: 'default',
   position: { x: window.innerWidth - 120, y: window.innerHeight - 120 },
   autoStart: true,
-  showControls: false,       // Hide controls - use Pets tab settings instead
+  showControls: false,
   showDebug: false,
   boundaryMode: 'wrap',
   persistence: true
@@ -64,8 +58,7 @@ function initPetSettings() {
 window.togglePetEnabled = function() {
     const enabled = document.getElementById('pet-enabled').checked;
     components.togglePet(enabled);
-    initPetSettings(); // Refresh UI
-};
+    initPetSettings();
 
 window.updatePetSize = function() {
     const size = document.getElementById('pet-size').value;
@@ -91,9 +84,6 @@ window.updatePetTheme = function() {
     }
 };
 
-// Note: showControls is page-specific and not saved as user preference
-// Users can only control: enabled, size, theme globally
-
 window.resetPetPosition = function() {
     if (window.petComponent) {
         const pageName = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
@@ -103,7 +93,7 @@ window.resetPetPosition = function() {
         window.petComponent.position = { ...defaultPos };
         window.petComponent.updatePosition();
         window.petComponent.saveState();
-        console.log('📍 Pet position reset');
+        console.log('Pet position reset');
     }
 };
 
@@ -111,9 +101,9 @@ window.testPet = function() {
     if (window.petComponent) {
         window.petComponent.randomState();
         window.petComponent.moveToRandomPosition();
-        console.log('🎮 Pet test activated');
+        console.log('Pet test activated');
     } else {
-        console.log('🐾 No pet active to test');
+        console.log('No pet active to test');
     }
 };
 
